@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakePresetLoader"><![CDATA[{
+  "useNewFormat": true
+}]]></component>
+  <component name="CMakeReloadState">
+    <option name="reloaded" value="true" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="cl_oneProgramTwoProcess" targetName="cl_oneProgramTwoProcess" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8a4be6b7-e448-471f-9b19-bf0f8d424758" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../../../JS/appunti_style.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/esercizi/compiti_list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/esercizi/to-do-list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/01_lezione/01_lessons_ex/es_checkboxColorDiv/es_checkboxDiv.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/01_lezione/01_lessons_ex/es_checkboxColorDiv/es_checkboxDiv_v2.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/01_lezione/01_lessons_ex/es_checkboxColorDiv/es_checkboxDiv_v3.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/01_lezione/01_lessons_ex/es_label/es_label.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/01_lezione/01_lessons_ex/es_lampadina/lampadina_sol.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/01_lezione/01_lessons_ex/es_lampadina/lampadina_v2_sol.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/01_lezione/01_lessons_ex/es_lampadina/lampadina_v3_sol.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_addEventListener.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_addEventListener_button.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_bubbling.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_bubbling_2.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/02-01_indovinaIlNumero/02-01_indovinaIlnumero.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/02-02_magicEightBall/02-02_pallaMagica.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/02-02_magicEightBall/02-02_pallaMagica.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/02-02_magicEightBall/02-02_pallaMagica.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/02-02_magicEightBall/old/02-02_pallaMagica_old.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/02-02_magicEightBall/old/02-02_pallaMagica_old.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/02-02_magicEightBall/old/02-02_pallaMagica_old.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/02-03_divSposta/02-03_imgSposta.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/02-04_divListaFrecce/02-04_divListaFrecce.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/es_ilGiocoDiAlice/ai/game.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/es_ilGiocoDiAlice/ai/script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/es_ilGiocoDiAlice/ilGiocoDiAlice.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/es_ilGiocoDiAlice/ilGiocoDiAlice.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/es_ilGiocoDiAlice/main.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_op.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_var.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/lezione_02_stmnts.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/misc/es.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/200623_unito_python/lupusInTabula/lupusInTabula.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/200623_unito_python/lupusInTabula/ruoli.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/200623_unito_python/lupusInTabula/sol_lupus.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/200623_unito_python/lupusInTabula/sol_ruoli.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/23_adventCalendar/1_12/01-12-23_adventCalendar.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/23_adventCalendar/1_12/01-12-23_adventCalendar_2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/23_adventCalendar/1_12/input_2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/deep_learning/binaryClassificationCatDog/data_preprocess.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/deep_learning/binaryClassificationCatDog/train_nn.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/deep_learning/binaryClassificationCatDog/train_nn_softmax.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/deep_learning/check_time_vettori.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/deep_learning/esempio_vettorizzazione_mSamples.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/deep_learning/esempio_vettorizzazione_mSamples_clean.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/deep_learning/esempio_vettorizzazione_oneSample.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/deep_learning/keras_simple_example.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/deep_learning/matrici.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/deep_learning/vettorizzazione_esempio.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../python/ricorsione/fibonacci.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C++/Xcode_prj/checking_ram" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C++/Xcode_prj/checking_ram" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fork.xcodeproj/project.xcworkspace/xcuserdata/cristina.xcuserdatad/UserInterfaceState.xcuserstate" beforeDir="false" afterPath="$PROJECT_DIR$/../fork.xcodeproj/project.xcworkspace/xcuserdata/cristina.xcuserdatad/UserInterfaceState.xcuserstate" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fork.xcodeproj/xcuserdata/cristina.xcuserdatad/xcschemes/xcschememanagement.plist" beforeDir="false" afterPath="$PROJECT_DIR$/../fork.xcodeproj/xcuserdata/cristina.xcuserdatad/xcschemes/xcschememanagement.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../oneProgramTwoProcesses/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../oneProgramTwoProcesses/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../html/esempio_div_inline_50/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/../../../html/esempio_div_inline_50/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../python/200623_unito_python/lupusInTabula.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../JS/lessons/02_lezione/02_lezione_ex/02-01_indovinaIlNumero/02-01_IndovinaIlNumero.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../python/HuffmanCode/huffman.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../python/HuffmanCode/huffman.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2023" />
+    <option name="minorVersion" value="3.2" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2Zu0PDT7GHr7fb5HA9De6WDP8Ge" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "CMake Application.cl_oneProgramTwoProcess.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="cl_oneProgramTwoProcess" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cl_oneProgramTwoProcess" TARGET_NAME="cl_oneProgramTwoProcess" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cl_oneProgramTwoProcess" RUN_TARGET_NAME="cl_oneProgramTwoProcess">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8a4be6b7-e448-471f-9b19-bf0f8d424758" name="Changes" comment="" />
+      <created>1703256631122</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1703256631122</updated>
+      <workItem from="1703256632443" duration="273000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VCPKGProject">
+    <isAutomaticCheckingOnLaunch value="false" />
+    <isAutomaticFoundErrors value="true" />
+    <isAutomaticReloadCMake value="true" />
+  </component>
+</project>

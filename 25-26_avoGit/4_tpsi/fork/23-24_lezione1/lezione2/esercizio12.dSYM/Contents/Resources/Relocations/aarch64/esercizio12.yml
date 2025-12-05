@@ -1,0 +1,14 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     esercizio12
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _computeA1, symObjAddr: 0x0, symBinAddr: 0x100003748, symSize: 0x28 }
+  - { offsetInCU: 0x49, offset: 0x49, size: 0x8, addend: 0x0, symName: _computeA1, symObjAddr: 0x0, symBinAddr: 0x100003748, symSize: 0x28 }
+  - { offsetInCU: 0x7F, offset: 0x7F, size: 0x8, addend: 0x0, symName: _computeAC, symObjAddr: 0x28, symBinAddr: 0x100003770, symSize: 0x30 }
+  - { offsetInCU: 0xC3, offset: 0xC3, size: 0x8, addend: 0x0, symName: _computeB1, symObjAddr: 0x58, symBinAddr: 0x1000037A0, symSize: 0x24 }
+  - { offsetInCU: 0xF9, offset: 0xF9, size: 0x8, addend: 0x0, symName: _computeD, symObjAddr: 0x7C, symBinAddr: 0x1000037C4, symSize: 0x54 }
+  - { offsetInCU: 0x13D, offset: 0x13D, size: 0x8, addend: 0x0, symName: _computeE, symObjAddr: 0xD0, symBinAddr: 0x100003818, symSize: 0x2C }
+  - { offsetInCU: 0x181, offset: 0x181, size: 0x8, addend: 0x0, symName: _writeToFile, symObjAddr: 0xFC, symBinAddr: 0x100003844, symSize: 0x80 }
+  - { offsetInCU: 0x1C1, offset: 0x1C1, size: 0x8, addend: 0x0, symName: _readFromFile, symObjAddr: 0x17C, symBinAddr: 0x1000038C4, symSize: 0x98 }
+  - { offsetInCU: 0x205, offset: 0x205, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x214, symBinAddr: 0x10000395C, symSize: 0x370 }
+...

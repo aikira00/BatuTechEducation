@@ -1,0 +1,11 @@
+@startuml
+Client -> Client: apertura del programma senza connessione
+Server -> Server: In ascolto con apertura della connessione (result = 0)
+Client -> Server: Inviando l'username instaura la connessione
+Client -> Server: Inviando il comando.
+Server -> Client: Restituisce al client o ERRORE;NUM o SUCCESS (successo)
+Client -> Server: Invia il comando EXIT
+Server -> Client: Restituisce il comando EXIT
+Server -> Server: Deferenzia il server dalla mappa hash delle sessioni.
+Client -> Client: client viene chiuso e chiude il socket
+@enduml

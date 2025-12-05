@@ -1,0 +1,3 @@
+/Users/cristina/GIT_AVO/Avo/C/fork/cl_oneProgramTwoProcess/cmake-build-debug/CMakeFiles/cl_oneProgramTwoProcess.dir
+/Users/cristina/GIT_AVO/Avo/C/fork/cl_oneProgramTwoProcess/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/cristina/GIT_AVO/Avo/C/fork/cl_oneProgramTwoProcess/cmake-build-debug/CMakeFiles/rebuild_cache.dir

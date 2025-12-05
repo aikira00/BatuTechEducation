@@ -1,0 +1,15 @@
+# ninja log v5
+1	44	1703254697585610561	CMakeFiles/fork.dir/oneProgramOneProcess/main.c.o	39b5fdd7991f315
+0	45	1703254697588816317	CMakeFiles/fork.dir/fork_quiQuoQua/main.c.o	31a929b2dd5c0375
+1	43	1703254697585604269	CMakeFiles/fork.dir/variables/main.c.o	9259ef11fbe568d3
+0	46	1703254697588951609	CMakeFiles/fork.dir/exec/main.c.o	7816538ce139b8c7
+44	75	1703254697618686995	CMakeFiles/fork.dir/wait/main.c.o	3f5a1e497e14048
+1	46	1703254697588483066	CMakeFiles/fork.dir/oneProgramTwoProcesses_pid/main.c.o	2c1989c89f955a03
+1	47	1703254697591845947	CMakeFiles/fork.dir/oneProgramTwoProcesses/main.c.o	d667e747c3c90557
+2	72	1703254838737948203	CMakeFiles/fork.dir/oneProgramTwoProcesses/main.c.o	d667e747c3c90557
+1	73	1703254838737945495	CMakeFiles/fork.dir/exec/main.c.o	7816538ce139b8c7
+1	73	1703254838738272079	CMakeFiles/fork.dir/oneProgramOneProcess/main.c.o	39b5fdd7991f315
+1	73	1703254838737939954	CMakeFiles/fork.dir/fork_quiQuoQua/main.c.o	31a929b2dd5c0375
+2	73	1703254838738294496	CMakeFiles/fork.dir/oneProgramTwoProcesses_pid/main.c.o	2c1989c89f955a03
+2	74	1703254838738301913	CMakeFiles/fork.dir/variables/main.c.o	9259ef11fbe568d3
+72	100	1703254838767958715	CMakeFiles/fork.dir/wait/main.c.o	3f5a1e497e14048

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="allegati">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/allegati.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

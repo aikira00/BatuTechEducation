@@ -1,0 +1,71 @@
+Author: Daniele Gianella
+I.I.S A.Avogadro - Torino 2025
+Fila: B
+---------server---------
+socket porta 10000
+-------Comandi-------
+COUNT   =   conteggio lettere
+CHANGE  =   sostituzione delle lettere a con la lettera b
+CHECK   =   controllo se numero di vocali e iu grani del numero di consonanti (bool)
+INVBIN  =   inversione delle lettere con poizione pari con quelle di posizione dispari
+REVERSE =   inversione della stringa // da implementare
+VOWEL   =   conteggio delle vocali
+
+-------Controlli-------
+errori codificati secondo questo protocollo:
+
+500 = errore generico
+501 = immissione di numeri // da implementare (con regex?)
+502 = comando inesistente
+505 = comando normalizzato in uppercase ed eseguito (non bloccante) (nota 505)
+
+il server restituisce soltanto il codice
+
+------------------------------------------------------------------------------------------
+
+---------Client---------
+
+prima immisione stringa poi comando
+la stampa della stringa avviene dopo ogni esecuzione del comando
+controlli: tutti a lato server con restituzione del codice di errore
+ il client decodifica il codice di errore a da un output verbose
+
+
+---------Sequence diagram---------
+
+        client                server
+            |      connect      | attesa connesione
+            |------------------>|
+            |                   |
+            |      accept       |
+            |<------------------|
+            |                   |
+            |                   |
+            |                   |
+            |       stringa     |
+            |------------------>|
+            |                   |
+            |       comando     |
+            |------------------>|
+            |                   |
+            |  errore (codice)  |
+            |<------------------|
+            |                   |
+            |     rusultato     |
+            |<------------------|
+            |                   |
+            |                   |
+            |                   |
+            |       close       |
+            |------------------>|
+            |                   |
+            |       close       |
+            |<------------------|
+            |*******************|
+
+
+
+
+
+
+

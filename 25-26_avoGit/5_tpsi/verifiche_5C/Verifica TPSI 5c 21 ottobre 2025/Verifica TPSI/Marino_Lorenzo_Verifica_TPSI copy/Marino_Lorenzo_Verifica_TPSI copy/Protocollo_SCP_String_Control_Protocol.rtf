@@ -1,0 +1,58 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww28080\viewh18080\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\qr\partightenfactor0
+
+\f0\fs36 \cf0 Marino Lorenzo\
+I.I.S. A. Avogadro - Torino 21 ottobre 2025\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\qc\partightenfactor0
+\cf0 (SCP) = String Control Protocol\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 Riepilogo:\
+Il mio protocollo \'e8 un protocollo d\'92esempio su il controllo dell\'92input di stringhe e di comandi inseriti dall\'92utente.\
+\
+Panoramica del protocollo:\
+Il protocollo utilizza il protocollo di livello di trasporto TCP, lo uso perch\'e8 \'e8 uno dei pochi protocolli del livello di trasporto che \'e8 affidabile e che \'e8 efficiente, senza perdere i pacchetti.\
+Il numero di porta in cui \'e8 in ascolto il server \'e8 la 20000.\
+L\'92implemento degli errori sono:\
+Errore 01: Carattere Vuoto\
+Errore 02: Carattere non valido (Int)\
+Errore 03: Comando inesistente\
+Errore 04: Stringa corta \
+Errore 05: Stringa di caratteri uguali\
+Errore 06: Errore Generico\
+200: Tutto apposto.\
+\
+Comandi del server:\
+200, ok. L\'92unico messaggio che invier\'e0 il server, appena iniziata la connessione\
+\
+Comandi client: \
+Per I comandi che il client mander\'e0 al server sono:\
+COUNT,[stringa] = Questo comando conta le lettere dentro alla stringa\
+CHANGE,[stringa] = Sostituisce le lettere a con le lettere b.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 CHECK,[stringa] = Controllo e conteggio vocali e consonanti e valuta se ci sono pi\'f9 vocali o pi\'f9 consonanti \
+INVBIN,[stringa] = Inversioni delle lettere: Le lettere pari al posto delle lettere dispari\
+REVERS,[stringa] = Capovolge la stringa \
+VOWER,[stringa] = Conta il numero delle vocali\
+\
+Errori: \
+Gli errori elencati nella sezione panoramica del protocollo sono:\
+Errore 01: Carattere Vuoto\
+Errore 02: Carattere non valido (Int)\
+Errore 03: Comando inesistente\
+Errore 04: Stringa corta \
+Errore 05: Stringa di caratteri uguali\
+Errore 06: Errore Generico\
+200: Tutto apposto.\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+
+\fs48 \
+}

@@ -1,0 +1,6 @@
+edu\avo\eserciziotokenserver\DbManager.class
+edu\avo\eserciziotokenserver\SingleServer.class
+edu\avo\eserciziotokenserver\Application.class
+edu\avo\eserciziotokenserver\SenderProtocolManager.class
+edu\avo\eserciziotokenserver\EsercizioTokenServer.class
+edu\avo\eserciziotokenserver\ReceiverProtocolManager.class

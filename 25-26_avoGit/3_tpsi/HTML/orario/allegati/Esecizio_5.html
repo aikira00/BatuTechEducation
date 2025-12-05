@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orario Settimanale</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #fafafa;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+
+        th {
+            background: #f2f2f2;
+        }
+
+        tr {
+            height: 40px;
+        }
+
+        /* Colori materie */
+        .tpsi {
+            background: powderblue;
+        }
+
+        .tele {
+            background: lightcoral;
+        }
+
+        .religione {
+            background: lightgoldenrodyellow;
+        }
+
+        .italiano {
+            background: lightgreen;
+        }
+
+        .matematica {
+            background: lightsalmon;
+        }
+
+        .sistemi {
+            background: lightpink;
+        }
+
+        .informatica {
+            background: lightseagreen;
+            color: white;
+        }
+
+        .inglese {
+            background: plum;
+        }
+
+        .storia {
+            background: khaki;
+        }
+
+        .edfisica {
+            background: lightgray;
+        }
+
+        .vuota {
+            background: red;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Orario Settimanale</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Lunedì</th>
+        <th>Martedì</th>
+        <th>Mercoledì</th>
+        <th>Giovedì</th>
+        <th>Venerdì</th>
+        <th>Sabato</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Riga 1 -->
+    <tr>
+        <td class="vuota"></td>
+        <td class="tpsi" rowspan="2">TPSI</td>
+        <td class="tele">TELECOMUNICAZIONI</td>
+        <td class="religione">RELIGIONE</td>
+        <td class="italiano" rowspan="2">ITALIANO</td>
+        <td class="matematica" rowspan="2">MATEMATICA</td>
+    </tr>
+
+    <!-- Riga 2 -->
+    <tr>
+        <td class="sistemi" rowspan="2">SISTEMI</td>
+        <!-- seconda colonna occupata da TPSI -->
+        <td class="sistemi" rowspan="2">SISTEMI</td>
+        <td class="informatica" rowspan="2">INFORMATICA</td>
+        <!-- Venerdì e Sabato occupati da rowspan Italiano e Matematica -->
+    </tr>
+
+    <!--Riga 3-->
+    <tr>
+        <!--no prima cella per rowspan sistemi-->
+        <td class="matematica">MATEMATICA</td>
+        <!--no terza cella per rowspan sistemi-->
+        <!--no quarta cella per rowspan infl-->
+        <td class="inglese">INGLESE</td>
+        <td class="inglese" rowspan="2">EDUCAZIONE FISICA</td>
+    </tr>
+    <!-- Riga 4 -->
+    <tr>
+        <td class="storia">STORIA</td>
+        <td class="informatica">INFORMATICA</td>
+        <td class="inglese">INGLESE</td>
+        <td class="storia">STORIA</td>
+        <td class="tele" rowspan="2">TELECOMUNICAZIONI</td>
+        <!-- no sesta cella per rowspan educazione fisica-->
+    </tr>
+
+    <!-- Riga 5 -->
+    <tr>
+        <td class="inglese">INGLESE</td>
+        <td class="vuota"></td>
+        <td class="vuota"></td>
+        <td class="italiano">ITALIANO</td>
+        <!-- no quinta cella per rowspan telecomunicazioni-->
+        <td class="italiano">ITALIANO</td>
+        <!-- Riga 6 -->
+    <tr>
+        <td class="tpsi">TPSI</td>
+        <td class="vuota"></td>
+        <td class="matematica">MATEMATICA</td>
+        <td class="vuota"></td>
+        <td class="vuota"></td>
+        <td class="vuota"></td>
+
+    </tr>
+    <!-- Riga 7 -->
+    <tr>
+        <td class="vuota"></td>
+        <td class="vuota"></td>
+        <td class="informatica" rowspan="3">INFORMATICA</td>
+        <td class="vuota"></td>
+        <td class="vuota"></td>
+        <td class="vuota"></td>
+
+    </tr>
+    <!-- Riga 8 -->
+    <tr>
+        <td class="vuota"></td>
+        <td class="vuota"></td>
+        <!-- rowspan info-->
+        <td class="vuota"></td>
+        <td class="vuota"></td>
+        <td class="vuota"></td>
+
+    </tr>
+    <!-- Riga 9 -->
+    <tr>
+        <td class="vuota"></td>
+        <td class="vuota"></td>
+         <!-- rowspan info-->
+        <td class="vuota"></td>
+        <td class="vuota"></td>
+        <td class="vuota"></td>
+    </tr>
+
+    </tbody>
+</table>
+
+</body>
+</html>
