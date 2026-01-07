@@ -1,0 +1,35 @@
+.wrapper{
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+
+    /* dividere lo spazio disponibile, nuova unità di misura*/
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    /*queste sono stringhe a caso, metto quello che voglio*/
+    grid-template-areas:
+    "form form"
+    "good bad";
+}
+
+.form{
+    grid-area: form;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.good{
+    grid-area: good;
+}
+
+.bad{
+    grid-area: bad;
+}
+
+body{
+    font-family: Arial, Helevetica, sans-serif;
+}
+
+label{
+    display: block;
+}

@@ -1,12 +1,9 @@
-let bEl = document.querySelector("body");
-let olEl = document.createElement("ol");
-let liEl = document.createElement("li");
-liEl.innerText = "Gargamella"
-bEl.appendChild(olEl);
-olEl.appendChild(liEl);
+let butEl = document.querySelector("button");
 
+butEl.addEventListener("click", ()=>{
+    butEl.innerText += 1;
+    //giusto
+    //butEl.innerText = parseInt(butEl.innerText) + 1;
 
-// aggiungo Birba
-let nuovoLi = document.createElement("li");
-nuovoLi.innerText = "Birba";
-olEl.appendChild(nuovoLi);
+    console.log(butEl.innerText);
+})
