@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/JavaScript" src="apiari.js"></script>
+    <link rel="stylesheet" href="apiari.css">
+    <title>Esempio client JS per sr_2023 apiari</title>
+</head>
+<body>
+    <h1>Esempio client JS per sr_2023 apiari</h1>
+    <div class="form-group">
+        <button id="apAll"name="all"> Vedi tutti gli apiari </button>
+        <label for="provinceDropdown">Provincia:</label>
+        <select id="provinceDropdown" class="form-control">
+            <option value="">Seleziona una provincia</option>
+        </select>
+        <!--<button id="apByP"name="all"> Go </button>-->
+    </div>
+    <div>
+        <table id="apiariTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Località</th>
+                <th>Apicoltore</th>
+                <th>Provincia</th>
+                <th>Link</th>
+            </tr>
+            </thead>
+            <tbody id="apiariBody">
+            <!-- I dati verranno inseriti qui tramite JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+
+</body>
+</html>

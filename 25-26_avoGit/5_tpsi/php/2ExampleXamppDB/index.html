@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca - Ricerca per Autore</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>📚 Biblioteca</h1>
+    <div style="text-align: center;">
+        <span class="badge">⚠️ Versione Statica (HTML)</span>
+    </div>
+
+    <div class="form-container">
+        <form method="GET" action="risultati.php">
+            <label for="autore">Seleziona un autore:</label>
+            <select id="autore" name="autore" required>
+                <option value="">-- Scegli un autore --</option>
+                <option value="Dan Brown">Dan Brown</option>
+                <option value="Ernest Hemingway">Ernest Hemingway</option>
+                <option value="Gabriel García Márquez">Gabriel García Márquez</option>
+                <option value="George Orwell">George Orwell</option>
+                <option value="J.K. Rowling">J.K. Rowling</option>
+                <option value="J.R.R. Tolkien">J.R.R. Tolkien</option>
+                <option value="Jane Austen">Jane Austen</option>
+                <option value="Umberto Eco">Umberto Eco</option>
+            </select>
+            <button type="submit">🔍 Cerca Libri</button>
+        </form>
+    </div>
+
+    <div class="info-box">
+        <h3>ℹ️ Caratteristiche di questa pagina:</h3>
+        <ul>
+            <li>HTML statico (non PHP)</li>
+            <li>Lista autori hardcoded nel codice HTML</li>
+            <li>Non interroga il database per popolare la dropdown</li>
+            <li>Invia i dati a una pagina PHP separata (risultati.php)</li>
+        </ul>
+    </div>
+
+    <div class="info-box" style="background: #fff3cd; border-left-color: #ffc107; margin-top: 15px;">
+        <h3 style="color: #856404;">⚡ Limitazioni:</h3>
+        <ul>
+            <li style="color: #856404;">Se aggiungi nuovi autori al DB, devi modificare manualmente l'HTML</li>
+            <li style="color: #856404;">Non può adattarsi dinamicamente ai cambiamenti del database</li>
+            <li style="color: #856404;">Rischio di disallineamento tra HTML e dati reali</li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
