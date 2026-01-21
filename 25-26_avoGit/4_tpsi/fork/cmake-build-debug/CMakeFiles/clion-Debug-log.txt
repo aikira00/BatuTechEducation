@@ -1,1 +1,1 @@
-CMakeLists.txt not found in /Users/cristina/GIT_AVO/25-26_avoGit/4_tpsi/fork Select CMakeLists.txt
+CMakeLists.txt not found in /Users/cristina/GIT_AVO/BatuTechEducation/25-26_avoGit/4_tpsi/fork Select CMakeLists.txt

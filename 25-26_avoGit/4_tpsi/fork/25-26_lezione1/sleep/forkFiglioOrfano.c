@@ -2,6 +2,28 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+ /**da terminale compilare
+ * gcc forkFiglioOrfano.c -o forkFiglioOrfano
+ * avviare programma
+ * ./forkFiglioOrfano
+ * aprire altro terminale ed eseguire
+ * ps au -o ppid
+ * per vedere che processo figlio ha genitore con pid = 1
+ *
+ * stato S in esecuzione
+ * VSZ = quanta memoria il processo POTREBBE usare
+ * Se il tuo programma fa malloc(1GB) ma usa solo 1MB, VSZ include tutto 1GB
+* RSS - Resident Set Size (Memoria Fisica)
+* %MEM = (RSS / RAM_totale) × 100
+RSS = quanta memoria il processo STA DAVVERO usando (RAM fisica)
+stati processo
++ processo attivo che riceve input da terminale (senza o backdround o no terminale attivo)
+s processo leader di sessione
+S sleep
+Z zombie
+R running
+**/
+
 int main() {
     pid_t pid;
 
