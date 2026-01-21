@@ -1,16 +1,15 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: cristina
-  Date: 14/01/26
-  Time: 15:49
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-  <head>
-    <title>$Title$</title>
-  </head>
-  <body>
-  $END$
-  </body>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Risultato</title>
+</head>
+<body>
+<h1>Benvenuto!</h1>
+<p>Ciao <strong><%= request.getAttribute("nomeUtente") %></strong>!</p>
+
+<br>
+<a href="index.html">Torna indietro</a>
+</body>
 </html>

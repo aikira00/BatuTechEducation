@@ -5,4 +5,6 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(esempioIntero esempioRappresentazione.c
         esempioOverflow.c
-        esempioRappNumeriUnsignedSigned.c)
+        esempioRappNumeriUnsignedSigned.c
+        ieee754/floatingPointMess.c
+        ieee754/propDistr.c)

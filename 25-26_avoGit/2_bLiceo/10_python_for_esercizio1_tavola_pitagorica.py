@@ -1,7 +1,7 @@
- Intestazione
+
 print("x", end="\t")
 for i in range(1, 13):
-    print(i, end="\t")
+    print(str(i) + "\t")
 print()
 
 # Linea separatrice
