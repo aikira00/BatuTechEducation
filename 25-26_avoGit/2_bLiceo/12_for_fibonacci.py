@@ -1,5 +1,5 @@
 # Soluzione base
-n = 10
+n = int(input("inserisci nmero"))
 
 a, b = 0, 1
 for i in range(n):

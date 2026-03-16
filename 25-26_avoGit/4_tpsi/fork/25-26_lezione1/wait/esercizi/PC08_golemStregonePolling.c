@@ -37,17 +37,17 @@ int main() {
             perror("Errore fork");
             exit(EXIT_FAILURE);
         }
-        else if (pid == 0) {
+        if (pid == 0) {
             // Codice del golem (figlio)
             int tempo = (i + 1) * 5;  // 5, 10, 15 secondi...
             printf("  Golem %d (PID: %d) → %s\n", i + 1, getpid(), missioni[i]);
             sleep(tempo);  // simula la missione
             exit(0);       // missione completata con successo
         }
-        else {
-            // Codice dello stregone (padre)
-            golem_pid[i] = pid;  // salva il PID del golem
-        }
+
+        // Codice dello stregone (padre)
+        golem_pid[i] = pid;  // salva il PID del golem
+
     }
 
     printf("\n");
