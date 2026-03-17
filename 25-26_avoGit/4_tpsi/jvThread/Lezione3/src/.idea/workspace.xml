@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="37efe0b4-7ea1-4b70-9046-05616f92a988" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/forkJoin14.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/forkJoin6c_TODO_sharedFile.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/forkJoin6c_v2.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../C/misc/IEEE754.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/esercizi/indovinaNumeri/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/esercizi/indovinaNumeri/start.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/esercizi/indovinaParola/versioneSemplice/indovinaParola.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/esercizi/indovinaParola/versioneSemplice/script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/esercizi/morraCinese/readMe.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/23-24_3D_tamburretto/01_tris/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/23-24_3D_tamburretto/02_tris/blank.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/23-24_3D_tamburretto/02_tris/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/23-24_3D_tamburretto/02_tris/index_better.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/23-24_3D_tamburretto/02_tris/o.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/23-24_3D_tamburretto/02_tris/x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/tmp_sofia/cronometro.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/tmp_sofia/opAritmetiche.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../JS/lessons/tmp_sofia/sofia.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es1DoSomethingRunnable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es1DoSomethingThread.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es1SimpleThread.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es2ProvaSevenThreads.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es2ProvaSevenThreadsRunnable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es2SevenRunnable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es2SevenThread.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es3DadoThread.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es3Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es4Bell.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es4Bellb.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es4Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es4Mainb.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Es5SquareNumbers.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Lez1ThreadInterfaceExample.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione1/src/Lez1ThreadSleepExample.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/Es1MessageThread.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/Es2CorridoreMain.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/Es2CorridoreThread.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/Es3BellsJoin.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/L0200Interrupt.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/L0200InterruptWhile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/L0200InterruptWhileSleep.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/L0200_Interrupt_quiz.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/L0200_Interrupt_quiz2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/L0201DoSomethingRunnable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/L0201DoSomethingThread.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/L0201SimpleThreadMainJoin.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/L0202Stop.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/verifiche/NightOwlRace.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/verifiche/NightOwlRaceEasier.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/verifiche/nonDeterminismo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Lezione2/src/verifiche/nonDeterminismoDue.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Lez01Counter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Lez01DecrementThread.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Lez01IncrementThread.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Lez01MainUnsafeComplicated.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Lez01MainUnsafeSharedCounter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Lez01MainUnsafeSharedSneakyCounter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Lez01SneakyCounter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C++/Xcode_prj/checking_ram" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C++/Xcode_prj/checking_ram" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C/fork/lezione1/esercizio11" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/esercizio11" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C/fork/lezione1/forkJoin10" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/forkJoin10" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C/fork/lezione1/forkJoin10v2" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/forkJoin10v2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C/fork/lezione1/forkJoin6" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/forkJoin6" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C/fork/lezione1/forkJoin9" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/forkJoin9" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/esercizio11.c" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/esercizio11.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/esercizio11v2.c" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/esercizio11v2.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/esercizio12.c" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/esercizio12.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/forkJoin10.c" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/forkJoin10.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/forkJoin10v2.c" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/forkJoin10v2.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/forkJoin6.c" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/forkJoin6.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/forkJoin9.c" beforeDir="false" afterPath="$PROJECT_DIR$/../../../C/fork/lezione1/lezione2/forkJoin9.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../JS/.idea/JS.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../JS/.idea/JS.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../JS/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../JS/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/build.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/build/classes/.netbeans_automatic_build" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/build/classes/.netbeans_update_resources" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/build/classes/buffercircolare/BufferCircolare.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/build/classes/buffercircolare/Consumatore.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/build/classes/buffercircolare/IObserver.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/build/classes/buffercircolare/Observer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/build/classes/buffercircolare/Prodotto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/build/classes/buffercircolare/Produttore.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/manifest.mf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/nbproject/build-impl.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/nbproject/genfiles.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/nbproject/private/private.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/nbproject/private/private.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/nbproject/project.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/nbproject/project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/src/buffercircolare/BufferCircolare.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/src/buffercircolare/Consumatore.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/src/buffercircolare/IObserver.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/src/buffercircolare/Observer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/src/buffercircolare/Prodotto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/BufferCircolare/src/buffercircolare/Produttore.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Deadlock.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio 4 - Thread.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio Thread 3.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/build.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/build/classes/.netbeans_automatic_build" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/build/classes/.netbeans_update_resources" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/build/classes/esercizio4thread/Consumatrice.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/build/classes/esercizio4thread/Esercizio4Thread.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/build/classes/esercizio4thread/IObserver.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/build/classes/esercizio4thread/Observer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/build/classes/esercizio4thread/Prodotto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/build/classes/esercizio4thread/Produttrice.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/manifest.mf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/nbproject/build-impl.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/nbproject/genfiles.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/nbproject/private/private.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/nbproject/private/private.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/nbproject/project.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/nbproject/project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/src/esercizio4thread/Consumatrice.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/src/esercizio4thread/Esercizio4Thread.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/src/esercizio4thread/IObserver.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/src/esercizio4thread/Observer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/src/esercizio4thread/Prodotto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio4Thread/src/esercizio4thread/Produttrice.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Esercizio5thread.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/EsercizoParcheggioD.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/build.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/build/classes/.netbeans_automatic_build" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/build/classes/.netbeans_update_resources" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/build/classes/miosemaforo/Condivisa.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/build/classes/miosemaforo/Consumatore.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/build/classes/miosemaforo/MioSemaforo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/build/classes/miosemaforo/Produttore.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/build/classes/miosemaforo/Semaforo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/manifest.mf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/nbproject/build-impl.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/nbproject/genfiles.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/nbproject/private/private.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/nbproject/private/private.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/nbproject/project.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/nbproject/project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/src/miosemaforo/Condivisa.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/src/miosemaforo/Consumatore.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/src/miosemaforo/MioSemaforo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/src/miosemaforo/Produttore.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/MioSemaforo/src/miosemaforo/Semaforo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/build.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/build/classes/.netbeans_automatic_build" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/build/classes/.netbeans_update_resources" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/build/classes/pcs/Consumatore.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/build/classes/pcs/IObserver.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/build/classes/pcs/Observer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/build/classes/pcs/PCS.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/build/classes/pcs/Prodotto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/build/classes/pcs/Produttore.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/manifest.mf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/nbproject/build-impl.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/nbproject/genfiles.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/nbproject/private/private.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/nbproject/project.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/nbproject/project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/src/pcs/Consumatore.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/src/pcs/IObserver.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/src/pcs/Observer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/src/pcs/PCS.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/src/pcs/Prodotto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/PCS/src/pcs/Produttore.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/Soluzioneesercizio6thread.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/build.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/build/classes/.netbeans_automatic_build" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/build/classes/.netbeans_update_resources" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/build/classes/unasoluzioneverifica1302/Attivita.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/build/classes/unasoluzioneverifica1302/IObserver.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/build/classes/unasoluzioneverifica1302/Observer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/build/classes/unasoluzioneverifica1302/Progetto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/build/classes/unasoluzioneverifica1302/UnaSoluzioneVerifica1302.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/manifest.mf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/nbproject/build-impl.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/nbproject/genfiles.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/nbproject/private/private.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/nbproject/private/private.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/nbproject/project.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/nbproject/project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/src/unasoluzioneverifica1302/Attivita.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/src/unasoluzioneverifica1302/IObserver.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/src/unasoluzioneverifica1302/Observer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/src/unasoluzioneverifica1302/Progetto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/UnaSoluzioneVerifica1302/src/unasoluzioneverifica1302/UnaSoluzioneVerifica1302.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/cobegincoend1.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/cobegincoend2.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/document.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/prodcons.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/thread-6.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/verifica.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/verifica_2.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/verifica_2_ritardatari.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/verifica_3_ritardatari.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bb_soluzioni/verifica_ritardatari.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadClasse/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadClasse/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadClasse/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadClasse/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadClasse/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadClasse/Lezione1_esempioThreadClasse.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadClasse/src/HelloThread.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadInterfaccia/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadInterfaccia/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadInterfaccia/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadInterfaccia/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadInterfaccia/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadInterfaccia/Lezione1_esempioThreadInterfaccia.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javaThread/Lezione1_esempioThreadInterfaccia/src/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../main/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../main/src/main/java/main/IObserver.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../main/src/main/java/main/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../main/src/main/java/main/Observer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../main/src/main/java/main/Osservato.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../main/src/main/java/main/simpleThread.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_cri.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sem/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sem/src/main/java/parcheggio_sem/Auto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sem/src/main/java/parcheggio_sem/IObserverAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sem/src/main/java/parcheggio_sem/IObserverPostiAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sem/src/main/java/parcheggio_sem/IObserverPostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sem/src/main/java/parcheggio_sem/ObserverAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sem/src/main/java/parcheggio_sem/ObserverPostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sem/src/main/java/parcheggio_sem/Parcheggio_sem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sem/src/main/java/parcheggio_sem/PostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sync/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sync/src/main/java/parcheggio_sync/Auto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sync/src/main/java/parcheggio_sync/IObserverAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sync/src/main/java/parcheggio_sync/IObserverPostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sync/src/main/java/parcheggio_sync/ObserverAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sync/src/main/java/parcheggio_sync/ObserverPostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sync/src/main/java/parcheggio_sync/Parcheggio_sync.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../parcheggio_sync/src/main/java/parcheggio_sync/PostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/src/main/java/thread_es_4/IObserver.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/src/main/java/thread_es_4/ObserverConsumatrice.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/src/main/java/thread_es_4/ObserverProduttrice.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/src/main/java/thread_es_4/Prodotto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/src/main/java/thread_es_4/StazioneConsumatrice.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/src/main/java/thread_es_4/StazioneProduttrice.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/src/main/java/thread_es_4/Thread_es_4.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/target/classes/thread_es_4/IObserver.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/target/classes/thread_es_4/ObserverConsumatrice.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/target/classes/thread_es_4/ObserverProduttrice.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/target/classes/thread_es_4/Prodotto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/target/classes/thread_es_4/StazioneConsumatrice.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/target/classes/thread_es_4/StazioneProduttrice.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/target/classes/thread_es_4/Thread_es_4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/target/maven-archiver/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../thread_es_4/target/thread_es_4-0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/src/main/java/parcheggio/Auto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/src/main/java/parcheggio/IObserverAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/src/main/java/parcheggio/IObserverPostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/src/main/java/parcheggio/ObserverAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/src/main/java/parcheggio/ObserverPostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/src/main/java/parcheggio/Parcheggio.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/src/main/java/parcheggio/PostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/target/classes/parcheggio/Auto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/target/classes/parcheggio/IObserverAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/target/classes/parcheggio/IObserverPostiAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/target/classes/parcheggio/ObserverAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/target/classes/parcheggio/ObserverPostiAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/target/classes/parcheggio/Parcheggio.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/target/classes/parcheggio/PostiAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/target/maven-archiver/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_array/target/parcheggio-0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/src/main/java/parcheggio_sem/Auto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/src/main/java/parcheggio_sem/IObserverAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/src/main/java/parcheggio_sem/IObserverPostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/src/main/java/parcheggio_sem/ObserverAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/src/main/java/parcheggio_sem/ObserverPostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/src/main/java/parcheggio_sem/Parcheggio.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/src/main/java/parcheggio_sem/PostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/target/classes/parcheggio_sem/Auto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/target/classes/parcheggio_sem/IObserverAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/target/classes/parcheggio_sem/IObserverPostiAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/target/classes/parcheggio_sem/ObserverAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/target/classes/parcheggio_sem/ObserverPostiAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/target/classes/parcheggio_sem/Parcheggio.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/target/classes/parcheggio_sem/PostiAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/target/maven-archiver/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sem/target/parcheggio-0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/src/main/java/parcheggio_sync/Auto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/src/main/java/parcheggio_sync/IObserverAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/src/main/java/parcheggio_sync/IObserverPostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/src/main/java/parcheggio_sync/ObserverAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/src/main/java/parcheggio_sync/ObserverPostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/src/main/java/parcheggio_sync/Parcheggio.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/src/main/java/parcheggio_sync/PostiAuto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/target/classes/parcheggio_sync/Auto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/target/classes/parcheggio_sync/IObserverAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/target/classes/parcheggio_sync/IObserverPostiAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/target/classes/parcheggio_sync/ObserverAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/target/classes/parcheggio_sync/ObserverPostiAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/target/classes/parcheggio_sync/Parcheggio.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/target/classes/parcheggio_sync/PostiAuto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/target/maven-archiver/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tmp/parcheggio_sync/target/parcheggio-0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../tool_scheduling/cpu-scheduling-algorithms" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../tool_scheduling/cpu-scheduling-algorithms.zip" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 8
+}]]></component>
+  <component name="ProjectId" id="2fmI9TTyvrA2YLzPVZg0O9pIXm6" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "jdk.selected.JAVA_MODULE": "19",
+    "last_opened_file_path": "/Users/cristina/GIT_AVO/Avo/java/Lezione3/src"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="37efe0b4-7ea1-4b70-9046-05616f92a988" name="Changes" comment="" />
+      <created>1714399674250</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1714399674250</updated>
+    </task>
+    <servers />
+  </component>
+</project>

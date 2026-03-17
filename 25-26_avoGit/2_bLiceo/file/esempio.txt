@@ -1,3 +1,4 @@
 ciao
 seconda riga
 terza riga del file
+Nuova riga aggiunta 

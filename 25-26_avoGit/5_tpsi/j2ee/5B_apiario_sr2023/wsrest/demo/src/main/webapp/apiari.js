@@ -7,7 +7,7 @@ window.onload = function (){
 
     //popolo dropdown list
     const dropdown = document.getElementById("provinceDropdown");
-    const url = "http://localhost:8080/demo_war/api/apiari/province"
+    const url = "http://localhost:8080/sr2023Apiari_war/api/apiari/province"
     // await necessita di async function, vado in load window con fetch then
     fetch(url)
         //dopo che fecth ottiene response allora
@@ -35,7 +35,7 @@ window.onload = function (){
 }
 
 async function getAllApiari(){
-    const url = "http://localhost:8080/demo_war/api/apiari/all"
+    const url = "http://localhost:8080/sr2023Apiari_war/api/apiari/all"
     const tbody = document.getElementById('apiariBody');
     tbody.innerText ="";
     try {
@@ -90,7 +90,7 @@ async function getApiariByProvincia(){
     const tbody = document.getElementById('apiariBody');
     tbody.innerText ="";
     if (provinciaSelezionata != ""){
-        const url = "http://localhost:8080/demo_war/api/apiari/search?provincia="+provinciaSelezionata;
+        const url = "http://localhost:8080/new_demo_war/api/apiari/search?provincia="+provinciaSelezionata;
         console.log(url);
         const response = await fetch(url);
         if (!response.ok) {

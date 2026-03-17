@@ -84,4 +84,5 @@ numbers = [3,10,15,34,23,9, 107, 2, 134, 34, 567, 65, 56, 34, 2, 3, 34, 34, 24, 
 somma = 0
 for el in numbers:
     somma += el
-print(f"la media è {somma/len(numbers)}")
+media = somma / len(numbers)
+print(f"la media è {media:.2f}")

@@ -1,0 +1,7 @@
+edu/avo/strutturacrud/JakartaRestConfiguration.class
+edu/avo/strutturacrud/jsonutility/ShowroomJson.class
+edu/avo/strutturacrud/resources/ShowroomService.class
+edu/avo/strutturacrud/jsonutility/CategoryJson.class
+edu/avo/strutturacrud/resources/CategoryService.class
+edu/avo/strutturacrud/resources/ProductService.class
+edu/avo/strutturacrud/jsonutility/ProductJson.class

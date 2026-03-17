@@ -1,0 +1,32 @@
+Creare il progetto BoLibrary
+Copiare dentro il progetto i bo dal progetto DbServer
+Registrare il progetto BoLibrary come libreria maven
+Aggiungere nel pom di DbServer la libreria BoLibrary
+Cancellare da DbServer il package bo
+Modificare gli import per adattarli al nuova configurazione
+Registrare con version 1.1.0
+Creare il progetto BoJsonLibrary
+Copiare dentro il progetto le classi di jsonutility dal progetto EsempioCrud
+Registrare il progetto BoJsonLibrary come libreria maven
+Inserire nel pom di EsempioCrud la BoJsonLibrary
+Modificare la version di DbServer nel pom di EsempioCrud
+Scaricare lo script sql di creazione e popolamento del db
+Caricare ed eseguire los cript in mysql
+Verificare che il progetto EsempioCrud funzioni
+
+
+
+
+============
+Ricordarsi di aggiungere in ogni metodo del crud come prima istruzioneClass.forName("com.mysql.cj.jdbc.Driver")
+Consegnare i seguenti progetti
+BoLibrary
+SoLibrary (search object)
+BoJsonLibrary
+DbServer
+Crud
+Script sql per la creazione del db
+CANCELLARE LA CARTELLA TARGET DAI PROGETTI
+
+MySqlServer server = new MySqlServer("jdbc:mysql://localhost:<porta>")
+List<Categoty> list = server.getCategories();

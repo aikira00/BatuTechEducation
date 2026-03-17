@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="bankAccountMaffucci">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/es5/bankAccountMaffucci.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

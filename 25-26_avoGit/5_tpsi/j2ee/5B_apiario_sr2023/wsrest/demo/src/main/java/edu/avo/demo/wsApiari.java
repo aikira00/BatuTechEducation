@@ -21,6 +21,7 @@ public class wsApiari {
         Server server = new Server(conn);
         List<Apiario> apiari = server.selectApiari();
         conn.close();
+
         return Response.ok(apiari).build();
     }
 

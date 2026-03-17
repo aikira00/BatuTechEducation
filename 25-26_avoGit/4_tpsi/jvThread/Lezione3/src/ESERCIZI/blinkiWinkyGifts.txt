@@ -1,0 +1,20 @@
+Esercizio:
+
+Titolo: Gara tra Elfiche nel Workshop di Babbo Natale
+
+Descrizione:
+
+Benvenuti al workshop magico degli elfi di Babbo Natale! In questo esercizio, vi metterete nei panni di due elfi, Blinky e Winky, che lavorano instancabilmente per preparare i regali di Natale. Il vostro compito sarà quello di programmare un simulatore del workshop, dove Blinky e Winky dovranno avvolgere e decorare i regali utilizzando le risorse condivise: la carta da regalo e i nastri colorati.
+
+Regole:
+
+1. Ogni elfo, rappresentato da un thread, avrà due compiti: avvolgere i regali con la carta da regalo e decorarli con i nastri colorati.
+2. Ci sono solo due risorse condivise nel workshop: la carta da regalo e i nastri colorati. Entrambi gli elfi dovranno accedere a entrambe le risorse per completare i propri compiti.
+3. Solo un elfo alla volta potrà accedere a una risorsa condivisa per evitare interferenze o accessi concorrenti.
+4. Utilizzate la parola chiave "synchronized" e altri meccanismi di sincronizzazione appropriati per garantire l'accesso sicuro alle risorse condivise.
+
+Obiettivo:
+
+Programmate un simulatore del workshop degli elfi di Babbo Natale in Java (o nel linguaggio di programmazione preferito). Assicuratevi che Blinky e Winky possano lavorare in modo sincronizzato, accedendo alle risorse condivise senza errori o conflitti.
+
+Buon divertimento e che vinca il miglior elfo nel preparare i regali per il grande giorno di Natale!

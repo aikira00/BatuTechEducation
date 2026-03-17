@@ -1,35 +1,41 @@
-# PROBLEMA STRINGHE IMMUTABILI
-secret_word = "pannocchia"
-user_word = ""
+import random
+secret_words=["banana", "pantofola", "pistacchio", "cilindro", "panna", "aquilone", "arcobaleno"]
 
-
-# supponiamo che utente abbia inserito n
-# devo visualizzare __nn______
-user_char = "n"
-
-# prima strategia
-# user_word è una stringa e
-# uso replace che restituisce una nuova stringa
-for char in secret_word:
-    user_word += "_"
-print(user_word)
-for char in secret_word:
-    if char == user_char:
-        user_word = user_word.replace("_", char, 1)
-print(user_word)
-
-# seconda strategia - la docente vi dice che non potete usare replace
-for i in range(len(secret_word)):
-    if secret_word[i] == user_char:
-        user_word = user_word[i-1] + user_char + user_word[i+1:] #ricostruisco la stringa... costoso!
-print(user_word)
-
-#BEST: la parola con i caratteri indovinati e non da utente la tratto come lista
+# genero parola segreta
+num = random.randint(0, len(secret_words)-1)
+secret_word = secret_words[num]
+secret_word = "banana"
+tempts = 5
+user_tempts = []
+# creo lista per tenere traccia di cosa indovina utente
+# user_word = ["_" for i in range(len(secret_word))]
 user_word = list()
-for char in secret_word:
-    user_word.append("_")
 for i in range(len(secret_word)):
-    if secret_word[i] == user_char:
-       user_word[i] = user_char
-# per trasformare la lista in stringa uso join
-print("".join(user_word))
+    user_word.append("_")
+
+print(f"Ciao, sei pronto a giocare? La parola è compsota da {len(secret_word)} lettere.")
+print(f"Hai {tempts} tentativi.")
+str_user_word = "".join(user_word)
+print(f"{str_user_word}")
+
+while tempts > 0 and str_user_word != secret_word:
+    user_char = input("Inserisci una lettera: ")
+    user_tempts.append(user_char)
+    if user_char in secret_word:
+        print(f"Bravo! Hai indovinato la lettera {user_char}.")
+        for i in range(len(secret_word)):
+            if secret_word[i] == user_char:
+                user_word[i] = user_char
+    else:
+        tempts -= 1
+        print(f"Lettera non presente nella parola.")
+        print(f"Hai {tempts} tentativi rimanenti.")
+
+    str_user_word = "".join(user_word)
+    print(f"Progresso: {str_user_word}")
+    print(f"Le lettere che hai provato sono: {user_tempts}")
+
+if str_user_word == secret_word:
+    print(f"Hai vinto! La parola era {secret_word}. Avevi ancora {tempts} tentativi.")
+else:
+    print(f"Hai perso! La parola era {secret_word}")

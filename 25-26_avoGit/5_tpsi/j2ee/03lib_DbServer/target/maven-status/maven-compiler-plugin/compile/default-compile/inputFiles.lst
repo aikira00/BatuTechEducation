@@ -1,0 +1,7 @@
+/Users/cristina/GIT_AVO/BatuTechEducation/25-26_avoGit/5_tpsi/j2ee/03lib_DbServer/src/main/java/edu/avo/esempiodbserver/MySqlServer.java
+/Users/cristina/GIT_AVO/BatuTechEducation/25-26_avoGit/5_tpsi/j2ee/03lib_DbServer/src/main/java/edu/avo/esempiodbserver/bo/Category.java
+/Users/cristina/GIT_AVO/BatuTechEducation/25-26_avoGit/5_tpsi/j2ee/03lib_DbServer/src/main/java/edu/avo/esempiodbserver/bo/Product.java
+/Users/cristina/GIT_AVO/BatuTechEducation/25-26_avoGit/5_tpsi/j2ee/03lib_DbServer/src/main/java/edu/avo/esempiodbserver/bo/Showroom.java
+/Users/cristina/GIT_AVO/BatuTechEducation/25-26_avoGit/5_tpsi/j2ee/03lib_DbServer/src/main/java/edu/avo/esempiodbserver/bo/so/CategorySearchObject.java
+/Users/cristina/GIT_AVO/BatuTechEducation/25-26_avoGit/5_tpsi/j2ee/03lib_DbServer/src/main/java/edu/avo/esempiodbserver/bo/so/ProductSearchObject.java
+/Users/cristina/GIT_AVO/BatuTechEducation/25-26_avoGit/5_tpsi/j2ee/03lib_DbServer/src/main/java/edu/avo/esempiodbserver/bo/so/ShowroomSearchObject.java

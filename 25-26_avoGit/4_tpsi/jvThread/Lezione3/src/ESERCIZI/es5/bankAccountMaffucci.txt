@@ -1,0 +1,25 @@
+OBIETTIVO - Svolgere l'es.49 presente sugli appunti del docente.
+CONSEGNA - Consegnare un documento Google con una documentazione esplicativa del progetto nel quale sia presente il proprio diagramma delle classi, una breve spIegazione delle proprie classi e il codice del progetto. Si consegni anche il file compresso del proprio progetto indicando nel documento Google quale IDE è stato usato.
+TESTO - Progettare un’applicazione che gestisca un conto corrente cointestato tra due clienti di una banca. Il conto corrente avrà un saldo iniziale a scelta, e i due correntisti potranno effettuare a piacimento sia operazioni di prelievo, sia di deposito, ma appena uno dei due correntisti manderà il saldo del conto in rosso, non potrà più effettuare alcuna operazione su di esso.
+L’applicazione deve mostrare a video il succedersi di depositi e prelievi da parte dei due correntisti con i nomi dei correntisti per ogni operazione, e deve mostrare  quando un correntista deve terminare qualsiasi operazione avendo mandato in rosso il conto. Quando entrambi i due correntisti avranno mandato in rosso il conto l’applicazione terminerà mostrando l’ammontare del saldo negativo raggiunto.
+Suggerimenti.
+
+    Per randomizzare le operazioni di prelievo e deposito si simuli il lancio di un dado, ad esempio estraendo un numero casuale; se risulta maggiore di 0.5 si farà effettuare un prelievo, diversamente si farà effettuare un deposito.
+    Rendendo casuale la sequenza di depositi e prelievi non è prevedibile quando terminerà l’applicazione. Si suggerisce quindi di inizializzare il saldo del conto ad un valore contenuto, e di effettuare delle operazioni usando degli ammontari pari a circa la metà del saldo più un valore casuale normalizzato alle cifre che si sta trattando. Ad esempio, se il saldo fosse inizializzato a 1000€, le somme da muovere possono essere calcolate come (500 + (random * 250.)).
+    Le operazioni sul conto devono essere sincronizzate in quanto il conto è una risorsa condivisa tra i due clienti.
+    Le operazioni di visualizzazione del prelievo e del deposito da parte di ogni cliente potrebbero necessitare di una sincronizzazione, dipende da come sarà svolto l’esercizio.
+
+Ridurre al minimo le sezioni critiche cercando di mantenere il più alto grado di parallelismo.
+
+Di seguito trovi un esempio di esecuzione del programma, nel documento del docente è presente un possibile diagramma delle classi privo di attributi e metodi.
+
+Saldo iniziale 1000.0€
+Thread-0: Prelevati 676€ - Saldo 324.0€
+Thread-1: Depositati 578€ - Saldo 902.0€
+Thread-0: Prelevati 605€ - Saldo 297.0€
+Thread-1: Prelevati 692€ - Saldo -395.0€
+Thread-1 ha finito i soldi
+Thread-0: Depositati 589€ - Saldo 194.0€
+Thread-0: Prelevati 617€ - Saldo -423.0€
+Thread-0 ha finito i soldi
+The amount is -423.0

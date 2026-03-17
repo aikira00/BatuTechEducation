@@ -49,7 +49,7 @@ int main() {
                 case 1:
                     //secondo figlio
                     printf("Figlio %d (PID: %d - PPID: %d), calcolo fattoriale di 6\n", i+1,  getpid(), getppid());
-                    int fatt_res = 0;
+                    int fatt_res = 1;
                     for(int j=1; j<=6; j++) {
                         fatt_res *= j;
                     }
@@ -71,15 +71,16 @@ int main() {
                     exit(2);
             }
         }
-        sleep(2); //padre dorme dopo aver creato un figlio
-
+        
     }
+
 
     //padre
     printf("Creati i figli ");
     for (int i=0; i<3; i++) {
         printf(" %d ", ret_vals_fork[i]);
     }
+    sleep(2); //padre dorme dopo aver creato tutti i figli
     printf("\n");
     //Invia il segnale SIGKILL al primo figlio usando la funzione kill()
     printf("Sono il padre con [PID: %d], invio SIGKILL a primo figlio con [PID: %d]\n", getpid(), ret_vals_fork[0]);

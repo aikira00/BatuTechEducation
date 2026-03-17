@@ -1,0 +1,58 @@
+
+num = 1
+input_list_collatz = []
+list_val_collatz_all = []
+liste_steps  = []
+
+while(num > 0):
+    num = int(input("Inserisci un numero per cui vuoi calcolare la sequenza di Collatz, negativo per terminare inserimento valori "))
+    if num > 0:
+        input_list_collatz.append(num)
+
+print(f"Hai inserito {len(input_list_collatz)} numeri per calcolare la sequenza di Collatz... procediamo")
+for i in range(0, len(input_list_collatz)):
+    steps = 0
+    n_collatz = input_list_collatz[i]
+    list_val_collatz = [n_collatz]
+
+    # calcolo Collatz
+    while n_collatz != 1:
+        if n_collatz % 2 == 0:
+            n_collatz = n_collatz // 2
+        else:
+            n_collatz= 3 * n_collatz + 1
+        list_val_collatz.append(n_collatz)
+        steps += 1
+    list_val_collatz_all.append(list_val_collatz)
+    liste_steps.append(steps)
+    print(f"Il numero {input_list_collatz[i]} ha richiesto {steps} passi per calcolare la sequenza di Collatz")
+    print(f"La sequenza di Collatz per il numero {input_list_collatz[i]} è: ", end = " ")
+    for el in list_val_collatz:
+        print(el, end = " ")
+    print("")
+print("Fine calcolo")
+
+import matplotlib.pyplot as plt
+
+# Chiedi all'utente quale sequenza visualizzare
+print(f"\nSono state calcolate {len(list_val_collatz_all)} sequenze.")
+
+numero = int(input("Quale numero scegli per visualizzare la sequenza con un grafico?"))
+
+if numero in input_list_collatz:
+    indice = input_list_collatz.index(numero)
+
+    # Recupera la sequenza e i passi selezionati
+    sequenza_scelta = list_val_collatz_all[indice]
+    # devo trasofrmarlo in una lista
+    list_passi = list(range(len(sequenza_scelta)))
+
+    # Crea il grafico
+    plt.plot(list_passi, sequenza_scelta, marker='o', color='blue', linewidth=2)
+    plt.title(f"Sequenza di Collatz per n={numero}")
+    plt.xlabel("Passo")
+    plt.ylabel("Valore")
+    plt.grid(True, alpha=0.3)
+    plt.show()
+else:
+    print("Numero non valido!")

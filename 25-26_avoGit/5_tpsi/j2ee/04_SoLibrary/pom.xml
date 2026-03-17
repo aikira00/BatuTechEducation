@@ -6,7 +6,7 @@
 
     <groupId>edu.avo</groupId>
     <artifactId>04_SoLibrary</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <properties>
         <maven.compiler.source>23</maven.compiler.source>

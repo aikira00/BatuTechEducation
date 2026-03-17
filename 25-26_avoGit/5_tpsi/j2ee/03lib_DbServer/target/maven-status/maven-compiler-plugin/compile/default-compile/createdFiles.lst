@@ -1,0 +1,7 @@
+edu/avo/esempiodbserver/bo/Category.class
+edu/avo/esempiodbserver/MySqlServer.class
+edu/avo/esempiodbserver/bo/Showroom.class
+edu/avo/esempiodbserver/bo/Product.class
+edu/avo/esempiodbserver/bo/so/ShowroomSearchObject.class
+edu/avo/esempiodbserver/bo/so/CategorySearchObject.class
+edu/avo/esempiodbserver/bo/so/ProductSearchObject.class

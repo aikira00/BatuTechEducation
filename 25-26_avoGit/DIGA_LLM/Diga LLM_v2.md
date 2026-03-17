@@ -288,9 +288,16 @@ trap "rmdir $LOCKFILE" EXIT
 |**Pro**|Semplice da implementare; lo studente ha feedback immediato nel notebook (vede l'output del training in tempo reale); non serve un container GPU separato|
 |**Contro**|Lo script gira nel contesto dell'host o di un container con accesso GPU — richiede attenzione ai permessi; il notebook dello studente resta "bloccato" durante il training; la coda basata su lock file è rudimentale (no priorità, no fairness)|
 
-#### Requisito
+#### Problema critico: chi vede la GPU?
 
-Il container studente **oppure** l'host deve poter accedere alla GPU per questa soluzione. In alternativa, `run_training.py` può essere eseguito sull'host tramite un meccanismo di invocazione remota (es. il container scrive il config.json in `/srv/jobs/` e un **cron job ** sull'host lo raccoglie — in questo caso la soluzione converge verso la Soluzione B).
+Questa soluzione **funziona solo se** `run_training.py` gira in un contesto che ha accesso alla GPU. Ma il container LXC dello studente è configurato **senza GPU** (sezione 4.2): al suo interno `torch.cuda.is_available()` restituisce `False` e il training non può partire.
+
+Le alternative sono due:
+
+1. **Dare il passthrough GPU al container studente**: inaccettabile in un contesto scolastico — lo studente potrebbe lanciare training selvaggi, monopolizzare la VRAM, bypassare tutti i limiti.
+2. **Riadattare lo script**: siccome `run_training.py` non può vedere la GPU, l'unica cosa che può fare è **validare il `config.json` e copiarlo in `/srv/jobs/`**, fungendo da wrapper/client della coda. Ma a quel punto serve comunque un processo separato con GPU (il GPU Worker) che raccoglie i job dall'altra parte — cioè esattamente la Soluzione B.
+
+**Conclusione**: nel momento in cui il container studente non ha GPU, la Soluzione A converge inevitabilmente verso la Soluzione B. Lo script `run_training.py` può restare come interfaccia comoda per lo studente (valida parametri, dà feedback, copia il JSON nella coda), ma l'architettura sottostante è quella del GPU Worker.
 
 ---
 
@@ -496,21 +503,20 @@ WantedBy=multi-user.target
 |**Contro**|Più complesso da configurare; lo studente non vede l'output in tempo reale (deve controllare periodicamente i risultati); serve un meccanismo di notifica (opzionale) per avvisare che il training è completato|
 
 ---
+### 5.3 Confronto e convergenza soluzione A e B
 
-### 5.3 Confronto sinottico
+Come evidenziato nella sezione 5.1, la Soluzione A **non è praticabile come architettura autonoma** se il container studente non ha accesso alla GPU (e non deve averlo). Senza GPU, `run_training.py` non può eseguire training — può solo validare i parametri e depositare il job nella coda, comportandosi da client della Soluzione B.
 
-|Aspetto|Soluzione A (Script + Shell)|Soluzione B (GPU Worker)|
+L'architettura risultante è quindi unica: **GPU Worker con coda job (Soluzione B)**. La scelta residua è solo se dare allo studente uno script wrapper (`run_training.py`) che valida e sottomette il job, oppure lasciarlo fare direttamente.
+
+| Aspetto | Sottomissione diretta (JSON in `/srv/jobs/`) | Tramite script wrapper (`run_training.py`) |
 |---|---|---|
-|**Complessità setup**|Bassa|Media|
-|**Isolamento GPU**|Parziale (serve accesso)|Completo|
-|**Feedback studente**|Tempo reale nel notebook|Asincrono (controlla risultati)|
-|**Coda**|Lock file (rudimentale)|FIFO su filesystem (robusta)|
-|**Notebook durante training**|Bloccato|Libero|
-|**Logging**|Nello script|Centralizzato nel worker|
-|**Scalabilità**|Limitata|Buona (estendibile a più GPU)|
-|**Rischio sicurezza**|Medio (accesso GPU esposto)|Basso|
+| **Semplicità per lo studente** | Deve scrivere e copiare il JSON a mano | Comando unico: `!python /scripts/run_training.py config.json` |
+| **Validazione** | Nessuna (errori scoperti solo dal worker) | Immediata: lo script verifica parametri e path prima di accodare |
+| **Feedback** | Nessuno fino al completamento | Lo script conferma sottomissione o segnala errori subito |
+| **Complessità** | Minimale | Uno script in più da mantenere in `/srv/scripts/` |
 
-**Raccomandazione**: la **Soluzione B** è preferibile in un contesto scolastico multi-utente perché garantisce isolamento completo, coda ordinata e logging centralizzato. La Soluzione A può essere utile in fase di prototipazione iniziale per la sua semplicità.
+**Raccomandazione**: usare il **GPU Worker (Soluzione B)** come architettura di base, con uno **script wrapper** nel container studente che valida i parametri e deposita il job nella coda. Lo studente esegue un singolo comando e riceve feedback immediato sulla validità della richiesta, senza mai avere accesso alla GPU.
 
 ---
 
