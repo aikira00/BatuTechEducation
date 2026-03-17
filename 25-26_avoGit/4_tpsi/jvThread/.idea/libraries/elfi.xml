@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="elfi">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Lezione3/src/studs/Elfi_Definitive/elfi.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/bb_soluzioni/BufferCircolare/BufferCircolare.iml" filepath="$PROJECT_DIR$/bb_soluzioni/BufferCircolare/BufferCircolare.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bb_soluzioni/Esercizio4Thread/Esercizio4Thread.iml" filepath="$PROJECT_DIR$/bb_soluzioni/Esercizio4Thread/Esercizio4Thread.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bb_soluzioni/Esercizio5thread/Esercizio5thread.iml" filepath="$PROJECT_DIR$/bb_soluzioni/Esercizio5thread/Esercizio5thread.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JavaProcess/Figlio/Figlio.iml" filepath="$PROJECT_DIR$/JavaProcess/Figlio/Figlio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Lezione1/Lezione1.iml" filepath="$PROJECT_DIR$/Lezione1/Lezione1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Lezione2/Lezione2.iml" filepath="$PROJECT_DIR$/Lezione2/Lezione2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Lezione3/Lezione3.iml" filepath="$PROJECT_DIR$/Lezione3/Lezione3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bb_soluzioni/MioSemaforo/MioSemaforo.iml" filepath="$PROJECT_DIR$/bb_soluzioni/MioSemaforo/MioSemaforo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bb_soluzioni/PCS/PCS.iml" filepath="$PROJECT_DIR$/bb_soluzioni/PCS/PCS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JavaProcess/Padre/Padre.iml" filepath="$PROJECT_DIR$/JavaProcess/Padre/Padre.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bb_soluzioni/UnaSoluzioneVerifica1302/UnaSoluzioneVerifica1302.iml" filepath="$PROJECT_DIR$/bb_soluzioni/UnaSoluzioneVerifica1302/UnaSoluzioneVerifica1302.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jvThread.iml" filepath="$PROJECT_DIR$/jvThread.iml" />
+    </modules>
+  </component>
+</project>

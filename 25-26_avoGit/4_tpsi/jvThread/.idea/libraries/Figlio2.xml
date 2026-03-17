@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Figlio2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/JavaProcess/Figlio/dist/Figlio.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

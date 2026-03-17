@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="parcheggio_cri">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/parcheggio_cri.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
