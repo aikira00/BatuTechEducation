@@ -37,6 +37,7 @@ import matplotlib.pyplot as plt
 
 # Chiedi all'utente quale sequenza visualizzare
 print(f"\nSono state calcolate {len(list_val_collatz_all)} sequenze.")
+colori = ['red', 'blue', 'green', 'orange', 'purple', 'cyan']
 plt.figure(figsize=(10, 6)) # Imposta una dimensione leggibile
 for i in range(len(list_val_collatz_all)):
 
@@ -47,7 +48,12 @@ for i in range(len(list_val_collatz_all)):
     numero_iniziale = input_list_collatz[i] # Il numero iniziale corrispondente
 
     # Crea il grafico
-    plt.plot(list_passi, sequenza_scelta, marker='o', linewidth=2, label=f'Inizio: {numero_iniziale}')
+    # possiamo aggiungre c="red" si puzo prevedere una lista ma bisogna gestire
+    # di avere un colore per ogni sequenza. qui semplificato e si circola su una lista
+    # fissa
+    # altrimenti si può generare il colore esadecimale #FFFFFF RGB generando un numero per
+    # ogni sequenza  colore = f'#{random.randint(0, 255):02X}{random.randint(0, 255):02X}{random.randint(0, 255):02X}'
+    plt.plot(list_passi, sequenza_scelta, marker='o', color=colori[i % len(colori)],  linewidth=2, label=f'Inizio: {numero_iniziale}')
 
 # Personalizzazione del grafico
 plt.title("Confronto Sequenze di Collatz")

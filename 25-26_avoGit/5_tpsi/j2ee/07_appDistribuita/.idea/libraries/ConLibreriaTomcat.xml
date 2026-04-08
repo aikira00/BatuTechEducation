@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ConLibreriaTomcat">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/sol_Bellucci/ConLibreriaTomcat.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

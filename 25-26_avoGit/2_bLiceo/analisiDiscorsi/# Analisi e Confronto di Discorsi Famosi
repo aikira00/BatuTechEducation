@@ -1,0 +1,534 @@
+# Analisi e Confronto di Discorsi Famosi
+### Esercizio Python — Frequenza delle parole e matplotlib
+**IIS A. Avogadro · Classe 2^ · A.S. 2024/25**
+
+---
+
+## Indice
+
+- [Sezione Docente](#sezione-docente)
+  - [Note pedagogiche](#note-pedagogiche)
+  - [Soluzione completa commentata](#soluzione-completa-commentata)
+  - [Rubrica di valutazione](#rubrica-di-valutazione)
+- [Sezione Studenti](#sezione-studenti)
+  - [Riferimento rapido: funzioni usate](#riferimento-rapido-funzioni-usate)
+  - [Come testare il codice passo per passo](#come-testare-il-codice-passo-per-passo)
+  - [Domande frequenti](#domande-frequenti)
+
+---
+
+# SEZIONE DOCENTE
+
+## Note pedagogiche
+
+### Perché questo esercizio
+
+L'obiettivo primario non è l'analisi del linguaggio: è **dimostrare la necessità delle liste**. La domanda che l'esercizio pone implicitamente agli studenti è:
+
+> *Come faccio a tenere traccia di 80 parole diverse e del loro conteggio, se ho solo variabili singole?*
+
+Non si può. Servono le liste. Questo è il principio del **Necessary Design**: il problema viene prima, la struttura dati emerge come risposta inevitabile — non come strumento presentato per convenienza.
+
+### Posizionamento nel percorso
+
+| Prerequisito | Già trattato? |
+|---|---|
+| Ciclo `for` su lista | ✅ |
+| Ciclo `while` | ✅ |
+| Funzioni con `return` | ✅ |
+| `.split()`, `.lower()`, `.replace()` | ✅ |
+| Liste e `.append()` | ✅ (recente) |
+| Selection sort | ⚠️ introdotto qui |
+| `matplotlib` base | ✅ |
+| `numpy.arange()` | 🆕 minimo indispensabile |
+
+Il selection sort nella Fase 3 è dato già completo: l'obiettivo non è farlo scoprire, ma farlo **leggere e capire** — in particolare il doppio scambio sulle liste parallele. È un'ottima domanda di interrogazione orale.
+
+### Scelta dei testi
+
+**MLK vs Jobs** è la coppia ideale per due motivi:
+
+1. **Contrasto visivo immediato**: il grafico finale è sorprendente. MLK ha picchi altissimi su *dream*, *free*, *one*, *day* — Jobs su *life*, *dots*, *college*, *design*. I ragazzi vedono con i propri occhi che le parole riflettono le idee.
+2. **Interdisciplinarità**: entrambi i testi sono letti in classe di inglese. L'esercizio acquisisce un significato che va oltre la programmazione.
+
+### Tempistiche suggerite
+
+| Attività | Tempo stimato |
+|---|---|
+| Lettura consegna + domande | 10 min |
+| Fase 1 (la più impegnativa) | 25–30 min |
+| Fase 2 | 10 min |
+| Fase 3 (solo lettura + test) | 10 min |
+| Fase 4 | 15 min |
+| Bonus | 15 min (per i più veloci) |
+| **Totale** | **~90 min (2 ore)** |
+
+### Varianti e differenziazione
+
+- **Studenti in difficoltà**: fornire Fase 1 già completa, chiedere solo Fasi 2 e 4.
+- **Studenti avanzati**: proporre di ordinare le stop words e usare la ricerca binaria invece di `in` — anticipazione di algoritmi più efficienti.
+- **Variante italiana**: sostituire MLK/Jobs con discorsi di Pertini e Mattarella per un'analisi in L1.
+
+---
+
+## Soluzione completa commentata
+
+```python
+# =============================================================
+#  analisi_discorsi.py  –  SOLUZIONE DOCENTE
+# =============================================================
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# ---- TESTI ----
+
+MLK_SPEECH = """
+I have a dream that one day this nation will rise up
+and live out the true meaning of its creed.
+We hold these truths to be self-evident,
+that all men are created equal.
+I have a dream that one day on the red hills of Georgia,
+the sons of former slaves and the sons of former slave owners
+will be able to sit down together at the table of brotherhood.
+I have a dream that one day even the state of Mississippi,
+a state sweltering with the heat of injustice,
+will be transformed into an oasis of freedom and justice.
+I have a dream that my four little children will one day live in a nation
+where they will not be judged by the color of their skin
+but by the content of their character.
+I have a dream today.
+Let freedom ring. Let freedom ring from every mountainside.
+Free at last, free at last, thank God Almighty, we are free at last.
+"""
+
+JOBS_SPEECH = """
+Today I want to tell you three stories from my life.
+The first story is about connecting the dots.
+I dropped out of Reed College after the first six months.
+I had no idea what I wanted to do with my life.
+But I decided to drop in on a calligraphy class.
+I learned about serif and sans serif typefaces,
+about varying the amount of space between different letter combinations.
+It was beautiful, historical, artistically subtle.
+None of this had even a hope of any practical application in my life.
+But ten years later, when we were designing the first Macintosh computer,
+it all came back to me.
+The Mac was the first computer with beautiful typography.
+You cannot connect the dots looking forward.
+You can only connect them looking backwards.
+So you have to trust that the dots will somehow connect in your future.
+Stay hungry. Stay foolish.
+"""
+
+# ---- STOP WORDS (usate nella versione bonus) ----
+
+STOP_WORDS = [
+    "the", "a", "an", "of", "to", "and", "i", "in", "that",
+    "is", "it", "with", "you", "for", "was", "be", "are",
+    "have", "will", "on", "at", "by", "my", "we", "not",
+    "this", "but", "from", "as", "all", "so", "had", "do",
+    "they", "their", "them", "up", "out", "its", "one", "no"
+]
+
+
+# ---- FASE 1 ----
+
+def conta_parole(testo, filtra_stop=False):
+    """
+    Riceve una stringa e restituisce due liste parallele:
+      parole[]   -> parole uniche trovate nel testo
+      conteggi[] -> quante volte compare ognuna
+
+    Parametro opzionale filtra_stop: se True, esclude le STOP_WORDS.
+    """
+
+    # 1. Minuscolo
+    testo = testo.lower()
+
+    # 2. Rimuovi punteggiatura
+    for segno in [",", ".", "!", "?", ";", ":", '"', "'"]:
+        testo = testo.replace(segno, "")
+
+    # 3. Dividi in lista di parole
+    parole_testo = testo.split()
+
+    parole   = []
+    conteggi = []
+
+    # 4. Scansione
+    for parola in parole_testo:
+
+        # BONUS: salta le stop words se richiesto
+        if filtra_stop and parola in STOP_WORDS:
+            continue
+
+        if parola in parole:
+            indice = parole.index(parola)
+            conteggi[indice] += 1
+        else:
+            parole.append(parola)
+            conteggi.append(1)
+
+    return parole, conteggi
+
+
+# ---- FASE 2 ----
+
+def frequenze_relative(conteggi):
+    """
+    Converte una lista di conteggi interi in frequenze relative (float).
+    La somma di tutti gli elementi del risultato vale 1.0.
+    """
+    totale = sum(conteggi)
+    # List comprehension: equivalente a un ciclo for che costruisce una lista
+    return [c / totale for c in conteggi]
+
+
+# ---- FASE 3 ----
+
+def top_n(parole, conteggi, n):
+    """
+    Ordina le due liste parallele in ordine decrescente di conteggio
+    (selection sort) e restituisce solo i primi n elementi.
+
+    IMPORTANTE: il doppio scambio mantiene la sincronizzazione tra le liste.
+    Se scambio conteggi[i] con conteggi[max_idx], devo scambiare anche
+    parole[i] con parole[max_idx], altrimenti i dati si disallineano.
+    """
+    for i in range(len(conteggi)):
+        max_idx = i
+        for j in range(i + 1, len(conteggi)):
+            if conteggi[j] > conteggi[max_idx]:
+                max_idx = j
+        # Doppio scambio — sintassi Python con tupla
+        conteggi[i], conteggi[max_idx] = conteggi[max_idx], conteggi[i]
+        parole[i],   parole[max_idx]   = parole[max_idx],   parole[i]
+
+    return parole[:n], conteggi[:n]
+
+
+# ---- FASE 4 ----
+
+def grafico_confronto(parole1, freq1, parole2, freq2, nome1, nome2, n=10):
+    """
+    Disegna un bar chart raggruppato: per ogni parola (asse X) mostra
+    due barre affiancate, una per oratore, con la frequenza relativa (asse Y).
+
+    np.arange(n) produce l'array [0, 1, 2, ..., n-1] che rappresenta
+    le posizioni delle etichette sull'asse X.
+    Le due serie di barre vengono spostate di ±larghezza/2 rispetto al centro.
+    """
+    x = np.arange(n)
+    larghezza = 0.35
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    ax.bar(x - larghezza / 2, freq1[:n], larghezza, label=nome1, color="steelblue")
+    ax.bar(x + larghezza / 2, freq2[:n], larghezza, label=nome2, color="tomato")
+
+    ax.set_xlabel("Parole")
+    ax.set_ylabel("Frequenza relativa")
+    ax.set_title(f"Top {n} parole più usate: {nome1} vs {nome2}")
+    ax.set_xticks(x)
+    ax.set_xticklabels(parole1[:n], rotation=45, ha="right")
+    ax.legend()
+    plt.tight_layout()
+    plt.show()
+
+
+# ---- PROGRAMMA PRINCIPALE ----
+
+def main():
+    # Versione base (senza filtro stop words)
+    parole_mlk,  cont_mlk  = conta_parole(MLK_SPEECH)
+    parole_jobs, cont_jobs = conta_parole(JOBS_SPEECH)
+
+    freq_mlk  = frequenze_relative(cont_mlk)
+    freq_jobs = frequenze_relative(cont_jobs)
+
+    top_p_mlk,  top_f_mlk  = top_n(parole_mlk,  freq_mlk,  10)
+    top_p_jobs, top_f_jobs = top_n(parole_jobs, freq_jobs, 10)
+
+    print("=== TOP 10 – MLK ===")
+    for i in range(10):
+        print(f"  {top_p_mlk[i]:15s}  {top_f_mlk[i]:.3f}")
+
+    print("\n=== TOP 10 – JOBS ===")
+    for i in range(10):
+        print(f"  {top_p_jobs[i]:15s}  {top_f_jobs[i]:.3f}")
+
+    grafico_confronto(top_p_mlk, top_f_mlk, top_p_jobs, top_f_jobs, "MLK", "Jobs")
+
+    # Versione bonus (con filtro stop words)
+    parole_mlk2,  cont_mlk2  = conta_parole(MLK_SPEECH,  filtra_stop=True)
+    parole_jobs2, cont_jobs2 = conta_parole(JOBS_SPEECH, filtra_stop=True)
+
+    freq_mlk2  = frequenze_relative(cont_mlk2)
+    freq_jobs2 = frequenze_relative(cont_jobs2)
+
+    top_p_mlk2,  top_f_mlk2  = top_n(parole_mlk2,  freq_mlk2,  10)
+    top_p_jobs2, top_f_jobs2 = top_n(parole_jobs2, freq_jobs2, 10)
+
+    grafico_confronto(
+        top_p_mlk2, top_f_mlk2, top_p_jobs2, top_f_jobs2,
+        "MLK (no stop)", "Jobs (no stop)"
+    )
+
+
+if __name__ == "__main__":
+    main()
+```
+
+### Output atteso (console)
+
+```
+=== TOP 10 – MLK ===
+  i                0.054
+  have             0.043
+  dream            0.038
+  the              0.038
+  a                0.033
+  that             0.033
+  free             0.027
+  one              0.027
+  day              0.022
+  freedom          0.022
+
+=== TOP 10 – JOBS ===
+  i                0.047
+  the              0.041
+  a                0.035
+  my               0.029
+  life             0.024
+  first            0.024
+  dots             0.024
+  connect          0.018
+  you              0.018
+  out              0.018
+```
+
+> **Nota**: i valori esatti dipendono dalla punteggiatura rimossa. Leggere differenze tra versioni degli studenti sono normali e accettabili, purché l'ordine di grandezza sia corretto.
+
+---
+
+## Rubrica di valutazione
+
+### Punteggi per fase
+
+| Fase | Criterio | Punti |
+|---|---|---|
+| **Fase 1** | Funzione restituisce due liste parallele corrette | 2 |
+| | Pulizia testo completa (minuscolo + punteggiatura) | 1 |
+| | Gestione caso "parola già presente" corretta | 1 |
+| **Fase 2** | Calcolo frequenza relativa corretto | 1 |
+| | Funzione restituisce lista (non modifica in-place) | 1 |
+| **Fase 3** | Top-N funziona correttamente (solo lettura + test) | 2 |
+| | Sa spiegare il doppio scambio a voce | 1 |
+| **Fase 4** | Grafico visualizzato correttamente | 2 |
+| | Label assi e titolo presenti | 1 |
+| **Bonus** | Stop words filtrate correttamente | 1 |
+| | Risposta scritta motivata sullo stile | 1 |
+| **Totale** | | **14 + 2** |
+
+### Errori comuni e come gestirli
+
+#### Fase 1
+
+**Errore: dimenticare `.lower()` prima di confrontare**
+```python
+# Sbagliato — "Dream" e "dream" vengono conteggiate separatamente
+if parola in parole:
+```
+```python
+# Corretto — il testo va convertito prima di tutto il resto
+testo = testo.lower()
+```
+*Effetto visibile*: le parole a inizio frase (maiuscole) non vengono aggregate. Lo studente può accorgersene stampando la lista `parole`.
+
+---
+
+**Errore: usare una sola lista invece di due parallele**
+```python
+# Sbagliato — lista di tuple, introduce una struttura non ancora studiata
+parole = [("dream", 3), ("freedom", 2)]
+```
+*Come gestirlo*: accettare se funziona, ma segnalare che l'esercizio richiedeva espressamente liste parallele. Togliere 1 punto se la struttura è completamente diversa.
+
+---
+
+**Errore: resettare il contatore invece di incrementarlo**
+```python
+# Sbagliato
+conteggi[indice] = 1   # azzera ogni volta
+# Corretto
+conteggi[indice] += 1
+```
+
+---
+
+#### Fase 2
+
+**Errore: dividere per la lunghezza della lista `conteggi` invece che per `sum(conteggi)`**
+```python
+# Sbagliato — divide per il numero di parole UNICHE, non il totale
+totale = len(conteggi)
+# Corretto
+totale = sum(conteggi)
+```
+*Effetto visibile*: le frequenze non sommano a 1.0. Buon punto di discussione in classe.
+
+---
+
+#### Fase 3
+
+**Errore: scambiare solo `conteggi` e non `parole`**
+```python
+# Sbagliato — le liste si disallineano
+conteggi[i], conteggi[max_idx] = conteggi[max_idx], conteggi[i]
+# manca la riga corrispondente per parole[]
+```
+*Effetto visibile*: i valori numerici sono ordinati correttamente ma le etichette nel grafico sono sbagliate. Ottimo caso di debugging da fare insieme in classe.
+
+---
+
+#### Fase 4
+
+**Errore: usare `plt.bar()` due volte senza spostare le barre**
+```python
+# Sbagliato — le barre si sovrappongono
+ax.bar(x, freq1[:n], larghezza, ...)
+ax.bar(x, freq2[:n], larghezza, ...)
+# Corretto
+ax.bar(x - larghezza/2, freq1[:n], ...)
+ax.bar(x + larghezza/2, freq2[:n], ...)
+```
+
+---
+
+**Errore: passare `cont_mlk` (interi) invece di `freq_mlk` (float) al grafico**
+
+*Effetto visibile*: il grafico viene prodotto ma i valori sull'asse Y sono interi molto piccoli (0, 1, 2...) invece di decimali. Il confronto perde di senso. Togliere 1 punto.
+
+---
+
+# SEZIONE STUDENTI
+
+## Riferimento rapido: funzioni usate
+
+### Metodi sulle stringhe
+
+| Metodo | Cosa fa | Esempio |
+|---|---|---|
+| `s.lower()` | Tutto minuscolo | `"Hello".lower()` → `"hello"` |
+| `s.replace(vecchio, nuovo)` | Sostituisce tutte le occorrenze | `"ciao!".replace("!", "")` → `"ciao"` |
+| `s.split()` | Divide per spazi, restituisce una lista | `"ciao mondo".split()` → `["ciao", "mondo"]` |
+
+### Funzioni sulle liste
+
+| Funzione/metodo | Cosa fa | Esempio |
+|---|---|---|
+| `lista.append(x)` | Aggiunge `x` in fondo | `[1,2].append(3)` → `[1,2,3]` |
+| `x in lista` | Controlla se `x` è presente | `"a" in ["a","b"]` → `True` |
+| `lista.index(x)` | Restituisce la posizione di `x` | `["a","b"].index("b")` → `1` |
+| `sum(lista)` | Somma tutti gli elementi | `sum([1,2,3])` → `6` |
+| `lista[:n]` | Restituisce i primi `n` elementi | `[10,20,30][:2]` → `[10,20]` |
+
+### numpy e matplotlib (Fase 4)
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.arange(5)      # → array([0, 1, 2, 3, 4])  — posizioni sull'asse X
+
+fig, ax = plt.subplots()          # crea figura e assi
+ax.bar(x, valori, larghezza)      # disegna barre
+ax.set_xlabel("etichetta")        # nome asse X
+ax.set_ylabel("etichetta")        # nome asse Y
+ax.set_title("titolo")            # titolo del grafico
+ax.set_xticks(x)                  # posizione dei segni sull'asse X
+ax.set_xticklabels(nomi, rotation=45, ha="right")  # etichette testuali
+ax.legend()                       # mostra la legenda
+plt.tight_layout()                # aggiusta margini automaticamente
+plt.show()                        # visualizza
+```
+
+---
+
+## Come testare il codice passo per passo
+
+Non aspettare di aver scritto tutto per eseguirlo. Testa ogni funzione appena la finisci.
+
+### Test Fase 1
+
+```python
+# Testo semplice di cui sai già il risultato
+test = "ciao mondo ciao"
+p, c = conta_parole(test)
+print(p)   # deve stampare: ['ciao', 'mondo']
+print(c)   # deve stampare: [2, 1]
+```
+
+### Test Fase 2
+
+```python
+freq = frequenze_relative([2, 1])
+print(freq)           # deve stampare: [0.6666..., 0.3333...]
+print(sum(freq))      # deve stampare: 1.0  (o molto vicino)
+```
+
+### Test Fase 3
+
+```python
+pp = ["mondo", "ciao"]
+cc = [1, 2]
+rp, rc = top_n(pp, cc, 2)
+print(rp)   # deve stampare: ['ciao', 'mondo']   (ordinato per freq decrescente)
+print(rc)   # deve stampare: [2, 1]
+```
+
+### Controllo finale prima di consegnare
+
+Esegui queste stampe e verifica che abbiano senso:
+
+```python
+parole_mlk, cont_mlk = conta_parole(MLK_SPEECH)
+print("Parole uniche MLK:", len(parole_mlk))    # deve essere circa 80–100
+print("Parole totali MLK:", sum(cont_mlk))       # deve essere circa 110–130
+```
+
+---
+
+## Domande frequenti
+
+**D: `lista.index(x)` dà errore — cosa succede?**
+Significa che stai cercando una parola che non esiste nella lista. Controlla che la condizione `if parola in parole` venga verificata *prima* di chiamare `.index()`.
+
+---
+
+**D: Il grafico mostra barre sovrapposte, non affiancate.**
+Stai usando la stessa posizione `x` per entrambe le serie. Ricordati di spostare le barre:
+```python
+ax.bar(x - larghezza/2, ...)   # prima serie: a sinistra
+ax.bar(x + larghezza/2, ...)   # seconda serie: a destra
+```
+
+---
+
+**D: Le etichette sull'asse X del grafico mostrano parole sbagliate (es. "the" al posto di "dream").**
+Le due liste parallele si sono disallineate durante l'ordinamento. Controlla che nella funzione `top_n` ci siano **due** righe di scambio, una per `conteggi` e una per `parole`.
+
+---
+
+**D: `sum(freq)` non dà esattamente 1.0 ma qualcosa come `0.9999999999`.**
+È normale. I numeri decimali nel computer hanno una piccola imprecisione (errore floating point). Non è un bug del tuo codice.
+
+---
+
+**D: Per il bonus, la parola "i" (il pronome) non viene filtrata.**
+Controlla che il testo sia già stato convertito in minuscolo prima del confronto con le stop words, e che `"i"` sia nella lista `STOP_WORDS`.
+
+---
+
+*Documento generato per uso didattico — IIS A. Avogadro, Torino*

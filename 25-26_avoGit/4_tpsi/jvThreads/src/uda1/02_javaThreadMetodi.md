@@ -1,0 +1,2 @@
+Con riferimento alla documentazione ufficiale https://docs.oracle.com/javase/8/docs/api/java/lang/Thread.html e ai metodi elencati nel libro pag. 104 provare i metodi getCurrentThread, getId, getNAme, getPriority, setName, setPriority, isAlive, toString.  
+Creare una classe con il metodo main che avvia 5 thread. Ogni thread stampa a video il proprio nome e dorme per 5 secondi.
