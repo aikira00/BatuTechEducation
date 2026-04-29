@@ -1,3 +1,5 @@
+package counterExample;
+
 public class Lez01MainUnsafeSharedCounter {
     public static void main(String[] args) throws InterruptedException {
 

@@ -1,3 +1,5 @@
+package counterExample;
+
 public class Lez01IncrementThread extends Thread {
 
     private Lez01Counter counter;

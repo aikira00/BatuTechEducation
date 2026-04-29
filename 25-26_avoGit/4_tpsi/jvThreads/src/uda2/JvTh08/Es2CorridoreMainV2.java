@@ -12,20 +12,17 @@ public class Es2CorridoreMainV2 {
         //uso un solo try per InterruptedException metodo sleep
         //e IOException metodo readLine che legge input
         try{
-            System.out.print("Inserisci la distanza totale che il primo corridore deve percorrere: ");
-            int distanzaTotalePrimoCorridore = Integer.parseInt(reader.readLine());
-            System.out.print("Inserisci la distanza totale che il secondo corridore deve percorrere: ");
-            int distanzaTotaleSecondoCorridore = Integer.parseInt(reader.readLine());
+            System.out.print("Inserisci la distanza totale che devono percorrere i due corridori: ");
+            int distanzaTotale = Integer.parseInt(reader.readLine());
+            System.out.print("Inserisci il numero di secondi prima di interrompere i corridori: ");
+            int secondi = Integer.parseInt(reader.readLine());
 
-            System.out.print("Inserisci il numero di secondi prima di interrompere il corridore: ");
-            int secondiPrimaInterruzione = Integer.parseInt(reader.readLine());
-
-            Es2CorridoreThreadV2 primoCorridore = new Es2CorridoreThreadV2(distanzaTotalePrimoCorridore, "PRIMO");
-            Es2CorridoreThreadV2 secondoCorridore = new Es2CorridoreThreadV2(distanzaTotaleSecondoCorridore, "SECONDO");
+            Es2CorridoreThreadV2 primoCorridore = new Es2CorridoreThreadV2(distanzaTotale, "PRIMO");
+            Es2CorridoreThreadV2 secondoCorridore = new Es2CorridoreThreadV2(distanzaTotale, "SECONDO");
             primoCorridore.start();
             secondoCorridore.start();
 
-            Thread.sleep(secondiPrimaInterruzione * 1000); // Convertiamo secondi in millisecondi
+            Thread.sleep(secondi * 1000); // Convertiamo secondi in millisecondi
 
             System.out.println(Thread.currentThread().getName() + " sono stufo di aspettare, interrompo i corridori. ");
             //corridore.interrupt();

@@ -1,6 +1,1 @@
-ciao
-seconda riga
-terza riga del file
-Nuova riga aggiunta 
-Nuova riga aggiunta 
-Nuova riga aggiunta 
+3

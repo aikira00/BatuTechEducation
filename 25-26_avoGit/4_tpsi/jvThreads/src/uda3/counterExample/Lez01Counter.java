@@ -1,7 +1,9 @@
+package counterExample;
+
 public class Lez01Counter {
     protected int c = 0;
 
-    public  void increment() {
+    public  synchronized void  increment() {
 
        int tmp = c;
         try{
@@ -18,7 +20,7 @@ public class Lez01Counter {
     }
 
 
-    public  void decrement() {
+    public synchronized void decrement() {
         int tmp = c;
         try{
             Thread.sleep(20);

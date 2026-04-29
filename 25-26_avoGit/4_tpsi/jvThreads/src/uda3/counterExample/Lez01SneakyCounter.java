@@ -1,3 +1,5 @@
+package counterExample;
+
 public class Lez01SneakyCounter extends Lez01Counter{
 
     @Override

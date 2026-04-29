@@ -1,3 +1,5 @@
+package counterExample;
+
 import java.util.Locale;
 public class Lez01MainUnsafeComplicated {
     public static void main(String[] args) throws InterruptedException {
@@ -5,8 +7,8 @@ public class Lez01MainUnsafeComplicated {
 
         Lez01Counter counter = new Lez01Counter();
 
-        int incrementValue1 = 200_000_000;
-        int incrementValue2 = 100_000_000;
+        int incrementValue1 = 5;
+        int incrementValue2 = 10;
 
         Lez01IncrementThread incrementer1 =
                 new Lez01IncrementThread(counter, incrementValue1);
