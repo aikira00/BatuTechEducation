@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Sezione Critica — Esempio Counter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Manrope:wght@300;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08080c;
+    --bg-2: #12121a;
+    --bg-3: #1a1a26;
+    --line: #2a2a3a;
+    --text: #f5f5fa;
+    --text-muted: #8a8a9e;
+    --magenta: #ff2dd1;
+    --cyan: #00e5ff;
+    --yellow: #f7ff3a;
+    --green: #39ff14;
+    --red: #ff2e63;
+    --thread-a: var(--cyan);
+    --thread-b: var(--magenta);
+    --counter-color: var(--yellow);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { background: var(--bg); }
+
+  body {
+    font-family: 'Manrope', system-ui, sans-serif;
+    color: var(--text);
+    line-height: 1.55;
+    min-height: 100vh;
+    padding: 2.5rem 1.5rem 4rem;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(255, 45, 209, 0.10), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(0, 229, 255, 0.08), transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(247, 255, 58, 0.03), transparent 60%);
+  }
+
+  .container { max-width: 1180px; margin: 0 auto; }
+
+  code, .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ---------- HEADER ---------- */
+  .header {
+    margin-bottom: 3.5rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2rem;
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--cyan);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+  }
+  h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  h1 .accent { color: var(--magenta); text-shadow: 0 0 30px rgba(255, 45, 209, 0.4); }
+  h1 .accent-2 { color: var(--cyan); text-shadow: 0 0 30px rgba(0, 229, 255, 0.4); }
+  .subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 65ch;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  .section { margin-bottom: 3.5rem; }
+  .section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--yellow);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .section-title::before {
+    content: '';
+    width: 9px; height: 9px;
+    background: var(--yellow);
+    border-radius: 50%;
+    box-shadow: 0 0 14px var(--yellow);
+  }
+
+  .lead {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--magenta);
+    padding: 1.25rem 1.75rem;
+    border-radius: 4px;
+    font-size: 1.02rem;
+  }
+  .lead.cyan { border-left-color: var(--cyan); }
+  .lead strong { color: var(--magenta); }
+  .lead.cyan strong { color: var(--cyan); }
+
+  /* ---------- CODE ---------- */
+  .code-block {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    color: #e0e0e8;
+    white-space: pre;
+  }
+  .code-block .kw { color: var(--magenta); font-weight: 700; }
+  .code-block .type { color: var(--cyan); }
+  .code-block .num { color: var(--yellow); }
+  .code-block .com { color: var(--text-muted); font-style: italic; }
+  .code-block .crit { background: rgba(247, 255, 58, 0.12); padding: 0 0.25rem; border-radius: 2px; }
+
+  .between { margin: 1rem 0; color: var(--text-muted); }
+  .between code { color: var(--magenta); font-size: 0.92em; }
+
+  /* ---------- SIMULATOR ---------- */
+  .controls {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    align-items: center;
+    margin-bottom: 1.25rem;
+  }
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .control-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  button {
+    background: var(--bg-3);
+    color: var(--text);
+    border: 1px solid var(--line);
+    padding: 0.55rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  button:hover { border-color: var(--cyan); color: var(--cyan); }
+  button.primary {
+    background: var(--cyan);
+    color: var(--bg);
+    border-color: var(--cyan);
+    box-shadow: 0 0 24px rgba(0, 229, 255, 0.25);
+  }
+  button.primary:hover { background: var(--magenta); border-color: var(--magenta); color: var(--text); box-shadow: 0 0 24px rgba(255, 45, 209, 0.4); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+
+  .toggle {
+    display: inline-flex;
+    background: var(--bg-3);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .toggle button { border: none; border-radius: 0; }
+  .toggle button.active { background: var(--magenta); color: var(--bg); }
+  .toggle button.active:hover { background: var(--magenta); color: var(--bg); }
+
+  input[type="number"] {
+    background: var(--bg-3);
+    color: var(--text);
+    border: 1px solid var(--line);
+    padding: 0.45rem 0.7rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    width: 84px;
+  }
+  input[type="range"] { width: 130px; accent-color: var(--cyan); }
+
+  /* ---------- THREAD CARDS ---------- */
+  .simulator {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1.25rem;
+    align-items: stretch;
+    margin-bottom: 1.25rem;
+  }
+  @media (max-width: 800px) {
+    .simulator { grid-template-columns: 1fr; }
+  }
+
+  .thread-card {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.1rem 1.25rem;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    position: relative;
+  }
+  .thread-card.thread-a { border-top: 3px solid var(--thread-a); }
+  .thread-card.thread-b { border-top: 3px solid var(--thread-b); }
+  .thread-card.thread-a.active { box-shadow: 0 0 28px rgba(0, 229, 255, 0.30); }
+  .thread-card.thread-b.active { box-shadow: 0 0 28px rgba(255, 45, 209, 0.30); }
+  .thread-card.waiting { opacity: 0.45; }
+  .thread-card.done { opacity: 0.7; border-color: var(--green); }
+
+  .thread-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    font-size: 1.05rem;
+    margin-bottom: 0.85rem;
+    letter-spacing: 0.06em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .thread-a .thread-name { color: var(--thread-a); }
+  .thread-b .thread-name { color: var(--thread-b); }
+
+  .badge {
+    font-size: 0.62rem;
+    padding: 0.18rem 0.45rem;
+    border-radius: 2px;
+    background: var(--bg-3);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+  .badge.lock-on { color: var(--yellow); border: 1px solid var(--yellow); }
+  .badge.wait { color: var(--text-muted); border: 1px solid var(--line); }
+  .badge.done { color: var(--green); border: 1px solid var(--green); }
+
+  .register {
+    background: var(--bg-3);
+    border: 1px dashed var(--line);
+    padding: 0.65rem 0.85rem;
+    border-radius: 4px;
+    margin-bottom: 0.6rem;
+  }
+  .register-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.15rem;
+  }
+  .register-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+  .thread-a .register-value:not(.empty) { color: var(--thread-a); }
+  .thread-b .register-value:not(.empty) { color: var(--thread-b); }
+  .register-value.empty { color: var(--text-muted); }
+
+  .step-indicator {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.6rem;
+  }
+  .step-dot {
+    flex: 1;
+    text-align: center;
+    padding: 0.32rem 0.3rem;
+    background: var(--bg-3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+  }
+  .thread-a .step-dot.active { color: var(--thread-a); border-color: var(--thread-a); background: var(--bg); }
+  .thread-b .step-dot.active { color: var(--thread-b); border-color: var(--thread-b); background: var(--bg); }
+
+  .thread-iter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .progress-bar {
+    height: 3px;
+    background: var(--bg-3);
+    border-radius: 2px;
+    margin-top: 0.4rem;
+    overflow: hidden;
+  }
+  .progress-fill { height: 100%; transition: width 0.2s; }
+  .thread-a .progress-fill { background: var(--thread-a); }
+  .thread-b .progress-fill { background: var(--thread-b); }
+
+  /* ---------- SHARED COUNTER ---------- */
+  .counter-card {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--counter-color);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    text-align: center;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .counter-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--counter-color);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.4rem;
+  }
+  .counter-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 3.2rem;
+    font-weight: 800;
+    color: var(--counter-color);
+    line-height: 1;
+    text-shadow: 0 0 22px rgba(247, 255, 58, 0.45);
+    transition: transform 0.15s;
+  }
+  .counter-value.flash { transform: scale(1.12); }
+  .counter-shared {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .lock-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.4rem 0.5rem;
+    border-radius: 3px;
+    margin-top: 1rem;
+  }
+  .lock-status.free { color: var(--green); border: 1px solid var(--green); }
+  .lock-status.held-a { color: var(--cyan); border: 1px solid var(--cyan); background: rgba(0, 229, 255, 0.05); }
+  .lock-status.held-b { color: var(--magenta); border: 1px solid var(--magenta); background: rgba(255, 45, 209, 0.05); }
+
+  /* ---------- LOG ---------- */
+  .race-banner {
+    background: rgba(255, 46, 99, 0.1);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    display: none;
+  }
+  .race-banner.show { display: block; animation: pulse 1.6s; }
+  @keyframes pulse {
+    0%, 100% { background: rgba(255, 46, 99, 0.1); }
+    50% { background: rgba(255, 46, 99, 0.30); }
+  }
+
+  .log-panel {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.85rem 1.1rem;
+    height: 220px;
+    overflow-y: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+  .log-panel::-webkit-scrollbar { width: 6px; }
+  .log-panel::-webkit-scrollbar-track { background: var(--bg-3); }
+  .log-panel::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+  .log-entry { padding: 0.1rem 0; }
+  .log-time { color: var(--text-muted); margin-right: 0.5rem; }
+  .log-thread-a { color: var(--thread-a); font-weight: 700; }
+  .log-thread-b { color: var(--thread-b); font-weight: 700; }
+  .log-warn { color: var(--red); font-weight: 700; }
+  .log-good { color: var(--green); }
+  .log-info { color: var(--text-muted); font-style: italic; }
+
+  /* ---------- STATS ---------- */
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .stat-card {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 0.9rem 1.15rem;
+  }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.3rem;
+  }
+  .stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.7rem;
+    font-weight: 800;
+  }
+  .stat-card.expected .stat-value { color: var(--cyan); }
+  .stat-card.actual .stat-value { color: var(--yellow); }
+  .stat-card.lost .stat-value { color: var(--red); }
+  .stat-card.success .stat-value { color: var(--green); }
+
+  /* ---------- CODE COMPARE ---------- */
+  .code-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+  @media (max-width: 800px) {
+    .code-compare { grid-template-columns: 1fr; }
+  }
+  .code-card {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .code-card.bad { border-top: 3px solid var(--red); }
+  .code-card.good { border-top: 3px solid var(--green); }
+  .code-card-header {
+    padding: 0.7rem 1rem;
+    background: var(--bg-3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-bottom: 1px solid var(--line);
+    letter-spacing: 0.05em;
+  }
+  .code-card.bad .code-card-header { color: var(--red); }
+  .code-card.good .code-card-header { color: var(--green); }
+  .code-card .code-block {
+    border: none;
+    border-radius: 0;
+  }
+
+  /* ---------- TAKEAWAYS ---------- */
+  .takeaways {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  .takeaway {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.1rem 1.25rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .takeaway:hover { border-color: var(--magenta); transform: translateY(-2px); }
+  .takeaway-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--magenta);
+    font-weight: 800;
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.1em;
+  }
+  .takeaway-title {
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    font-size: 0.98rem;
+  }
+  .takeaway-text {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+  }
+  .takeaway code, .lead code, .between code, .subtitle code, p code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88em;
+    color: var(--cyan);
+    background: var(--bg-3);
+    padding: 0.05em 0.35em;
+    border-radius: 3px;
+  }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 2.5rem 0;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <div class="eyebrow">// TPSI · 4° anno · programmazione concorrente</div>
+    <h1>La <span class="accent">sezione critica</span><br>spiegata con un <span class="accent-2">contatore</span></h1>
+    <p class="subtitle">Due thread incrementano la stessa variabile, ognuno per 1000 volte. Il risultato atteso è 2000. Eppure non lo è quasi mai. Perché?</p>
+  </header>
+
+  <!-- ========== PROBLEMA ========== -->
+  <section class="section">
+    <h2 class="section-title">Il problema</h2>
+
+    <div class="lead">
+      Una classe banale: un contatore con un metodo <code>increment()</code>. Due thread chiamano <code>increment()</code> in parallelo, 1000 volte ciascuno. Alla fine ci aspettiamo <strong>2000</strong>. In pratica leggiamo numeri come 1742, 1893, 1956. <strong>Quasi mai 2000.</strong>
+    </div>
+
+    <div class="code-block" style="margin-top: 1rem;"><span class="kw">public class</span> <span class="type">Counter</span> {
+    <span class="kw">private int</span> count = <span class="num">0</span>;
+
+    <span class="kw">public void</span> increment() {
+        count++;   <span class="com">// sembra atomico... ma non lo è</span>
+    }
+
+    <span class="kw">public int</span> get() { <span class="kw">return</span> count; }
+}</div>
+
+    <p class="between">L'istruzione <code>count++</code> a livello di bytecode JVM è <strong style="color: var(--text);">tre operazioni distinte</strong>:</p>
+
+    <div class="code-block"><span class="com">// quello che la JVM fa davvero per "count++":</span>
+<span class="num">1.</span>  <span class="type">int</span> tmp = count;        <span class="com">// READ    — leggi il valore corrente</span>
+<span class="num">2.</span>  tmp = tmp + <span class="num">1</span>;           <span class="com">// COMPUTE — incrementa nel registro</span>
+<span class="num">3.</span>  count = tmp;              <span class="com">// WRITE   — scrivi il nuovo valore</span>
+</div>
+
+    <p class="between">Tra una sotto-operazione e l'altra lo scheduler del SO può <strong style="color: var(--text);">sospendere il thread</strong> e dare la CPU all'altro. Ed è esattamente lì che nasce la <strong style="color: var(--magenta);">race condition</strong>.</p>
+  </section>
+
+  <!-- ========== SIMULATORE ========== -->
+  <section class="section">
+    <h2 class="section-title">Simulatore interattivo</h2>
+
+    <div class="controls">
+      <div class="control-group">
+        <span class="control-label">Modalità</span>
+        <div class="toggle" id="syncToggle">
+          <button data-sync="false" class="active">Senza synchronized</button>
+          <button data-sync="true">Con synchronized</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">Iterazioni × thread</span>
+        <input type="number" id="iterations" value="20" min="1" max="2000">
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">Velocità</span>
+        <input type="range" id="speed" min="1" max="100" value="55">
+      </div>
+
+      <div class="control-group" style="margin-left: auto;">
+        <button id="runBtn" class="primary">▶ Avvia</button>
+        <button id="resetBtn">↺ Reset</button>
+      </div>
+    </div>
+
+    <div class="simulator">
+      <!-- THREAD A -->
+      <div class="thread-card thread-a" id="threadA">
+        <div class="thread-name">
+          <span>Thread A</span>
+          <span class="badge" id="badgeA">idle</span>
+        </div>
+        <div class="register">
+          <div class="register-label">registro locale</div>
+          <div class="register-value empty" id="regA">—</div>
+        </div>
+        <div class="step-indicator">
+          <div class="step-dot" data-step="READ">read</div>
+          <div class="step-dot" data-step="COMPUTE">compute</div>
+          <div class="step-dot" data-step="WRITE">write</div>
+        </div>
+        <div class="thread-iter" id="iterA">iter: 0 / 0</div>
+        <div class="progress-bar"><div class="progress-fill" id="progA" style="width: 0%"></div></div>
+      </div>
+
+      <!-- COUNTER -->
+      <div class="counter-card">
+        <div class="counter-label">count (condiviso)</div>
+        <div class="counter-value" id="counterValue">0</div>
+        <div class="counter-shared">memoria condivisa</div>
+        <div class="lock-status free" id="lockStatus" style="display:none;">lock: ✓ libero</div>
+      </div>
+
+      <!-- THREAD B -->
+      <div class="thread-card thread-b" id="threadB">
+        <div class="thread-name">
+          <span>Thread B</span>
+          <span class="badge" id="badgeB">idle</span>
+        </div>
+        <div class="register">
+          <div class="register-label">registro locale</div>
+          <div class="register-value empty" id="regB">—</div>
+        </div>
+        <div class="step-indicator">
+          <div class="step-dot" data-step="READ">read</div>
+          <div class="step-dot" data-step="COMPUTE">compute</div>
+          <div class="step-dot" data-step="WRITE">write</div>
+        </div>
+        <div class="thread-iter" id="iterB">iter: 0 / 0</div>
+        <div class="progress-bar"><div class="progress-fill" id="progB" style="width: 0%"></div></div>
+      </div>
+    </div>
+
+    <div class="race-banner" id="raceBanner">⚠ LOST UPDATE rilevato! Un incremento è stato sovrascritto.</div>
+
+    <div class="log-panel" id="log"></div>
+
+    <div class="result-grid">
+      <div class="stat-card expected">
+        <div class="stat-label">Atteso</div>
+        <div class="stat-value" id="statExpected">0</div>
+      </div>
+      <div class="stat-card actual">
+        <div class="stat-label">Ottenuto</div>
+        <div class="stat-value" id="statActual">0</div>
+      </div>
+      <div class="stat-card lost">
+        <div class="stat-label">Persi</div>
+        <div class="stat-value" id="statLost">0</div>
+      </div>
+      <div class="stat-card success" id="statCard">
+        <div class="stat-label">Esito</div>
+        <div class="stat-value" id="statResult">—</div>
+      </div>
+    </div>
+
+    <p class="between" style="margin-top: 2rem;">
+      <strong style="color: var(--text);">Suggerimento didattico:</strong> avviare prima senza <code>synchronized</code> con poche iterazioni (10–20) a velocità lenta per osservare l'<em>interleaving</em> e identificare il momento esatto del lost update. Poi rilanciare con <code>synchronized</code> attivo per vedere come scompaiono le anomalie.
+    </p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ========== SOLUZIONE ========== -->
+  <section class="section">
+    <h2 class="section-title">La sezione critica</h2>
+
+    <div class="lead cyan">
+      La <strong>sezione critica</strong> è il blocco di codice che <strong>non può essere eseguito da più thread contemporaneamente</strong> senza compromettere la consistenza dei dati condivisi. Nel nostro caso, la sequenza READ → COMPUTE → WRITE deve essere <em>atomica</em>: vista dall'esterno, tutta-o-niente.
+    </div>
+
+    <div class="code-compare">
+      <div class="code-card bad">
+        <div class="code-card-header">✗ NON sicuro — race condition</div>
+        <div class="code-block"><span class="kw">public class</span> <span class="type">Counter</span> {
+    <span class="kw">private int</span> count = <span class="num">0</span>;
+
+    <span class="kw">public void</span> increment() {
+        count++;
+    }
+}</div>
+      </div>
+
+      <div class="code-card good">
+        <div class="code-card-header">✓ Sicuro — mutua esclusione</div>
+        <div class="code-block"><span class="kw">public class</span> <span class="type">Counter</span> {
+    <span class="kw">private int</span> count = <span class="num">0</span>;
+
+    <span class="kw">public</span> <span class="kw">synchronized</span> <span class="kw">void</span> increment() {
+        <span class="crit">count++;</span>
+    }
+}</div>
+      </div>
+    </div>
+
+    <p class="between" style="margin-top: 1.5rem;">
+      <code>synchronized</code> dice alla JVM: <em>«prima di entrare qui, prendi il lock dell'oggetto. Solo un thread alla volta può eseguire questo blocco; gli altri si mettono in attesa.»</em> In alternativa si può usare il blocco esplicito, utile quando la sezione critica è solo una parte del metodo:
+    </p>
+
+    <div class="code-block"><span class="kw">public void</span> increment() {
+    <span class="kw">synchronized</span> (<span class="kw">this</span>) {       <span class="com">// acquisizione del lock</span>
+        <span class="crit">count++;</span>                  <span class="com">// SEZIONE CRITICA</span>
+    }                               <span class="com">// rilascio del lock</span>
+}</div>
+  </section>
+
+  <!-- ========== TAKEAWAYS ========== -->
+  <section class="section">
+    <h2 class="section-title">Da ricordare</h2>
+    <div class="takeaways">
+      <div class="takeaway">
+        <div class="takeaway-num">01</div>
+        <div class="takeaway-title">Atomico ≠ una riga</div>
+        <div class="takeaway-text">Un'istruzione che sembra atomica nel sorgente (come <code>count++</code>) può essere scomposta in più operazioni a livello di bytecode/CPU.</div>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway-num">02</div>
+        <div class="takeaway-title">Lo scheduler interrompe</div>
+        <div class="takeaway-text">Tra una sotto-operazione e l'altra il SO può sospendere il thread. Se la variabile è condivisa, qui nasce la race condition.</div>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway-num">03</div>
+        <div class="takeaway-title">Sezione critica</div>
+        <div class="takeaway-text">È il tratto di codice che accede a dati condivisi e che deve essere eseguito da un solo thread alla volta per garantire correttezza.</div>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway-num">04</div>
+        <div class="takeaway-title">Mutua esclusione</div>
+        <div class="takeaway-text">Il meccanismo (lock, monitor, <code>synchronized</code>) che impedisce a più thread di stare contemporaneamente nella stessa sezione critica.</div>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway-num">05</div>
+        <div class="takeaway-title">Costo</div>
+        <div class="takeaway-text">La sincronizzazione ha un costo: serializza l'esecuzione e crea contesa. Si protegge solo ciò che serve, non più del necessario.</div>
+      </div>
+      <div class="takeaway">
+        <div class="takeaway-num">06</div>
+        <div class="takeaway-title">Non solo <code>++</code></div>
+        <div class="takeaway-text">Stessa logica per qualsiasi operazione composta: <em>check-then-act</em>, <em>read-modify-write</em>, lazy initialization. Pattern da proteggere.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ============================================================
+//  SIMULATORE — sezione critica con due thread
+// ============================================================
+const state = {
+  counter: 0,
+  threadA: null,
+  threadB: null,
+  synchronized: false,
+  lockHolder: null,
+  iterations: 20,
+  speed: 55,
+  running: false,
+  expected: 0
+};
+
+function newThread(name) {
+  return {
+    name,
+    register: null,
+    step: 'IDLE',           // IDLE → READ → COMPUTE → WRITE → IDLE
+    iter: 0,
+    holdingLock: false,
+    waiting: false,
+    done: false
+  };
+}
+
+function reset() {
+  state.counter = 0;
+  state.threadA = newThread('A');
+  state.threadB = newThread('B');
+  state.lockHolder = null;
+  state.expected = state.iterations * 2;
+
+  document.getElementById('log').innerHTML = '';
+  document.getElementById('raceBanner').classList.remove('show');
+  document.getElementById('statResult').textContent = '—';
+  document.getElementById('statCard').className = 'stat-card success';
+  render();
+}
+
+function logEvent(html, cls = '') {
+  const time = String(document.getElementById('log').children.length).padStart(4, '0');
+  const div = document.createElement('div');
+  div.className = 'log-entry' + (cls ? ' ' + cls : '');
+  div.innerHTML = `<span class="log-time">${time}</span>${html}`;
+  const logEl = document.getElementById('log');
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function tagThread(name) {
+  const cls = name === 'A' ? 'log-thread-a' : 'log-thread-b';
+  return `<span class="${cls}">[T${name}]</span> `;
+}
+
+function render() {
+  document.getElementById('counterValue').textContent = state.counter;
+
+  // mark waiting state
+  state.threadA.waiting = false;
+  state.threadB.waiting = false;
+  if (state.synchronized && state.lockHolder !== null) {
+    if (state.lockHolder === 'A' && !state.threadB.done && state.threadB.step === 'IDLE') state.threadB.waiting = true;
+    if (state.lockHolder === 'B' && !state.threadA.done && state.threadA.step === 'IDLE') state.threadA.waiting = true;
+  }
+
+  ['A', 'B'].forEach(n => {
+    const t = n === 'A' ? state.threadA : state.threadB;
+    const card = document.getElementById('thread' + n);
+    const reg = document.getElementById('reg' + n);
+    const iter = document.getElementById('iter' + n);
+    const badge = document.getElementById('badge' + n);
+    const prog = document.getElementById('prog' + n);
+
+    if (t.register === null) {
+      reg.textContent = '—';
+      reg.classList.add('empty');
+    } else {
+      reg.textContent = t.register;
+      reg.classList.remove('empty');
+    }
+
+    iter.textContent = `iter: ${t.iter} / ${state.iterations}`;
+    prog.style.width = (state.iterations === 0 ? 0 : (t.iter / state.iterations) * 100) + '%';
+
+    // active/waiting/done classes
+    card.classList.toggle('active', t.step !== 'IDLE' && !t.waiting && !t.done);
+    card.classList.toggle('waiting', t.waiting);
+    card.classList.toggle('done', t.done);
+
+    // step indicator
+    card.querySelectorAll('.step-dot').forEach(dot => {
+      dot.classList.toggle('active', dot.dataset.step === t.step);
+    });
+
+    // badge
+    if (t.done) {
+      badge.textContent = 'done';
+      badge.className = 'badge done';
+    } else if (t.holdingLock) {
+      badge.textContent = '⚿ lock';
+      badge.className = 'badge lock-on';
+    } else if (t.waiting) {
+      badge.textContent = 'in attesa';
+      badge.className = 'badge wait';
+    } else if (t.step === 'IDLE') {
+      badge.textContent = 'idle';
+      badge.className = 'badge';
+    } else {
+      badge.textContent = t.step.toLowerCase();
+      badge.className = 'badge';
+    }
+  });
+
+  // lock indicator
+  const lockEl = document.getElementById('lockStatus');
+  if (!state.synchronized) {
+    lockEl.style.display = 'none';
+  } else {
+    lockEl.style.display = 'block';
+    if (state.lockHolder === null) {
+      lockEl.className = 'lock-status free';
+      lockEl.textContent = 'lock: ✓ libero';
+    } else if (state.lockHolder === 'A') {
+      lockEl.className = 'lock-status held-a';
+      lockEl.textContent = 'lock: ⚿ Thread A';
+    } else {
+      lockEl.className = 'lock-status held-b';
+      lockEl.textContent = 'lock: ⚿ Thread B';
+    }
+  }
+
+  // stats
+  document.getElementById('statExpected').textContent = state.expected;
+  document.getElementById('statActual').textContent = state.counter;
+  document.getElementById('statLost').textContent = Math.max(0, state.expected - state.counter);
+}
+
+// pick which thread can advance next
+function pickThread() {
+  const candidates = [];
+  for (const t of [state.threadA, state.threadB]) {
+    if (t.done) continue;
+    if (state.synchronized) {
+      // can advance only if holding lock or trying to start with free lock
+      if (t.holdingLock) candidates.push(t);
+      else if (t.step === 'IDLE' && state.lockHolder === null) candidates.push(t);
+    } else {
+      candidates.push(t);
+    }
+  }
+  if (candidates.length === 0) return null;
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+function advance(t) {
+  if (t.step === 'IDLE') {
+    // begin a new iteration
+    if (state.synchronized && !t.holdingLock) {
+      state.lockHolder = t.name;
+      t.holdingLock = true;
+      logEvent(`${tagThread(t.name)}acquisisce il lock`, 'log-info');
+    }
+    t.step = 'READ';
+    t.register = state.counter;
+    logEvent(`${tagThread(t.name)}<strong>READ</strong>: legge count = ${state.counter} → registro`);
+  } else if (t.step === 'READ') {
+    t.step = 'COMPUTE';
+    const old = t.register;
+    t.register = old + 1;
+    logEvent(`${tagThread(t.name)}<strong>COMPUTE</strong>: registro = ${old} + 1 = ${t.register}`);
+  } else if (t.step === 'COMPUTE') {
+    t.step = 'WRITE';
+    const before = state.counter;
+    state.counter = t.register;
+    logEvent(`${tagThread(t.name)}<strong>WRITE</strong>: count = ${t.register} (era ${before})`);
+    flashCounter();
+    // detect lost update: write produced no real increment
+    if (t.register === before) {
+      logEvent(`${tagThread(t.name)}<span class="log-warn">⚠ LOST UPDATE — l'altro thread ha già scritto qui, l'incremento è perso</span>`);
+      document.getElementById('raceBanner').classList.add('show');
+    }
+  } else if (t.step === 'WRITE') {
+    // iteration complete
+    t.iter++;
+    t.step = 'IDLE';
+    t.register = null;
+    if (state.synchronized && t.holdingLock) {
+      state.lockHolder = null;
+      t.holdingLock = false;
+      logEvent(`${tagThread(t.name)}rilascia il lock`, 'log-info');
+    }
+    if (t.iter >= state.iterations) {
+      t.done = true;
+      logEvent(`${tagThread(t.name)}terminato`, 'log-good');
+    }
+  }
+}
+
+function flashCounter() {
+  const el = document.getElementById('counterValue');
+  el.classList.add('flash');
+  setTimeout(() => el.classList.remove('flash'), 120);
+}
+
+function tick() {
+  if (!state.running) return;
+
+  if (state.threadA.done && state.threadB.done) {
+    finish();
+    return;
+  }
+
+  const t = pickThread();
+  if (t) {
+    advance(t);
+    render();
+  }
+
+  // speed: 1..100 → ~960..30 ms
+  const delay = Math.max(20, 1000 - state.speed * 9.7);
+  setTimeout(tick, delay);
+}
+
+function finish() {
+  state.running = false;
+  const btn = document.getElementById('runBtn');
+  btn.disabled = false;
+  btn.textContent = '▶ Avvia';
+
+  const lost = state.expected - state.counter;
+  const card = document.getElementById('statCard');
+  const result = document.getElementById('statResult');
+
+  if (lost === 0) {
+    result.textContent = '✓ OK';
+    card.className = 'stat-card success';
+    logEvent(`<strong>✓ Esecuzione completata</strong> — count = ${state.counter} (corretto)`, 'log-good');
+  } else {
+    result.textContent = '✗ BUG';
+    card.className = 'stat-card lost';
+    logEvent(`<strong>✗ Esecuzione completata</strong> — count = ${state.counter}, persi ${lost} incrementi`, 'log-warn');
+    document.getElementById('raceBanner').classList.add('show');
+  }
+  render();
+}
+
+// ============================================================
+//  EVENT HANDLERS
+// ============================================================
+document.querySelectorAll('#syncToggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (state.running) return;
+    document.querySelectorAll('#syncToggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.synchronized = btn.dataset.sync === 'true';
+    reset();
+  });
+});
+
+document.getElementById('iterations').addEventListener('change', e => {
+  if (state.running) return;
+  state.iterations = Math.max(1, Math.min(2000, parseInt(e.target.value) || 20));
+  e.target.value = state.iterations;
+  reset();
+});
+
+document.getElementById('speed').addEventListener('input', e => {
+  state.speed = parseInt(e.target.value);
+});
+
+document.getElementById('runBtn').addEventListener('click', () => {
+  if (state.running) return;
+  if (state.threadA?.done && state.threadB?.done) reset();
+  state.running = true;
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  btn.textContent = '⏸ in corso…';
+  logEvent(`Avvio simulazione — ${state.iterations} iter × 2 thread, ${state.synchronized ? 'CON synchronized' : 'SENZA synchronized'}`, 'log-info');
+  tick();
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  state.running = false;
+  const btn = document.getElementById('runBtn');
+  btn.disabled = false;
+  btn.textContent = '▶ Avvia';
+  reset();
+});
+
+// init
+reset();
+</script>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz – Introduzione ai Sistemi Operativi</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container { max-width: 660px; width: 100%; }
+
+  /* START SCREEN */
+  .screen-start { text-align: center; padding-top: 12vh; }
+  .screen-start .emoji { font-size: 48px; margin-bottom: 8px; }
+  .screen-start h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .screen-start .subtitle { color: #94a3b8; font-size: 15px; margin-bottom: 20px; }
+  .info-box {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px 28px;
+    text-align: left;
+    margin-bottom: 28px;
+  }
+  .info-box p { color: #cbd5e1; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .info-item {
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #e2e8f0;
+  }
+  .info-item span.icon { font-size: 18px; }
+
+  /* BUTTONS */
+  .btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 48px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(59,130,246,0.4);
+    transition: transform 0.15s;
+  }
+  .btn-primary:hover { transform: scale(1.04); }
+  .btn-disabled {
+    background: rgba(255,255,255,0.06);
+    color: #64748b;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 44px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: not-allowed;
+  }
+
+  /* PROGRESS */
+  .progress-bar { margin-bottom: 20px; }
+  .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .progress-header span { font-size: 13px; color: #94a3b8; }
+  .progress-header .score { color: #3b82f6; font-weight: 600; }
+  .progress-track { height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  /* QUESTION */
+  .question-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  .question-card h2 { font-size: 18px; font-weight: 600; line-height: 1.5; color: #f1f5f9; }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .option-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: #e2e8f0;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .option-btn:hover:not(.locked) {
+    background: rgba(59,130,246,0.08);
+    border-color: rgba(59,130,246,0.3);
+  }
+  .option-btn.selected {
+    background: rgba(59,130,246,0.15);
+    border-color: rgba(59,130,246,0.5);
+    color: #93c5fd;
+  }
+  .option-btn.correct {
+    background: rgba(34,197,94,0.12);
+    border-color: rgba(34,197,94,0.5);
+    color: #86efac;
+  }
+  .option-btn.wrong {
+    background: rgba(239,68,68,0.12);
+    border-color: rgba(239,68,68,0.5);
+    color: #fca5a5;
+  }
+  .option-btn .letter {
+    font-weight: 700;
+    color: #64748b;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .option-btn.correct .letter { color: #22c55e; }
+  .option-btn.wrong .letter { color: #ef4444; }
+
+  /* EXPLANATION */
+  .explanation {
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    color: #93c5fd;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .explanation strong { color: #60a5fa; }
+
+  .action-area { text-align: center; padding: 10px 0 20px; }
+
+  /* RESULTS */
+  .screen-results { text-align: center; padding-top: 8vh; }
+  .screen-results .emoji { font-size: 56px; margin-bottom: 12px; }
+  .screen-results h2 { font-size: 26px; font-weight: 700; margin-bottom: 20px; }
+  .score-circle {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.04);
+    margin: 0 auto 24px;
+  }
+  .score-circle .big { font-size: 36px; font-weight: 800; }
+  .score-circle .small { font-size: 13px; color: #94a3b8; }
+  .results-list {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    text-align: left;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  .result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .result-item:last-child { border-bottom: none; }
+  .result-item .icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .result-item .text { font-size: 13px; line-height: 1.5; }
+  .result-item.ok .text { color: #86efac; }
+  .result-item.ko .text { color: #fca5a5; }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- START SCREEN -->
+  <div id="startScreen" class="screen-start">
+    <div class="emoji">🖥️</div>
+    <h1>Quiz: Introduzione ai Sistemi Operativi</h1>
+    <p class="subtitle">TPSI – Classe 3ª • I.I.S. A. Avogadro</p>
+    <div class="info-box">
+      <p>20 domande a risposta multipla sull'evoluzione storica e i concetti fondamentali dei Sistemi Operativi. Le domande vengono presentate in ordine casuale.</p>
+      <div class="info-grid">
+        <div class="info-item"><span class="icon">📝</span> 20 domande</div>
+        <div class="info-item"><span class="icon">🔀</span> Ordine casuale</div>
+        <div class="info-item"><span class="icon">✅</span> Feedback immediato</div>
+        <div class="info-item"><span class="icon">📊</span> Punteggio finale</div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="startQuiz()">Inizia il Quiz</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quizScreen" class="hidden">
+    <div class="progress-bar">
+      <div class="progress-header">
+        <span id="qCounter">Domanda 1 di 20</span>
+        <span class="score" id="scoreLabel">Punteggio: 0</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="question-card"><h2 id="questionText"></h2></div>
+    <div class="options" id="optionsContainer"></div>
+    <div id="explanationBox" class="explanation hidden"></div>
+    <div class="action-area">
+      <button id="confirmBtn" class="btn-disabled" disabled onclick="confirmAnswer()">Conferma</button>
+      <button id="nextBtn" class="btn-primary hidden" onclick="nextQuestion()">Prossima domanda →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="resultsScreen" class="screen-results hidden"></div>
+
+</div>
+
+<script>
+const allQuestions = [
+  { id:1, question:"Qual è il ruolo principale di un Sistema Operativo?", options:["Eseguire solo programmi di videoscrittura","Agire da intermediario tra utente e hardware, gestendo le risorse","Compilare programmi in linguaggio macchina","Collegare il computer a Internet"], correct:1, explanation:"Il SO è un gestore di risorse e un intermediario fra utente e hardware. Crea una \"macchina astratta\" più comoda rispetto alla macchina fisica sottostante." },
+  { id:2, question:"Nel periodo 1945–1955, chi era il programmatore, l'operatore e l'utente del computer?", options:["Tre persone diverse specializzate","Un team di almeno 5 persone","La stessa persona svolgeva tutti i ruoli","Non serviva un operatore, era tutto automatico"], correct:2, explanation:"Nel periodo senza SO, la stessa persona era progettista, programmatore, operatore e utente. I computer erano enormi, costosissimi e poco affidabili (valvole termoioniche)." },
+  { id:3, question:"Cosa si intende per \"throughput\"?", options:["La velocità massima della CPU in GHz","La quantità di memoria RAM disponibile","La quantità di lavoro completato in un certo tempo","Il numero di utenti collegati contemporaneamente"], correct:2, explanation:"Throughput = quantità di lavoro completato in un certo tempo. Maggiore è il throughput, migliori sono le prestazioni. Nei primi sistemi si facevano solo 1-2 job all'ora!" },
+  { id:4, question:"Cos'era il \"Resident Monitor\" nei primi sistemi batch (1955–1959)?", options:["Uno schermo per monitorare i programmi","Il primo sistema operativo: un programma sempre in memoria che caricava e gestiva i job","Un tecnico che sorvegliava il mainframe","Un dispositivo hardware per il controllo della temperatura"], correct:1, explanation:"Il Resident Monitor era il primo SO: un programma sempre in memoria che caricava automaticamente i programmi, passava la CPU al programma utente e riprendeva il controllo a fine esecuzione." },
+  { id:5, question:"Nei sistemi batch, quanto tempo la CPU restava in attesa a causa della lentezza dell'I/O?", options:["Circa il 10%","Circa il 50%","Circa il 93,7%","Circa il 75%"], correct:2, explanation:"La CPU era 15 volte più veloce dell'I/O (18.000 vs 1.200 schede/min), quindi restava inattiva per il 93,7% del tempo!" },
+  { id:6, question:"Cosa significa \"DMA\" e qual è la sua funzione?", options:["Dynamic Memory Allocation: alloca memoria ai programmi","Direct Memory Access: un controller trasferisce dati tra I/O e memoria senza coinvolgere la CPU","Disk Management Architecture: gestisce i dischi rigidi","Data Memory Adapter: converte i dati tra formati diversi"], correct:1, explanation:"DMA = Direct Memory Access. Un controller dedicato trasferisce dati tra I/O e memoria SENZA coinvolgere la CPU, che resta libera per altre operazioni." },
+  { id:7, question:"Cosa significa l'acronimo SPOOLING?", options:["System Protocol for Online Operations and Loading","Simultaneous Peripheral Operation On-Line","Sequential Processing of Outgoing Online Links","Shared Processing for Optimized Output Levels"], correct:1, explanation:"SPOOLING = Simultaneous Peripheral Operation On-Line. I dati vengono scritti su disco (buffer temporaneo) per separare la velocità dell'I/O da quella della CPU." },
+  { id:8, question:"Qual è il principio fondamentale della multiprogrammazione?", options:["Eseguire un solo programma alla volta ma più velocemente","Più programmi in memoria: quando uno aspetta l'I/O, la CPU passa a un altro","Dividere un programma in più parti e compilarle in parallelo","Collegare più computer in rete per eseguire lo stesso programma"], correct:1, explanation:"Nella multiprogrammazione, più programmi sono in memoria contemporaneamente. Quando un programma aspetta l'I/O, la CPU passa a un ALTRO programma, restando quasi sempre attiva." },
+  { id:9, question:"Cosa rese speciale l'IBM System/360?", options:["Era il computer più piccolo mai costruito","Fu il primo computer \"a famiglia\" con diversi modelli compatibili fra loro","Era gratuito per le università","Era il primo computer con interfaccia grafica"], correct:1, explanation:"L'IBM System/360 fu il primo computer \"a famiglia\" con diversi modelli compatibili fra loro. Ha definito un'epoca dell'informatica e dalla sua complessità nasce l'Ingegneria del Software." },
+  { id:10, question:"Cosa si intende per \"time slice\" nel time-sharing?", options:["Il tempo necessario per compilare un programma","L'intervallo di tempo in cui ogni programma riceve la CPU, poi viene interrotto (pre-emption)","Il tempo di accensione del computer","Il tempo che l'operatore impiega per caricare le schede perforate"], correct:1, explanation:"Nel time-sharing, ogni programma riceve la CPU per un intervallo di tempo (time slice). Scaduto il tempo, anche se non ha finito, la CPU passa al programma successivo (pre-emption)." },
+  { id:11, question:"Quale di questi concetti NON fu introdotto da MULTICS?", options:["Memoria virtuale","File system gerarchico","Architettura a ring (livelli di privilegio)","Interfaccia grafica (GUI)"], correct:3, explanation:"MULTICS introdusse il concetto di processo, gestione account, memoria virtuale, architettura a ring e file system gerarchico. Le GUI arrivarono dopo, negli anni '70-'80." },
+  { id:12, question:"Perché UNIX è considerato estremamente portabile?", options:["Perché è open source","Perché è scritto per circa il 60% in linguaggio C","Perché funziona solo su un tipo di hardware","Perché è molto piccolo e occupa poca memoria"], correct:1, explanation:"UNIX è scritto in C per circa il 60%, il che lo rende estremamente portabile su diverse architetture hardware. Da UNIX derivano Linux, macOS e Android." },
+  { id:13, question:"Qual è la differenza tra un sistema Hard Real-Time e Soft Real-Time?", options:["Hard usa hardware più costoso, Soft usa hardware economico","Hard richiede risposta entro un tempo assoluto (critico), Soft tollera ritardi senza danni gravi","Hard è per i server, Soft è per i PC","Non c'è differenza, sono sinonimi"], correct:1, explanation:"Nei sistemi Hard Real-Time la risposta DEVE arrivare in tempo (es. pilota automatico aereo). Nei Soft Real-Time un ritardo non causa danni gravi (es. streaming video)." },
+  { id:14, question:"Quale tra questi è un esempio di sistema Hard Real-Time?", options:["Streaming video","Prelievo al bancomat","Pilota automatico di un aereo","Elettrodomestici smart"], correct:2, explanation:"Il pilota automatico di un aereo è un sistema Hard Real-Time: la risposta DEVE arrivare entro il tempo stabilito, altrimenti le conseguenze possono essere catastrofiche." },
+  { id:15, question:"Nella struttura di un SO moderno, qual è il livello più vicino all'hardware?", options:["L'interfaccia utente (CLI/GUI)","Le applicazioni utente","I gestori di sistema","Il Kernel"], correct:3, explanation:"Il Kernel è il nucleo del SO, il livello più vicino all'hardware. Gestisce direttamente le risorse hardware (CPU, RAM, dischi, periferiche)." },
+  { id:16, question:"Cos'era il JCL nei primi sistemi batch?", options:["Un linguaggio di programmazione ad alto livello","Un dispositivo di input/output","Un linguaggio per descrivere cosa caricare ed eseguire (Job Control Language)","Un protocollo di rete"], correct:2, explanation:"JCL = Job Control Language. Le schede JCL descrivevano cosa caricare ed eseguire, permettendo l'automazione nei sistemi batch." },
+  { id:17, question:"Cos'è il \"turnaround time\"?", options:["Il tempo di accensione del computer","Il tempo dalla richiesta al completamento del job (minore = migliore)","Il tempo necessario per cambiare programma","Il tempo di vita utile di un mainframe"], correct:1, explanation:"Turnaround time = tempo dalla richiesta al completamento. Minore è il turnaround time, migliore è la prestazione del sistema." },
+  { id:18, question:"Quale standard del 1988 definì un'interfaccia API comune per i sistemi derivati da UNIX?", options:["ISO 9001","IEEE 802.11","POSIX","TCP/IP"], correct:2, explanation:"Nel 1988 fu definito lo standard POSIX, che fornisce un'interfaccia API comune per i sistemi operativi derivati da UNIX." },
+  { id:19, question:"Quali tre innovazioni degli anni '60 resero possibile la multiprogrammazione?", options:["GUI, mouse, tastiera","DMA, Interrupt, Spooling","TCP/IP, Ethernet, Wi-Fi","FORTRAN, COBOL, C"], correct:1, explanation:"DMA (trasferimento diretto in memoria), Interrupt (segnali hardware) e Spooling (buffer su disco) furono le tre innovazioni che, insieme ai dischi ad accesso casuale, resero possibile la multiprogrammazione." },
+  { id:20, question:"Da quale progetto nasce direttamente UNIX?", options:["IBM System/360","EDSAC","MULTICS","ARPANET"], correct:2, explanation:"UNIX nasce dalla difficoltà di rendere MULTICS un prodotto industriale. MULTICS fu sviluppato dal MIT, Bell Labs e General Electric." }
+];
+
+let questions = [], currentQ = 0, selected = null, confirmed = false, score = 0, answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(allQuestions);
+  currentQ = 0; selected = null; confirmed = false; score = 0; answers = [];
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('resultsScreen').classList.add('hidden');
+  document.getElementById('quizScreen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('qCounter').textContent = `Domanda ${currentQ+1} di ${questions.length}`;
+  document.getElementById('scoreLabel').textContent = `Punteggio: ${score}`;
+  document.getElementById('progressFill').style.width = `${(currentQ/questions.length)*100}%`;
+  document.getElementById('questionText').textContent = q.question;
+
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="letter">${letters[i]}.</span><span>${opt}</span>`;
+    btn.onclick = () => selectOption(i);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('explanationBox').classList.add('hidden');
+  const confirmBtn = document.getElementById('confirmBtn');
+  confirmBtn.classList.remove('hidden');
+  confirmBtn.className = 'btn-disabled';
+  confirmBtn.disabled = true;
+  document.getElementById('nextBtn').classList.add('hidden');
+  selected = null;
+  confirmed = false;
+}
+
+function selectOption(i) {
+  if (confirmed) return;
+  selected = i;
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((b, idx) => { b.className = idx === i ? 'option-btn selected' : 'option-btn'; });
+  const confirmBtn = document.getElementById('confirmBtn');
+  confirmBtn.className = 'btn-primary';
+  confirmBtn.disabled = false;
+  confirmBtn.style.padding = '13px 44px';
+  confirmBtn.style.fontSize = '15px';
+}
+
+function confirmAnswer() {
+  if (selected === null || confirmed) return;
+  confirmed = true;
+  const q = questions[currentQ];
+  const isCorrect = selected === q.correct;
+  if (isCorrect) score++;
+  answers.push({ qId: q.id, selected, correct: q.correct, isCorrect });
+
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((b, i) => {
+    b.classList.add('locked');
+    if (i === q.correct) {
+      b.className = 'option-btn correct locked';
+      b.querySelector('.letter').textContent = '✅';
+    } else if (i === selected && !isCorrect) {
+      b.className = 'option-btn wrong locked';
+      b.querySelector('.letter').textContent = '❌';
+    }
+  });
+
+  document.getElementById('scoreLabel').textContent = `Punteggio: ${score}`;
+  document.getElementById('progressFill').style.width = `${((currentQ+1)/questions.length)*100}%`;
+
+  const expBox = document.getElementById('explanationBox');
+  expBox.innerHTML = `<strong>💡 Spiegazione:</strong> ${q.explanation}`;
+  expBox.classList.remove('hidden');
+
+  document.getElementById('confirmBtn').classList.add('hidden');
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.classList.remove('hidden');
+  nextBtn.textContent = currentQ+1 >= questions.length ? 'Vedi risultati' : 'Prossima domanda →';
+}
+
+function nextQuestion() {
+  if (currentQ+1 >= questions.length) {
+    showResults();
+  } else {
+    currentQ++;
+    renderQuestion();
+  }
+}
+
+function showResults() {
+  document.getElementById('quizScreen').classList.add('hidden');
+  const pct = Math.round((score/questions.length)*100);
+  const grade = pct >= 90 ? {emoji:'🏆',label:'Eccellente!',color:'#22c55e'} :
+                pct >= 70 ? {emoji:'👏',label:'Ottimo lavoro!',color:'#3b82f6'} :
+                pct >= 50 ? {emoji:'📚',label:'Sufficiente, ripassa un po\'!',color:'#f59e0b'} :
+                            {emoji:'💪',label:'Da ripassare, non mollare!',color:'#ef4444'};
+
+  let resultsHTML = answers.map(a => {
+    const origQ = allQuestions.find(q => q.id === a.qId);
+    return `<div class="result-item ${a.isCorrect?'ok':'ko'}">
+      <span class="icon">${a.isCorrect?'✅':'❌'}</span>
+      <span class="text">${origQ.question}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('resultsScreen').innerHTML = `
+    <div class="emoji">${grade.emoji}</div>
+    <h2>${grade.label}</h2>
+    <div class="score-circle" style="border:5px solid ${grade.color}">
+      <span class="big" style="color:${grade.color}">${score}/${questions.length}</span>
+      <span class="small">${pct}%</span>
+    </div>
+    <div class="results-list">${resultsHTML}</div>
+    <button class="btn-primary" onclick="startQuiz()">🔄 Riprova</button>
+  `;
+  document.getElementById('resultsScreen').classList.remove('hidden');
+}
+</script>
+</body>
+</html>

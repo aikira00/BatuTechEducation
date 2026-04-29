@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz – Gestione dei Processi</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0c4a6e 100%);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container { max-width: 660px; width: 100%; }
+
+  /* START */
+  .screen-start { text-align: center; padding-top: 10vh; }
+  .screen-start .emoji { font-size: 48px; margin-bottom: 8px; }
+  .screen-start h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .screen-start .subtitle { color: #94a3b8; font-size: 15px; margin-bottom: 20px; }
+  .info-box {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px 28px;
+    text-align: left;
+    margin-bottom: 28px;
+  }
+  .info-box p { color: #cbd5e1; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+  .topics { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .topic-tag {
+    background: rgba(14,165,233,0.12);
+    border: 1px solid rgba(14,165,233,0.25);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: #7dd3fc;
+  }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .info-item {
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #e2e8f0;
+  }
+  .info-item .icon { font-size: 18px; }
+
+  /* BUTTONS */
+  .btn-primary {
+    background: linear-gradient(135deg, #0ea5e9, #0284c7);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 48px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(14,165,233,0.4);
+    transition: transform 0.15s;
+  }
+  .btn-primary:hover { transform: scale(1.04); }
+  .btn-disabled {
+    background: rgba(255,255,255,0.06);
+    color: #64748b;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 44px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: not-allowed;
+  }
+
+  /* PROGRESS */
+  .progress-bar { margin-bottom: 20px; }
+  .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .progress-header span { font-size: 13px; color: #94a3b8; }
+  .progress-header .score { color: #0ea5e9; font-weight: 600; }
+  .progress-track { height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  /* QUESTION */
+  .question-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  .question-card h2 { font-size: 18px; font-weight: 600; line-height: 1.5; color: #f1f5f9; }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .option-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: #e2e8f0;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .option-btn:hover:not(.locked) {
+    background: rgba(14,165,233,0.08);
+    border-color: rgba(14,165,233,0.3);
+  }
+  .option-btn.selected {
+    background: rgba(14,165,233,0.15);
+    border-color: rgba(14,165,233,0.5);
+    color: #7dd3fc;
+  }
+  .option-btn.correct {
+    background: rgba(34,197,94,0.12);
+    border-color: rgba(34,197,94,0.5);
+    color: #86efac;
+  }
+  .option-btn.wrong {
+    background: rgba(239,68,68,0.12);
+    border-color: rgba(239,68,68,0.5);
+    color: #fca5a5;
+  }
+  .option-btn .letter {
+    font-weight: 700;
+    color: #64748b;
+    flex-shrink: 0;
+    margin-top: 1px;
+    min-width: 24px;
+  }
+  .option-btn.correct .letter { color: #22c55e; }
+  .option-btn.wrong .letter { color: #ef4444; }
+
+  /* EXPLANATION */
+  .explanation {
+    background: rgba(14,165,233,0.08);
+    border: 1px solid rgba(14,165,233,0.2);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    color: #7dd3fc;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .explanation strong { color: #38bdf8; }
+
+  .action-area { text-align: center; padding: 10px 0 20px; }
+
+  /* RESULTS */
+  .screen-results { text-align: center; padding-top: 6vh; }
+  .screen-results .emoji { font-size: 56px; margin-bottom: 12px; }
+  .screen-results h2 { font-size: 26px; font-weight: 700; margin-bottom: 20px; }
+  .score-circle {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.04);
+    margin: 0 auto 24px;
+  }
+  .score-circle .big { font-size: 36px; font-weight: 800; }
+  .score-circle .small { font-size: 13px; color: #94a3b8; }
+  .results-list {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    text-align: left;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  .result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .result-item:last-child { border-bottom: none; }
+  .result-item .r-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .result-item .r-text { font-size: 13px; line-height: 1.5; }
+  .result-item.ok .r-text { color: #86efac; }
+  .result-item.ko .r-text { color: #fca5a5; }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- START SCREEN -->
+  <div id="startScreen" class="screen-start">
+    <div class="emoji">⚙️</div>
+    <h1>Quiz: Gestione dei Processi</h1>
+    <p class="subtitle">TPSI – Classe 3ª • I.I.S. A. Avogadro</p>
+    <div class="info-box">
+      <p>20 domande a risposta multipla sulla gestione dei processi nei Sistemi Operativi: dal bootstrap al context switch.</p>
+      <div class="topics">
+        <span class="topic-tag">Bootstrap</span>
+        <span class="topic-tag">Kernel</span>
+        <span class="topic-tag">System Calls</span>
+        <span class="topic-tag">User/Kernel Mode</span>
+        <span class="topic-tag">Processo vs Programma</span>
+        <span class="topic-tag">PCB</span>
+        <span class="topic-tag">Context Switch</span>
+        <span class="topic-tag">Memoria</span>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="icon">📝</span> 20 domande</div>
+        <div class="info-item"><span class="icon">🔀</span> Ordine casuale</div>
+        <div class="info-item"><span class="icon">✅</span> Feedback immediato</div>
+        <div class="info-item"><span class="icon">📊</span> Punteggio finale</div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="startQuiz()">Inizia il Quiz</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quizScreen" class="hidden">
+    <div class="progress-bar">
+      <div class="progress-header">
+        <span id="qCounter"></span>
+        <span class="score" id="scoreLabel">Punteggio: 0</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="question-card"><h2 id="questionText"></h2></div>
+    <div class="options" id="optionsContainer"></div>
+    <div id="explanationBox" class="explanation hidden"></div>
+    <div class="action-area">
+      <button id="confirmBtn" class="btn-disabled" disabled onclick="confirmAnswer()">Conferma</button>
+      <button id="nextBtn" class="btn-primary hidden" onclick="nextQuestion()">Prossima domanda →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="resultsScreen" class="screen-results hidden"></div>
+
+</div>
+
+<script>
+const allQuestions = [
+  {
+    id:1,
+    question:"Qual è la sequenza corretta delle fasi di avvio (bootstrap) di un computer?",
+    options:["Kernel → POST → UEFI/BIOS","UEFI/BIOS → POST → Caricamento del Kernel","POST → Kernel → UEFI/BIOS","Shell → Kernel → Hardware"],
+    correct:1,
+    explanation:"La sequenza corretta è: UEFI/BIOS (firmware in ROM/EEPROM) → POST (autodiagnostica hardware) → Caricamento del Kernel in RAM."
+  },
+  {
+    id:2,
+    question:"Cosa significa POST nella fase di bootstrap?",
+    options:["Power Output System Transfer","Power-On Self Test: autodiagnostica dei componenti hardware","Protocol for Operating System Transfer","Post-Operation System Test"],
+    correct:1,
+    explanation:"POST = Power-On Self Test. Ogni componente hardware esegue un'autodiagnostica per verificare il corretto funzionamento prima di procedere al caricamento del SO."
+  },
+  {
+    id:3,
+    question:"Qual è il vantaggio principale di UEFI rispetto al vecchio BIOS?",
+    options:["È più economico da produrre","Supporta dischi >2TB, interfaccia grafica e driver aggiuntivi","Occupa meno spazio in memoria","Non ha bisogno del POST"],
+    correct:1,
+    explanation:"UEFI supporta dischi >2TB, offre un'interfaccia grafica, permette driver aggiuntivi ed è compatibile con i SO moderni, superando i limiti del vecchio BIOS."
+  },
+  {
+    id:4,
+    question:"Nel modello a cipolla del SO, qual è l'ordine corretto dall'esterno verso l'interno?",
+    options:["Kernel → System Calls → Shell → Applicazioni","Hardware → Applicazioni → Kernel → Shell","Applicazioni → Shell → System Calls → Kernel → Hardware","Shell → Applicazioni → Hardware → Kernel"],
+    correct:2,
+    explanation:"Il modello a cipolla prevede, dall'esterno: Applicazioni utente → Shell/GUI → System Calls → Kernel → Hardware. Il Kernel è il cuore del SO, sempre presente in RAM."
+  },
+  {
+    id:5,
+    question:"Quale caratteristica NON appartiene al Kernel?",
+    options:["È sempre presente in RAM","Solo lui accede direttamente all'hardware","Garantisce la portabilità del SO","Offre un'interfaccia grafica all'utente"],
+    correct:3,
+    explanation:"L'interfaccia grafica (GUI) è compito della Shell, non del Kernel. Il Kernel è sempre in RAM, accede direttamente all'hardware e garantisce la portabilità del SO."
+  },
+  {
+    id:6,
+    question:"Qual è la differenza tra CUI e GUI?",
+    options:["CUI è più moderna di GUI","CUI usa comandi testuali, GUI usa finestre, icone e mouse","CUI funziona solo su Windows, GUI solo su Linux","CUI non ha bisogno di system calls"],
+    correct:1,
+    explanation:"CUI (Command User Interface) usa comandi testuali con un prompt, GUI (Graphical User Interface) usa finestre, icone, menu e puntatore. Entrambe comunicano con il kernel tramite system calls."
+  },
+  {
+    id:7,
+    question:"Cosa indica il mode bit della CPU?",
+    options:["Se il computer è acceso o spento","Se la CPU sta operando in User Mode o Kernel Mode","La velocità del processore","Il numero di processi in esecuzione"],
+    correct:1,
+    explanation:"Il mode bit indica se la CPU opera in User Mode (programmi meno privilegiati) o Kernel Mode (massimo privilegio, accesso diretto all'hardware)."
+  },
+  {
+    id:8,
+    question:"Cosa succede quando un'applicazione in User Mode deve accedere all'hardware?",
+    options:["Accede direttamente senza restrizioni","Chiama una system call → switch a Kernel Mode → il Kernel esegue → ritorno a User Mode","Deve riavviare il computer","Chiede il permesso all'utente tramite GUI"],
+    correct:1,
+    explanation:"In User Mode i programmi NON possono accedere direttamente all'hardware. Devono chiamare una system call, che causa lo switch a Kernel Mode. Il Kernel esegue l'operazione e poi si torna a User Mode."
+  },
+  {
+    id:9,
+    question:"Quale di queste NON è una categoria di system calls?",
+    options:["Gestione dei processi","Gestione dei file","Gestione della grafica 3D","Gestione della memoria"],
+    correct:2,
+    explanation:"Le categorie principali di system calls sono: Processi, File, Dispositivi, Informazioni, Comunicazione e Memoria. La grafica 3D non è una categoria di system calls."
+  },
+  {
+    id:10,
+    question:"Qual è la differenza fondamentale tra un programma e un processo?",
+    options:["Non c'è differenza, sono sinonimi","Il programma è un'entità passiva (file su disco), il processo è un'entità attiva (programma in esecuzione)","Il processo è più piccolo del programma","Il programma è in RAM, il processo è su disco"],
+    correct:1,
+    explanation:"Il programma è un'entità PASSIVA (sequenza di istruzioni, un file su disco). Il processo è un'entità ATTIVA (un'istanza del programma IN ESECUZIONE, con stato, PID e risorse proprie)."
+  },
+  {
+    id:11,
+    question:"Se eseguo lo stesso programma 3 volte contemporaneamente, quanti processi si creano?",
+    options:["1 processo condiviso","2 processi","3 processi distinti, ciascuno con il proprio spazio di memoria","Dipende dalla dimensione del programma"],
+    correct:2,
+    explanation:"Un programma eseguito 3 volte genera 3 processi distinti, ciascuno con il proprio spazio di memoria, PID e stato indipendente."
+  },
+  {
+    id:12,
+    question:"Come funziona realmente il multitasking su una CPU single-core?",
+    options:["La CPU esegue davvero tutti i programmi in parallelo","Lo scheduler alterna l'esecuzione dei processi così velocemente che sembra tutto simultaneo","Ogni programma ha una sua CPU virtuale","I programmi si eseguono uno dopo l'altro, senza alternanza"],
+    correct:1,
+    explanation:"La CPU esegue sempre UNA SOLA istruzione alla volta. Lo scheduler del SO alterna l'esecuzione dei processi così velocemente che all'utente sembra tutto simultaneo."
+  },
+  {
+    id:13,
+    question:"Cosa succede quando due processi competono per la stessa risorsa senza una gestione adeguata?",
+    options:["La risorsa viene duplicata","Si verifica un deadlock (blocco reciproco permanente)","Entrambi i processi terminano automaticamente","Il SO ignora il conflitto"],
+    correct:1,
+    explanation:"Quando processi in competizione non sono gestiti correttamente, si può verificare un deadlock: un blocco reciproco permanente in cui ciascun processo attende una risorsa detenuta dall'altro."
+  },
+  {
+    id:14,
+    question:"Quali sono i 5 stati del ciclo di vita di un processo?",
+    options:["Start, Load, Execute, Save, End","New, Ready, Running, Waiting, Terminated","Create, Queue, Active, Sleep, Delete","Boot, Idle, Busy, Pause, Shutdown"],
+    correct:1,
+    explanation:"I 5 stati sono: New (appena creato), Ready (in RAM, aspetta la CPU), Running (in esecuzione), Waiting (in attesa di I/O), Terminated (finito, risorse liberate)."
+  },
+  {
+    id:15,
+    question:"Cosa succede durante la transizione 'preemption' nel ciclo di vita di un processo?",
+    options:["Il processo viene creato","Il processo passa da Running a Ready perché il SO gli toglie la CPU","Il processo termina","Il processo riceve un dato di I/O"],
+    correct:1,
+    explanation:"La preemption avviene quando il SO toglie la CPU a un processo in Running e lo riporta nello stato Ready. Il SO decide quando e come un processo passa da uno stato all'altro."
+  },
+  {
+    id:16,
+    question:"Cos'è il PCB (Process Control Block)?",
+    options:["Un componente hardware della CPU","Il descrittore del processo: la sua 'carta d'identità' contenente PID, stato, registri, ecc.","Un programma di controllo del BIOS","Un blocco di memoria condivisa tra processi"],
+    correct:1,
+    explanation:"Il PCB è la 'carta d'identità' del processo. Contiene: PID, stato, Program Counter, registri CPU, spazio RAM, info di scheduling e info I/O. Viene creato alla nascita del processo e rimosso alla sua terminazione."
+  },
+  {
+    id:17,
+    question:"Quale informazione nel PCB indica l'indirizzo della prossima istruzione da eseguire?",
+    options:["PID","Stack Pointer","Program Counter","Registro di stato"],
+    correct:2,
+    explanation:"Il Program Counter (PC) contiene l'indirizzo della prossima istruzione da eseguire. È fondamentale per il context switch: quando un processo riprende, sa esattamente da dove era rimasto."
+  },
+  {
+    id:18,
+    question:"Qual è la sequenza corretta di un context switch?",
+    options:["Terminare il processo → creare un nuovo processo → eseguirlo","Salvare lo stato nel PCB corrente → selezionare il prossimo processo → caricare il suo stato dal PCB","Cancellare la RAM → caricare il nuovo programma → eseguirlo","Spegnere la CPU → riavviarla → eseguire il nuovo processo"],
+    correct:1,
+    explanation:"Il context switch prevede: 1) Salva lo stato del processo corrente nel suo PCB, 2) Lo scheduler seleziona il prossimo processo dalla coda Ready, 3) Carica lo stato dal PCB del nuovo processo, 4) Il processo riprende da dove si era fermato."
+  },
+  {
+    id:19,
+    question:"Quanto dura tipicamente un context switch e chi lo attua?",
+    options:["1–10 secondi, attuato dall'utente","1–1000 microsecondi, attuato dal Dispatcher","1–5 minuti, attuato dal BIOS","Non ha un tempo misurabile, attuato dalla RAM"],
+    correct:1,
+    explanation:"Il context switch costa da 1 a 1000 μs (microsecondi). È overhead puro ma indispensabile. Viene attuato dal Dispatcher. I Thread nascono proprio per ridurre questo overhead."
+  },
+  {
+    id:20,
+    question:"Nell'area di memoria di un processo, cosa succede se Stack e Heap si incontrano?",
+    options:["La memoria viene raddoppiata automaticamente","Si verifica uno Stack Overflow","Il processo viene messo in stato Waiting","I dati vengono compressi"],
+    correct:1,
+    explanation:"Lo Stack cresce verso il basso e lo Heap cresce verso l'alto. Se si incontrano, si verifica uno Stack Overflow! Lo Stack contiene le chiamate a funzione, lo Heap la memoria allocata dinamicamente (malloc in C, new in Java)."
+  },
+  {
+    id:21,
+    question:"In quale sezione della memoria di un processo si trovano le variabili globali e statiche?",
+    options:["Text","Data","Heap","Stack"],
+    correct:1,
+    explanation:"La sezione Data contiene le variabili globali e le variabili statiche (inizializzate e non). Text contiene il codice, Heap la memoria dinamica e Stack le chiamate a funzione."
+  },
+  {
+    id:22,
+    question:"Come comunicano tra loro i processi cooperanti?",
+    options:["Condividendo direttamente la memoria","Tramite system calls (non condividono la memoria)","Scrivendo su file condivisi sul disco","Tramite l'interfaccia grafica"],
+    correct:1,
+    explanation:"I processi cooperanti comunicano tramite system calls. Non condividono la memoria: il kernel si occupa di gestire sincronizzazione e comunicazione tra processi."
+  },
+  {
+    id:23,
+    question:"Perché senza il PCB non ci sarebbe multiprogrammazione?",
+    options:["Perché il PCB contiene il codice del programma","Perché il PCB salva lo stato del processo quando la CPU passa a un altro, e lo ripristina quando riprende","Perché il PCB gestisce l'interfaccia utente","Perché il PCB controlla la velocità della CPU"],
+    correct:1,
+    explanation:"Il PCB salva tutto lo stato corrente quando la CPU passa a un altro processo. Quando il processo riprende, il PCB ripristina lo stato esatto. Senza questo meccanismo, la multiprogrammazione non sarebbe possibile."
+  },
+  {
+    id:24,
+    question:"Quale delle seguenti è un'API per accedere alle system calls?",
+    options:["HTML","POSIX","HTTP","FTP"],
+    correct:1,
+    explanation:"Le system calls si accedono tramite API come Win32, POSIX e Java API. POSIX è lo standard usato dai sistemi Unix/Linux."
+  },
+  {
+    id:25,
+    question:"Cosa contiene la sezione 'Text' nella memoria di un processo?",
+    options:["Le variabili globali","La memoria allocata dinamicamente","Il codice del programma, le funzioni delle librerie e le costanti","Le chiamate a funzione e le variabili locali"],
+    correct:2,
+    explanation:"La sezione Text contiene il codice del programma, le funzioni delle librerie e le costanti. È la parte 'istruzioni' del processo."
+  }
+];
+
+let questions=[], currentQ=0, selected=null, confirmed=false, score=0, answers=[];
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function startQuiz(){
+  questions=shuffle(allQuestions).slice(0,20);
+  currentQ=0; selected=null; confirmed=false; score=0; answers=[];
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('resultsScreen').classList.add('hidden');
+  document.getElementById('quizScreen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=questions[currentQ];
+  document.getElementById('qCounter').textContent=`Domanda ${currentQ+1} di ${questions.length}`;
+  document.getElementById('scoreLabel').textContent=`Punteggio: ${score}`;
+  document.getElementById('progressFill').style.width=`${(currentQ/questions.length)*100}%`;
+  document.getElementById('questionText').textContent=q.question;
+  const c=document.getElementById('optionsContainer');
+  c.innerHTML='';
+  const L=['A','B','C','D'];
+  q.options.forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.className='option-btn';
+    b.innerHTML=`<span class="letter">${L[i]}.</span><span>${opt}</span>`;
+    b.onclick=()=>selectOption(i);
+    c.appendChild(b);
+  });
+  document.getElementById('explanationBox').classList.add('hidden');
+  const cb=document.getElementById('confirmBtn');
+  cb.classList.remove('hidden');
+  cb.className='btn-disabled';
+  cb.disabled=true;
+  document.getElementById('nextBtn').classList.add('hidden');
+  selected=null; confirmed=false;
+}
+
+function selectOption(i){
+  if(confirmed)return;
+  selected=i;
+  document.querySelectorAll('.option-btn').forEach((b,idx)=>{b.className=idx===i?'option-btn selected':'option-btn';});
+  const cb=document.getElementById('confirmBtn');
+  cb.className='btn-primary';
+  cb.disabled=false;
+  cb.style.padding='13px 44px';
+  cb.style.fontSize='15px';
+}
+
+function confirmAnswer(){
+  if(selected===null||confirmed)return;
+  confirmed=true;
+  const q=questions[currentQ];
+  const ok=selected===q.correct;
+  if(ok)score++;
+  answers.push({qId:q.id,selected,correct:q.correct,isCorrect:ok});
+  document.querySelectorAll('.option-btn').forEach((b,i)=>{
+    b.classList.add('locked');
+    if(i===q.correct){b.className='option-btn correct locked';b.querySelector('.letter').textContent='✅';}
+    else if(i===selected&&!ok){b.className='option-btn wrong locked';b.querySelector('.letter').textContent='❌';}
+  });
+  document.getElementById('scoreLabel').textContent=`Punteggio: ${score}`;
+  document.getElementById('progressFill').style.width=`${((currentQ+1)/questions.length)*100}%`;
+  const e=document.getElementById('explanationBox');
+  e.innerHTML=`<strong>💡 Spiegazione:</strong> ${q.explanation}`;
+  e.classList.remove('hidden');
+  document.getElementById('confirmBtn').classList.add('hidden');
+  const nb=document.getElementById('nextBtn');
+  nb.classList.remove('hidden');
+  nb.textContent=currentQ+1>=questions.length?'Vedi risultati':'Prossima domanda →';
+}
+
+function nextQuestion(){
+  if(currentQ+1>=questions.length){showResults();}
+  else{currentQ++;renderQuestion();}
+}
+
+function showResults(){
+  document.getElementById('quizScreen').classList.add('hidden');
+  const pct=Math.round((score/questions.length)*100);
+  const g=pct>=90?{e:'🏆',l:'Eccellente!',c:'#22c55e'}:pct>=70?{e:'👏',l:'Ottimo lavoro!',c:'#0ea5e9'}:pct>=50?{e:'📚',l:'Sufficiente, ripassa un po\'!',c:'#f59e0b'}:{e:'💪',l:'Da ripassare, non mollare!',c:'#ef4444'};
+  let list=answers.map(a=>{
+    const oq=allQuestions.find(q=>q.id===a.qId);
+    return `<div class="result-item ${a.isCorrect?'ok':'ko'}"><span class="r-icon">${a.isCorrect?'✅':'❌'}</span><span class="r-text">${oq.question}</span></div>`;
+  }).join('');
+  document.getElementById('resultsScreen').innerHTML=`
+    <div class="emoji">${g.e}</div>
+    <h2>${g.l}</h2>
+    <div class="score-circle" style="border:5px solid ${g.c}">
+      <span class="big" style="color:${g.c}">${score}/${questions.length}</span>
+      <span class="small">${pct}%</span>
+    </div>
+    <div class="results-list">${list}</div>
+    <button class="btn-primary" onclick="startQuiz()">🔄 Riprova</button>`;
+  document.getElementById('resultsScreen').classList.remove('hidden');
+}
+</script>
+</body>
+</html>

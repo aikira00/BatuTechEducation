@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BatuTech Education - Materiale Didattico</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        h1 { margin: 0; font-size: 1.8rem; }
+        .section {
+            background: var(--card-bg);
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h2 { color: var(--primary); margin-top: 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
+        ul { list-style: none; padding: 0; }
+        li { margin: 10px 0; display: flex; align-items: center; }
+        li::before { content: "📄"; margin-right: 10px; }
+        a {
+            text-decoration: none;
+            color: var(--text);
+            transition: color 0.2s;
+        }
+        a:hover { color: var(--primary); font-weight: bold; }
+        .quiz-tag {
+            background: #dcfce7;
+            color: #166534;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>BatuTech Education</h1>
+        <p>Repository Artefatti Didattici</p>
+    </header>
+
+    <div class="section">
+        <h2>3 TPSI</h2>
+        <ul>
+            <li><a href="htmlPages/3_tpsi/binding_indirizzi.html">Binding degli Indirizzi</a></li>
+            <li><a href="htmlPages/3_tpsi/quiz/quiz-gestione-processi.html">Quiz: Gestione dei Processi</a> <span class="quiz-tag">QUIZ</span></li>
+            <li><a href="htmlPages/3_tpsi/quiz/quiz-sistemi-operativi.html">Quiz: Sistemi Operativi</a> <span class="quiz-tag">QUIZ</span></li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>4 TPSI</h2>
+        <ul>
+            <li><a href="htmlPages/4_tpsi/sezione_critica_counter.html">Simulazione: Sezione Critica (Counter)</a></li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>5 TPSI</h2>
+        <ul>
+            <li><a href="htmlPages/5_tpsi/studentiNegliAnni/25:26_rotella_sistemiDistribuiti.html">Sistemi Distribuiti (Rotella 25/26)</a></li>
+        </ul>
+    </div>
+
+    <footer style="text-align: center; margin-top: 40px; color: var(--secondary); font-size: 0.9rem;">
+        <p>&copy; 2024 Cristina - BatuTechEducation</p>
+    </footer>
+</div>
+
+</body>
+</html>
