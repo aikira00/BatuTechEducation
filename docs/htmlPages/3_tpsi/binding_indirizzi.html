@@ -593,6 +593,7 @@
       </div>
       <div style="margin-left: auto; display: flex; gap: 0.5rem; flex-wrap: wrap;">
         <button class="primary" id="relocateBtn">↦ Sposta processo</button>
+        <button class="ghost" id="reloadBtn">↻ Ricarica</button>
         <button class="ghost" id="resetBtn">↺ Reset</button>
       </div>
     </div>
@@ -733,7 +734,7 @@
           <tr>
             <td>Spostare il processo durante l'esecuzione</td>
             <td class="no">✗ impossibile</td>
-            <td class="no">✗ impossibile (serve ricaricare)</td>
+            <td class="no">✗ richiede un re-loading completo</td>
             <td class="ok">✓ basta cambiare il base register</td>
           </tr>
           <tr>
@@ -815,8 +816,9 @@ const INITIAL_LOAD_BASE_CELL = 4; // 0x10
 const RELOCATED_BASE_CELL = 14;   // 0x38
 
 let mode = 'compile';             // 'compile' | 'load' | 'exec'
-let processBase = INITIAL_LOAD_BASE_CELL; // current cell where process starts
-let mmuBase = INITIAL_LOAD_BASE_CELL;     // MMU base register (only meaningful in exec mode)
+let processBase = INITIAL_LOAD_BASE_CELL; // current cell where process starts in physical mem
+let loadedBase  = INITIAL_LOAD_BASE_CELL; // where the loader baked addresses (load-mode only)
+let mmuBase     = INITIAL_LOAD_BASE_CELL; // MMU base register (exec-mode only)
 let relocated = false;
 
 const PROGRAM = [
@@ -888,16 +890,18 @@ varX = varX + <span class="num">1</span>;
 <span class="kw">STORE</span> R1, [${varAddr}]
 <span class="kw">HALT</span>`;
   } else if (mode === 'load') {
-    // loader patches addresses
-    const varAddr = fmtAddr(cellToByte(processBase + VARX_OFFSET_CELLS));
-    const baseAddr = fmtAddr(cellToByte(processBase));
+    // loader patches addresses for loadedBase (does NOT auto-update on relocation)
+    const varAddr = fmtAddr(cellToByte(loadedBase + VARX_OFFSET_CELLS));
+    const baseAddr = fmtAddr(cellToByte(loadedBase));
+    const stale = (loadedBase !== processBase);
     loadText =
-`<span class="com">// loader sceglie base = ${baseAddr}</span>
-<span class="com">// e riscrive gli indirizzi:</span>
+`<span class="com">// loader ha caricato a base = ${baseAddr}</span>
+<span class="com">// e patchato gli indirizzi:</span>
 <span class="kw">LOAD</span>  R1, [<span class="high">${varAddr}</span>]
 <span class="kw">ADD</span>   R1, #1
 <span class="kw">STORE</span> R1, [<span class="high">${varAddr}</span>]
-<span class="kw">HALT</span>`;
+<span class="kw">HALT</span>
+${stale ? '\n<span class="com" style="color: var(--red);">// ⚠ codice congelato qui:\n//   il processo è stato spostato\n//   ma gli indirizzi non si aggiornano</span>' : ''}`;
   } else { // exec
     const baseAddr = fmtAddr(cellToByte(processBase));
     loadText =
@@ -915,10 +919,7 @@ varX = varX + <span class="num">1</span>;
   // What the CPU emits + how it gets resolved
   if (mode === 'compile' || mode === 'load') {
     // CPU emits absolute address baked at compile/load
-    let bakedBase = (mode === 'compile') ? COMPILE_BASE_CELL : processBase;
-    if (mode === 'load' && !relocated) bakedBase = processBase;
-    if (mode === 'load' && relocated) bakedBase = INITIAL_LOAD_BASE_CELL; // baked at load BEFORE relocation
-    if (mode === 'compile') bakedBase = COMPILE_BASE_CELL;
+    const bakedBase = (mode === 'compile') ? COMPILE_BASE_CELL : loadedBase;
     const varAddr = fmtAddr(cellToByte(bakedBase + VARX_OFFSET_CELLS));
     execText =
 `<span class="com">// CPU emette indirizzi ASSOLUTI</span>
@@ -962,9 +963,7 @@ function renderFlow() {
 
   if (mode === 'compile' || mode === 'load') {
     // CPU emits absolute address; no MMU translation
-    let bakedBase;
-    if (mode === 'compile') bakedBase = COMPILE_BASE_CELL;
-    else bakedBase = relocated ? INITIAL_LOAD_BASE_CELL : processBase; // load mode: baked at LOAD time
+    const bakedBase = (mode === 'compile') ? COMPILE_BASE_CELL : loadedBase;
 
     const cpuAddr = fmtAddr(cellToByte(bakedBase + VARX_OFFSET_CELLS));
     cpuVal.textContent = cpuAddr;
@@ -1016,8 +1015,7 @@ function renderMemory() {
     accessCell = COMPILE_BASE_CELL + VARX_OFFSET_CELLS;
     accessIsCorrect = (accessCell === processBase + VARX_OFFSET_CELLS);
   } else if (mode === 'load') {
-    const bakedBase = relocated ? INITIAL_LOAD_BASE_CELL : processBase;
-    accessCell = bakedBase + VARX_OFFSET_CELLS;
+    accessCell = loadedBase + VARX_OFFSET_CELLS;
     accessIsCorrect = (accessCell === processBase + VARX_OFFSET_CELLS);
   } else { // exec
     accessCell = mmuBase + VARX_OFFSET_CELLS;
@@ -1081,7 +1079,8 @@ function relocate() {
     if (mode === 'exec') {
       mmuBase = RELOCATED_BASE_CELL; // MMU base register updated → all good
     }
-    // In compile/load mode, the code keeps its old hardcoded addresses → broken
+    // In compile/load mode: loadedBase NOT updated automatically.
+    // The code in memory keeps the old hardcoded addresses → broken.
     relocated = true;
   } else {
     processBase = INITIAL_LOAD_BASE_CELL;
@@ -1095,13 +1094,15 @@ function relocate() {
     if (mode === 'compile') {
       renderStatus(
         `<strong>✗ Processo spostato a ${fmtAddr(cellToByte(processBase))}, ma il codice è bloccato a ${fmtAddr(cellToByte(COMPILE_BASE_CELL))}.</strong> ` +
-        `L'istruzione <code style="color:var(--red);">LOAD R1, [${fmtAddr(cellToByte(COMPILE_BASE_CELL + VARX_OFFSET_CELLS))}]</code> ora punta a una cella che non contiene varX. Il programma legge dati spazzatura o si schianta. Con il binding a compile-time non si può rilocare.`,
+        `L'istruzione <code style="color:var(--red);">LOAD R1, [${fmtAddr(cellToByte(COMPILE_BASE_CELL + VARX_OFFSET_CELLS))}]</code> ora punta a una cella che non contiene varX. ` +
+        `Con il binding a compile-time gli indirizzi sono cementati nel binario: nemmeno ricaricarlo serve, andrebbe ricompilato.`,
         'bad'
       );
     } else if (mode === 'load') {
       renderStatus(
-        `<strong>✗ Processo spostato a ${fmtAddr(cellToByte(processBase))} dopo il caricamento.</strong> ` +
-        `Il loader aveva già fissato gli indirizzi a load-time (puntano a ${fmtAddr(cellToByte(INITIAL_LOAD_BASE_CELL + VARX_OFFSET_CELLS))}). Per spostare il processo bisognerebbe ricaricarlo da capo. Il binding a load-time consente di scegliere dove caricare, ma non di spostare un processo già caricato.`,
+        `<strong>✗ Processo spostato a ${fmtAddr(cellToByte(processBase))}, ma il codice in memoria non cambia.</strong> ` +
+        `Il loader aveva patchato gli indirizzi UNA VOLTA al caricamento (puntano a ${fmtAddr(cellToByte(loadedBase + VARX_OFFSET_CELLS))}). Spostando il processo, quegli indirizzi diventano stale. ` +
+        `<strong style="color: var(--cyan);">Premi "↻ Ricarica"</strong> per ri-eseguire il loader sulla nuova posizione: solo così il codice viene ri-patchato.`,
         'bad'
       );
     } else {
@@ -1116,9 +1117,49 @@ function relocate() {
   }
 }
 
+function reload() {
+  if (mode === 'compile') {
+    renderStatus(
+      `<strong>✗ Ricaricare non aiuta in compile-time binding.</strong> ` +
+      `Il binario contiene indirizzi assoluti cementati dal compilatore: il loader non può cambiarli. ` +
+      `L'unica via per far girare il programma a un altro indirizzo è <em>ricompilarlo</em> con un nuovo base.`,
+      'bad'
+    );
+    return;
+  }
+  if (mode === 'exec') {
+    renderStatus(
+      `<strong>ℹ Ricaricare non serve in execution-time binding.</strong> ` +
+      `Il codice contiene solo indirizzi logici: per spostare il processo basta aggiornare il base register della MMU, niente patching del binario.`,
+      'info'
+    );
+    return;
+  }
+  // mode === 'load'
+  if (loadedBase === processBase) {
+    renderStatus(
+      `Il codice è già caricato alla posizione corrente (${fmtAddr(cellToByte(processBase))}). Nessun ri-caricamento necessario.`,
+      'info'
+    );
+    return;
+  }
+  // Re-run the loader: patch addresses for the new processBase
+  const oldLoaded = loadedBase;
+  loadedBase = processBase;
+  renderAll();
+  renderStatus(
+    `<strong>✓ Loader ri-eseguito a ${fmtAddr(cellToByte(loadedBase))}.</strong> ` +
+    `Gli indirizzi nel codice sono stati ri-patchati: <code>${fmtAddr(cellToByte(oldLoaded + VARX_OFFSET_CELLS))}</code> → <code>${fmtAddr(cellToByte(loadedBase + VARX_OFFSET_CELLS))}</code>. ` +
+    `Ora <code>LOAD R1, [...]</code> punta di nuovo alla cella giusta. ` +
+    `<em>Lezione: con load-time binding si può rilocare, ma solo passando da un re-loading completo.</em>`,
+    'good'
+  );
+}
+
 function reset() {
   processBase = INITIAL_LOAD_BASE_CELL;
-  mmuBase = INITIAL_LOAD_BASE_CELL;
+  loadedBase  = INITIAL_LOAD_BASE_CELL;
+  mmuBase     = INITIAL_LOAD_BASE_CELL;
   relocated = false;
   renderAll();
   renderStatus('', '');
@@ -1143,6 +1184,7 @@ document.querySelectorAll('#modeToggle button').forEach(btn => {
 });
 
 document.getElementById('relocateBtn').addEventListener('click', relocate);
+document.getElementById('reloadBtn').addEventListener('click', reload);
 document.getElementById('resetBtn').addEventListener('click', reset);
 
 // init

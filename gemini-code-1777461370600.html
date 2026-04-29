@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BATUTECH_TERMINAL_V1.0</title>
+    <style>
+        /* Stile Retro Computer Anni '80 */
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Effetto sfarfallio leggero */
+            animation: flicker 0.15s infinite;
+        }
+
+        /* Effetto Scanlines (righe orizzontali del monitor) */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            border: 2px solid #fff;
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid #fff;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin: 0;
+        }
+
+        .version {
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            background-color: #fff;
+            color: #000;
+            display: inline-block;
+            padding: 2px 10px;
+            text-transform: uppercase;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 15px 0;
+            font-size: 1.1rem;
+        }
+
+        li::before {
+            content: "> ";
+        }
+
+        a {
+            color: #fff;
+            text-decoration: none;
+            border-bottom: 1px dashed #fff;
+        }
+
+        a:hover {
+            background-color: #fff;
+            color: #000;
+            border-bottom: none;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            border: 1px solid #fff;
+            padding: 0 5px;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 0.8rem;
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.98; }
+            50% { opacity: 1; }
+            100% { opacity: 0.99; }
+        }
+
+        /* Effetto cursore che lampeggia */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background: #fff;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>BatuTech Education</h1>
+        <div class="version">SISTEMA OPERATIVO ATTIVO V.1988-2025</div>
+        <p>SELEZIONARE UN ARTEFATTO PER L'ESECUZIONE<span class="cursor"></span></p>
+    </header>
+
+    <div class="section">
+        <h2>[ 03_TPSI ]</h2>
+        <ul>
+            <li><a href="htmlPages/3_tpsi/binding_indirizzi.html">BINDING_INDIRIZZI.EXE</a></li>
+            <li><a href="htmlPages/3_tpsi/quiz/quiz-gestione-processi.html">QUIZ_PROCESSI.SYS</a> <span class="tag">TEST</span></li>
+            <li><a href="htmlPages/3_tpsi/quiz/quiz-sistemi-operativi.html">QUIZ_SO.SYS</a> <span class="tag">TEST</span></li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>[ 04_TPSI ]</h2>
+        <ul>
+            <li><a href="htmlPages/4_tpsi/sezione_critica_counter.html">CRITICAL_SECTION_SIM.EXE</a></li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>[ 05_TPSI ]</h2>
+        <ul>
+            <li><a href="htmlPages/5_tpsi/studentiNegliAnni/25:26_rotella_sistemiDistribuiti.html">DISTRIBUTED_SYS_ROTELLA.LOG</a></li>
+        </ul>
+    </div>
+
+    <footer>
+        -- FINE DEL DISCO --<br>
+        (C) 1988 CRISTINA @ BATUTECH
+    </footer>
+</div>
+
+</body>
+</html>
