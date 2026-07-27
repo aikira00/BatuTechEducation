@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTTP Methods — API Journeys</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f4f2ed; --surface:#fff; --surface2:#eeebe4; --border:#d5d0c6;
+  --text:#111008; --sub:#2e2c26; --muted:#6b6558;
+  --c1:#0a7c5c; --b1:#ddf4ec; --d1:#7ecfb5;
+  --c2:#1550a0; --b2:#e2edfc; --d2:#85aee8;
+  --c3:#8f4e00; --b3:#fdf0df; --d3:#e8b96a;
+  --c4:#5c28b0; --b4:#ede6fb; --d4:#b898e8;
+  --c5:#b81818; --b5:#fce8e8; --d5:#e89090;
+  --r:14px;
+  --mc:#0a7c5c; --mc-bg:#ddf4ec; --mc-bd:#7ecfb5;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ========== SELECTION ========== */
+#sel{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:40px 24px;
+}
+.sel-ey{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:10px;text-align:center;
+}
+.sel-h1{
+  font-size:clamp(2rem,4.5vw,3.4rem);font-weight:800;letter-spacing:-.03em;
+  color:var(--text);margin-bottom:6px;text-align:center;
+}
+.sel-sub{font-size:15px;font-weight:400;color:var(--sub);margin-bottom:48px;text-align:center;}
+
+.cards-row{
+  display:flex;flex-wrap:nowrap;gap:14px;
+  width:100%;max-width:1160px;
+  overflow-x:auto;padding-bottom:6px;scrollbar-width:none;
+}
+.cards-row::-webkit-scrollbar{display:none;}
+
+.jcard{
+  flex:1;min-width:175px;
+  background:var(--surface);border:2px solid var(--border);border-radius:var(--r);
+  padding:26px 20px 20px;cursor:pointer;
+  transition:transform .18s,box-shadow .18s,border-color .18s;
+  display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;
+}
+.jcard::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:var(--jc);opacity:0;transition:opacity .18s;
+}
+.jcard:hover{transform:translateY(-5px);box-shadow:0 14px 40px -8px rgba(0,0,0,.13);border-color:var(--jc);}
+.jcard:hover::after{opacity:1;}
+
+.jcard-icon{font-size:30px;line-height:1;margin-bottom:2px;}
+.jcard-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  padding:3px 10px;border-radius:5px;
+  background:var(--jbg);color:var(--jc);border:1.5px solid var(--jbd);
+  align-self:flex-start;letter-spacing:.05em;
+}
+.jcard-title{font-size:15px;font-weight:700;color:var(--text);line-height:1.25;}
+.jcard-desc{font-size:12.5px;font-weight:400;color:var(--sub);line-height:1.55;}
+.jcard-methods{
+  display:flex;gap:4px;flex-wrap:wrap;margin-top:2px;
+}
+.jm{
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  padding:2px 7px;border-radius:4px;
+  background:var(--surface2);color:var(--muted);border:1px solid var(--border);
+  letter-spacing:.04em;
+}
+.jcard-cta{
+  font-size:12.5px;font-weight:700;color:var(--jc);
+  opacity:0;transform:translateX(-4px);transition:opacity .18s,transform .18s;margin-top:4px;
+}
+.jcard:hover .jcard-cta{opacity:1;transform:translateX(0);}
+
+/* ========== DETAIL SCREEN ========== */
+#det{display:none;min-height:100vh;flex-direction:column;}
+#det.vis{display:flex;}
+
+.topbar{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 32px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.back-btn{
+  display:flex;align-items:center;gap:6px;background:none;
+  border:1.5px solid var(--border);border-radius:8px;padding:7px 16px;
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;
+  color:var(--sub);cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;
+}
+.back-btn:hover{border-color:var(--text);color:var(--text);}
+
+.tb-center{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.tb-badge-lg{
+  font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;
+  padding:6px 24px;border-radius:8px;
+  background:var(--mc-bg);color:var(--mc);border:2px solid var(--mc-bd);
+  letter-spacing:.06em;
+}
+.tb-title-lg{font-size:15px;font-weight:600;color:var(--sub);}
+
+/* Step tabs */
+.tabs{
+  display:flex;background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 32px;overflow-x:auto;flex-shrink:0;scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{
+  padding:13px 20px;font-size:13px;font-weight:600;color:var(--muted);
+  cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;
+  transition:color .15s,border-color .15s;display:flex;align-items:center;gap:8px;flex-shrink:0;
+}
+.tab .sn{
+  width:20px;height:20px;border-radius:50%;background:var(--surface2);
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;color:var(--muted);
+  transition:background .15s,color .15s;flex-shrink:0;
+}
+.tab.active{color:var(--mc);border-bottom-color:var(--mc);}
+.tab.active .sn{background:var(--mc-bg);color:var(--mc);}
+.tab.done{color:var(--mc);opacity:.55;}
+.tab.done .sn{background:var(--mc-bg);color:var(--mc);}
+
+/* Detail body */
+.det-body{
+  flex:1;padding:32px;display:flex;flex-direction:column;gap:0;
+  max-width:960px;width:100%;margin:0 auto;justify-content:center;
+}
+
+/* ========== SCENE (the main thing) ========== */
+.scene{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);
+  padding:44px 48px 40px;display:flex;flex-direction:column;align-items:center;gap:28px;
+}
+
+/* flow */
+.flow{display:flex;align-items:center;width:100%;max-width:740px;}
+
+.fnode{display:flex;flex-direction:column;align-items:center;gap:14px;flex-shrink:0;}
+.ncircle{
+  width:100px;height:100px;border-radius:50%;
+  border:3px solid var(--border);background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;font-size:42px;
+  transition:border-color .35s,background .35s,box-shadow .35s;
+}
+.ncircle.glow{
+  border-color:var(--mc);background:var(--mc-bg);
+  animation:pulse 1.6s ease infinite;
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 6px var(--mc-bd);}
+  50%{box-shadow:0 0 0 14px color-mix(in srgb,var(--mc-bd) 18%,transparent);}
+}
+.nlabel{font-size:15px;font-weight:700;color:var(--sub);letter-spacing:.03em;}
+
+.ftrack{flex:1;position:relative;height:68px;display:flex;align-items:center;}
+.tline{position:absolute;left:0;right:0;height:3px;background:var(--border);border-radius:3px;}
+.tlabel{
+  position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;
+  color:var(--mc);letter-spacing:.06em;white-space:nowrap;
+  opacity:0;transition:opacity .4s .7s;
+}
+.tlabel.show{opacity:1;}
+
+.tpacket{
+  position:absolute;width:48px;height:48px;border-radius:50%;
+  background:var(--mc);display:flex;align-items:center;justify-content:center;font-size:22px;
+  box-shadow:0 4px 20px -2px var(--mc);
+  top:50%;transform:translateY(-50%) translateX(-50%);
+  opacity:0;left:5%;
+  transition:left 2.6s cubic-bezier(.35,0,.2,1),opacity .4s;
+  z-index:2;cursor:pointer;
+}
+.tpacket.show{opacity:1;}
+.tpacket:hover{filter:brightness(1.1);}
+
+/* waiting state */
+.waiting{
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;
+  color:var(--muted);letter-spacing:.05em;
+  display:flex;align-items:center;gap:8px;
+  opacity:0;transition:opacity .4s 1.4s;
+}
+.waiting.show{opacity:1;}
+.waiting-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--mc);
+  animation:blink 1.2s ease infinite;
+}
+@keyframes blink{0%,100%{opacity:.2;}50%{opacity:1;}}
+
+/* ========== CODE MODAL ========== */
+#codeModal{
+  display:none;position:fixed;inset:0;z-index:100;
+  background:rgba(10,8,4,.5);backdrop-filter:blur(5px);
+  align-items:center;justify-content:center;padding:24px;
+}
+#codeModal.open{display:flex;}
+.modal-box{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r);max-width:580px;width:100%;
+  box-shadow:0 28px 70px -10px rgba(0,0,0,.22);
+  overflow:hidden;animation:mIn .22s ease;
+}
+@keyframes mIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+.mh{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface2);
+}
+.mh-dot{width:9px;height:9px;border-radius:50%;background:var(--mc);}
+.mh-label{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.12em;color:var(--sub);
+}
+.mh-status{
+  margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  padding:3px 11px;border-radius:5px;
+}
+.s201{background:var(--b1);color:var(--c1);border:1px solid var(--d1);}
+.s200{background:var(--b2);color:var(--c2);border:1px solid var(--d2);}
+.s204{background:var(--b5);color:var(--c5);border:1px solid var(--d5);}
+.mclose{
+  margin-left:8px;background:none;border:1.5px solid var(--border);border-radius:6px;
+  width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+}
+.mclose:hover{border-color:var(--text);color:var(--text);}
+.mbody{
+  padding:24px 22px 22px;background:#fafaf7;
+  font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:2;
+  overflow-x:auto;
+}
+.line{display:block;white-space:pre;}
+.ind{padding-left:22px;}
+.tm{color:#0a7c5c;font-weight:700;}
+.tu{color:#1550a0;font-weight:600;}
+.th{color:#5c28b0;font-weight:500;}
+.thv{color:#8f4e00;}
+.tk{color:#b81818;font-weight:500;}
+.ts{color:#0a7c5c;}
+.tn{color:#1550a0;font-weight:500;}
+.tnu{color:#b81818;font-style:italic;}
+.tok{color:#1550a0;font-weight:700;}
+.tcr{color:#0a7c5c;font-weight:700;}
+.tnc{color:#b81818;font-weight:700;}
+.tp{color:#6b6558;}
+.tnote{color:#9a9488;font-size:12px;font-style:italic;}
+.tpl{color:#111008;}
+
+/* Bottom nav */
+.bnav{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 32px;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;
+}
+.bnav-btn{
+  display:flex;align-items:center;gap:8px;background:none;
+  border:1.5px solid var(--border);border-radius:8px;padding:9px 22px;
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;
+  color:var(--text);cursor:pointer;transition:all .15s;
+}
+.bnav-btn:hover{border-color:var(--mc);color:var(--mc);}
+.bnav-btn:disabled{opacity:.2;pointer-events:none;}
+.bnav-btn.pri{background:var(--mc-bg);border-color:var(--mc);color:var(--mc);}
+.bnav-c{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sub);}
+
+@media(max-width:700px){
+  .topbar,.tabs,.det-body,.bnav{padding-left:16px;padding-right:16px;}
+  .scene{padding:28px 16px 24px;}
+  .ncircle{width:72px;height:72px;font-size:30px;}
+  .tpacket{width:38px;height:38px;font-size:17px;}
+  .tb-badge-lg{font-size:18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== SELECTION ====================  -->
+<div id="sel">
+  <div class="sel-ey">REST API — Percorsi Guidati</div>
+  <h1 class="sel-h1">HTTP Methods</h1>
+  <p class="sel-sub">Scegli un percorso per vedere come i metodi HTTP lavorano insieme</p>
+
+  <div class="cards-row">
+
+    <div class="jcard" onclick="openJourney(0)"
+         style="--jc:var(--c1);--jbg:var(--b1);--jbd:var(--d1)">
+      <div class="jcard-icon">🎮</div>
+      <span class="jcard-badge">Percorso 1</span>
+      <div class="jcard-title">Catalogo videogiochi</div>
+      <div class="jcard-desc">Dalla creazione di un gioco alla sua eliminazione dal catalogo.</div>
+      <div class="jcard-methods">
+        <span class="jm">POST</span><span class="jm">GET</span><span class="jm">PATCH</span><span class="jm">PUT</span><span class="jm">DELETE</span>
+      </div>
+      <div class="jcard-cta">Inizia →</div>
+    </div>
+
+    <div class="jcard" onclick="openJourney(1)"
+         style="--jc:var(--c2);--jbg:var(--b2);--jbd:var(--d2)">
+      <div class="jcard-icon">📝</div>
+      <span class="jcard-badge">Percorso 2</span>
+      <div class="jcard-title">App note</div>
+      <div class="jcard-desc">Come un'app crea, legge, modifica ed elimina le note dell'utente.</div>
+      <div class="jcard-methods">
+        <span class="jm">POST</span><span class="jm">GET</span><span class="jm">PATCH</span><span class="jm">PUT</span><span class="jm">DELETE</span>
+      </div>
+      <div class="jcard-cta">Inizia →</div>
+    </div>
+
+    <div class="jcard" onclick="openJourney(2)"
+         style="--jc:var(--c3);--jbg:var(--b3);--jbd:var(--d3)">
+      <div class="jcard-icon">🛒</div>
+      <span class="jcard-badge">Percorso 3</span>
+      <div class="jcard-title">E-commerce prodotti</div>
+      <div class="jcard-desc">Gestione completa di un prodotto in uno shop online.</div>
+      <div class="jcard-methods">
+        <span class="jm">POST</span><span class="jm">GET</span><span class="jm">PATCH</span><span class="jm">PUT</span><span class="jm">DELETE</span>
+      </div>
+      <div class="jcard-cta">Inizia →</div>
+    </div>
+
+    <div class="jcard" onclick="openJourney(3)"
+         style="--jc:var(--c4);--jbg:var(--b4);--jbd:var(--d4)">
+      <div class="jcard-icon">👤</div>
+      <span class="jcard-badge">Percorso 4</span>
+      <div class="jcard-title">Profilo utente</div>
+      <div class="jcard-desc">Registrazione, lettura, aggiornamento e cancellazione di un profilo.</div>
+      <div class="jcard-methods">
+        <span class="jm">POST</span><span class="jm">GET</span><span class="jm">PATCH</span><span class="jm">PUT</span><span class="jm">DELETE</span>
+      </div>
+      <div class="jcard-cta">Inizia →</div>
+    </div>
+
+    <div class="jcard" onclick="openJourney(4)"
+         style="--jc:var(--c5);--jbg:var(--b5);--jbd:var(--d5)">
+      <div class="jcard-icon">📅</div>
+      <span class="jcard-badge">Percorso 5</span>
+      <div class="jcard-title">Calendario eventi</div>
+      <div class="jcard-desc">Crea un evento, consultalo, modificalo e infine cancellalo.</div>
+      <div class="jcard-methods">
+        <span class="jm">POST</span><span class="jm">GET</span><span class="jm">PATCH</span><span class="jm">PUT</span><span class="jm">DELETE</span>
+      </div>
+      <div class="jcard-cta">Inizia →</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== DETAIL ====================  -->
+<div id="det">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">← Torna alla scelta</button>
+    <div class="tb-center">
+      <span class="tb-badge-lg" id="tbBadge"></span>
+      <span class="tb-title-lg" id="tbTitle"></span>
+    </div>
+    <div style="min-width:140px"></div>
+  </div>
+  <div class="tabs" id="tabsBar"></div>
+  <div class="det-body" id="detBody"></div>
+  <div class="bnav">
+    <button class="bnav-btn" id="prevBtn" onclick="chStep(-1)">← Precedente</button>
+    <span class="bnav-c" id="stepCnt"></span>
+    <button class="bnav-btn pri" id="nextBtn" onclick="chStep(1)">Successivo →</button>
+  </div>
+</div>
+
+<!-- ==================== MODAL ====================  -->
+<div id="codeModal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <div class="mh">
+      <div class="mh-dot" id="mDot"></div>
+      <span class="mh-label" id="mLabel"></span>
+      <span class="mh-status" id="mStatus"></span>
+      <button class="mclose" onclick="closeModal()">✕</button>
+    </div>
+    <div class="mbody" id="mBody"></div>
+  </div>
+</div>
+
+<script>
+/* ============================================================ DATA */
+
+function step(method, methodColor, tab, packet, pDir, pLabel, activeNode, modalLabel, status, statusClass, code) {
+  return { method, methodColor, tab, packet, pDir, pLabel, activeNode, modal:{ label:modalLabel, status, statusClass, code } };
+}
+
+const C = {
+  post:'var(--c1)', get:'var(--c2)', patch:'var(--c3)', put:'var(--c4)', del:'var(--c5)',
+  postBg:'var(--b1)', getBg:'var(--b2)', patchBg:'var(--b3)', putBg:'var(--b4)', delBg:'var(--b5)',
+  postBd:'var(--d1)', getBd:'var(--d2)', patchBd:'var(--d3)', putBd:'var(--d4)', delBd:'var(--d5)',
+};
+
+const JOURNEYS = [
+
+  /* ===== 1. VIDEOGIOCHI ===== */
+  {
+    title:'Catalogo videogiochi', icon:'🎮',
+    mc:C.post, bg:C.postBg, bd:C.postBd,
+    steps:[
+      step('POST',C.post,
+        'POST — Aggiungi al catalogo',
+        '📦','right','POST /api/v1/giochi','client',
+        'RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm">POST</span> <span class="tu">/api/v1/giochi</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span> <span class="ts">"The Legend of Zelda: Breath of the Wild"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"genere"</span><span class="tp">:</span> <span class="ts">"Action-Adventure"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"anno"</span><span class="tp">:</span>   <span class="tn">2017</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('POST',C.post,
+        'POST — Risposta del server',
+        '✅','left','201 Created','server',
+        'RISPOSTA — SERVER → CLIENT','201 Created','s201',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tcr">201 Created</span></span>
+<span class="line"><span class="th">Location:</span> <span class="thv">/api/v1/giochi/42</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>     <span class="tn">42</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span> <span class="ts">"The Legend of Zelda: Breath of the Wild"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"genere"</span><span class="tp">:</span> <span class="ts">"Action-Adventure"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"anno"</span><span class="tp">:</span>   <span class="tn">2017</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('GET',C.get,
+        'GET — Leggi il gioco',
+        '🔍','right','GET /api/v1/giochi/42','client',
+        'RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c2)">GET</span> <span class="tu">/api/v1/giochi/42</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body — solo una lettura</span></span>`),
+      step('GET',C.get,
+        'GET — Risposta del server',
+        '📋','left','200 OK','server',
+        'RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>     <span class="tn">42</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span> <span class="ts">"The Legend of Zelda: Breath of the Wild"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"genere"</span><span class="tp">:</span> <span class="ts">"Action-Adventure"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"anno"</span><span class="tp">:</span>   <span class="tn">2017</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PATCH',C.patch,
+        'PATCH — Aggiorna un campo',
+        '✏️','right','PATCH /api/v1/giochi/42','client',
+        'RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c3)">PATCH</span> <span class="tu">/api/v1/giochi/42</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"anno"</span><span class="tp">:</span> <span class="tn">2018</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PATCH',C.patch,
+        'PATCH — Risposta del server',
+        '✅','left','200 OK','server',
+        'RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>     <span class="tn">42</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span> <span class="ts">"The Legend of Zelda: Breath of the Wild"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"genere"</span><span class="tp">:</span> <span class="ts">"Action-Adventure"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"anno"</span><span class="tp">:</span>   <span class="tn" style="color:var(--c3);font-weight:700">2018</span>  <span class="tnote">← aggiornato</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PUT',C.put,
+        'PUT — Sostituisci tutto',
+        '🔄','right','PUT /api/v1/giochi/42','client',
+        'RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c4)">PUT</span> <span class="tu">/api/v1/giochi/42</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"anno"</span><span class="tp">:</span> <span class="tn">2018</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PUT',C.put,
+        'PUT — Risposta del server',
+        '⚠️','left','200 OK','server',
+        'RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>     <span class="tn">42</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span> <span class="tnu">null</span><span class="tp">,</span>   <span class="tnote">← eliminato!</span></span>
+<span class="line ind"><span class="tk">"genere"</span><span class="tp">:</span> <span class="tnu">null</span><span class="tp">,</span>   <span class="tnote">← eliminato!</span></span>
+<span class="line ind"><span class="tk">"anno"</span><span class="tp">:</span>   <span class="tn">2018</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('DELETE',C.del,
+        'DELETE — Elimina il gioco',
+        '🗑️','right','DELETE /api/v1/giochi/42','client',
+        'RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c5)">DELETE</span> <span class="tu">/api/v1/giochi/42</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body nella richiesta</span></span>`),
+      step('DELETE',C.del,
+        'DELETE — Risposta del server',
+        '🚫','left','204 No Content','server',
+        'RISPOSTA — SERVER → CLIENT','204 No Content','s204',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tnc">204 No Content</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body nella risposta. Il silenzio è la conferma.</span></span>`),
+    ]
+  },
+
+  /* ===== 2. NOTE ===== */
+  {
+    title:'App note', icon:'📝',
+    mc:C.get, bg:C.getBg, bd:C.getBd,
+    steps:[
+      step('POST',C.post,'POST — Crea una nota','📦','right','POST /api/v1/note','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm">POST</span> <span class="tu">/api/v1/note</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span>  <span class="ts">"Lista della spesa"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"corpo"</span><span class="tp">:</span>   <span class="ts">"Latte, uova, pane"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('POST',C.post,'POST — Risposta del server','✅','left','201 Created','server','RISPOSTA — SERVER → CLIENT','201 Created','s201',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tcr">201 Created</span></span>
+<span class="line"><span class="th">Location:</span> <span class="thv">/api/v1/note/7</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>      <span class="tn">7</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span>  <span class="ts">"Lista della spesa"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"corpo"</span><span class="tp">:</span>   <span class="ts">"Latte, uova, pane"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('GET',C.get,'GET — Leggi la nota','🔍','right','GET /api/v1/note/7','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c2)">GET</span> <span class="tu">/api/v1/note/7</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body — solo una lettura</span></span>`),
+      step('GET',C.get,'GET — Risposta del server','📋','left','200 OK','server','RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>      <span class="tn">7</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span>  <span class="ts">"Lista della spesa"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"corpo"</span><span class="tp">:</span>   <span class="ts">"Latte, uova, pane"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PATCH',C.patch,'PATCH — Aggiorna il corpo','✏️','right','PATCH /api/v1/note/7','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c3)">PATCH</span> <span class="tu">/api/v1/note/7</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"corpo"</span><span class="tp">:</span> <span class="ts">"Uova, pane"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PATCH',C.patch,'PATCH — Risposta del server','✅','left','200 OK','server','RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>      <span class="tn">7</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span>  <span class="ts">"Lista della spesa"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"corpo"</span><span class="tp">:</span>   <span class="tn" style="color:var(--c3);font-weight:700">"Uova, pane"</span>  <span class="tnote">← aggiornato</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PUT',C.put,'PUT — Sostituisci tutto','🔄','right','PUT /api/v1/note/7','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c4)">PUT</span> <span class="tu">/api/v1/note/7</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"corpo"</span><span class="tp">:</span> <span class="ts">"Uova, pane"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PUT',C.put,'PUT — Risposta del server','⚠️','left','200 OK','server','RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>      <span class="tn">7</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span>  <span class="tnu">null</span><span class="tp">,</span>   <span class="tnote">← eliminato!</span></span>
+<span class="line ind"><span class="tk">"corpo"</span><span class="tp">:</span>   <span class="ts">"Uova, pane"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('DELETE',C.del,'DELETE — Elimina la nota','🗑️','right','DELETE /api/v1/note/7','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c5)">DELETE</span> <span class="tu">/api/v1/note/7</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body nella richiesta</span></span>`),
+      step('DELETE',C.del,'DELETE — Risposta del server','🚫','left','204 No Content','server','RISPOSTA — SERVER → CLIENT','204 No Content','s204',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tnc">204 No Content</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body nella risposta. Il silenzio è la conferma.</span></span>`),
+    ]
+  },
+
+  /* ===== 3. E-COMMERCE ===== */
+  {
+    title:'E-commerce prodotti', icon:'🛒',
+    mc:C.patch, bg:C.patchBg, bd:C.patchBd,
+    steps:[
+      step('POST',C.post,'POST — Crea un prodotto','📦','right','POST /api/v1/prodotti','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm">POST</span> <span class="tu">/api/v1/prodotti</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"nome"</span><span class="tp">:</span>       <span class="ts">"Scarpe da corsa Pro"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"prezzo"</span><span class="tp">:</span>     <span class="tn">89.99</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"categoria"</span><span class="tp">:</span> <span class="ts">"abbigliamento"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('POST',C.post,'POST — Risposta del server','✅','left','201 Created','server','RISPOSTA — SERVER → CLIENT','201 Created','s201',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tcr">201 Created</span></span>
+<span class="line"><span class="th">Location:</span> <span class="thv">/api/v1/prodotti/15</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>          <span class="tn">15</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"nome"</span><span class="tp">:</span>       <span class="ts">"Scarpe da corsa Pro"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"prezzo"</span><span class="tp">:</span>     <span class="tn">89.99</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"categoria"</span><span class="tp">:</span> <span class="ts">"abbigliamento"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('GET',C.get,'GET — Leggi il prodotto','🔍','right','GET /api/v1/prodotti/15','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c2)">GET</span> <span class="tu">/api/v1/prodotti/15</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body — solo una lettura</span></span>`),
+      step('GET',C.get,'GET — Risposta del server','📋','left','200 OK','server','RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>          <span class="tn">15</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"nome"</span><span class="tp">:</span>       <span class="ts">"Scarpe da corsa Pro"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"prezzo"</span><span class="tp">:</span>     <span class="tn">89.99</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"categoria"</span><span class="tp">:</span> <span class="ts">"abbigliamento"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PATCH',C.patch,'PATCH — Aggiorna il prezzo','✏️','right','PATCH /api/v1/prodotti/15','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c3)">PATCH</span> <span class="tu">/api/v1/prodotti/15</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"prezzo"</span><span class="tp">:</span> <span class="tn">74.99</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PATCH',C.patch,'PATCH — Risposta del server','✅','left','200 OK','server','RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>          <span class="tn">15</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"nome"</span><span class="tp">:</span>       <span class="ts">"Scarpe da corsa Pro"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"prezzo"</span><span class="tp">:</span>     <span class="tn" style="color:var(--c3);font-weight:700">74.99</span><span class="tp">,</span>  <span class="tnote">← aggiornato</span></span>
+<span class="line ind"><span class="tk">"categoria"</span><span class="tp">:</span> <span class="ts">"abbigliamento"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PUT',C.put,'PUT — Sostituisci tutto','🔄','right','PUT /api/v1/prodotti/15','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c4)">PUT</span> <span class="tu">/api/v1/prodotti/15</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"prezzo"</span><span class="tp">:</span> <span class="tn">74.99</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PUT',C.put,'PUT — Risposta del server','⚠️','left','200 OK','server','RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>          <span class="tn">15</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"nome"</span><span class="tp">:</span>       <span class="tnu">null</span><span class="tp">,</span>    <span class="tnote">← eliminato!</span></span>
+<span class="line ind"><span class="tk">"prezzo"</span><span class="tp">:</span>     <span class="tn">74.99</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"categoria"</span><span class="tp">:</span> <span class="tnu">null</span>     <span class="tnote">← eliminato!</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('DELETE',C.del,'DELETE — Elimina il prodotto','🗑️','right','DELETE /api/v1/prodotti/15','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c5)">DELETE</span> <span class="tu">/api/v1/prodotti/15</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body nella richiesta</span></span>`),
+      step('DELETE',C.del,'DELETE — Risposta del server','🚫','left','204 No Content','server','RISPOSTA — SERVER → CLIENT','204 No Content','s204',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tnc">204 No Content</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body nella risposta. Il silenzio è la conferma.</span></span>`),
+    ]
+  },
+
+  /* ===== 4. PROFILO UTENTE ===== */
+  {
+    title:'Profilo utente', icon:'👤',
+    mc:C.put, bg:C.putBg, bd:C.putBd,
+    steps:[
+      step('POST',C.post,'POST — Registra l\'utente','📦','right','POST /api/v1/utenti','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm">POST</span> <span class="tu">/api/v1/utenti</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"nome"</span><span class="tp">:</span>  <span class="ts">"Marco Rossi"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"email"</span><span class="tp">:</span> <span class="ts">"marco@example.com"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"ruolo"</span><span class="tp">:</span> <span class="ts">"utente"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('POST',C.post,'POST — Risposta del server','✅','left','201 Created','server','RISPOSTA — SERVER → CLIENT','201 Created','s201',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tcr">201 Created</span></span>
+<span class="line"><span class="th">Location:</span> <span class="thv">/api/v1/utenti/99</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>     <span class="tn">99</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"nome"</span><span class="tp">:</span>  <span class="ts">"Marco Rossi"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"email"</span><span class="tp">:</span> <span class="ts">"marco@example.com"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"ruolo"</span><span class="tp">:</span> <span class="ts">"utente"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('GET',C.get,'GET — Leggi il profilo','🔍','right','GET /api/v1/utenti/99','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c2)">GET</span> <span class="tu">/api/v1/utenti/99</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body — solo una lettura</span></span>`),
+      step('GET',C.get,'GET — Risposta del server','📋','left','200 OK','server','RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>     <span class="tn">99</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"nome"</span><span class="tp">:</span>  <span class="ts">"Marco Rossi"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"email"</span><span class="tp">:</span> <span class="ts">"marco@example.com"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"ruolo"</span><span class="tp">:</span> <span class="ts">"utente"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PATCH',C.patch,'PATCH — Promuovi a admin','✏️','right','PATCH /api/v1/utenti/99','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c3)">PATCH</span> <span class="tu">/api/v1/utenti/99</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"ruolo"</span><span class="tp">:</span> <span class="ts">"admin"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PATCH',C.patch,'PATCH — Risposta del server','✅','left','200 OK','server','RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>     <span class="tn">99</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"nome"</span><span class="tp">:</span>  <span class="ts">"Marco Rossi"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"email"</span><span class="tp">:</span> <span class="ts">"marco@example.com"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"ruolo"</span><span class="tp">:</span> <span class="tn" style="color:var(--c3);font-weight:700">"admin"</span>  <span class="tnote">← aggiornato</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PUT',C.put,'PUT — Sostituisci il profilo','🔄','right','PUT /api/v1/utenti/99','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c4)">PUT</span> <span class="tu">/api/v1/utenti/99</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"ruolo"</span><span class="tp">:</span> <span class="ts">"admin"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PUT',C.put,'PUT — Risposta del server','⚠️','left','200 OK','server','RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>     <span class="tn">99</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"nome"</span><span class="tp">:</span>  <span class="tnu">null</span><span class="tp">,</span>    <span class="tnote">← eliminato!</span></span>
+<span class="line ind"><span class="tk">"email"</span><span class="tp">:</span> <span class="tnu">null</span><span class="tp">,</span>    <span class="tnote">← eliminato!</span></span>
+<span class="line ind"><span class="tk">"ruolo"</span><span class="tp">:</span> <span class="ts">"admin"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('DELETE',C.del,'DELETE — Elimina il profilo','🗑️','right','DELETE /api/v1/utenti/99','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c5)">DELETE</span> <span class="tu">/api/v1/utenti/99</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body nella richiesta</span></span>`),
+      step('DELETE',C.del,'DELETE — Risposta del server','🚫','left','204 No Content','server','RISPOSTA — SERVER → CLIENT','204 No Content','s204',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tnc">204 No Content</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body nella risposta. Il silenzio è la conferma.</span></span>`),
+    ]
+  },
+
+  /* ===== 5. CALENDARIO ===== */
+  {
+    title:'Calendario eventi', icon:'📅',
+    mc:C.del, bg:C.delBg, bd:C.delBd,
+    steps:[
+      step('POST',C.post,'POST — Crea un evento','📦','right','POST /api/v1/eventi','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm">POST</span> <span class="tu">/api/v1/eventi</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span>  <span class="ts">"Riunione di progetto"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"data"</span><span class="tp">:</span>    <span class="ts">"2025-06-15"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"ora"</span><span class="tp">:</span>     <span class="ts">"10:00"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('POST',C.post,'POST — Risposta del server','✅','left','201 Created','server','RISPOSTA — SERVER → CLIENT','201 Created','s201',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tcr">201 Created</span></span>
+<span class="line"><span class="th">Location:</span> <span class="thv">/api/v1/eventi/3</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>      <span class="tn">3</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span>  <span class="ts">"Riunione di progetto"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"data"</span><span class="tp">:</span>    <span class="ts">"2025-06-15"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"ora"</span><span class="tp">:</span>     <span class="ts">"10:00"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('GET',C.get,'GET — Leggi l\'evento','🔍','right','GET /api/v1/eventi/3','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c2)">GET</span> <span class="tu">/api/v1/eventi/3</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body — solo una lettura</span></span>`),
+      step('GET',C.get,'GET — Risposta del server','📋','left','200 OK','server','RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>      <span class="tn">3</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span>  <span class="ts">"Riunione di progetto"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"data"</span><span class="tp">:</span>    <span class="ts">"2025-06-15"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"ora"</span><span class="tp">:</span>     <span class="ts">"10:00"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PATCH',C.patch,'PATCH — Sposta l\'orario','✏️','right','PATCH /api/v1/eventi/3','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c3)">PATCH</span> <span class="tu">/api/v1/eventi/3</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"ora"</span><span class="tp">:</span> <span class="ts">"14:30"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PATCH',C.patch,'PATCH — Risposta del server','✅','left','200 OK','server','RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>      <span class="tn">3</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span>  <span class="ts">"Riunione di progetto"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"data"</span><span class="tp">:</span>    <span class="ts">"2025-06-15"</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"ora"</span><span class="tp">:</span>     <span class="tn" style="color:var(--c3);font-weight:700">"14:30"</span>   <span class="tnote">← aggiornato</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PUT',C.put,'PUT — Sostituisci l\'evento','🔄','right','PUT /api/v1/eventi/3','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c4)">PUT</span> <span class="tu">/api/v1/eventi/3</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"><span class="th">Content-Type:</span> <span class="thv">application/json</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"ora"</span><span class="tp">:</span> <span class="ts">"14:30"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('PUT',C.put,'PUT — Risposta del server','⚠️','left','200 OK','server','RISPOSTA — SERVER → CLIENT','200 OK','s200',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tok">200 OK</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tp">{</span></span>
+<span class="line ind"><span class="tk">"id"</span><span class="tp">:</span>      <span class="tn">3</span><span class="tp">,</span></span>
+<span class="line ind"><span class="tk">"titolo"</span><span class="tp">:</span>  <span class="tnu">null</span><span class="tp">,</span>    <span class="tnote">← eliminato!</span></span>
+<span class="line ind"><span class="tk">"data"</span><span class="tp">:</span>    <span class="tnu">null</span><span class="tp">,</span>    <span class="tnote">← eliminato!</span></span>
+<span class="line ind"><span class="tk">"ora"</span><span class="tp">:</span>     <span class="ts">"14:30"</span></span>
+<span class="line"><span class="tp">}</span></span>`),
+      step('DELETE',C.del,'DELETE — Elimina l\'evento','🗑️','right','DELETE /api/v1/eventi/3','client','RICHIESTA — CLIENT → SERVER',null,'',
+        `<span class="line"><span class="tm" style="color:var(--c5)">DELETE</span> <span class="tu">/api/v1/eventi/3</span> <span class="tpl">HTTP/1.1</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body nella richiesta</span></span>`),
+      step('DELETE',C.del,'DELETE — Risposta del server','🚫','left','204 No Content','server','RISPOSTA — SERVER → CLIENT','204 No Content','s204',
+        `<span class="line"><span class="tpl">HTTP/1.1 </span><span class="tnc">204 No Content</span></span>
+<span class="line"> </span>
+<span class="line"><span class="tnote">Nessun body nella risposta. Il silenzio è la conferma.</span></span>`),
+    ]
+  }
+
+];
+
+/* ============================================================ STATE */
+let jIdx=0, stepN=0, animT=null;
+
+/* ============================================================ OPEN */
+function openJourney(i){
+  jIdx=i; stepN=0;
+  const j=JOURNEYS[i];
+  const ds=document.getElementById('det');
+  ds.style.setProperty('--mc',j.mc);
+  ds.style.setProperty('--mc-bg',j.bg);
+  ds.style.setProperty('--mc-bd',j.bd);
+  ds.classList.add('vis');
+  document.getElementById('sel').style.display='none';
+  updateTopbar();
+  buildTabs();
+  render();
+}
+
+function goBack(){
+  document.getElementById('det').classList.remove('vis');
+  document.getElementById('sel').style.display='flex';
+  clearTimeout(animT);
+}
+
+function updateTopbar(){
+  const j=JOURNEYS[jIdx], s=j.steps[stepN];
+  // Method badge color
+  const det=document.getElementById('det');
+  det.style.setProperty('--mc', s.methodColor);
+  // pick bg/bd from method
+  const mbMap={
+    'var(--c1)':{bg:'var(--b1)',bd:'var(--d1)'},
+    'var(--c2)':{bg:'var(--b2)',bd:'var(--d2)'},
+    'var(--c3)':{bg:'var(--b3)',bd:'var(--d3)'},
+    'var(--c4)':{bg:'var(--b4)',bd:'var(--d4)'},
+    'var(--c5)':{bg:'var(--b5)',bd:'var(--d5)'},
+  };
+  const mb=mbMap[s.methodColor]||{bg:'var(--b1)',bd:'var(--d1)'};
+  det.style.setProperty('--mc-bg',mb.bg);
+  det.style.setProperty('--mc-bd',mb.bd);
+  document.getElementById('tbBadge').textContent=s.method;
+  document.getElementById('tbTitle').textContent=j.title;
+}
+
+function buildTabs(){
+  const bar=document.getElementById('tabsBar');
+  bar.innerHTML='';
+  JOURNEYS[jIdx].steps.forEach((s,i)=>{
+    const t=document.createElement('div');
+    t.className='tab';t.id='tab-'+i;
+    t.onclick=()=>{stepN=i;updateTopbar();render();};
+    t.innerHTML=`<span class="sn">${i+1}</span>${s.tab}`;
+    bar.appendChild(t);
+  });
+}
+
+function render(){
+  const j=JOURNEYS[jIdx], s=j.steps[stepN], total=j.steps.length;
+
+  j.steps.forEach((_,i)=>{
+    const t=document.getElementById('tab-'+i);
+    if(t) t.className='tab'+(i===stepN?' active':i<stepN?' done':'');
+  });
+
+  document.getElementById('prevBtn').disabled=stepN===0;
+  document.getElementById('nextBtn').disabled=stepN===total-1;
+  document.getElementById('stepCnt').textContent=`${stepN+1} / ${total}`;
+
+  const body=document.getElementById('detBody');
+  body.innerHTML='';
+
+  const isResponse = s.pDir==='left';
+  const waitingText = isResponse
+    ? 'Server elabora la richiesta...'
+    : 'Client in attesa della risposta del server...';
+
+  const sc=document.createElement('div');
+  sc.className='scene';
+  sc.innerHTML=`
+    <div class="flow">
+      <div class="fnode">
+        <div class="ncircle ${s.activeNode==='client'?'glow':''}" id="nClient">💻</div>
+        <span class="nlabel">Client</span>
+      </div>
+      <div class="ftrack">
+        <div class="tline"></div>
+        <div class="tlabel" id="tLbl">${s.pLabel}</div>
+        <div class="tpacket" id="tPkt" onclick="openModal()">${s.packet}</div>
+      </div>
+      <div class="fnode">
+        <div class="ncircle ${s.activeNode==='server'?'glow':''}" id="nServer">🖥️</div>
+        <span class="nlabel">Server</span>
+      </div>
+    </div>
+    <div class="waiting" id="waitTxt">
+      <div class="waiting-dot"></div>${waitingText}
+    </div>`;
+  body.appendChild(sc);
+
+  clearTimeout(animT);
+  animT=setTimeout(()=>doAnim(s),200);
+}
+
+function doAnim(s){
+  const pkt=document.getElementById('tPkt');
+  const lbl=document.getElementById('tLbl');
+  const wait=document.getElementById('waitTxt');
+  if(!pkt) return;
+  pkt.style.transition='none';
+  pkt.classList.remove('show');
+  lbl.classList.remove('show');
+  wait.classList.remove('show');
+  const start=s.pDir==='right'?'5%':'95%';
+  const end  =s.pDir==='right'?'95%':'5%';
+  pkt.style.left=start;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    pkt.style.transition='left 2.6s cubic-bezier(.35,0,.2,1),opacity .4s';
+    pkt.classList.add('show');
+    lbl.classList.add('show');
+    wait.classList.add('show');
+    pkt.style.left=end;
+  }));
+}
+
+function openModal(){
+  const s=JOURNEYS[jIdx].steps[stepN], m=s.modal;
+  document.getElementById('mDot').style.background='var(--mc)';
+  document.getElementById('mLabel').textContent=m.label;
+  const ms=document.getElementById('mStatus');
+  if(m.status){ms.textContent=m.status;ms.className='mh-status '+m.statusClass;ms.style.display='';}
+  else{ms.style.display='none';}
+  document.getElementById('mBody').innerHTML=m.code;
+  document.getElementById('codeModal').classList.add('open');
+}
+
+function closeModal(e){
+  if(!e||e.target===document.getElementById('codeModal'))
+    document.getElementById('codeModal').classList.remove('open');
+}
+
+function chStep(d){
+  const j=JOURNEYS[jIdx], n=stepN+d;
+  if(n<0||n>=j.steps.length) return;
+  stepN=n; updateTopbar(); render();
+}
+</script>
+</body>
+</html>

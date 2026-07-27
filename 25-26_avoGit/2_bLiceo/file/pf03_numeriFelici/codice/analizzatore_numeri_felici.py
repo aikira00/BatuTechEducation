@@ -8,12 +8,25 @@ import os
 
 # Cartella dello script (codice/), indipendente da dove lo lanci
 script_dir = os.path.dirname(os.path.abspath(__file__))
-# Radice del progetto: un livello sopra
-radice_dir = os.path.dirname(script_dir)
+print(script_dir)
+file_input = ""
+file_output = ""
+webSite = False
+if webSite:
+    radice_dir = script_dir
+    # Percorsi ai file di input e output
+    file_input = os.path.join(radice_dir, "anni_input.txt")
+    file_output = os.path.join(radice_dir, "risultati.txt")
+    print(radice_dir)
 
-# Percorsi ai file di input e output
-file_input  = os.path.join(radice_dir, "dati", "anni_input.txt")
-file_output = os.path.join(radice_dir, "dati", "risultati.txt")
+else: # in laboratorio
+    # Radice del progetto: un livello sopra
+    radice_dir = os.path.dirname(script_dir)
+    # Percorsi ai file di input e output
+    file_input = os.path.join(radice_dir, "dati", "anni_input.txt")
+    file_output = os.path.join(radice_dir, "dati", "risultati.txt")
+    print(radice_dir)
+
 
 print(f"Leggo da:  {file_input}")
 print(f"Scrivo su: {file_output}")

@@ -7,7 +7,6 @@ radice_dir = os.path.dirname(script_dir)
 
 file_input      = os.path.join(radice_dir, "dati", "sequenza.txt")
 file_compresso  = os.path.join(radice_dir, "dati", "compresso.txt")
-file_decomp     = os.path.join(radice_dir, "dati", "decompresso.txt")
 
 compresso = ""
 carattere_precedente = ""
@@ -16,16 +15,17 @@ contatore = 0
 try:
     with open(file_input, "r", encoding="utf-8") as file_in:
         for line in file_in:
-            line = line.replace("\n", "")
+
             for carattere in line:
                 if carattere == carattere_precedente:
                     contatore += 1
                 else:
                     if carattere_precedente != "":
                         compresso += f"{carattere_precedente}{contatore}"
+
                     carattere_precedente = carattere
                     contatore = 1
-        
+
         if carattere_precedente == "":
             print("Il file è vuoto.")
         else:

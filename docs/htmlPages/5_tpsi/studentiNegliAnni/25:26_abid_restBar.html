@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REST Bar — simulatore HTTP</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #222;
+    --border: #2e2e2e;
+    --accent: #f0c040;
+    --accent2: #e05a2b;
+    --text: #f0ede6;
+    --muted: #888;
+    --get: #22c55e;
+    --post: #3b82f6;
+    --put: #f59e0b;
+    --delete: #ef4444;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 3rem;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .logo {
+    font-family: var(--mono);
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .logo span { color: var(--accent2); }
+
+  .tagline {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 6px;
+    font-family: var(--mono);
+  }
+
+  .container {
+    width: 100%;
+    max-width: 780px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* SCENE */
+  .scene {
+    display: grid;
+    grid-template-columns: 1fr 100px 1fr;
+    gap: 0;
+    align-items: center;
+    min-height: 220px;
+  }
+
+  .station {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-height: 200px;
+    justify-content: center;
+  }
+
+  .station-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .station-icon {
+    font-size: 3rem;
+    line-height: 1;
+    filter: grayscale(0.2);
+  }
+
+  .station-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .station-sub {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    min-height: 14px;
+    font-family: var(--mono);
+    transition: color .3s;
+  }
+
+  /* ROAD */
+  .road {
+    position: relative;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .road-track {
+    width: 2px;
+    height: 100%;
+    background: var(--border);
+    border-radius: 1px;
+    position: absolute;
+  }
+
+  .waiter {
+    font-size: 2rem;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 50%;
+    margin-top: -20px;
+    transition: top .65s cubic-bezier(.4,0,.2,1);
+    z-index: 2;
+    filter: drop-shadow(0 0 8px rgba(240,192,64,.3));
+  }
+
+  .packet {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity .25s;
+    z-index: 3;
+    top: 20%;
+    color: var(--accent);
+  }
+
+  /* CONTROLS */
+  .controls {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .ctrl-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .ctrl-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 60px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+
+  .pill-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--mono);
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .pill:hover { border-color: #555; color: var(--text); }
+
+  .pill.active-GET  { background: rgba(34,197,94,.15);  border-color: var(--get);    color: var(--get); }
+  .pill.active-POST { background: rgba(59,130,246,.15); border-color: var(--post);   color: var(--post); }
+  .pill.active-PUT  { background: rgba(245,158,11,.15); border-color: var(--put);    color: var(--put); }
+  .pill.active-DELETE { background: rgba(239,68,68,.15); border-color: var(--delete); color: var(--delete); }
+  .pill.active-res { background: rgba(240,192,64,.1); border-color: var(--accent); color: var(--accent); }
+
+  .url-bar {
+    background: #111;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: .02em;
+  }
+
+  .send-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--mono);
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform .1s, background .15s, opacity .15s;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .send-btn:hover { background: #f5d060; }
+  .send-btn:active { transform: scale(.98); }
+  .send-btn:disabled { opacity: .4; cursor: default; transform: none; }
+
+  /* LOG */
+  .log-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    min-height: 100px;
+  }
+
+  .log-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .log-empty {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .log-entry {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    animation: fadeIn .3s ease;
+  }
+  .log-entry:last-child { border-bottom: none; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+
+  .log-verb {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .lv-GET    { background: rgba(34,197,94,.15);  color: var(--get); }
+  .lv-POST   { background: rgba(59,130,246,.15); color: var(--post); }
+  .lv-PUT    { background: rgba(245,158,11,.15); color: var(--put); }
+  .lv-DELETE { background: rgba(239,68,68,.15);  color: var(--delete); }
+
+  .log-body { display: flex; flex-direction: column; gap: 3px; }
+  .log-main { font-size: 13px; color: var(--text); font-weight: 500; }
+  .log-status-ok  { color: var(--get); font-family: var(--mono); font-size: 12px; }
+  .log-status-err { color: var(--delete); font-family: var(--mono); font-size: 12px; }
+  .log-response { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .log-note { font-size: 12px; color: #666; font-style: italic; margin-top: 2px; }
+
+  footer {
+    margin-top: 2rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #444;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">REST<span>BAR</span></div>
+  <div class="tagline">// il cameriere è HTTP. la cucina è il server.</div>
+</header>
+
+<div class="container">
+
+  <div class="scene">
+    <div class="station">
+      <div class="station-tag">Client</div>
+      <div class="station-icon">👨‍💻</div>
+      <div class="station-name">Tu (il browser)</div>
+      <div class="station-sub" id="client-sub"></div>
+    </div>
+
+    <div class="road">
+      <div class="road-track"></div>
+      <div class="waiter" id="waiter">🛎️</div>
+      <div class="packet" id="packet"></div>
+    </div>
+
+    <div class="station">
+      <div class="station-tag">Server</div>
+      <div class="station-icon">🍳</div>
+      <div class="station-name">La cucina (API)</div>
+      <div class="station-sub" id="server-sub"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="ctrl-row">
+      <span class="ctrl-label">Metodo</span>
+      <div class="pill-group" id="verb-group">
+        <button class="pill active-GET" onclick="setVerb('GET',this)">GET</button>
+        <button class="pill" onclick="setVerb('POST',this)">POST</button>
+        <button class="pill" onclick="setVerb('PUT',this)">PUT</button>
+        <button class="pill" onclick="setVerb('DELETE',this)">DELETE</button>
+      </div>
+    </div>
+    <div class="ctrl-row">
+      <span class="ctrl-label">Risorsa</span>
+      <div class="pill-group" id="res-group">
+        <button class="pill active-res" onclick="setRes('pizze',this)">pizze</button>
+        <button class="pill" onclick="setRes('utenti',this)">utenti</button>
+        <button class="pill" onclick="setRes('ordini',this)">ordini</button>
+        <button class="pill" onclick="setRes('gatti',this)">gatti</button>
+      </div>
+    </div>
+    <div class="url-bar" id="url-bar">GET /pizze</div>
+    <button class="send-btn" id="send-btn" onclick="sendReq()">▶ Invia richiesta</button>
+  </div>
+
+  <div class="log-wrap">
+    <div class="log-title">// log richieste</div>
+    <div id="log"><div class="log-empty">Nessuna richiesta ancora — scegli metodo e risorsa, poi invia.</div></div>
+  </div>
+
+</div>
+
+<footer>REST Bar — principi REST e concetto di risorsa &nbsp;|&nbsp; Roy Fielding, 2000</footer>
+
+<script>
+const RESPONSES = {
+  GET: {
+    pizze:  { status:200, msg:'200 OK',         body:'[{id:1,nome:"Margherita"},{id:2,nome:"Diavola"}]',          note:'Il server restituisce la lista completa delle pizze.' },
+    utenti: { status:200, msg:'200 OK',         body:'[{id:1,nome:"Mario"},{id:2,nome:"Giulia"}]',                note:'Elenco utenti trovato nel database.' },
+    ordini: { status:200, msg:'200 OK',         body:'[{id:101,stato:"in lavorazione"}]',                         note:'Ordini attivi restituiti correttamente.' },
+    gatti:  { status:200, msg:'200 OK',         body:'[{id:1,nome:"Whisker",umore:"indifferente"}]',              note:'Risorsa trovata. Il gatto non sembra entusiasta.' },
+  },
+  POST: {
+    pizze:  { status:201, msg:'201 Created',    body:'{id:3,nome:"Quattro formaggi",msg:"Creata!"}',              note:'Status 201 = nuova risorsa creata con successo.' },
+    utenti: { status:201, msg:'201 Created',    body:'{id:3,nome:"Nuovo utente",msg:"Registrato!"}',              note:'Nuovo utente aggiunto al sistema.' },
+    ordini: { status:201, msg:'201 Created',    body:'{id:102,stato:"ricevuto",msg:"Ordine registrato!"}',        note:'Ordine inserito. La cucina è avvisata.' },
+    gatti:  { status:201, msg:'201 Created',    body:'{id:2,nome:"Micio",umore:"sorpreso di esistere"}',         note:'Nuovo gatto creato. Il server non ha fatto domande.' },
+  },
+  PUT: {
+    pizze:  { status:200, msg:'200 OK',         body:'{id:1,nome:"Margherita XXL",msg:"Aggiornata!"}',           note:'PUT sostituisce la risorsa intera. Devi mandare tutti i campi.' },
+    utenti: { status:200, msg:'200 OK',         body:'{id:1,nome:"Mario Rossi",email:"mario@new.it"}',           note:'Utente aggiornato completamente con i nuovi dati.' },
+    ordini: { status:200, msg:'200 OK',         body:'{id:101,stato:"consegnato",msg:"Aggiornato!"}',            note:'Stato ordine sostituito interamente.' },
+    gatti:  { status:200, msg:'200 OK',         body:'{id:1,nome:"Whisker II",umore:"confuso"}',                 note:'Il gatto è stato aggiornato. Non sembra contento.' },
+  },
+  DELETE: {
+    pizze:  { status:204, msg:'204 No Content', body:'(nessun body — la risorsa non esiste più)',                note:'204 = eliminato con successo. Nessun body nella risposta.' },
+    utenti: { status:204, msg:'204 No Content', body:'(utente rimosso dal sistema)',                              note:'L\'utente è stato cancellato. Addio Mario.' },
+    ordini: { status:204, msg:'204 No Content', body:'(ordine annullato)',                                        note:'Ordine eliminato. La cucina è stata avvisata (tardi).' },
+    gatti:  { status:404, msg:'404 Not Found',  body:'{errore:"Gatto non trovato. Se ne è andato da solo."}',   note:'Il gatto non era dove lo avevi lasciato. Classico.' },
+  }
+};
+
+let curVerb = 'GET', curRes = 'pizze', busy = false;
+
+function setVerb(v, el) {
+  curVerb = v;
+  document.querySelectorAll('#verb-group .pill').forEach(b => b.className = 'pill');
+  el.className = 'pill active-' + v;
+  updateURL();
+}
+
+function setRes(r, el) {
+  curRes = r;
+  document.querySelectorAll('#res-group .pill').forEach(b => b.className = 'pill');
+  el.className = 'pill active-res';
+  updateURL();
+}
+
+function updateURL() {
+  const id = (curVerb === 'PUT' || curVerb === 'DELETE') ? '/1' : '';
+  document.getElementById('url-bar').textContent = curVerb + ' /' + curRes + id;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function sendReq() {
+  if (busy) return;
+  busy = true;
+  document.getElementById('send-btn').disabled = true;
+
+  const waiter  = document.getElementById('waiter');
+  const packet  = document.getElementById('packet');
+  const cSub    = document.getElementById('client-sub');
+  const sSub    = document.getElementById('server-sub');
+  const id      = (curVerb === 'PUT' || curVerb === 'DELETE') ? '/1' : '';
+  const endpoint = '/' + curRes + id;
+  const resp    = RESPONSES[curVerb][curRes];
+
+  cSub.textContent = 'Invio in corso...';
+  cSub.style.color = '#888';
+  sSub.textContent = '';
+
+  waiter.style.top = '8%';
+  packet.style.opacity = '1';
+  packet.textContent = curVerb + ' ' + endpoint;
+  packet.style.top = '15%';
+
+  await sleep(750);
+
+  sSub.textContent = 'Elaborando richiesta...';
+  await sleep(400);
+  sSub.textContent = 'Preparando risposta...';
+  await sleep(500);
+
+  packet.textContent = resp.msg;
+  packet.style.color = resp.status < 400 ? 'var(--get)' : 'var(--delete)';
+  waiter.style.top = '82%';
+  packet.style.top = '68%';
+  sSub.textContent = '';
+  cSub.textContent = 'Risposta ricevuta!';
+  cSub.style.color = resp.status < 400 ? 'var(--get)' : 'var(--delete)';
+
+  await sleep(750);
+
+  waiter.style.top = '50%';
+  packet.style.opacity = '0';
+  packet.style.color = 'var(--accent)';
+  cSub.textContent = '';
+
+  addLog(curVerb, endpoint, resp);
+
+  busy = false;
+  document.getElementById('send-btn').disabled = false;
+}
+
+function addLog(verb, url, resp) {
+  const log = document.getElementById('log');
+  const empty = log.querySelector('.log-empty');
+  if (empty) empty.remove();
+
+  const ok = resp.status < 400;
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = `
+    <span class="log-verb lv-${verb}">${verb}</span>
+    <div class="log-body">
+      <div class="log-main">${url} &nbsp;<span class="${ok ? 'log-status-ok' : 'log-status-err'}">${resp.msg}</span></div>
+      <div class="log-response">${resp.body}</div>
+      <div class="log-note">${resp.note}</div>
+    </div>`;
+  log.insertBefore(entry, log.firstChild);
+}
+
+updateURL();
+</script>
+</body>
+</html>

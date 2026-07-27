@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script>
+            window.onload = function () {
+                fetchData();
+            };
+
+
+            async function fetchData() {
+                try {
+                    const response = await makeFetchRequest();
+                    const data = await response.text();
+                    showData(data);
+                } catch (error) {
+                    handleError(error);
+                }
+            }
+
+            function makeFetchRequest() {
+
+                return fetch('http://localhost:8080/TestCors/test/cors', {
+                    'method': 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }});
+            }
+
+            function showData(text) {
+                const div = document.getElementById("container");
+                div.innerHTML = text;
+            }
+            function handleError(error){
+                const div = document.getElementById("container");
+                div.innerHTML = error;
+            }
+        </script>
+    </head>
+    <body>
+        <div id="container"></div>
+    </body>
+</html>

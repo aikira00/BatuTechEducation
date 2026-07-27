@@ -1,0 +1,2 @@
+File generato automaticamente: test_2.txt
+Pronto per l'algoritmo di compressione.

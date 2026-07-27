@@ -20,7 +20,7 @@ public class Lez01SneakyCounter extends Lez01Counter{
 
     @Override
     public void decrement() {
-        int tmp = c;
+        synchronized (this){tmp = c;
         /*try{
             Thread.sleep(20);
         }
@@ -28,7 +28,7 @@ public class Lez01SneakyCounter extends Lez01Counter{
             System.out.println(Thread.currentThread().getName() + "sono stato interrotto, termino!");
             return;
         }*/
-        c = tmp - 1;
+        c = tmp - 1;}
         System.out.println(
                 Thread.currentThread().getName() +
                         ": il contatore segna " + c);
