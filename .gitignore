@@ -1,2 +1,13 @@
 .DS_Store
-.obsidian/
+.idea/
+*.iml
+target/
+out/
+build/
+cmake-build-*/
+venv/
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+.obsidian/workspace.json
