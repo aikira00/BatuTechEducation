@@ -1,0 +1,111 @@
+La documentazione su JakartaRestConfiguration.java. Va inserita sopra  @ApplicationPath
+@OpenAPIDefinition(
+    info = @Info(
+        title = "REST web service with CRUD operations on a MySQL database",
+        version = "1.0.0",
+        description = """
+                      This service exposes several endpoints for managing operations.
+                      Besides the documented endpoints, the project uses some utility classes:
+                      - ConnectionUtility: A utility class with a static method for obtaining 
+                        database connection via JNDI. The connection is retrieved from a DataSource 
+                        configured in Tomcat's JNDI context (usually defined in the context.xml file). 
+                        This allows applications to manage database connections efficiently 
+                        within the Tomcat container, promoting a more scalable and 
+                        maintainable approach to database connectivity.
+                      - ExceptionManager: a class for centralized exception handling.""",
+        contact = @Contact(name = "Giuliano Bellucci", email = "gbellucci@itisavogadro.it")
+    )
+)
+La documentazione sui quattro metodi di Categories.java. Il codice va inserito fra i metodo http (@GET etc. etc.) e il nome del metodo
+@Operation(
+            summary = "Retrieve categories",
+            description = "Returns the entire list, a single element identified by the ID, or a list of elements based on a LIKE search on the description."
+    )
+    @ApiResponses({
+        @ApiResponse(
+                responseCode = "200",
+                description = "Successful retrieval of categories",
+                content = @Content(mediaType = "application/json")
+        ),
+        @ApiResponse(
+                responseCode = "400",
+                description = "Invalid 'id' format"
+        ),
+        @ApiResponse(
+                responseCode = "500",
+                description = "Internal server error",
+                content = @Content(mediaType = "application/json")
+        )
+    })
+
+
+@Operation(
+            summary = "Delete a category",
+            description = "Deletes a category based on the provided 'id' query parameter and returns the number of deleted records."
+    )
+    @ApiResponses({
+        @ApiResponse(
+                responseCode = "200",
+                description = "Category successfully deleted",
+                content = @Content(mediaType = "application/json",
+                        schema = @Schema(example = "{\"deleted\": 1}")
+                )
+        ),
+        @ApiResponse(
+                responseCode = "400",
+                description = "Invalid 'id' format"
+        ),
+        @ApiResponse(
+                responseCode = "500",
+                description = "Internal server error"
+        )
+    })
+
+
+@Operation(
+            summary = "Add a new category",
+            description = "Creates a new category based on the provided JSON payload and returns the number of records added."
+    )
+    @ApiResponses({
+        @ApiResponse(
+                responseCode = "200",
+                description = "Category successfully added",
+                content = @Content(mediaType = "application/json",
+                        schema = @Schema(example = "{\"added\": 1}")
+                )
+        ),
+        @ApiResponse(
+                responseCode = "400",
+                description = "Invalid request payload"
+        ),
+        @ApiResponse(
+                responseCode = "500",
+                description = "Internal server error"
+        )
+    })
+
+@Operation(
+            summary = "Update an existing category",
+            description = "Updates an existing category based on the provided JSON payload and returns the number of records updated."
+    )
+    @ApiResponses({
+        @ApiResponse(
+                responseCode = "200",
+                description = "Category successfully updated",
+                content = @Content(mediaType = "application/json",
+                        schema = @Schema(example = "{\"updated\": 1}")
+                )
+        ),
+        @ApiResponse(
+                responseCode = "400",
+                description = "Invalid request payload"
+        ),
+        @ApiResponse(
+                responseCode = "404",
+                description = "Category not found"
+        ),
+        @ApiResponse(
+                responseCode = "500",
+                description = "Internal server error"
+        )
+    })
