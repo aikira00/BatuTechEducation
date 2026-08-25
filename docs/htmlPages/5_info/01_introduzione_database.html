@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Dai fori nel cartoncino alle tabelle</title>
+<meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+
+<style>
+:root{
+  --bg:#EEF0F4;
+  --surface:#FFFFFF;
+  --surface-2:#F5F7FA;
+  --ink:#131A24;
+  --ink-2:#3D4A5C;
+  --ink-3:#6B7887;
+  --rule:#D3D9E2;
+  --rule-strong:#B6C0CD;
+  --navy:#16324F;
+  --navy-soft:rgba(22,50,79,.08);
+  --accent:#C81E4E;
+  --accent-soft:rgba(200,30,78,.10);
+  --accent-line:rgba(200,30,78,.35);
+  --warn:#8A5A12;
+  --warn-soft:rgba(138,90,18,.10);
+  --ok:#0F6B5F;
+  --ok-soft:rgba(15,107,95,.10);
+  --card:#E7EAF0;
+  --hole:#1D2733;
+  --shadow:0 1px 2px rgba(19,26,36,.06), 0 8px 24px -12px rgba(19,26,36,.18);
+
+  --f-display:"IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --f-body:"IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure:66ch;
+  --wide:min(1080px, 94vw);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E141B;
+    --surface:#151D26;
+    --surface-2:#1A2430;
+    --ink:#E6EBF2;
+    --ink-2:#AEBACA;
+    --ink-3:#7E8C9E;
+    --rule:#2A3644;
+    --rule-strong:#3B4A5C;
+    --navy:#9FC4EC;
+    --navy-soft:rgba(159,196,236,.10);
+    --accent:#FF7096;
+    --accent-soft:rgba(255,112,150,.13);
+    --accent-line:rgba(255,112,150,.40);
+    --warn:#E0A458;
+    --warn-soft:rgba(224,164,88,.12);
+    --ok:#54C3AC;
+    --ok-soft:rgba(84,195,172,.12);
+    --card:#1E2833;
+    --hole:#05080C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E141B;
+  --surface:#151D26;
+  --surface-2:#1A2430;
+  --ink:#E6EBF2;
+  --ink-2:#AEBACA;
+  --ink-3:#7E8C9E;
+  --rule:#2A3644;
+  --rule-strong:#3B4A5C;
+  --navy:#9FC4EC;
+  --navy-soft:rgba(159,196,236,.10);
+  --accent:#FF7096;
+  --accent-soft:rgba(255,112,150,.13);
+  --accent-line:rgba(255,112,150,.40);
+  --warn:#E0A458;
+  --warn-soft:rgba(224,164,88,.12);
+  --ok:#54C3AC;
+  --ok-soft:rgba(84,195,172,.12);
+  --card:#1E2833;
+  --hole:#05080C;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:17px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:var(--wide);margin:0 auto;padding:0 clamp(16px,4vw,32px) 96px}
+
+/* ---------- typography ---------- */
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:clamp(26px,3.6vw,34px);font-weight:600;letter-spacing:-.01em}
+h3{font-size:clamp(19px,2.2vw,22px);font-weight:600;margin-bottom:.2em}
+p{margin:0}
+a{color:var(--accent)}
+strong{font-weight:600}
+.lede{font-size:clamp(18px,2.1vw,20px);color:var(--ink-2);line-height:1.55}
+.eyebrow{
+  font-family:var(--f-mono);font-size:11.5px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+}
+.col{display:flex;flex-direction:column;gap:18px;max-width:var(--measure)}
+.col p+p{margin-top:0}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(40px,8vw,80px) 0 clamp(28px,5vw,44px)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(24px,5vw,56px);align-items:center}
+@media (max-width:840px){.hero-grid{grid-template-columns:1fr}}
+.hero h1{
+  font-size:clamp(38px,6.4vw,64px);font-weight:700;letter-spacing:-.025em;
+  margin:.28em 0 .34em;color:var(--navy);
+}
+.hero h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+.hero-meta{
+  display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:26px;
+  font-family:var(--f-mono);font-size:12.5px;color:var(--ink-3);
+  border-top:1px solid var(--rule);padding-top:14px;
+}
+
+/* punched card */
+.cardwrap{position:relative}
+.punchcard{
+  width:100%;height:auto;display:block;
+  filter:drop-shadow(0 14px 30px rgba(19,26,36,.16));
+}
+.card-body{fill:var(--card);stroke:var(--rule-strong)}
+.card-txt{fill:var(--ink-3);font-family:var(--f-mono)}
+.card-rule{stroke:var(--rule-strong)}
+.hole{opacity:0;fill:var(--hole)}
+.hole.on{animation:punch .5s ease forwards}
+@keyframes punch{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){
+  .hole{opacity:1}
+  .hole.on{animation:none}
+}
+.cardcap{
+  font-family:var(--f-mono);font-size:11.5px;color:var(--ink-3);
+  margin-top:12px;text-align:right;
+}
+
+/* ---------- sections ---------- */
+section{padding:clamp(40px,6vw,68px) 0;border-top:1px solid var(--rule)}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline;margin-bottom:26px}
+.num{
+  font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--accent);
+  border:1px solid var(--accent-line);border-radius:3px;padding:2px 7px;
+  line-height:1.4;
+}
+.sec-head h2{color:var(--navy)}
+.sec-sub{grid-column:2;color:var(--ink-3);font-family:var(--f-mono);font-size:12.5px;letter-spacing:.04em;margin-top:6px}
+
+/* ---------- panels ---------- */
+.panel{
+  background:var(--surface);border:1px solid var(--rule);border-radius:6px;
+  padding:clamp(18px,3vw,26px);box-shadow:var(--shadow);
+}
+.panel-flat{background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:clamp(16px,3vw,24px)}
+.stack{display:flex;flex-direction:column;gap:clamp(18px,3vw,28px)}
+.stack-s{display:flex;flex-direction:column;gap:12px}
+
+.note{
+  border-left:3px solid var(--accent);background:var(--accent-soft);
+  padding:16px 20px;border-radius:0 5px 5px 0;max-width:var(--measure);
+}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.note.ok{border-left-color:var(--ok);background:var(--ok-soft)}
+.note .eyebrow{margin-bottom:6px;display:block;color:var(--ink-2)}
+
+.pull{
+  font-family:var(--f-display);font-size:clamp(20px,2.6vw,25px);line-height:1.4;
+  font-style:italic;color:var(--navy);max-width:30ch;
+  border-top:2px solid var(--navy);border-bottom:1px solid var(--rule);
+  padding:18px 0;margin:4px 0;
+}
+
+/* ---------- timeline ---------- */
+.timeline{display:flex;flex-direction:column;gap:0;margin-top:8px}
+.tl{
+  display:grid;grid-template-columns:96px 1fr;gap:20px;
+  padding:16px 0;border-top:1px solid var(--rule);
+}
+.tl:last-child{border-bottom:1px solid var(--rule)}
+.tl-year{font-family:var(--f-mono);font-weight:600;font-size:15px;color:var(--accent);font-variant-numeric:tabular-nums}
+.tl-body{color:var(--ink-2);max-width:60ch}
+.tl-body b{color:var(--ink);font-weight:600}
+@media (max-width:560px){.tl{grid-template-columns:1fr;gap:4px}}
+
+/* ---------- tables ---------- */
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;font-variant-numeric:tabular-nums}
+caption{
+  text-align:left;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);padding:12px 14px 10px;
+}
+th,td{padding:9px 14px;text-align:left;border-bottom:1px solid var(--rule);white-space:nowrap}
+thead th{
+  font-family:var(--f-mono);font-size:11.5px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);
+  border-bottom:1px solid var(--rule-strong);
+}
+tbody tr:last-child td{border-bottom:none}
+td.mono,th.mono{font-family:var(--f-mono)}
+.pk{color:var(--navy);font-weight:600}
+.fk{color:var(--accent);font-weight:600}
+.dup{background:var(--warn-soft);color:var(--warn);font-weight:500}
+.badge{
+  display:inline-block;font-family:var(--f-mono);font-size:10.5px;font-weight:600;
+  letter-spacing:.08em;padding:1px 6px;border-radius:3px;vertical-align:2px;margin-left:6px;
+}
+.badge-pk{background:var(--navy-soft);color:var(--navy);border:1px solid var(--rule-strong)}
+.badge-fk{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line)}
+
+/* interactive join demo */
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tab{
+  font-family:var(--f-mono);font-size:12.5px;letter-spacing:.04em;
+  background:transparent;color:var(--ink-2);border:1px solid var(--rule-strong);
+  padding:7px 14px;border-radius:4px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;
+}
+.tab:hover{background:var(--surface-2);color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--navy);border-color:var(--navy);color:var(--bg)}
+.tab:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.viewpane[hidden]{display:none}
+.joingrid{display:grid;grid-template-columns:1fr;gap:14px}
+tr.linkable{cursor:pointer;transition:background .12s}
+tr.linkable:hover{background:var(--navy-soft)}
+tr.sel{background:var(--accent-soft)!important;box-shadow:inset 3px 0 0 var(--accent)}
+.hint{font-family:var(--f-mono);font-size:12px;color:var(--ink-3);margin-top:10px}
+#joinmsg{color:var(--ink-2);font-family:var(--f-mono);font-size:12.5px;min-height:1.4em;margin-top:10px}
+#joinmsg b{color:var(--accent)}
+
+/* ---------- code / record layout ---------- */
+pre{
+  font-family:var(--f-mono);font-size:13.5px;line-height:1.7;margin:0;
+  background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;
+  padding:16px 18px;overflow-x:auto;color:var(--ink-2);
+}
+pre b{color:var(--ink);font-weight:600}
+pre .c{color:var(--ink-3);font-style:italic}
+pre .k{color:var(--accent);font-weight:500}
+code{font-family:var(--f-mono);font-size:.92em;background:var(--surface-2);border:1px solid var(--rule);border-radius:3px;padding:1px 5px}
+
+.record{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--rule-strong);border-radius:5px;overflow:hidden;font-family:var(--f-mono)}
+.field{flex:1 1 0;min-width:88px;border-right:1px solid var(--rule-strong);padding:10px 12px;background:var(--surface)}
+.field:last-child{border-right:none}
+.field .fname{font-size:12px;font-weight:600;color:var(--ink)}
+.field .fmeta{font-size:11px;color:var(--ink-3);margin-top:3px}
+.field.hl{background:var(--accent-soft)}
+
+/* ---------- problem / feature cards ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.cards-4{grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}
+.mini{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px 18px}
+.mini h4{font-size:16px;font-weight:600;margin-bottom:5px;color:var(--navy)}
+.mini p{font-size:14.5px;color:var(--ink-2);line-height:1.55}
+.mini .tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warn);display:block;margin-bottom:8px}
+.mini.good .tag{color:var(--ok)}
+.mini.good h4{color:var(--ink)}
+
+/* ---------- diagrams ---------- */
+.diagram{width:100%;height:auto;display:block}
+.dg-fill{fill:var(--surface)}
+.dg-fill2{fill:var(--surface-2)}
+.dg-stroke{stroke:var(--rule-strong)}
+.dg-line{stroke:var(--ink-3)}
+.dg-accent{stroke:var(--accent)}
+.dg-accent-f{fill:var(--accent)}
+.dg-navy-f{fill:var(--navy)}
+.dg-navy-s{stroke:var(--navy)}
+.dg-box-accent{fill:var(--accent-soft);stroke:var(--accent)}
+.dg-t{fill:var(--ink);font-family:var(--f-body);font-size:13px;font-weight:600}
+.dg-s{fill:var(--ink-3);font-family:var(--f-mono);font-size:11px}
+.figcap{font-family:var(--f-mono);font-size:12px;color:var(--ink-3);margin-top:12px}
+
+/* ---------- levels ---------- */
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--surface)}
+.level{padding:20px;border-right:1px solid var(--rule)}
+.level:last-child{border-right:none}
+@media (max-width:760px){.level{border-right:none;border-bottom:1px solid var(--rule)}.level:last-child{border-bottom:none}}
+.level .step{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.level h4{font-size:19px;margin:6px 0 4px;color:var(--navy)}
+.level .q{font-family:var(--f-display);font-style:italic;color:var(--ink-2);font-size:15px;margin-bottom:14px;display:block}
+.level dl{margin:0;display:flex;flex-direction:column;gap:10px}
+.level dt{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.level dd{margin:2px 0 0;font-size:14.5px;color:var(--ink-2);line-height:1.5}
+
+/* ---------- details ---------- */
+details{border:1px solid var(--rule);border-radius:6px;background:var(--surface);overflow:hidden}
+summary{
+  cursor:pointer;padding:14px 18px;font-family:var(--f-mono);font-size:13px;
+  letter-spacing:.04em;color:var(--navy);list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center;
+}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:17px;color:var(--accent);line-height:1}
+details[open] summary::after{content:"–"}
+details[open] summary{border-bottom:1px solid var(--rule)}
+.details-body{padding:18px;display:flex;flex-direction:column;gap:14px;font-size:15.5px;color:var(--ink-2)}
+.details-body b{color:var(--ink)}
+
+/* ---------- lists ---------- */
+ul.clean,ol.clean{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:9px;color:var(--ink-2)}
+ul.clean li::marker{color:var(--accent)}
+ol.clean li::marker{color:var(--accent);font-family:var(--f-mono);font-size:.9em}
+ul.clean b,ol.clean b{color:var(--ink)}
+
+.takeaways{counter-reset:t;display:flex;flex-direction:column;gap:0}
+.ta{display:grid;grid-template-columns:auto 1fr;gap:18px;padding:15px 0;border-top:1px solid var(--rule);align-items:start}
+.ta:last-child{border-bottom:1px solid var(--rule)}
+.ta::before{
+  counter-increment:t;content:counter(t,decimal-leading-zero);
+  font-family:var(--f-mono);font-size:12px;color:var(--accent);padding-top:4px;
+}
+.ta p{color:var(--ink-2);max-width:62ch}
+.ta b{color:var(--ink)}
+
+footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font-size:14px}
+footer a{color:var(--ink-2);text-decoration-color:var(--rule-strong)}
+footer ul{margin:10px 0 0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+</style>
+
+<div class="page">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Informatica &middot; Basi di dati &middot; Lezione 1</span>
+        <h1>Dai fori nel cartoncino <em>alle tabelle</em></h1>
+        <p class="lede">Come l'informatica ha imparato a gestire i dati: dal censimento americano del 1890 ai database relazionali, fino al modo in cui si progetta una base di dati oggi.</p>
+        <div class="hero-meta">
+          <span>Durata: 1–2 ore</span>
+          <span>Prerequisiti: file e tipi di dato</span>
+          <span>Nessun SQL richiesto</span>
+        </div>
+      </div>
+      <div class="cardwrap">
+        <svg class="punchcard" id="punchcard" viewBox="0 0 520 230" role="img" aria-label="Illustrazione di una scheda perforata con i fori disposti in righe e colonne">
+          <path class="card-body" d="M0 12 A12 12 0 0 1 12 0 H496 L520 24 V218 A12 12 0 0 1 508 230 H12 A12 12 0 0 1 0 218 Z" stroke-width="1"/>
+          <text class="card-txt" x="20" y="26" font-size="11" letter-spacing="2">HOLLERITH ELECTRIC TABULATING SYSTEM &#183; 1890</text>
+          <g id="holes"></g>
+          <line class="card-rule" x1="20" y1="212" x2="500" y2="212" stroke-width="1"/>
+          <text class="card-txt" x="20" y="226" font-size="9" letter-spacing="1.5">1 RECORD = 1 PERSONA &#183; 1 ZONA = 1 CAMPO</text>
+        </svg>
+        <p class="cardcap">Una scheda, una persona. Il primo formato dati leggibile da una macchina.</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ 1 ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="num">01</span>
+      <h2>Perché gestire i dati è un problema informatico</h2>
+      <p class="sec-sub">Il punto di partenza: i dati non sono un accessorio del programma</p>
+    </div>
+    <div class="stack">
+      <div class="col">
+        <p>Quando si impara a programmare si pensa che il cuore di tutto sia l'algoritmo: il programma prende dei dati in ingresso, li elabora, produce un risultato e finisce. In questa visione i dati sono materia di passaggio.</p>
+        <p>Nel mondo reale succede l'opposto. Il programma che gestisce l'anagrafe di un comune verrà riscritto cinque o sei volte in trent'anni, cambierà linguaggio, cambierà interfaccia, cambierà azienda che lo mantiene. <strong>I dati dell'anagrafe, invece, restano.</strong> Sono più vecchi del programma che li legge e sopravvivranno anche al prossimo.</p>
+        <p>Da qui nasce un intero settore dell'informatica, che non si occupa di <em>come calcolare</em> ma di <em>come conservare, organizzare, proteggere e ritrovare</em> grandi quantità di dati che molte persone usano contemporaneamente.</p>
+      </div>
+
+      <div class="cards cards-4">
+        <div class="mini good">
+          <span class="tag">Persistenza</span>
+          <h4>Sopravvivere allo spegnimento</h4>
+          <p>Il dato deve restare quando il programma termina, quando il PC si spegne, quando il disco si rompe.</p>
+        </div>
+        <div class="mini good">
+          <span class="tag">Volume</span>
+          <h4>Più dati della memoria</h4>
+          <p>I dati sono quasi sempre troppi per stare tutti in RAM: bisogna saperne caricare solo un pezzo, e in fretta.</p>
+        </div>
+        <div class="mini good">
+          <span class="tag">Condivisione</span>
+          <h4>Molti utenti insieme</h4>
+          <p>Segreteria, docenti, famiglie e registro elettronico leggono e scrivono gli stessi dati nello stesso momento.</p>
+        </div>
+        <div class="mini good">
+          <span class="tag">Correttezza</span>
+          <h4>Dati che restano sensati</h4>
+          <p>Nessuno deve poter inserire uno studente in una classe che non esiste, o due studenti con la stessa matricola.</p>
+        </div>
+      </div>
+
+      <div class="note">
+        <span class="eyebrow">Da fissare subito</span>
+        <p>Un <strong>dato</strong> è un fatto grezzo: <code>3A</code>, <code>7.5</code>, <code>Rossi</code>. Diventa <strong>informazione</strong> solo quando è interpretato in un contesto: «lo studente Rossi della 3A ha media 7,5». Il compito di una base di dati è conservare i dati in modo che il contesto non vada perduto.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="num">02</span>
+      <h2>1890: il censimento che non finiva mai</h2>
+      <p class="sec-sub">Herman Hollerith, la scheda perforata e la nascita del trattamento automatico dei dati</p>
+    </div>
+    <div class="stack">
+      <div class="col">
+        <p>La Costituzione degli Stati Uniti impone un censimento ogni dieci anni: serve a ripartire i seggi del Congresso, quindi va per forza completato prima del censimento successivo. Il problema è che nell'Ottocento gli Stati Uniti crescevano molto in fretta.</p>
+        <p>Lo spoglio completo del censimento del 1880 richiese <strong>sette anni</strong> di lavoro manuale. Con quel ritmo, il censimento del 1890 non sarebbe stato finito prima del 1900: sarebbe diventato inutile ancora prima di essere pubblicato. Non era un problema di calcolo — le somme erano banali — ma di <strong>quantità di dati da trattare</strong>.</p>
+      </div>
+
+      <div class="pull">Non serviva una macchina che calcolasse meglio. Serviva una macchina che leggesse.</div>
+
+      <div class="col">
+        <p>La soluzione di Herman Hollerith, che al Census Bureau aveva visto il problema da vicino, fu di <strong>spostare i dati fuori dalla carta scritta a mano e dentro un supporto leggibile da una macchina</strong>: la scheda perforata.</p>
+      </div>
+
+      <div class="panel stack-s">
+        <span class="eyebrow">Come funzionava</span>
+        <ol class="clean">
+          <li><b>Codifica.</b> Ogni persona censita diventa una scheda di cartoncino. Ogni zona della scheda corrisponde a una domanda (sesso, età, stato civile, luogo di nascita…) e il foro in quella zona rappresenta la risposta.</li>
+          <li><b>Lettura elettrica.</b> La scheda viene chiusa in una pressa: dove c'è il foro, uno spillo metallico passa e tocca una vaschetta di mercurio sottostante, <b>chiudendo un circuito elettrico</b>. Dove il cartoncino è intero, il circuito resta aperto.</li>
+          <li><b>Conteggio.</b> Ogni circuito chiuso fa avanzare di uno il contatore corrispondente su un quadrante. Un operatore esperto arrivava a <b>80 schede al minuto</b>.</li>
+          <li><b>Selezione.</b> Uno scomparto si apriva automaticamente per far smistare la scheda: così si potevano contare anche le combinazioni, ad esempio «donne, nate all'estero, in Ohio».</li>
+        </ol>
+      </div>
+
+      <div class="col">
+        <p>Nella gara indetta dal Census Bureau il sistema di Hollerith completò l'acquisizione dei dati di prova in <strong>72,5 ore</strong> contro le 100,5 e 144,5 ore dei concorrenti, e la fase di preparazione in 5,5 ore contro 44,5 e 55,5. Vinse l'appalto.</p>
+        <p>Il conteggio della popolazione del 1890 — <strong>62.622.250 abitanti</strong> — fu pronto entro la fine di quell'anno, e l'elaborazione completa in circa due anni contro i sette del censimento precedente.</p>
+      </div>
+
+      <div class="cards">
+        <div class="mini good">
+          <span class="tag">Idea 1</span>
+          <h4>Il dato si separa dal documento</h4>
+          <p>Non si legge più il registro compilato a mano: si legge un supporto pensato per la macchina. È la prima volta che i dati hanno un <em>formato</em>.</p>
+        </div>
+        <div class="mini good">
+          <span class="tag">Idea 2</span>
+          <h4>Nascono record e campo</h4>
+          <p>Una scheda = un record (una persona). Una zona di colonne = un campo (una domanda). È esattamente la struttura riga/colonna che ritroveremo nelle tabelle.</p>
+        </div>
+        <div class="mini good">
+          <span class="tag">Idea 3</span>
+          <h4>Interrogare, non solo contare</h4>
+          <p>Cambiando i collegamenti si cambiava la domanda senza rifare le schede. È l'antenato lontanissimo di una query.</p>
+        </div>
+      </div>
+
+      <div class="note ok">
+        <span class="eyebrow">Il seguito industriale</span>
+        <p>Hollerith fonda nel 1896 la <strong>Tabulating Machine Company</strong>. Nel 1911 confluisce, con altre tre aziende, nella CTR (Computing-Tabulating-Recording Company), che nel <strong>1924 cambia nome in IBM</strong>. La scheda perforata resterà il supporto dati dominante fino agli anni Sessanta, e al Census Bureau sarà sostituita dai calcolatori solo negli anni Cinquanta.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="num">03</span>
+      <h2>Una parentesi necessaria: i dati sono potere</h2>
+      <p class="sec-sub">Le tabulatrici in Europa negli anni Trenta e Quaranta</p>
+    </div>
+    <div class="stack">
+      <div class="col">
+        <p>La stessa tecnologia che permette di completare un censimento in due anni permette anche di <strong>selezionare rapidamente le persone in base a una caratteristica</strong>. È la stessa operazione: cambia solo a cosa serve.</p>
+        <p>In Germania le macchine Hollerith erano prodotte su licenza dalla <strong>Dehomag</strong> (Deutsche Hollerith-Maschinen GmbH), nata nel 1910 e passata sotto il controllo di IBM nel 1923. Dopo il 1933 la Dehomag fornì al governo tedesco le macchine per i censimenti nazionali, e le tabulatrici a schede perforate furono impiegate per <strong>individuare e schedare ebrei e oppositori</strong> e per gestire la logistica ferroviaria verso i campi di concentramento; in Polonia occupata IBM operava attraverso la Watson Business Machines.</p>
+      </div>
+
+      <div class="pull">Il problema non era la macchina. Era la domanda che le veniva posta.</div>
+
+      <div class="col">
+        <p>È la ragione per cui, in ogni corso serio sulle basi di dati, accanto a «come conservo i dati» e «come li ritrovo in fretta» esiste sempre una terza domanda: <strong>chi può accedere a quali dati, per quale scopo e per quanto tempo</strong>. Da questa consapevolezza nascono, molti decenni dopo, i principi che oggi troviamo nel GDPR: minimizzazione dei dati, limitazione della finalità, limitazione della conservazione.</p>
+      </div>
+
+      <details>
+        <summary>Perché ne parliamo in una lezione tecnica</summary>
+        <div class="details-body">
+          <p>Perché il progettista di una base di dati prende decisioni che sembrano solo tecniche e non lo sono. <b>Decidere che una tabella contiene un campo</b> «origine etnica», «orientamento politico» o «stato di salute» significa rendere quella selezione possibile e istantanea per chiunque abbia accesso alla base di dati, oggi e fra vent'anni.</p>
+          <p>La regola pratica che si porta a casa: <b>un dato che non raccogli è un dato che nessuno potrà usare contro qualcuno</b>. La progettazione non è neutra.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="num">04</span>
+      <h2>Anni '50–'60: i dati stanno nei file, la logica sta nei programmi</h2>
+      <p class="sec-sub">Il modello che il database relazionale verrà a sostituire</p>
+    </div>
+    <div class="stack">
+      <div class="col">
+        <p>Arrivano i calcolatori elettronici. Le schede perforate lasciano il posto ai nastri magnetici e poi ai dischi, che introducono una novità decisiva: l'<strong>accesso diretto</strong>, cioè la possibilità di saltare al record numero 4.312 senza leggere i precedenti.</p>
+        <p>I dati vengono salvati in <strong>file binari a record di lunghezza fissa</strong>. Ogni record occupa esattamente lo stesso numero di byte, così la posizione di un record si calcola con una moltiplicazione. Immaginiamo l'archivio studenti di una scuola.</p>
+      </div>
+
+      <div class="panel stack-s">
+        <span class="eyebrow">studenti.dat &middot; tracciato record, 64 byte</span>
+        <div class="record">
+          <div class="field"><div class="fname">matricola</div><div class="fmeta">offset 0 &middot; 4 B &middot; intero</div></div>
+          <div class="field"><div class="fname">cognome</div><div class="fmeta">offset 4 &middot; 24 B &middot; testo</div></div>
+          <div class="field"><div class="fname">nome</div><div class="fmeta">offset 28 &middot; 20 B &middot; testo</div></div>
+          <div class="field hl"><div class="fname">classe</div><div class="fmeta">offset 48 &middot; 6 B &middot; testo</div></div>
+          <div class="field"><div class="fname">nascita</div><div class="fmeta">offset 54 &middot; 8 B &middot; AAAAMMGG</div></div>
+          <div class="field"><div class="fname">media</div><div class="fmeta">offset 62 &middot; 2 B &middot; media &times;10</div></div>
+        </div>
+        <p style="font-size:14.5px;color:var(--ink-2);margin-top:4px">Per leggere l'n-esimo studente il programma non «cerca»: calcola dove si trova e ci salta sopra.</p>
+<pre><span class="c">// il programma deve conoscere il tracciato byte per byte</span>
+posizione = (n_record - 1) * <b>64</b>;
+fseek(f, posizione, SEEK_SET);
+fread(&amp;studente, <b>64</b>, 1, f);
+
+<span class="c">// e per cercare tutti quelli di una classe: scansione completa</span>
+<span class="k">while</span> (fread(&amp;s, 64, 1, f) == 1)
+    <span class="k">if</span> (strcmp(s.classe, "3A") == 0) stampa(s);</pre>
+      </div>
+
+      <div class="col">
+        <p>Finché c'è un solo programma e un solo file, funziona. I guai arrivano quando i programmi diventano tre e i file diventano cinque — cioè sempre. Tutta la conoscenza su <em>come sono fatti i dati</em> è scritta dentro il codice delle applicazioni, e ogni applicazione ha la sua copia di quella conoscenza (e spesso anche dei dati).</p>
+      </div>
+
+      <div class="cards">
+        <div class="mini">
+          <span class="tag">Problema 1</span>
+          <h4>Dipendenza dal formato fisico</h4>
+          <p>Il cognome deve passare da 24 a 30 byte? Cambia il tracciato: <em>tutti</em> i programmi vanno modificati e ricompilati, e il file va riscritto da capo.</p>
+        </div>
+        <div class="mini">
+          <span class="tag">Problema 2</span>
+          <h4>Ridondanza e incoerenza</h4>
+          <p>La segreteria ha il suo file, la biblioteca il suo, la palestra il suo. Uno studente cambia indirizzo: aggiornato in due archivi su tre. Ora la scuola ha due verità.</p>
+        </div>
+        <div class="mini">
+          <span class="tag">Problema 3</span>
+          <h4>Nessun controllo di integrità</h4>
+          <p>Niente impedisce due matricole uguali, una media di 47 o una classe «3A » con lo spazio finale. Ogni programma dovrebbe ricontrollare tutto, da solo.</p>
+        </div>
+        <div class="mini">
+          <span class="tag">Problema 4</span>
+          <h4>Accesso concorrente</h4>
+          <p>Due impiegati modificano lo stesso record nello stesso momento: l'ultimo che salva cancella il lavoro dell'altro, senza che nessuno se ne accorga.</p>
+        </div>
+        <div class="mini">
+          <span class="tag">Problema 5</span>
+          <h4>Ogni domanda è un programma</h4>
+          <p>«Quanti studenti hanno media superiore a 8 nelle terze?» Non è una domanda: è una richiesta al reparto sviluppo, con tempi e costi.</p>
+        </div>
+        <div class="mini">
+          <span class="tag">Problema 6</span>
+          <h4>Sicurezza tutto o niente</h4>
+          <p>I permessi sono quelli del file. Chi può leggere le medie può leggere anche i dati sanitari che stanno nello stesso archivio.</p>
+        </div>
+      </div>
+
+      <div class="note warn">
+        <span class="eyebrow">La diagnosi</span>
+        <p>Il difetto non è la lentezza: è che <strong>la struttura dei dati e la logica di gestione vivono dentro le applicazioni</strong>. Finché è così, i dati appartengono al programma. La svolta consisterà nel rovesciare la frase: sono i programmi a dover chiedere i dati a chi li custodisce.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="num">05</span>
+      <h2>1970: Codd, l'IBM e l'idea di tabella</h2>
+      <p class="sec-sub">Descrivere i dati senza descrivere il modo in cui sono memorizzati</p>
+    </div>
+    <div class="stack">
+      <div class="col">
+        <p>Negli anni Sessanta esistevano già dei sistemi per gestire archivi condivisi, organizzati a gerarchia o a reticolo: per ottenere un'informazione il programmatore doveva <strong>navigare</strong> la struttura, seguendo puntatori da un record all'altro. Funzionava, ma il programma restava incollato al modo in cui i dati erano memorizzati.</p>
+        <p>Nel 1970 <strong>Edgar F. Codd</strong>, matematico britannico che lavorava nel laboratorio IBM di San Jose, pubblica l'articolo <em>A Relational Model of Data for Large Shared Data Banks</em>. La proposta è tanto semplice da sembrare ingenua:</p>
+      </div>
+
+      <div class="pull">Rappresentiamo tutti i dati come semplici tabelle, e lasciamo che l'utente chieda <em>che cosa</em> vuole, non <em>come</em> andarlo a prendere.</div>
+
+      <div class="col">
+        <p>Le conseguenze sono enormi. Se i dati sono tabelle e i collegamenti sono valori (non puntatori fisici), allora il sistema è libero di cambiare la memorizzazione — riordinare, comprimere, aggiungere un indice — <strong>senza rompere una sola riga di codice</strong> delle applicazioni. È il principio di <em>indipendenza dei dati</em>.</p>
+        <p>IBM inizialmente esita: ha già in catalogo un prodotto gerarchico di grande successo. Ma il progetto di ricerca parte comunque.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="tl"><div class="tl-year">1970</div><div class="tl-body">Codd pubblica il modello relazionale: <b>tabelle, chiavi, operazioni insiemistiche</b>. La base teorica è l'algebra relazionale.</div></div>
+        <div class="tl"><div class="tl-year">1973</div><div class="tl-body">IBM avvia <b>System R</b>, il primo prototipo industriale di DBMS relazionale.</div></div>
+        <div class="tl"><div class="tl-year">1974–75</div><div class="tl-body">Chamberlin e Boyce creano <b>SEQUEL</b>, poi rinominato <b>SQL</b>: un linguaggio in cui si dichiara il risultato voluto e il sistema decide come ottenerlo.</div></div>
+        <div class="tl"><div class="tl-year">fine '70</div><div class="tl-body">Arrivano i primi prodotti commerciali relazionali, fra cui <b>Oracle</b>; a Berkeley nasce in parallelo <b>Ingres</b>, da cui discenderà PostgreSQL.</div></div>
+        <div class="tl"><div class="tl-year">1981</div><div class="tl-body">Codd riceve il <b>Turing Award</b>, il massimo riconoscimento dell'informatica.</div></div>
+        <div class="tl"><div class="tl-year">1983</div><div class="tl-body">IBM rilascia <b>DB2</b>. Il relazionale diventa lo standard di fatto, e lo è ancora oggi.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="num">06</span>
+      <h2>Il modello relazionale in pratica</h2>
+      <p class="sec-sub">Da una tabella sola a due tabelle collegate</p>
+    </div>
+    <div class="stack">
+      <div class="col">
+        <p>Proviamo a rifare l'archivio studenti in forma di tabella. Prima versione: <strong>tutto in una tabella sola</strong>, come nel file binario di prima ma con nomi al posto degli offset.</p>
+      </div>
+
+      <div class="panel stack-s">
+        <div class="tabs" role="tablist" aria-label="Confronto fra i due schemi">
+          <button class="tab" role="tab" id="tab-1" aria-controls="view-1" aria-selected="true">Una tabella sola</button>
+          <button class="tab" role="tab" id="tab-2" aria-controls="view-2" aria-selected="false">Due tabelle collegate</button>
+        </div>
+
+        <div class="viewpane" id="view-1" role="tabpanel" aria-labelledby="tab-1">
+          <div class="tablewrap">
+            <table>
+              <caption>STUDENTI &mdash; tutto in un posto solo</caption>
+              <thead>
+                <tr><th class="mono">matricola</th><th class="mono">cognome</th><th class="mono">nome</th><th class="mono">classe</th><th class="mono">aula</th><th class="mono">coordinatore</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="mono pk">1041</td><td>Bianchi</td><td>Sara</td><td class="dup">3A</td><td class="dup">B12</td><td class="dup">Ferri M.</td></tr>
+                <tr><td class="mono pk">1042</td><td>Rossi</td><td>Luca</td><td class="dup">3A</td><td class="dup">B12</td><td class="dup">Ferri M.</td></tr>
+                <tr><td class="mono pk">1043</td><td>Nguyen</td><td>An</td><td class="dup">3A</td><td class="dup">B12</td><td class="dup">Ferri M</td></tr>
+                <tr><td class="mono pk">1044</td><td>Costa</td><td>Elena</td><td class="dup">4B</td><td class="dup">A03</td><td class="dup">Sala G.</td></tr>
+                <tr><td class="mono pk">1045</td><td>Haidar</td><td>Omar</td><td class="dup">4 B</td><td class="dup">A03</td><td class="dup">Sala G.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="hint">Le celle evidenziate sono dati ripetuti. Guarda la riga 1043 e la riga 1045.</p>
+
+          <div class="cards cards-4" style="margin-top:16px">
+            <div class="mini">
+              <span class="tag">Anomalia di aggiornamento</span>
+              <h4>La 3A cambia aula</h4>
+              <p>Devi modificare tutte le righe degli studenti della 3A. Se ne dimentichi una, la scuola ha due aule diverse per la stessa classe.</p>
+            </div>
+            <div class="mini">
+              <span class="tag">Anomalia di inserimento</span>
+              <h4>Una classe senza studenti</h4>
+              <p>La 1C esiste da settembre ma le iscrizioni non sono ancora chiuse: non hai dove scriverla, perché senza studente non c'è riga.</p>
+            </div>
+            <div class="mini">
+              <span class="tag">Anomalia di cancellazione</span>
+              <h4>L'ultimo studente si ritira</h4>
+              <p>Cancelli la sua riga e perdi anche aula e coordinatore di quella classe: due informazioni indipendenti buttate via insieme.</p>
+            </div>
+            <div class="mini">
+              <span class="tag">Incoerenza</span>
+              <h4>«3A», «4 B», «Ferri M»</h4>
+              <p>Scritti a mano tante volte, gli stessi valori divergono. Per il computer <code>4B</code> e <code>4 B</code> sono due classi diverse.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="viewpane" id="view-2" role="tabpanel" aria-labelledby="tab-2" hidden>
+          <div class="joingrid">
+            <div class="tablewrap">
+              <table id="tab-studenti">
+                <caption>STUDENTI &mdash; solo ciò che riguarda lo studente</caption>
+                <thead>
+                  <tr><th class="mono">matricola <span class="badge badge-pk">PK</span></th><th class="mono">cognome</th><th class="mono">nome</th><th class="mono">id_classe <span class="badge badge-fk">FK</span></th></tr>
+                </thead>
+                <tbody>
+                  <tr class="linkable" data-classe="12" tabindex="0"><td class="mono pk">1041</td><td>Bianchi</td><td>Sara</td><td class="mono fk">12</td></tr>
+                  <tr class="linkable" data-classe="12" tabindex="0"><td class="mono pk">1042</td><td>Rossi</td><td>Luca</td><td class="mono fk">12</td></tr>
+                  <tr class="linkable" data-classe="12" tabindex="0"><td class="mono pk">1043</td><td>Nguyen</td><td>An</td><td class="mono fk">12</td></tr>
+                  <tr class="linkable" data-classe="27" tabindex="0"><td class="mono pk">1044</td><td>Costa</td><td>Elena</td><td class="mono fk">27</td></tr>
+                  <tr class="linkable" data-classe="27" tabindex="0"><td class="mono pk">1045</td><td>Haidar</td><td>Omar</td><td class="mono fk">27</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="tablewrap">
+              <table id="tab-classi">
+                <caption>CLASSI &mdash; ogni classe scritta una volta sola</caption>
+                <thead>
+                  <tr><th class="mono">id_classe <span class="badge badge-pk">PK</span></th><th class="mono">sezione</th><th class="mono">anno</th><th class="mono">aula</th><th class="mono">coordinatore</th></tr>
+                </thead>
+                <tbody>
+                  <tr data-classe="12"><td class="mono pk">12</td><td>A</td><td>3</td><td>B12</td><td>Ferri M.</td></tr>
+                  <tr data-classe="27"><td class="mono pk">27</td><td>B</td><td>4</td><td>A03</td><td>Sala G.</td></tr>
+                  <tr data-classe="31"><td class="mono pk">31</td><td>C</td><td>1</td><td>C05</td><td>Verdi P.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p class="hint">Clicca (o seleziona con Tab e premi Invio) una riga della tabella STUDENTI.</p>
+          <p id="joinmsg" role="status" aria-live="polite">Il collegamento non è un puntatore: è un valore uguale in due tabelle.</p>
+
+          <div class="cards" style="margin-top:16px">
+            <div class="mini good">
+              <span class="tag">Chiave primaria</span>
+              <h4>Identifica una riga</h4>
+              <p><code>matricola</code> in STUDENTI, <code>id_classe</code> in CLASSI: un valore unico, mai vuoto, che distingue una riga da tutte le altre.</p>
+            </div>
+            <div class="mini good">
+              <span class="tag">Chiave esterna</span>
+              <h4>Collega due tabelle</h4>
+              <p><code>id_classe</code> in STUDENTI deve corrispondere a una chiave primaria esistente in CLASSI. Il sistema rifiuta l'inserimento se la classe non c'è.</p>
+            </div>
+            <div class="mini good">
+              <span class="tag">Effetto</span>
+              <h4>Le anomalie spariscono</h4>
+              <p>La 3A cambia aula: si modifica <b>una</b> riga. La 1C esiste senza studenti. L'ultimo studente si ritira e la classe resta.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <details>
+        <summary>Il vocabolario minimo del modello relazionale</summary>
+        <div class="details-body">
+          <ul class="clean">
+            <li><b>Relazione</b> (in pratica: tabella) — un insieme di righe con la stessa struttura. «Relazione» qui è un termine matematico, non significa «collegamento».</li>
+            <li><b>Tupla</b> (riga) — un singolo elemento: uno studente, una classe.</li>
+            <li><b>Attributo</b> (colonna) — una proprietà, con un nome e un tipo.</li>
+            <li><b>Dominio</b> — l'insieme dei valori ammessi per un attributo: interi, date, «A/B/C/D/E».</li>
+            <li><b>Chiave primaria</b> — l'attributo (o gruppo di attributi) che identifica univocamente una riga.</li>
+            <li><b>Chiave esterna</b> — un attributo che contiene la chiave primaria di un'altra tabella: è così che si costruiscono i collegamenti.</li>
+            <li><b>Schema</b> vs <b>istanza</b> — lo schema è la struttura (i nomi delle colonne e le regole), l'istanza è il contenuto di oggi. Lo schema cambia raramente, l'istanza cambia ogni minuto.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ 7 ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="num">07</span>
+      <h2>Il DBMS si mette in mezzo</h2>
+      <p class="sec-sub">Un solo custode dei dati, molte applicazioni che glieli chiedono</p>
+    </div>
+    <div class="stack">
+      <div class="col">
+        <p>Le tabelle da sole non bastano: qualcuno deve farle rispettare. Quel qualcuno è il <strong>DBMS</strong> (Database Management System), un programma che si interpone fra le applicazioni e i dati memorizzati. Da qui in poi nessuna applicazione tocca più i file: tutte fanno richieste al DBMS.</p>
+      </div>
+
+      <div class="panel">
+        <svg class="diagram" viewBox="0 0 900 330" role="img" aria-label="Confronto fra architettura a file, in cui tre applicazioni accedono direttamente a tre file separati, e architettura con DBMS, in cui le tre applicazioni passano tutte attraverso il DBMS che gestisce un'unica base di dati">
+          <!-- left: file based -->
+          <text x="0" y="14" class="dg-s" letter-spacing="1.5">PRIMA &#183; ARCHIVI SEPARATI</text>
+          <g>
+            <rect x="0" y="34" width="112" height="42" rx="4" class="dg-fill2 dg-stroke" stroke-width="1"/>
+            <text x="56" y="60" class="dg-t" text-anchor="middle">Segreteria</text>
+            <rect x="128" y="34" width="112" height="42" rx="4" class="dg-fill2 dg-stroke" stroke-width="1"/>
+            <text x="184" y="60" class="dg-t" text-anchor="middle">Biblioteca</text>
+            <rect x="256" y="34" width="112" height="42" rx="4" class="dg-fill2 dg-stroke" stroke-width="1"/>
+            <text x="312" y="60" class="dg-t" text-anchor="middle">Registro</text>
+          </g>
+          <g class="dg-line" stroke-width="1.4">
+            <line x1="56" y1="76" x2="56" y2="150"/>
+            <line x1="184" y1="76" x2="184" y2="150"/>
+            <line x1="312" y1="76" x2="312" y2="150"/>
+            <line x1="56" y1="76" x2="170" y2="150" stroke-dasharray="3 3"/>
+            <line x1="184" y1="76" x2="70" y2="150" stroke-dasharray="3 3"/>
+          </g>
+          <g>
+            <rect x="8" y="150" width="96" height="52" rx="4" class="dg-fill dg-stroke" stroke-width="1"/>
+            <text x="56" y="172" class="dg-s" text-anchor="middle">studenti.dat</text>
+            <text x="56" y="190" class="dg-s" text-anchor="middle">(copia 1)</text>
+            <rect x="136" y="150" width="96" height="52" rx="4" class="dg-fill dg-stroke" stroke-width="1"/>
+            <text x="184" y="172" class="dg-s" text-anchor="middle">utenti.dat</text>
+            <text x="184" y="190" class="dg-s" text-anchor="middle">(copia 2)</text>
+            <rect x="264" y="150" width="96" height="52" rx="4" class="dg-fill dg-stroke" stroke-width="1"/>
+            <text x="312" y="172" class="dg-s" text-anchor="middle">alunni.dat</text>
+            <text x="312" y="190" class="dg-s" text-anchor="middle">(copia 3)</text>
+          </g>
+          <text x="0" y="238" class="dg-s">Ogni applicazione conosce il tracciato dei byte.</text>
+          <text x="0" y="256" class="dg-s">Tre copie dello stesso studente, tre verità possibili.</text>
+
+          <!-- divider -->
+          <line x1="440" y1="0" x2="440" y2="290" class="dg-stroke" stroke-width="1" stroke-dasharray="4 6"/>
+
+          <!-- right: dbms -->
+          <text x="480" y="14" class="dg-s" letter-spacing="1.5">DOPO &#183; UN DBMS IN MEZZO</text>
+          <g>
+            <rect x="480" y="34" width="112" height="42" rx="4" class="dg-fill2 dg-stroke" stroke-width="1"/>
+            <text x="536" y="60" class="dg-t" text-anchor="middle">Segreteria</text>
+            <rect x="608" y="34" width="112" height="42" rx="4" class="dg-fill2 dg-stroke" stroke-width="1"/>
+            <text x="664" y="60" class="dg-t" text-anchor="middle">Biblioteca</text>
+            <rect x="736" y="34" width="112" height="42" rx="4" class="dg-fill2 dg-stroke" stroke-width="1"/>
+            <text x="792" y="60" class="dg-t" text-anchor="middle">Registro</text>
+          </g>
+          <g class="dg-accent" stroke-width="1.6">
+            <line x1="536" y1="76" x2="580" y2="116"/>
+            <line x1="664" y1="76" x2="664" y2="116"/>
+            <line x1="792" y1="76" x2="748" y2="116"/>
+          </g>
+          <text x="664" y="98" class="dg-s" text-anchor="middle" letter-spacing="1">SQL</text>
+          <rect class="dg-box-accent" x="480" y="116" width="368" height="52" rx="4" stroke-width="1.4"/>
+          <text x="664" y="140" class="dg-t" text-anchor="middle">DBMS</text>
+          <text x="664" y="157" class="dg-s" text-anchor="middle">vincoli &#183; permessi &#183; transazioni &#183; ottimizzazione</text>
+          <line x1="664" y1="168" x2="664" y2="200" class="dg-line" stroke-width="1.4"/>
+          <rect x="568" y="200" width="192" height="52" rx="4" class="dg-fill dg-stroke" stroke-width="1"/>
+          <text x="664" y="222" class="dg-t" text-anchor="middle">Base di dati</text>
+          <text x="664" y="240" class="dg-s" text-anchor="middle">STUDENTI &#183; CLASSI &#183; PRESTITI</text>
+          <text x="480" y="278" class="dg-s">Nessuna applicazione sa dove finiscono i byte.</text>
+          <text x="480" y="296" class="dg-s">Un solo dato, un solo posto, una sola verità.</text>
+        </svg>
+        <p class="figcap">Il DBMS non è un archivio più grande: è un intermediario che toglie alle applicazioni la responsabilità dei dati.</p>
+      </div>
+
+      <div class="cards">
+        <div class="mini good">
+          <span class="tag">Indipendenza</span>
+          <h4>Fisica e logica</h4>
+          <p>Il DBMS può cambiare come memorizza, aggiungere indici, spostare file: le query continuano a funzionare identiche.</p>
+        </div>
+        <div class="mini good">
+          <span class="tag">Linguaggio</span>
+          <h4>Una sola lingua: SQL</h4>
+          <p>Si dichiara <em>cosa</em> si vuole. Il DBMS decide da solo la strategia migliore per ottenerlo (query optimizer).</p>
+        </div>
+        <div class="mini good">
+          <span class="tag">Integrità</span>
+          <h4>Le regole stanno nei dati</h4>
+          <p>Chiavi, chiavi esterne, <code>NOT NULL</code>, <code>CHECK (media BETWEEN 0 AND 10)</code>: valgono per tutte le applicazioni, anche per quelle scritte male.</p>
+        </div>
+        <div class="mini good">
+          <span class="tag">Concorrenza</span>
+          <h4>Transazioni</h4>
+          <p>Un gruppo di operazioni che riesce tutto o non accade affatto, anche con cento utenti collegati insieme.</p>
+        </div>
+        <div class="mini good">
+          <span class="tag">Sicurezza</span>
+          <h4>Permessi per colonna</h4>
+          <p>Il bibliotecario legge nome e classe ma non le medie. Non è più una questione di permessi sul file.</p>
+        </div>
+        <div class="mini good">
+          <span class="tag">Affidabilità</span>
+          <h4>Backup e ripristino</h4>
+          <p>Il DBMS registra ogni modifica: dopo un crash o un blackout riporta la base di dati a uno stato coerente.</p>
+        </div>
+      </div>
+
+      <details>
+        <summary>Transazioni: le proprietà ACID in trenta secondi</summary>
+        <div class="details-body">
+          <p>Esempio classico: iscrivere uno studente significa <b>inserirlo in STUDENTI</b> e <b>aumentare di uno il contatore posti occupati della classe</b>. Se il sistema si spegne fra le due operazioni, la base di dati resta sbagliata. Una transazione impedisce che accada.</p>
+          <ul class="clean">
+            <li><b>A</b>tomicità — o tutte le operazioni della transazione, o nessuna.</li>
+            <li><b>C</b>oerenza — al termine tutti i vincoli sono ancora rispettati.</li>
+            <li><b>I</b>solamento — le transazioni parallele non si disturbano a vicenda.</li>
+            <li><b>D</b>urabilità — una volta confermata, la modifica resiste anche allo spegnimento improvviso.</li>
+          </ul>
+        </div>
+      </details>
+
+      <div class="note warn">
+        <span class="eyebrow">Onestà intellettuale</span>
+        <p>Il DBMS ha un costo: è uno strato in più, va installato e amministrato, e soprattutto <strong>pretende che qualcuno abbia progettato bene le tabelle</strong>. Un database relazionale con uno schema sbagliato dà gli stessi problemi dei file binari, con in più la complicazione del sistema. Ecco perché la parte più importante del lavoro viene <em>prima</em> di scrivere qualunque riga di SQL.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8 ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="num">08</span>
+      <h2>Come si progetta una base di dati</h2>
+      <p class="sec-sub">Tre livelli, in quest'ordine: concettuale, logico, fisico</p>
+    </div>
+    <div class="stack">
+      <div class="col">
+        <p>Progettare un database significa passare dalle frasi del committente («ogni studente appartiene a una classe, ogni classe ha un coordinatore…») a delle tabelle vere. Si fa in tre passaggi, e l'ordine conta: <strong>ogni livello risponde a una domanda diversa e usa un linguaggio diverso</strong>. Saltare il primo per andare direttamente a scrivere <code>CREATE TABLE</code> è l'errore più comune e più costoso.</p>
+      </div>
+
+      <div class="levels">
+        <div class="level">
+          <span class="step">Passo 1</span>
+          <h4>Concettuale</h4>
+          <em class="q">Di che cose parliamo?</em>
+          <dl>
+            <dt>Strumento</dt><dd>Diagramma E-R: entità, attributi, associazioni, cardinalità.</dd>
+            <dt>Nel nostro caso</dt><dd>Entità <b>STUDENTE</b> e <b>CLASSE</b>, associazione «appartenenza», uno studente in una classe, una classe con molti studenti.</dd>
+            <dt>Qui NON si decide</dt><dd>Nomi delle tabelle, tipi SQL, indici. Il modello vale anche se domani cambi tecnologia.</dd>
+            <dt>Si discute con</dt><dd>Il committente. Un preside capisce un diagramma E-R; non capisce uno schema SQL.</dd>
+          </dl>
+        </div>
+        <div class="level">
+          <span class="step">Passo 2</span>
+          <h4>Logico</h4>
+          <em class="q">Come diventano tabelle?</em>
+          <dl>
+            <dt>Strumento</dt><dd>Schema relazionale + regole di traduzione + normalizzazione.</dd>
+            <dt>Nel nostro caso</dt><dd><b>STUDENTI</b>(<span class="pk">matricola</span>, cognome, nome, <span class="fk">id_classe</span>) e <b>CLASSI</b>(<span class="pk">id_classe</span>, sezione, anno, aula, coordinatore).</dd>
+            <dt>Regola d'oro</dt><dd>Un'associazione «uno a molti» si traduce mettendo la chiave esterna dalla parte del «molti».</dd>
+            <dt>Qui NON si decide</dt><dd>Quale DBMS userai. Lo schema logico è lo stesso su MySQL, PostgreSQL o SQLite.</dd>
+          </dl>
+        </div>
+        <div class="level">
+          <span class="step">Passo 3</span>
+          <h4>Fisico</h4>
+          <em class="q">Come lo rendiamo veloce?</em>
+          <dl>
+            <dt>Strumento</dt><dd>DDL del DBMS scelto: tipi, vincoli, indici, organizzazione dei file.</dd>
+            <dt>Nel nostro caso</dt><dd><code>matricola INTEGER</code>, <code>cognome VARCHAR(40) NOT NULL</code>, indice su <code>id_classe</code> perché ci si cerca spesso.</dd>
+            <dt>Dipende da</dt><dd>Prodotto, volume dei dati, tipo di interrogazioni più frequenti.</dd>
+            <dt>Buona notizia</dt><dd>È l'unico livello che puoi cambiare dopo, senza toccare le applicazioni.</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="panel stack-s">
+        <span class="eyebrow">Lo stesso esempio nei tre linguaggi</span>
+        <svg class="diagram" viewBox="0 0 640 104" role="img" aria-label="Diagramma entità-relazione: l'entità STUDENTE è collegata all'entità CLASSE tramite l'associazione appartenenza, con cardinalità uno a molti">
+          <rect x="8" y="42" width="150" height="46" rx="3" class="dg-fill2 dg-navy-s" stroke-width="1.6"/>
+          <text x="83" y="70" class="dg-t" text-anchor="middle">STUDENTE</text>
+          <line x1="158" y1="65" x2="248" y2="65" class="dg-line" stroke-width="1.4"/>
+          <text x="196" y="56" class="dg-s" text-anchor="middle">(1,1)</text>
+          <polygon class="dg-box-accent" points="320,40 396,65 320,90 244,65" stroke-width="1.4"/>
+          <text x="320" y="70" class="dg-s" text-anchor="middle" letter-spacing="1">appartenenza</text>
+          <line x1="392" y1="65" x2="482" y2="65" class="dg-line" stroke-width="1.4"/>
+          <text x="440" y="56" class="dg-s" text-anchor="middle">(0,N)</text>
+          <rect x="482" y="42" width="150" height="46" rx="3" class="dg-fill2 dg-navy-s" stroke-width="1.6"/>
+          <text x="557" y="70" class="dg-t" text-anchor="middle">CLASSE</text>
+        </svg>
+        <p class="figcap" style="margin-top:0">Livello concettuale: ogni studente appartiene a esattamente una classe; una classe pu&#242; avere da zero a molti studenti.</p>
+<pre><span class="c">-- Livello logico: lo schema, indipendente dal prodotto</span>
+STUDENTI (<b>matricola</b>, cognome, nome, <span class="k">id_classe</span>)
+CLASSI   (<b>id_classe</b>, sezione, anno, aula, coordinatore)
+         <span class="c">grassetto = chiave primaria, colorato = chiave esterna</span>
+
+<span class="c">-- Livello fisico: qui si sceglie il DBMS e si scende nei dettagli</span>
+<span class="k">CREATE TABLE</span> classi (
+    id_classe    INTEGER      <span class="k">PRIMARY KEY</span>,
+    sezione      CHAR(1)      <span class="k">NOT NULL</span>,
+    anno         SMALLINT     <span class="k">NOT NULL CHECK</span> (anno <span class="k">BETWEEN</span> 1 <span class="k">AND</span> 5),
+    aula         VARCHAR(10),
+    coordinatore VARCHAR(60)
+);
+
+<span class="k">CREATE TABLE</span> studenti (
+    matricola  INTEGER     <span class="k">PRIMARY KEY</span>,
+    cognome    VARCHAR(40) <span class="k">NOT NULL</span>,
+    nome       VARCHAR(40) <span class="k">NOT NULL</span>,
+    id_classe  INTEGER     <span class="k">NOT NULL</span>,
+    <span class="k">FOREIGN KEY</span> (id_classe) <span class="k">REFERENCES</span> classi(id_classe)
+);
+
+<span class="k">CREATE INDEX</span> idx_studenti_classe <span class="k">ON</span> studenti(id_classe);</pre>
+      </div>
+
+      <div class="note">
+        <span class="eyebrow">Il filo che chiude il cerchio</span>
+        <p>La riga <code>FOREIGN KEY … REFERENCES</code> è esattamente il controllo che nel file binario del punto 04 avrebbe dovuto scrivere ogni singolo programma, ricordandosene ogni volta. Adesso è scritta <strong>una volta sola, nei dati</strong>, e vale per tutti — comprese le applicazioni che non sono ancora state scritte.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 9 ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="num">09</span>
+      <h2>Da portare a casa</h2>
+      <p class="sec-sub">Cinque frasi che riassumono l'intera lezione</p>
+    </div>
+    <div class="stack">
+      <div class="takeaways">
+        <div class="ta"><p><b>I dati durano più dei programmi.</b> Per questo hanno bisogno di un'organizzazione propria, indipendente da chi li usa oggi.</p></div>
+        <div class="ta"><p><b>Hollerith non ha inventato un calcolatore, ha inventato un formato.</b> Scheda = record, zona = campo: la struttura riga/colonna nasce nel 1890 e non se n'è più andata.</p></div>
+        <div class="ta"><p><b>Con i file binari la logica dei dati sta nelle applicazioni.</b> Ne derivano ridondanza, incoerenza, dipendenza dal formato fisico e una nuova richiesta di programmazione per ogni nuova domanda.</p></div>
+        <div class="ta"><p><b>Il modello relazionale separa il «cosa» dal «come».</b> Tabelle, chiavi primarie e chiavi esterne; i collegamenti sono valori, non puntatori a posizioni sul disco.</p></div>
+        <div class="ta"><p><b>Il DBMS si mette in mezzo e diventa il custode unico.</b> Ma funziona solo se qualcuno ha progettato prima: concettuale &rarr; logico &rarr; fisico, sempre in quest'ordine.</p></div>
+      </div>
+
+      <div class="panel stack-s">
+        <span class="eyebrow">Esercizi</span>
+        <ol class="clean">
+          <li><b>Trova le anomalie.</b> Una società sportiva tiene una sola tabella: <code>ISCRITTI(tessera, cognome, nome, corso, giorno, ora, istruttore, telefono_istruttore)</code>. Elenca almeno tre problemi e proponi la suddivisione in due tabelle indicando chiavi primarie e chiave esterna.</li>
+          <li><b>Dal testo allo schema.</b> «Ogni libro della biblioteca ha un codice, un titolo e un autore. Ogni prestito riguarda un libro e uno studente, con data di inizio e data di restituzione.» Disegna il modello concettuale e traducilo in tabelle.</li>
+          <li><b>Cosa si rompe.</b> Nel file binario a record fissi del punto 04 il campo <code>classe</code> passa da 6 a 10 byte. Descrivi passo per passo che cosa smette di funzionare e perché, poi spiega cosa succederebbe nella stessa situazione con un DBMS.</li>
+          <li><b>Discussione.</b> Il registro elettronico deve mostrare ai genitori le assenze del proprio figlio e nient'altro. Perché questo requisito è più facile da soddisfare con un DBMS che con un file condiviso?</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="eyebrow">Fonti dei dati storici</span>
+    <ul>
+      <li><a href="https://www.census.gov/about/history/bureau-history/census-innovations/technology/hollerith-machine.html">U.S. Census Bureau &mdash; The Hollerith Machine</a> (funzionamento, tempi della gara, 80 schede al minuto)</li>
+      <li><a href="https://www.britannica.com/money/Herman-Hollerith">Britannica &mdash; Herman Hollerith</a> (sette anni per il censimento 1880, 62.622.250 abitanti, Tabulating Machine Company 1896)</li>
+      <li><a href="https://en.wikipedia.org/wiki/Dehomag">Dehomag</a> e <a href="https://collections.ushmm.org/search/catalog/irn521584">United States Holocaust Memorial Museum &mdash; IBM-Dehomag tabulating machine collection</a></li>
+      <li><a href="https://www.ibm.com/history/relational-database">IBM &mdash; The relational database</a> e <a href="https://dl.acm.org/doi/10.1145/362384.362685">E. F. Codd, <em>A Relational Model of Data for Large Shared Data Banks</em>, CACM 1970</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Computing-Tabulating-Recording_Company">Computing-Tabulating-Recording Company</a> (CTR 1911, IBM 1924)</li>
+    </ul>
+  </footer>
+</div>
+
+<script>
+(function(){
+  /* ---- punched card ---- */
+  var g = document.getElementById('holes');
+  if (g) {
+    var cols = 40, rows = 9, x0 = 22, y0 = 44, dx = 12, dy = 17, w = 7, h = 11;
+    var seed = 20250825;
+    function rnd(){ seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var frag = document.createDocumentFragment();
+    for (var c = 0; c < cols; c++) {
+      var punches = 1 + (rnd() < 0.35 ? 1 : 0);
+      var used = {};
+      for (var k = 0; k < punches; k++) {
+        var r = Math.floor(rnd() * rows);
+        if (used[r]) continue;
+        used[r] = 1;
+        var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', x0 + c * dx);
+        rect.setAttribute('y', y0 + r * dy);
+        rect.setAttribute('width', w);
+        rect.setAttribute('height', h);
+        rect.setAttribute('rx', 1.5);
+        rect.setAttribute('class', 'hole');
+        if (!reduce) {
+          rect.style.animationDelay = (c * 18 + k * 40) + 'ms';
+          rect.classList.add('on');
+        } else {
+          rect.style.opacity = 1;
+        }
+        frag.appendChild(rect);
+      }
+    }
+    g.appendChild(frag);
+  }
+
+  /* ---- tabs ---- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){
+      tabs.forEach(function(o){
+        var pane = document.getElementById(o.getAttribute('aria-controls'));
+        var on = (o === t);
+        o.setAttribute('aria-selected', on ? 'true' : 'false');
+        if (pane) pane.hidden = !on;
+      });
+    });
+  });
+
+  /* ---- join demo ---- */
+  var msg = document.getElementById('joinmsg');
+  var studRows = Array.prototype.slice.call(document.querySelectorAll('#tab-studenti tr.linkable'));
+  var classRows = Array.prototype.slice.call(document.querySelectorAll('#tab-classi tbody tr'));
+  function select(row){
+    var id = row.getAttribute('data-classe');
+    studRows.forEach(function(r){ r.classList.toggle('sel', r.getAttribute('data-classe') === id); });
+    classRows.forEach(function(r){ r.classList.toggle('sel', r.getAttribute('data-classe') === id); });
+    var cls = classRows.filter(function(r){ return r.getAttribute('data-classe') === id; })[0];
+    var cells = row.getElementsByTagName('td');
+    if (cls && msg) {
+      var cc = cls.getElementsByTagName('td');
+      msg.innerHTML = cells[1].textContent + ' ' + cells[2].textContent +
+        ' ha <b>id_classe = ' + id + '</b>: il DBMS cerca quel valore nella chiave primaria di CLASSI e trova la ' +
+        cc[2].textContent + cc[1].textContent + ', aula ' + cc[3].textContent + ', coordinatore ' + cc[4].textContent;
+    }
+  }
+  studRows.forEach(function(r){
+    r.addEventListener('click', function(){ select(r); });
+    r.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(r); }
+    });
+  });
+})();
+</script>
+
+</body></html>
