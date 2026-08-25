@@ -324,6 +324,25 @@ ul.clean b,ol.clean b{color:var(--ink)}
 .ta p{color:var(--ink-2);max-width:62ch}
 .ta b{color:var(--ink)}
 
+/* ---------- sommario orizzontale ---------- */
+.toc{
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding:20px 0 4px;border-top:1px solid var(--rule);
+}
+.toc a{
+  display:flex;align-items:baseline;gap:7px;
+  font-family:var(--f-body);font-size:14px;text-decoration:none;
+  color:var(--ink-2);background:var(--surface);
+  border:1px solid var(--rule);border-radius:5px;
+  padding:7px 13px;transition:border-color .15s,color .15s,background .15s;
+}
+.toc a:hover{border-color:var(--accent-line);color:var(--ink);background:var(--surface-2)}
+.toc a span{font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:var(--accent)}
+.toc-label{
+  font-family:var(--f-mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);width:100%;margin-bottom:2px;
+}
+
 footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font-size:14px}
 footer a{color:var(--ink-2);text-decoration-color:var(--rule-strong)}
 footer ul{margin:10px 0 0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
@@ -359,9 +378,22 @@ footer ul{margin:10px 0 0;padding-left:1.1em;display:flex;flex-direction:column;
       </div>
     </div>
   </header>
+  <nav class="toc" aria-label="Indice della lezione">
+    <div class="toc-label">In questa lezione</div>
+    <a href="#s1"><span>01</span>Il problema dei dati</a>
+    <a href="#s2"><span>02</span>1890: Hollerith</a>
+    <a href="#s3"><span>03</span>I dati sono potere</a>
+    <a href="#s4"><span>04</span>Archivi su file</a>
+    <a href="#s5"><span>05</span>Codd e le tabelle</a>
+    <a href="#s6"><span>06</span>Il DBMS</a>
+    <a href="#s7"><span>07</span>Tabelle in pratica</a>
+    <a href="#s8"><span>08</span>Progettare</a>
+    <a href="#s9"><span>09</span>Da portare a casa</a>
+  </nav>
+
 
   <!-- ============ 1 ============ -->
-  <section>
+  <section id="s1">
     <div class="sec-head">
       <span class="num">01</span>
       <h2>Perché gestire i dati è un problema informatico</h2>
@@ -491,7 +523,7 @@ footer ul{margin:10px 0 0;padding-left:1.1em;display:flex;flex-direction:column;
     </div>
   </section>
 
-  <section>
+  <section id="s2">
     <div class="sec-head">
       <span class="num">02</span>
       <h2>1890: il censimento che non finiva mai</h2>
@@ -565,7 +597,7 @@ footer ul{margin:10px 0 0;padding-left:1.1em;display:flex;flex-direction:column;
     </div>
   </section>
 
-  <section>
+  <section id="s3">
     <div class="sec-head">
       <span class="num">03</span>
       <h2>Una parentesi necessaria: i dati sono potere</h2>
@@ -593,7 +625,7 @@ footer ul{margin:10px 0 0;padding-left:1.1em;display:flex;flex-direction:column;
     </div>
   </section>
 
-  <section>
+  <section id="s4">
     <div class="sec-head">
       <span class="num">04</span>
       <h2>Anni '50–'60: i dati stanno nei file, la logica sta nei programmi</h2>
@@ -790,7 +822,7 @@ fread(&amp;stu, <b>32</b>, 1, fs);
     </div>
   </section>
 
-  <section>
+  <section id="s5">
     <div class="sec-head">
       <span class="num">05</span>
       <h2>1970: Codd, l'IBM e l'idea di tabella</h2>
@@ -851,6 +883,8 @@ END-PERFORM</pre>
         <span class="eyebrow">Il prodotto che IBM non voleva rottamare: IMS</span>
         <p><strong>IMS (Information Management System)</strong> nasce in IBM fra il <strong>1966 e il 1968</strong> con uno scopo preciso: gestire la <em>distinta base</em> del razzo <strong>Saturn V</strong> del programma Apollo, milioni di componenti organizzati in una gerarchia di sottoinsiemi. Commercializzato nel 1968, diventa il DBMS gerarchico di riferimento mondiale.</p>
         <p style="margin-top:12px">Si capisce l'imbarazzo dell'azienda: un ricercatore interno pubblica un articolo che dichiara superato il modello su cui poggia il prodotto di punta. E l'imbarazzo non era infondato al contrario — IMS <strong>è ancora in produzione oggi</strong>, cinquant'anni dopo, in banche, assicurazioni e sistemi di prenotazione, dove muove volumi enormi di transazioni. Il relazionale ha vinto sul piano della flessibilità, non su quello della velocità bruta.</p>
+        <p style="margin-top:12px"><strong>Attenzione a un equivoco frequente: Codd non ha inventato il DBMS.</strong> IMS era gi&#224; un DBMS a tutti gli effetti &#8212; custodiva archivi condivisi, regolava gli accessi, garantiva integrit&#224; e ripristino. Quello che Codd ha cambiato &#232; il <strong>modello dei dati</strong>, cio&#232; il modo in cui il custode li organizza al proprio interno. &laquo;DBMS&raquo; &#232; la categoria; gerarchico, reticolare, relazionale, a documenti, a grafo sono i modelli. IMS &#232; un DBMS <em>gerarchico</em>, MySQL un DBMS <em>relazionale</em>, Neo4j un DBMS <em>a grafo</em>: cambia il modello, non il ruolo.</p>
+        <p style="margin-top:12px">Con una precisazione storica onesta: alcune funzioni che oggi diamo per scontate in qualunque DBMS &#8212; l'<b>indipendenza dei dati</b>, un <b>unico linguaggio dichiarativo</b>, i <b>vincoli dichiarati nello schema</b> &#8212; sono arrivate proprio con il modello relazionale. I DBMS precedenti facevano il lavoro di custode, ma il programma restava incollato alla struttura fisica.</p>
       </div>
 
       <div class="timeline">
@@ -884,7 +918,7 @@ END-PERFORM</pre>
     </div>
   </section>
 
-  <section>
+  <section id="s6">
     <div class="sec-head">
       <span class="num">06</span>
       <h2>Il DBMS si mette in mezzo</h2>
@@ -1018,7 +1052,7 @@ END-PERFORM</pre>
     </div>
   </section>
 
-  <section>
+  <section id="s7">
     <div class="sec-head">
       <span class="num">07</span>
       <h2>Il modello relazionale in pratica</h2>
@@ -1148,7 +1182,7 @@ END-PERFORM</pre>
     </div>
   </section>
 
-  <section>
+  <section id="s8">
     <div class="sec-head">
       <span class="num">08</span>
       <h2>Come si progetta una base di dati</h2>
@@ -1263,7 +1297,7 @@ END-PERFORM</pre>
     </div>
   </section>
 
-  <section>
+  <section id="s9">
     <div class="sec-head">
       <span class="num">09</span>
       <h2>Da portare a casa</h2>
