@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz – Introduzione ai database</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container { max-width: 660px; width: 100%; }
+
+  /* START SCREEN */
+  .screen-start { text-align: center; padding-top: 12vh; }
+  .screen-start .emoji { font-size: 48px; margin-bottom: 8px; }
+  .screen-start h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .screen-start .subtitle { color: #94a3b8; font-size: 15px; margin-bottom: 20px; }
+  .info-box {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px 28px;
+    text-align: left;
+    margin-bottom: 28px;
+  }
+  .info-box p { color: #cbd5e1; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .info-item {
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #e2e8f0;
+  }
+  .info-item span.icon { font-size: 18px; }
+
+  /* BUTTONS */
+  .btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 48px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(59,130,246,0.4);
+    transition: transform 0.15s;
+  }
+  .btn-primary:hover { transform: scale(1.04); }
+  .btn-disabled {
+    background: rgba(255,255,255,0.06);
+    color: #64748b;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 44px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: not-allowed;
+  }
+
+  /* PROGRESS */
+  .progress-bar { margin-bottom: 20px; }
+  .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .progress-header span { font-size: 13px; color: #94a3b8; }
+  .progress-header .score { color: #3b82f6; font-weight: 600; }
+  .progress-track { height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  /* QUESTION */
+  .question-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  .question-card h2 { font-size: 18px; font-weight: 600; line-height: 1.5; color: #f1f5f9; }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .option-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: #e2e8f0;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .option-btn:hover:not(.locked) {
+    background: rgba(59,130,246,0.08);
+    border-color: rgba(59,130,246,0.3);
+  }
+  .option-btn.selected {
+    background: rgba(59,130,246,0.15);
+    border-color: rgba(59,130,246,0.5);
+    color: #93c5fd;
+  }
+  .option-btn.correct {
+    background: rgba(34,197,94,0.12);
+    border-color: rgba(34,197,94,0.5);
+    color: #86efac;
+  }
+  .option-btn.wrong {
+    background: rgba(239,68,68,0.12);
+    border-color: rgba(239,68,68,0.5);
+    color: #fca5a5;
+  }
+  .option-btn .letter {
+    font-weight: 700;
+    color: #64748b;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .option-btn.correct .letter { color: #22c55e; }
+  .option-btn.wrong .letter { color: #ef4444; }
+
+  /* EXPLANATION */
+  .explanation {
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    color: #93c5fd;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .explanation strong { color: #60a5fa; }
+
+  .action-area { text-align: center; padding: 10px 0 20px; }
+
+  /* RESULTS */
+  .screen-results { text-align: center; padding-top: 8vh; }
+  .screen-results .emoji { font-size: 56px; margin-bottom: 12px; }
+  .screen-results h2 { font-size: 26px; font-weight: 700; margin-bottom: 20px; }
+  .score-circle {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.04);
+    margin: 0 auto 24px;
+  }
+  .score-circle .big { font-size: 36px; font-weight: 800; }
+  .score-circle .small { font-size: 13px; color: #94a3b8; }
+  .results-list {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    text-align: left;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  .result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .result-item:last-child { border-bottom: none; }
+  .result-item .icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .result-item .text { font-size: 13px; line-height: 1.5; }
+  .result-item.ok .text { color: #86efac; }
+  .result-item.ko .text { color: #fca5a5; }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- START SCREEN -->
+  <div id="startScreen" class="screen-start">
+    <div class="emoji">🗂️</div>
+    <h1>Quiz: Introduzione ai database</h1>
+    <p class="subtitle">Informatica – Classe 5ª • I.I.S. A. Avogadro</p>
+    <div class="info-box">
+      <p>15 domande a risposta multipla sui concetti della lezione: dato e informazione, intensione ed estensione, dagli archivi su file al modello relazionale di Codd. Ogni risposta è spiegata: serve per capire, non per prendere un voto.</p>
+      <div class="info-grid">
+        <div class="info-item"><span class="icon">📝</span> 15 domande</div>
+        <div class="info-item"><span class="icon">🔀</span> Ordine casuale</div>
+        <div class="info-item"><span class="icon">✅</span> Feedback immediato</div>
+        <div class="info-item"><span class="icon">📊</span> Punteggio finale</div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="startQuiz()">Inizia il Quiz</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quizScreen" class="hidden">
+    <div class="progress-bar">
+      <div class="progress-header">
+        <span id="qCounter">Domanda 1 di 20</span>
+        <span class="score" id="scoreLabel">Punteggio: 0</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="question-card"><h2 id="questionText"></h2></div>
+    <div class="options" id="optionsContainer"></div>
+    <div id="explanationBox" class="explanation hidden"></div>
+    <div class="action-area">
+      <button id="confirmBtn" class="btn-disabled" disabled onclick="confirmAnswer()">Conferma</button>
+      <button id="nextBtn" class="btn-primary hidden" onclick="nextQuestion()">Prossima domanda →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="resultsScreen" class="screen-results hidden"></div>
+
+</div>
+
+<script>
+const allQuestions = [
+  { id:1, question:"Qual è la differenza fra un dato e un'informazione?", options:["Sono sinonimi: cambia solo il contesto in cui si usano","Il dato è un fatto grezzo; diventa informazione quando è interpretato in un contesto","L'informazione è ciò che sta nel database, il dato è ciò che sta nel programma","Il dato è numerico, l'informazione è testuale"], correct:1, explanation:"«7.5» da solo è un dato: non dice nulla. «Lo studente Rossi della 3A ha media 7,5» è informazione, perché il dato è stato interpretato in un contesto. Il compito di una base di dati è conservare i dati senza perdere il contesto." },
+  { id:2, question:"Che cosa si intende per aspetto INTENSIONALE di una base di dati?", options:["I valori contenuti nelle tabelle in un dato momento","Lo schema: quali tabelle esistono, con quali campi, tipi e vincoli","I dati inseriti intenzionalmente dall'utente","La quantità di dati memorizzati"], correct:1, explanation:"Intensione = schema (la struttura, che cambia raramente). Estensione = istanza (i valori, che cambiano di continuo). In una tabella: l'intestazione è l'intensione, le righe sono l'estensione. Attenzione a scriverlo con la S: «intenzionale» significa tutt'altro." },
+  { id:3, question:"Un sistema informativo e un sistema informatico sono la stessa cosa?", options:["Sì, sono due nomi per la stessa cosa","No: il sistema informatico è la parte del sistema informativo realizzata con le tecnologie informatiche","No: il sistema informativo è la parte automatizzata del sistema informatico","Sì, ma solo se l'organizzazione usa un DBMS"], correct:1, explanation:"Il sistema informativo comprende persone, regole e procedure e esiste anche senza computer: una scuola dell'Ottocento ne aveva uno fatto di registri e pennini. Il sistema informatico è la porzione automatizzata (il registro elettronico, il gestionale)." },
+  { id:4, question:"Qual è la differenza fra una base di dati e un DBMS?", options:["Nessuna: DBMS è solo il nome tecnico del database","La base di dati sono i dati; il DBMS è il software che li crea, gestisce e interroga","Il DBMS contiene i dati, la base di dati contiene i programmi","La base di dati è su disco, il DBMS è in memoria RAM"], correct:1, explanation:"Si installa un DBMS (MySQL, PostgreSQL, Oracle) e poi dentro ci si creano una o più basi di dati. Stessa differenza che passa fra installare un programma di videoscrittura e scrivere un documento." },
+  { id:5, question:"Nel sistema di Hollerith del 1890, chi perforava materialmente le schede?", options:["La tabulatrice, in modo automatico","Il cittadino censito, compilando un modulo","Impiegati del censimento, con una perforatrice a pantografo","I rilevatori, direttamente porta a porta"], correct:2, explanation:"Il rilevatore scriveva le risposte a mano su un registro; poi migliaia di impiegati — in larga parte donne — trasferivano quelle risposte sulle schede con la perforatrice a pantografo. La macchina automatizzava lettura e conteggio, non l'inserimento: il lavoro umano si spostò dal contare al codificare." },
+  { id:6, question:"Perché la scheda perforata è importante nella storia dei database?", options:["Perché era il primo supporto capace di contenere molti dati","Perché introduce l'idea di record (una scheda = una persona) e di campo (una zona = una domanda)","Perché permetteva di calcolare più velocemente","Perché fu il primo supporto riscrivibile"], correct:1, explanation:"Una scheda = un record, una zona di colonne = un campo: è esattamente la struttura riga/colonna che ritroveremo nelle tabelle. Per la prima volta i dati hanno un formato pensato per la macchina, separato dal documento scritto a mano." },
+  { id:7, question:"Negli archivi su file degli anni '50-'60, dove stava la descrizione della struttura dei dati?", options:["In un file di configurazione separato","Dentro il codice di ogni singolo programma che li usava","In un catalogo gestito dal sistema operativo","Nell'intestazione del file di dati"], correct:1, explanation:"Ogni applicazione conosceva il tracciato byte per byte, e ne aveva la propria copia. Per questo cambiare un campo da 24 a 30 byte significava modificare e ricompilare tutti i programmi. Con il DBMS lo schema si sposta dai programmi al database." },
+  { id:8, question:"In un file, un «puntatore» a un altro record è…", options:["Un indirizzo di memoria RAM, come in C con int *p","Una posizione (offset o numero di record) all'interno del file","Il nome del record a cui ci si riferisce","Una chiave esterna, come nel modello relazionale"], correct:1, explanation:"Un indirizzo di RAM vale solo mentre il programma è in esecuzione: scriverlo su file è inutile, alla riapertura punta a spazzatura. Su file il puntatore è un offset in byte o un numero di record — un'informazione che sopravvive allo spegnimento." },
+  { id:9, question:"Qual è la proposta rivoluzionaria di Codd nel 1970?", options:["Usare i dischi al posto dei nastri magnetici","Rappresentare i dati come tabelle e far dichiarare all'utente CHE COSA vuole, non COME ottenerlo","Inventare il linguaggio SQL","Collegare i record con puntatori più veloci"], correct:1, explanation:"SQL arriva dopo (1974-75) ed è una conseguenza. L'idea di Codd è che i dati siano tabelle e i collegamenti siano valori, non posizioni fisiche: così il sistema può cambiare la memorizzazione senza rompere una riga di codice delle applicazioni." },
+  { id:10, question:"Che cosa significa «indipendenza fisica dei dati»?", options:["I dati sono conservati su un disco separato dai programmi","Il DBMS può cambiare come memorizza (indici, compressione, file) senza che le applicazioni se ne accorgano","Ogni applicazione ha la propria copia fisica dei dati","I dati sopravvivono allo spegnimento del computer"], correct:1, explanation:"È la conseguenza pratica dell'idea di Codd: la stessa query continua a funzionare identica anche se sotto cambia tutto, solo più veloce. L'indipendenza LOGICA è invece la possibilità di modificare lo schema (aggiungere una colonna) senza riscrivere i programmi esistenti." },
+  { id:11, question:"In una tabella unica STUDENTI che contiene anche aula e coordinatore della classe, quale problema si presenta se la 3A cambia aula?", options:["Nessuno: basta modificare una riga","Bisogna modificare tutte le righe degli studenti della 3A, e dimenticarne una crea due verità","Il DBMS rifiuta la modifica","Si perde la chiave primaria"], correct:1, explanation:"È l'anomalia di aggiornamento, causata dalla ridondanza. La soluzione è separare CLASSI da STUDENTI: così l'aula è scritta una volta sola e gli studenti la referenziano con una chiave esterna." },
+  { id:12, question:"Nel modello relazionale, come si collega uno studente alla sua classe?", options:["Con un puntatore alla posizione fisica del record CLASSE","Con un valore: la chiave esterna id_classe scritta nella riga dello studente","Con un indice creato dal DBMS","Con un collegamento gestito dal sistema operativo"], correct:1, explanation:"Il collegamento è un VALORE, non una posizione: è questo che rende il modello indipendente da come i dati sono memorizzati. Il sistema si occupa di ritrovare la riga corrispondente quando serve (join)." },
+  { id:13, question:"Nella notazione (min, max), che cosa significa STUDENTE (1,1) — appartenenza — CLASSE (0,N)?", options:["Una classe ha esattamente uno studente e uno studente sta in molte classi","Ogni studente sta in esattamente una classe; ogni classe ha da zero a molti studenti","Ci sono al massimo N classi e almeno 1 studente","La relazione è facoltativa da entrambe le parti"], correct:1, explanation:"La coppia si legge guardando l'ENTITÀ VICINA al numero: (1,1) accanto a STUDENTE dice quante volte un singolo studente partecipa. Verifica infallibile: la chiave esterna finisce sempre dalla parte del (1,1) — infatti id_classe sta dentro STUDENTI." },
+  { id:14, question:"Qual è la differenza fra DDL e DML?", options:["Il DDL serve per i database, il DML per i file","Il DDL definisce la struttura (CREATE, ALTER); il DML lavora sui dati (INSERT, UPDATE, SELECT)","Il DDL è per gli amministratori, il DML per i DBMS","Il DDL è un linguaggio, il DML è un protocollo"], correct:1, explanation:"È la stessa distinzione fra intensione ed estensione portata sui comandi: il DDL agisce sullo schema e si usa poche volte, il DML agisce sui valori ed è il linguaggio del lavoro quotidiano, quello che finisce dentro le applicazioni." },
+  { id:15, question:"Il modello relazionale ha reso obsoleti tutti gli altri tipi di database?", options:["Sì: dagli anni '80 esistono solo database relazionali","No: esistono data warehouse, NoSQL, database a grafo, e IMS gira ancora oggi nelle banche","No, ma gli altri si usano solo per progetti storici","Sì, tranne i fogli di calcolo"], correct:1, explanation:"Il relazionale ha vinto sulla flessibilità, non sulla velocità bruta: IMS, nato in IBM nel 1968 per il razzo Saturn V, è ancora in produzione. Nella stessa azienda convivono spesso un RDBMS per gli ordini, un data warehouse per le analisi e un database a grafo per i suggerimenti." }
+];
+
+let questions = [], currentQ = 0, selected = null, confirmed = false, score = 0, answers = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+function startQuiz() {
+  questions = shuffle(allQuestions);
+  currentQ = 0; selected = null; confirmed = false; score = 0; answers = [];
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('resultsScreen').classList.add('hidden');
+  document.getElementById('quizScreen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('qCounter').textContent = `Domanda ${currentQ+1} di ${questions.length}`;
+  document.getElementById('scoreLabel').textContent = `Punteggio: ${score}`;
+  document.getElementById('progressFill').style.width = `${(currentQ/questions.length)*100}%`;
+  document.getElementById('questionText').textContent = q.question;
+
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="letter">${letters[i]}.</span><span>${opt}</span>`;
+    btn.onclick = () => selectOption(i);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('explanationBox').classList.add('hidden');
+  const confirmBtn = document.getElementById('confirmBtn');
+  confirmBtn.classList.remove('hidden');
+  confirmBtn.className = 'btn-disabled';
+  confirmBtn.disabled = true;
+  document.getElementById('nextBtn').classList.add('hidden');
+  selected = null;
+  confirmed = false;
+}
+
+function selectOption(i) {
+  if (confirmed) return;
+  selected = i;
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((b, idx) => { b.className = idx === i ? 'option-btn selected' : 'option-btn'; });
+  const confirmBtn = document.getElementById('confirmBtn');
+  confirmBtn.className = 'btn-primary';
+  confirmBtn.disabled = false;
+  confirmBtn.style.padding = '13px 44px';
+  confirmBtn.style.fontSize = '15px';
+}
+
+function confirmAnswer() {
+  if (selected === null || confirmed) return;
+  confirmed = true;
+  const q = questions[currentQ];
+  const isCorrect = selected === q.correct;
+  if (isCorrect) score++;
+  answers.push({ qId: q.id, selected, correct: q.correct, isCorrect });
+
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((b, i) => {
+    b.classList.add('locked');
+    if (i === q.correct) {
+      b.className = 'option-btn correct locked';
+      b.querySelector('.letter').textContent = '✅';
+    } else if (i === selected && !isCorrect) {
+      b.className = 'option-btn wrong locked';
+      b.querySelector('.letter').textContent = '❌';
+    }
+  });
+
+  document.getElementById('scoreLabel').textContent = `Punteggio: ${score}`;
+  document.getElementById('progressFill').style.width = `${((currentQ+1)/questions.length)*100}%`;
+
+  const expBox = document.getElementById('explanationBox');
+  expBox.innerHTML = `<strong>💡 Spiegazione:</strong> ${q.explanation}`;
+  expBox.classList.remove('hidden');
+
+  document.getElementById('confirmBtn').classList.add('hidden');
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.classList.remove('hidden');
+  nextBtn.textContent = currentQ+1 >= questions.length ? 'Vedi risultati' : 'Prossima domanda →';
+}
+
+function nextQuestion() {
+  if (currentQ+1 >= questions.length) {
+    showResults();
+  } else {
+    currentQ++;
+    renderQuestion();
+  }
+}
+
+function showResults() {
+  document.getElementById('quizScreen').classList.add('hidden');
+  const pct = Math.round((score/questions.length)*100);
+  const grade = pct >= 90 ? {emoji:'🏆',label:'Eccellente!',color:'#22c55e'} :
+                pct >= 70 ? {emoji:'👏',label:'Ottimo lavoro!',color:'#3b82f6'} :
+                pct >= 50 ? {emoji:'📚',label:'Sufficiente, ripassa un po\'!',color:'#f59e0b'} :
+                            {emoji:'💪',label:'Da ripassare, non mollare!',color:'#ef4444'};
+
+  let resultsHTML = answers.map(a => {
+    const origQ = allQuestions.find(q => q.id === a.qId);
+    return `<div class="result-item ${a.isCorrect?'ok':'ko'}">
+      <span class="icon">${a.isCorrect?'✅':'❌'}</span>
+      <span class="text">${origQ.question}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('resultsScreen').innerHTML = `
+    <div class="emoji">${grade.emoji}</div>
+    <h2>${grade.label}</h2>
+    <div class="score-circle" style="border:5px solid ${grade.color}">
+      <span class="big" style="color:${grade.color}">${score}/${questions.length}</span>
+      <span class="small">${pct}%</span>
+    </div>
+    <div class="results-list">${resultsHTML}</div>
+    <button class="btn-primary" onclick="startQuiz()">🔄 Riprova</button>
+  `;
+  document.getElementById('resultsScreen').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
