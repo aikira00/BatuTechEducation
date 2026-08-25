@@ -836,39 +836,6 @@ fread(&amp;stu, <b>32</b>, 1, fs);
 
       <div class="pull">Rappresentiamo tutti i dati come semplici tabelle, e lasciamo che l'utente chieda <em>che cosa</em> vuole, non <em>come</em> andarlo a prendere.</div>
 
-      <div class="panel stack-s">
-        <span class="eyebrow">Lo stesso compito, due mondi</span>
-        <p style="font-size:15px;color:var(--ink-2)">&laquo;Elenca i titoli dei libri presi in prestito dall'utente 42&raquo;. A sinistra come si faceva prima, a destra come si fa dopo Codd.</p>
-        <div class="cards">
-          <div class="mini">
-            <span class="tag">Prima &#183; navigazionale</span>
-            <h4>Dico <em>come</em> arrivarci</h4>
-<pre style="font-size:12.5px;margin-top:10px"><span class="c">*&gt; stile COBOL / DBMS gerarchico</span>
-MOVE 42 TO CODICE-UTENTE
-FIND UTENTE
-FIND FIRST PRESTITO
-PERFORM UNTIL NOT FOUND
-    GET PRESTITO
-    FIND LIBRO
-    GET LIBRO
-    DISPLAY LIBRO-TITOLO
-    FIND NEXT PRESTITO
-END-PERFORM</pre>
-            <p style="margin-top:10px">Il programma <b>naviga</b>: conosce i puntatori, l'ordine dei record, la struttura fisica. Se cambia la struttura, il codice non funziona pi&#249;.</p>
-          </div>
-          <div class="mini good">
-            <span class="tag">Dopo &#183; dichiarativo</span>
-            <h4>Dico <em>che cosa</em> voglio</h4>
-<pre style="font-size:12.5px;margin-top:10px"><span class="c">-- SQL</span>
-<span class="k">SELECT</span> L.titolo
-<span class="k">FROM</span> prestiti P
-<span class="k">JOIN</span> libri L <span class="k">ON</span> P.isbn = L.isbn
-<span class="k">WHERE</span> P.codice_utente = 42;</pre>
-            <p style="margin-top:10px">Quattro righe al posto di dieci, ma non &#232; questo il punto: qui <b>non c'&#232; scritto come</b> trovare i dati. Se ne occupa il DBMS, che sceglie da solo se usare un indice o scorrere la tabella &#8212; e pu&#242; cambiare idea domani, senza che nessuno riscriva nulla.</p>
-          </div>
-        </div>
-      </div>
-
       <div class="note ok">
         <span class="eyebrow">L'analogia da tenere a mente</span>
         <p>Prima dovevi sapere <em>dove</em> stava fisicamente il dato e come raggiungerlo: come cercare un libro in biblioteca senza catalogo, sapendo solo che &laquo;&#232; nel terzo scaffale a sinistra, secondo ripiano&raquo;. Se il bibliotecario sposta gli scaffali, sei perduto. Con il modello relazionale dici soltanto <strong>&laquo;voglio il libro di Codd&raquo;</strong>, e trovare il percorso &#232; un problema di qualcun altro. Questo principio si chiama <strong>indipendenza dei dati</strong>, ed &#232; ancora oggi il fondamento di tutti i DBMS relazionali.</p>
@@ -1180,6 +1147,39 @@ END-PERFORM</pre>
         </div>
       </details>
     </div>
+      <div class="panel stack-s">
+        <span class="eyebrow">Lo stesso compito, due mondi</span>
+        <p style="font-size:15px;color:var(--ink-2)">Adesso che le tabelle collegate le abbiamo davanti, il salto si vede tutto. Stessa richiesta &#8212; &laquo;elenca i titoli dei libri presi in prestito dall'utente 42&raquo; &#8212; a sinistra come si faceva prima di Codd, a destra come si fa oggi con SQL (che arriver&#224; nel 1974, qualche anno dopo l'articolo).</p>
+        <div class="cards">
+          <div class="mini">
+            <span class="tag">Prima &#183; navigazionale</span>
+            <h4>Dico <em>come</em> arrivarci</h4>
+<pre style="font-size:12.5px;margin-top:10px"><span class="c">*&gt; stile COBOL / DBMS gerarchico</span>
+MOVE 42 TO CODICE-UTENTE
+FIND UTENTE
+FIND FIRST PRESTITO
+PERFORM UNTIL NOT FOUND
+    GET PRESTITO
+    FIND LIBRO
+    GET LIBRO
+    DISPLAY LIBRO-TITOLO
+    FIND NEXT PRESTITO
+END-PERFORM</pre>
+            <p style="margin-top:10px">Il programma <b>naviga</b>: conosce i puntatori, l'ordine dei record, la struttura fisica. Se cambia la struttura, il codice non funziona pi&#249;.</p>
+          </div>
+          <div class="mini good">
+            <span class="tag">Dopo &#183; dichiarativo</span>
+            <h4>Dico <em>che cosa</em> voglio</h4>
+<pre style="font-size:12.5px;margin-top:10px"><span class="c">-- SQL</span>
+<span class="k">SELECT</span> L.titolo
+<span class="k">FROM</span> prestiti P
+<span class="k">JOIN</span> libri L <span class="k">ON</span> P.isbn = L.isbn
+<span class="k">WHERE</span> P.codice_utente = 42;</pre>
+            <p style="margin-top:10px">Quattro righe al posto di dieci, ma non &#232; questo il punto: qui <b>non c'&#232; scritto come</b> trovare i dati. Se ne occupa il DBMS, che sceglie da solo se usare un indice o scorrere la tabella &#8212; e pu&#242; cambiare idea domani, senza che nessuno riscriva nulla.</p>
+          </div>
+        </div>
+      </div>
+
   </section>
 
   <section id="s8">
