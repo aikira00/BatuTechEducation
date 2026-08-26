@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Uno, molti, tutti e due</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+:root{
+  --bg:#EEF0F4; --surface:#FFFFFF; --surface-2:#F5F7FA;
+  --ink:#131A24; --ink-2:#3D4A5C; --ink-3:#6B7887;
+  --rule:#D3D9E2; --rule-strong:#B6C0CD;
+  --navy:#16324F; --navy-soft:rgba(22,50,79,.08);
+  --accent:#C81E4E; --accent-soft:rgba(200,30,78,.10); --accent-line:rgba(200,30,78,.35);
+  --ok:#0F6B5F; --ok-soft:rgba(15,107,95,.10);
+  --warn:#8A5A12; --warn-soft:rgba(138,90,18,.10);
+  --shadow:0 1px 2px rgba(19,26,36,.06), 0 8px 24px -12px rgba(19,26,36,.18);
+  --f-display:"IBM Plex Serif",Georgia,serif;
+  --f-body:"IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --measure:66ch; --wide:min(1080px,94vw);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
+  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
+  --rule:#2A3644; --rule-strong:#3B4A5C;
+  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
+  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
+  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
+  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}}
+:root[data-theme="dark"]{
+  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
+  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
+  --rule:#2A3644; --rule-strong:#3B4A5C;
+  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
+  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
+  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
+  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.page{max-width:var(--wide);margin:0 auto;padding:0 clamp(16px,4vw,32px) 96px}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:clamp(26px,3.6vw,34px);font-weight:600;color:var(--navy)}
+h3{font-size:clamp(19px,2.2vw,22px);font-weight:600;margin-bottom:.2em;color:var(--navy)}
+p{margin:0}
+a{color:var(--accent)}
+.lede{font-size:clamp(18px,2.1vw,20px);color:var(--ink-2);line-height:1.55}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.col{display:flex;flex-direction:column;gap:18px;max-width:var(--measure)}
+.hero{padding:clamp(40px,7vw,72px) 0 clamp(20px,4vw,34px)}
+.hero h1{font-size:clamp(34px,5.6vw,58px);font-weight:700;letter-spacing:-.025em;margin:.28em 0 .34em;color:var(--navy)}
+.hero h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+section{padding:clamp(34px,5vw,56px) 0;border-top:1px solid var(--rule)}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline;margin-bottom:24px}
+.num{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--accent);border:1px solid var(--accent-line);border-radius:3px;padding:2px 7px}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:clamp(18px,3vw,26px);box-shadow:var(--shadow)}
+.stack{display:flex;flex-direction:column;gap:clamp(18px,3vw,28px)}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:16px 20px;border-radius:0 5px 5px 0;max-width:var(--measure)}
+.note.ok{border-left-color:var(--ok);background:var(--ok-soft)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.note .eyebrow{display:block;margin-bottom:6px;color:var(--ink-2)}
+.pull{font-family:var(--f-display);font-size:clamp(20px,2.6vw,25px);line-height:1.4;font-style:italic;color:var(--navy);max-width:32ch;border-top:2px solid var(--navy);border-bottom:1px solid var(--rule);padding:18px 0;margin:4px 0}
+ul.clean,ol.clean{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:9px;color:var(--ink-2)}
+ul.clean li::marker,ol.clean li::marker{color:var(--accent)}
+ul.clean b,ol.clean b{color:var(--ink)}
+code{font-family:var(--f-mono);font-size:.92em;background:var(--surface-2);border:1px solid var(--rule);border-radius:3px;padding:1px 5px}
+/* --- indice --- */
+.toc{display:flex;flex-wrap:wrap;gap:8px;padding:18px 0 4px;border-top:1px solid var(--rule)}
+.toc a{display:flex;align-items:baseline;gap:7px;font-size:14px;text-decoration:none;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:7px 13px}
+.toc a:hover{border-color:var(--accent-line);color:var(--ink)}
+.toc a span{font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:var(--accent)}
+/* --- diagrammi istanze --- */
+.demo{width:100%;height:auto;display:block;user-select:none}
+.inst rect{fill:var(--surface-2);stroke:var(--rule-strong);stroke-width:1.4;transition:fill .15s,stroke .15s}
+.inst text{fill:var(--ink);font-family:var(--f-body);font-size:14px;font-weight:600;pointer-events:none}
+.inst{cursor:pointer}
+.inst:hover rect{stroke:var(--navy)}
+.inst.on rect{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2}
+.inst.linked rect{fill:var(--navy-soft);stroke:var(--navy);stroke-width:2}
+.lnk{stroke:var(--rule-strong);stroke-width:1.6;transition:stroke .15s,stroke-width .15s}
+.lnk.on{stroke:var(--accent);stroke-width:2.6}
+.hdr{fill:var(--ink-3);font-family:var(--f-mono);font-size:12px;letter-spacing:.12em}
+.hint{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-3);margin-top:12px}
+/* --- due domande --- */
+.qbox{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:6px 0}
+@media (max-width:700px){.qbox{grid-template-columns:1fr}}
+.qcard{background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:14px 18px}
+.qcard .q{font-family:var(--f-display);font-style:italic;color:var(--navy);font-size:17px;margin-bottom:6px}
+.qcard .a{font-size:15px;color:var(--ink-2)}
+.qcard .a b{color:var(--accent);font-family:var(--f-mono)}
+/* --- tabelle --- */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+caption{text-align:left;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);padding:12px 14px 10px}
+th,td{padding:8px 14px;text-align:left;border-bottom:1px solid var(--rule);white-space:nowrap}
+thead th{font-family:var(--f-mono);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);border-bottom:1px solid var(--rule-strong)}
+tbody tr:last-child td{border-bottom:none}
+td.mono{font-family:var(--f-mono)}
+.rip{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.due{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.due{grid-template-columns:1fr}}
+/* --- quiz --- */
+.quiz{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:clamp(18px,3vw,28px);box-shadow:var(--shadow)}
+.qtesto{font-size:clamp(17px,2vw,21px);color:var(--ink);line-height:1.45;margin-bottom:18px}
+.qtesto b{color:var(--navy)}
+.scelte{display:flex;gap:10px;flex-wrap:wrap}
+.scelte button{font-family:var(--f-mono);font-size:15px;font-weight:600;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:6px;padding:11px 22px;cursor:pointer;transition:.15s}
+.scelte button:hover:not(:disabled){border-color:var(--navy);color:var(--ink)}
+.scelte button.giusta{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.scelte button.sbagliata{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.scelte button:disabled{cursor:default}
+.feedback{margin-top:16px;font-size:15.5px;color:var(--ink-2);line-height:1.5;display:none}
+.feedback.show{display:block}
+.feedback b{color:var(--ink)}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--f-mono);font-size:13px;color:var(--ink-3)}
+.qnav button{font-family:var(--f-mono);font-size:14px;background:var(--navy);color:var(--bg);border:none;border-radius:6px;padding:9px 20px;cursor:pointer}
+.qnav button:disabled{opacity:.35;cursor:default}
+footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font-size:14px}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <span class="eyebrow">Informatica &middot; Basi di dati &middot; Lezione 2</span>
+  <h1>Uno, molti, <em>tutti e due</em></h1>
+  <p class="lede">Come si riconosce il tipo di un'associazione: uno a uno, uno a molti, molti a molti. Con esempi veri, prima di qualunque formalismo.</p>
+</header>
+
+<nav class="toc" aria-label="Indice">
+  <div style="width:100%;margin-bottom:2px" class="eyebrow">In questa pagina</div>
+  <a href="#s1"><span>01</span>Le due domande</a>
+  <a href="#s2"><span>02</span>Uno a uno</a>
+  <a href="#s3"><span>03</span>Uno a molti</a>
+  <a href="#s4"><span>04</span>Molti a molti</a>
+  <a href="#s5"><span>05</span>Come si vede nei dati</a>
+  <a href="#s6"><span>06</span>Provaci tu</a>
+  <a href="#s7"><span>07</span>Due trappole</a>
+</nav>
+
+<!-- ===== 01 ===== -->
+<section id="s1">
+  <div class="sec-head"><span class="num">01</span><h2>Il tipo si scopre con due domande</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>Quando due insiemi di cose sono collegati fra loro — studenti e classi, persone e passaporti, studenti e corsi — la prima cosa da capire è <strong>quante cose di qua stanno con quante cose di là</strong>. Non si indovina: si scopre facendo <strong>due domande, una per ogni verso</strong>. E vanno fatte tutte e due, perché quasi sempre le risposte sono diverse.</p>
+    </div>
+
+    <div class="panel">
+      <div class="qbox">
+        <div class="qcard">
+          <div class="q">Uno studente, quante classi?</div>
+          <div class="a">Una sola &rarr; <b>1</b></div>
+        </div>
+        <div class="qcard">
+          <div class="q">Una classe, quanti studenti?</div>
+          <div class="a">Tanti &rarr; <b>N</b></div>
+        </div>
+      </div>
+      <p style="font-size:15px;color:var(--ink-2);margin-top:14px">Le due risposte, messe insieme, danno il tipo: <b>1 : N</b>. Se le avessi fatte al contrario avrei ottenuto N : 1, che è la stessa cosa vista dall'altra parte. Per questo si scrive sempre l'associazione con le due entità in un ordine preciso.</p>
+    </div>
+
+    <div class="note">
+      <span class="eyebrow">La regola in una riga</span>
+      <p>Fai la domanda partendo da <strong>un singolo elemento</strong>: «<em>un</em> tale, quanti tali?». Se rispondi «dipende, alcuni uno alcuni tanti», la risposta è comunque <strong>tanti</strong>: la cardinalità dice il <em>massimo</em> possibile, non il caso più comune.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 02 ===== -->
+<section id="s2">
+  <div class="sec-head"><span class="num">02</span><h2>Uno a uno &nbsp;(1:1)</h2>
+    <p class="eyebrow" style="grid-column:2">a ciascuno il suo, senza doppioni</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>A ogni studente la scuola assegna <strong>un armadietto</strong>. Ogni armadietto è di un solo studente. Le linee non si incrociano e non si accavallano mai: sono coppie.</p>
+    </div>
+
+    <div class="panel">
+      <svg class="demo" viewBox="0 0 720 300" data-demo="uno" role="img" aria-label="Quattro studenti collegati ciascuno a un armadietto diverso, con linee parallele">
+        <text class="hdr" x="20" y="24">STUDENTI</text>
+        <text class="hdr" x="700" y="24" text-anchor="end">ARMADIETTI</text>
+        <g class="links">
+          <line class="lnk" data-a="s1" data-b="a1" x1="240" y1="66" x2="480" y2="66"/>
+          <line class="lnk" data-a="s2" data-b="a2" x1="240" y1="130" x2="480" y2="130"/>
+          <line class="lnk" data-a="s3" data-b="a3" x1="240" y1="194" x2="480" y2="194"/>
+          <line class="lnk" data-a="s4" data-b="a4" x1="240" y1="258" x2="480" y2="258"/>
+        </g>
+        <g class="inst" data-id="s1" tabindex="0"><rect x="20" y="44" width="220" height="44" rx="5"/><text x="130" y="72" text-anchor="middle">Bianchi Sara</text></g>
+        <g class="inst" data-id="s2" tabindex="0"><rect x="20" y="108" width="220" height="44" rx="5"/><text x="130" y="136" text-anchor="middle">Rossi Luca</text></g>
+        <g class="inst" data-id="s3" tabindex="0"><rect x="20" y="172" width="220" height="44" rx="5"/><text x="130" y="200" text-anchor="middle">Nguyen An</text></g>
+        <g class="inst" data-id="s4" tabindex="0"><rect x="20" y="236" width="220" height="44" rx="5"/><text x="130" y="264" text-anchor="middle">Costa Elena</text></g>
+        <g class="inst" data-id="a1" tabindex="0"><rect x="480" y="44" width="220" height="44" rx="5"/><text x="590" y="72" text-anchor="middle">armadietto 12</text></g>
+        <g class="inst" data-id="a2" tabindex="0"><rect x="480" y="108" width="220" height="44" rx="5"/><text x="590" y="136" text-anchor="middle">armadietto 07</text></g>
+        <g class="inst" data-id="a3" tabindex="0"><rect x="480" y="172" width="220" height="44" rx="5"/><text x="590" y="200" text-anchor="middle">armadietto 23</text></g>
+        <g class="inst" data-id="a4" tabindex="0"><rect x="480" y="236" width="220" height="44" rx="5"/><text x="590" y="264" text-anchor="middle">armadietto 31</text></g>
+      </svg>
+      <p class="hint">Clicca su un riquadro per vedere i suoi collegamenti.</p>
+    </div>
+
+    <div class="qbox">
+      <div class="qcard"><div class="q">Uno studente, quanti armadietti?</div><div class="a">Uno &rarr; <b>1</b></div></div>
+      <div class="qcard"><div class="q">Un armadietto, quanti studenti?</div><div class="a">Uno &rarr; <b>1</b></div></div>
+    </div>
+
+    <div class="note">
+      <span class="eyebrow">Come si riconosce a colpo d'occhio</span>
+      <p>Da <strong>ogni</strong> riquadro parte <strong>una sola linea</strong>, da tutte e due le parti. Se ne trovi anche una sola che si sdoppia, non è più uno a uno.</p>
+    </div>
+
+    <div class="col">
+      <p>Altri casi 1:1: una persona e il suo codice fiscale, uno Stato e la sua capitale, un ordine e la sua fattura. Sono più rari di quanto sembri — e quando li trovi vale sempre la pena chiedersi <em>perché</em> le due cose non siano una cosa sola.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 03 ===== -->
+<section id="s3">
+  <div class="sec-head"><span class="num">03</span><h2>Uno a molti &nbsp;(1:N)</h2>
+    <p class="eyebrow" style="grid-column:2">il caso più frequente di tutti</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>Ogni studente è iscritto a <strong>una</strong> classe; ogni classe raccoglie <strong>molti</strong> studenti. Guarda le linee: da destra convergono verso lo stesso riquadro, da sinistra ne parte sempre una sola.</p>
+    </div>
+
+    <div class="panel">
+      <svg class="demo" viewBox="0 0 720 320" data-demo="due" role="img" aria-label="Due classi collegate ciascuna a più studenti: le linee convergono">
+        <text class="hdr" x="20" y="24">CLASSI</text>
+        <text class="hdr" x="700" y="24" text-anchor="end">STUDENTI</text>
+        <g class="links">
+          <line class="lnk" data-a="c1" data-b="t1" x1="240" y1="96" x2="480" y2="60"/>
+          <line class="lnk" data-a="c1" data-b="t2" x1="240" y1="96" x2="480" y2="112"/>
+          <line class="lnk" data-a="c1" data-b="t3" x1="240" y1="96" x2="480" y2="164"/>
+          <line class="lnk" data-a="c2" data-b="t4" x1="240" y1="216" x2="480" y2="216"/>
+          <line class="lnk" data-a="c2" data-b="t5" x1="240" y1="216" x2="480" y2="268"/>
+        </g>
+        <g class="inst" data-id="c1" tabindex="0"><rect x="20" y="74" width="220" height="44" rx="5"/><text x="130" y="102" text-anchor="middle">3A</text></g>
+        <g class="inst" data-id="c2" tabindex="0"><rect x="20" y="194" width="220" height="44" rx="5"/><text x="130" y="222" text-anchor="middle">4B</text></g>
+        <g class="inst" data-id="t1" tabindex="0"><rect x="480" y="38" width="220" height="44" rx="5"/><text x="590" y="66" text-anchor="middle">Bianchi Sara</text></g>
+        <g class="inst" data-id="t2" tabindex="0"><rect x="480" y="90" width="220" height="44" rx="5"/><text x="590" y="118" text-anchor="middle">Rossi Luca</text></g>
+        <g class="inst" data-id="t3" tabindex="0"><rect x="480" y="142" width="220" height="44" rx="5"/><text x="590" y="170" text-anchor="middle">Nguyen An</text></g>
+        <g class="inst" data-id="t4" tabindex="0"><rect x="480" y="194" width="220" height="44" rx="5"/><text x="590" y="222" text-anchor="middle">Costa Elena</text></g>
+        <g class="inst" data-id="t5" tabindex="0"><rect x="480" y="246" width="220" height="44" rx="5"/><text x="590" y="274" text-anchor="middle">Haidar Omar</text></g>
+      </svg>
+      <p class="hint">Clicca sulla 3A: si accendono i suoi tre studenti. Clicca su uno studente: si accende una classe sola.</p>
+    </div>
+
+    <div class="qbox">
+      <div class="qcard"><div class="q">Uno studente, quante classi?</div><div class="a">Una &rarr; <b>1</b></div></div>
+      <div class="qcard"><div class="q">Una classe, quanti studenti?</div><div class="a">Molti &rarr; <b>N</b></div></div>
+    </div>
+
+    <div class="note">
+      <span class="eyebrow">Come si riconosce a colpo d'occhio</span>
+      <p>Da <strong>una parte sola</strong> le linee si sdoppiano. È la forma a ventaglio: un elemento a sinistra, tanti a destra — mai il contrario.</p>
+    </div>
+
+    <div class="col">
+      <p>Altri casi 1:N: un docente coordinatore e le sue classi, un comune e i suoi abitanti, un autore e i suoi libri (se ogni libro ha un autore solo). Nella realtà è il tipo che incontrerai più spesso.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 04 ===== -->
+<section id="s4">
+  <div class="sec-head"><span class="num">04</span><h2>Molti a molti &nbsp;(N:M)</h2>
+    <p class="eyebrow" style="grid-column:2">quando si incrociano da tutte e due le parti</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>La scuola organizza corsi pomeridiani. Uno studente può iscriversi a <strong>più corsi</strong>, e ogni corso ha <strong>più studenti</strong>. Adesso le linee si incrociano: non c'è più un lato "singolo".</p>
+    </div>
+
+    <div class="panel">
+      <svg class="demo" viewBox="0 0 720 300" data-demo="tre" role="img" aria-label="Tre studenti e tre corsi collegati da linee che si incrociano in entrambe le direzioni">
+        <text class="hdr" x="20" y="24">STUDENTI</text>
+        <text class="hdr" x="700" y="24" text-anchor="end">CORSI POMERIDIANI</text>
+        <g class="links">
+          <line class="lnk" data-a="p1" data-b="k1" x1="240" y1="70" x2="480" y2="70"/>
+          <line class="lnk" data-a="p1" data-b="k2" x1="240" y1="70" x2="480" y2="150"/>
+          <line class="lnk" data-a="p2" data-b="k1" x1="240" y1="150" x2="480" y2="70"/>
+          <line class="lnk" data-a="p2" data-b="k3" x1="240" y1="150" x2="480" y2="230"/>
+          <line class="lnk" data-a="p3" data-b="k2" x1="240" y1="230" x2="480" y2="150"/>
+          <line class="lnk" data-a="p3" data-b="k1" x1="240" y1="230" x2="480" y2="70"/>
+        </g>
+        <g class="inst" data-id="p1" tabindex="0"><rect x="20" y="48" width="220" height="44" rx="5"/><text x="130" y="76" text-anchor="middle">Bianchi Sara</text></g>
+        <g class="inst" data-id="p2" tabindex="0"><rect x="20" y="128" width="220" height="44" rx="5"/><text x="130" y="156" text-anchor="middle">Rossi Luca</text></g>
+        <g class="inst" data-id="p3" tabindex="0"><rect x="20" y="208" width="220" height="44" rx="5"/><text x="130" y="236" text-anchor="middle">Nguyen An</text></g>
+        <g class="inst" data-id="k1" tabindex="0"><rect x="480" y="48" width="220" height="44" rx="5"/><text x="590" y="76" text-anchor="middle">Robotica</text></g>
+        <g class="inst" data-id="k2" tabindex="0"><rect x="480" y="128" width="220" height="44" rx="5"/><text x="590" y="156" text-anchor="middle">Inglese B2</text></g>
+        <g class="inst" data-id="k3" tabindex="0"><rect x="480" y="208" width="220" height="44" rx="5"/><text x="590" y="236" text-anchor="middle">Teatro</text></g>
+      </svg>
+      <p class="hint">Prova a cliccare da una parte e poi dall'altra: da qualunque lato parti, trovi sempre più di un collegamento.</p>
+    </div>
+
+    <div class="qbox">
+      <div class="qcard"><div class="q">Uno studente, quanti corsi?</div><div class="a">Più d'uno &rarr; <b>N</b></div></div>
+      <div class="qcard"><div class="q">Un corso, quanti studenti?</div><div class="a">Più d'uno &rarr; <b>M</b></div></div>
+    </div>
+
+    <div class="note">
+      <span class="eyebrow">Perché N e M e non N e N</span>
+      <p>Si usano <strong>due lettere diverse</strong> per dire che i due «molti» non sono per forza lo stesso numero: uno studente può fare 2 corsi mentre un corso ha 18 iscritti. Non è una regola matematica, è un modo per non far credere che le quantità coincidano.</p>
+    </div>
+
+    <div class="col">
+      <p>Altri casi N:M: studenti e materie, attori e film, prodotti e ordini, medici e pazienti. Ogni volta che ti viene da dire «<em>ma dipende, uno può averne tanti… e anche l'altro</em>», sei davanti a un molti a molti.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 05 ===== -->
+<section id="s5">
+  <div class="sec-head"><span class="num">05</span><h2>Come si vede guardando i dati</h2>
+    <p class="eyebrow" style="grid-column:2">le stesse tre situazioni, scritte in tabella</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>Le linee dei disegni, nella realtà, diventano <strong>valori scritti dentro le tabelle</strong>. Non serve ancora sapere come si costruiscono: basta guardare cosa succede ai dati nei tre casi.</p>
+    </div>
+
+    <h3>1:1 &mdash; ogni valore compare una volta sola</h3>
+    <div class="tablewrap">
+      <table>
+        <caption>studenti e armadietti</caption>
+        <thead><tr><th>studente</th><th class="mono">armadietto</th></tr></thead>
+        <tbody>
+          <tr><td>Bianchi Sara</td><td class="mono">12</td></tr>
+          <tr><td>Rossi Luca</td><td class="mono">07</td></tr>
+          <tr><td>Nguyen An</td><td class="mono">23</td></tr>
+          <tr><td>Costa Elena</td><td class="mono">31</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:15px;color:var(--ink-2);max-width:var(--measure)">Nessun numero di armadietto si ripete. Se ne trovassi uno ripetuto, vorrebbe dire che due studenti condividono l'armadietto — e allora non sarebbe più un 1:1.</p>
+
+    <h3 style="margin-top:14px">1:N &mdash; un valore si ripete, l'altro no</h3>
+    <div class="tablewrap">
+      <table>
+        <caption>studenti e classi</caption>
+        <thead><tr><th>studente</th><th class="mono">classe</th></tr></thead>
+        <tbody>
+          <tr><td>Bianchi Sara</td><td class="mono rip">3A</td></tr>
+          <tr><td>Rossi Luca</td><td class="mono rip">3A</td></tr>
+          <tr><td>Nguyen An</td><td class="mono rip">3A</td></tr>
+          <tr><td>Costa Elena</td><td class="mono rip">4B</td></tr>
+          <tr><td>Haidar Omar</td><td class="mono rip">4B</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:15px;color:var(--ink-2);max-width:var(--measure)">La colonna evidenziata <strong>ripete</strong> gli stessi valori: è il segno del «molti». Ogni studente però compare una volta sola: è il segno dell'«uno». <em>Una riga per studente, la classe scritta accanto.</em></p>
+
+    <h3 style="margin-top:14px">N:M &mdash; non basta più una colonna</h3>
+    <div class="col">
+      <p>Qui succede una cosa nuova. Prova a scrivere i corsi di Sara dentro la sua riga: te ne servirebbero due, e in una casella non si può. Prova a mettere gli studenti dentro la riga del corso: stesso problema. <strong>La coppia non sta né di qua né di là</strong>, e allora si scrive in una tabella tutta sua, che elenca gli abbinamenti uno per riga.</p>
+    </div>
+    <div class="due">
+      <div class="tablewrap">
+        <table>
+          <caption>tentativo sbagliato</caption>
+          <thead><tr><th>studente</th><th>corsi</th></tr></thead>
+          <tbody>
+            <tr><td>Bianchi Sara</td><td class="rip">Robotica, Inglese B2</td></tr>
+            <tr><td>Rossi Luca</td><td class="rip">Robotica, Teatro</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <caption>una riga per abbinamento</caption>
+          <thead><tr><th>studente</th><th>corso</th></tr></thead>
+          <tbody>
+            <tr><td>Bianchi Sara</td><td>Robotica</td></tr>
+            <tr><td>Bianchi Sara</td><td>Inglese B2</td></tr>
+            <tr><td>Rossi Luca</td><td>Robotica</td></tr>
+            <tr><td>Rossi Luca</td><td>Teatro</td></tr>
+            <tr><td>Nguyen An</td><td>Inglese B2</td></tr>
+            <tr><td>Nguyen An</td><td>Robotica</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="note warn">
+      <span class="eyebrow">Perché la tabella di sinistra non va</span>
+      <p>Scrivere più valori in una casella sembra comodo, ma rende i dati inutilizzabili: come chiederesti al computer «quanti iscritti ha Robotica?» se il nome del corso è annegato dentro una frase, scritto a volte con la maiuscola e a volte no? <strong>Una casella, un valore</strong>: è la regola che rende possibile tutto il resto.</p>
+    </div>
+
+    <div class="pull">Nel molti a molti l'abbinamento è un fatto a sé, e i fatti si scrivono in righe.</div>
+  </div>
+</section>
+
+<!-- ===== 06 ===== -->
+<section id="s6">
+  <div class="sec-head"><span class="num">06</span><h2>Provaci tu</h2>
+    <p class="eyebrow" style="grid-column:2">fai le due domande, poi rispondi</p></div>
+  <div class="quiz">
+    <div class="qtesto" id="qtesto"></div>
+    <div class="scelte" id="scelte">
+      <button data-v="1:1">1 : 1</button>
+      <button data-v="1:N">1 : N</button>
+      <button data-v="N:M">N : M</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <div class="qnav">
+      <span id="contatore"></span>
+      <button id="avanti" disabled>Avanti &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 07 ===== -->
+<section id="s7">
+  <div class="sec-head"><span class="num">07</span><h2>Due trappole in cui cascano tutti</h2></div>
+  <div class="stack">
+    <div class="col">
+      <h3>1. «Dipende da come lo guardi» &mdash; ed è vero</h3>
+      <p>La stessa coppia di cose può avere cardinalità diverse <strong>in contesti diversi</strong>, e non è un errore: dipende dalla realtà che stai descrivendo. Un esempio: <em>persona</em> e <em>automobile</em>.</p>
+      <ul class="clean">
+        <li>All'ufficio del <b>Pubblico Registro</b>, ogni auto ha un solo intestatario: dal lato auto è <b>1</b>. Una persona può possederne più d'una: <b>1:N</b>.</li>
+        <li>In un servizio di <b>car sharing</b>, la stessa auto viene guidata da tante persone e ogni persona guida tante auto: <b>N:M</b>.</li>
+      </ul>
+      <p>Per questo la cardinalità <strong>non si decide a tavolino</strong>: si chiede a chi userà il database. È la fase di analisi dei requisiti.</p>
+    </div>
+
+    <div class="col">
+      <h3>2. «Adesso è così» non basta</h3>
+      <p>In questo momento, in una scuola, ogni classe potrebbe avere un solo docente di informatica. Ma se l'anno prossimo arrivasse una compresenza? Se un docente andasse in maternità a metà anno?</p>
+      <p>La domanda giusta non è «<em>quanti ce ne sono adesso</em>» ma «<strong>quanti è lecito che ce ne siano</strong>». Un database progettato sui casi di oggi si rompe al primo caso di domani — e cambiare la cardinalità dopo significa rifare le tabelle e i programmi che le usano.</p>
+    </div>
+
+    <div class="note ok">
+      <span class="eyebrow">Da portare a casa</span>
+      <p>Tre passaggi, sempre gli stessi: <strong>1)</strong> individua le due cose collegate; <strong>2)</strong> fai le due domande partendo da un singolo elemento, in tutti e due i versi; <strong>3)</strong> chiediti se la risposta vale anche per i casi rari, non solo per quelli tipici.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="eyebrow">Nota sulla realizzazione</span>
+  <p style="margin-top:8px">Questa pagina &egrave; stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilit&agrave; didattica e scientifica &egrave; integralmente sua. L'indicazione &egrave; fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  /* ---- diagrammi a istanze ---- */
+  document.querySelectorAll('svg.demo').forEach(function(svg){
+    var insts = Array.prototype.slice.call(svg.querySelectorAll('.inst'));
+    var links = Array.prototype.slice.call(svg.querySelectorAll('.lnk'));
+    function pulisci(){
+      insts.forEach(function(i){ i.classList.remove('on','linked'); });
+      links.forEach(function(l){ l.classList.remove('on'); });
+    }
+    function accendi(g){
+      var id = g.getAttribute('data-id');
+      var giaAcceso = g.classList.contains('on');
+      pulisci();
+      if (giaAcceso) return;
+      g.classList.add('on');
+      links.forEach(function(l){
+        var a = l.getAttribute('data-a'), b = l.getAttribute('data-b');
+        if (a === id || b === id){
+          l.classList.add('on');
+          var altro = (a === id) ? b : a;
+          var el = svg.querySelector('.inst[data-id="' + altro + '"]');
+          if (el) el.classList.add('linked');
+        }
+      });
+    }
+    insts.forEach(function(g){
+      g.addEventListener('click', function(){ accendi(g); });
+      g.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); accendi(g); }
+      });
+    });
+  });
+
+  /* ---- quiz ---- */
+  var casi = [
+    { t:'Uno <b>studente</b> e la sua <b>pagella</b> di quest\'anno.', v:'1:1',
+      s:'Ogni studente ha una pagella, e ogni pagella appartiene a uno studente solo. Coppie perfette.' },
+    { t:'Un <b>docente coordinatore</b> e le <b>classi</b> che coordina.', v:'1:N',
+      s:'Una classe ha un coordinatore solo; un docente può coordinarne più d\'una. Uno di qua, molti di là.' },
+    { t:'Gli <b>studenti</b> e le <b>materie</b> che studiano.', v:'N:M',
+      s:'Uno studente segue molte materie, e ogni materia è seguita da molti studenti. Molti da entrambe le parti.' },
+    { t:'Un <b>libro</b> della biblioteca e la sua <b>collocazione</b> a scaffale.', v:'1:1',
+      s:'Un posto per ogni libro, un libro per ogni posto: se ce ne stessero due, non sapresti più dove trovarli.' },
+    { t:'Un <b>autore</b> e i <b>libri</b> che ha scritto (ammettendo un solo autore per libro).', v:'1:N',
+      s:'Con quella premessa, ogni libro ha un autore ma un autore ha scritto più libri. Attenzione: se ammettessimo i libri scritti a quattro mani, diventerebbe N:M.' },
+    { t:'Gli <b>attori</b> e i <b>film</b> in cui recitano.', v:'N:M',
+      s:'Un attore recita in molti film, un film ha molti attori. È l\'esempio classico del molti a molti.' },
+    { t:'Un <b>comune</b> e i suoi <b>abitanti</b> residenti.', v:'1:N',
+      s:'Si può essere residenti in un comune solo, ma un comune ha molti residenti.' },
+    { t:'Uno <b>smartphone</b> e il suo <b>numero IMEI</b>.', v:'1:1',
+      s:'L\'IMEI identifica un telefono e uno solo: è fatto apposta per essere unico al mondo.' }
+  ];
+  var i = 0, risposto = false, giuste = 0;
+  var qt = document.getElementById('qtesto'), fb = document.getElementById('feedback'),
+      cont = document.getElementById('contatore'), av = document.getElementById('avanti'),
+      btns = Array.prototype.slice.call(document.querySelectorAll('#scelte button'));
+
+  function mostra(){
+    risposto = false;
+    qt.innerHTML = casi[i].t;
+    fb.classList.remove('show'); fb.innerHTML = '';
+    av.disabled = true;
+    btns.forEach(function(b){ b.className = ''; b.disabled = false; });
+    cont.textContent = 'Caso ' + (i+1) + ' di ' + casi.length + '   ·   risposte esatte: ' + giuste;
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      if (risposto) return;
+      risposto = true;
+      var scelta = b.getAttribute('data-v'), giusta = casi[i].v;
+      btns.forEach(function(o){
+        o.disabled = true;
+        if (o.getAttribute('data-v') === giusta) o.className = 'giusta';
+      });
+      if (scelta !== giusta) b.className = 'sbagliata'; else giuste++;
+      fb.innerHTML = (scelta === giusta ? '<b>Esatto.</b> ' : '<b>Non ci siamo.</b> La risposta è <b>' + giusta + '</b>. ') + casi[i].s;
+      fb.classList.add('show');
+      av.disabled = (i >= casi.length - 1);
+      cont.textContent = 'Caso ' + (i+1) + ' di ' + casi.length + '   ·   risposte esatte: ' + giuste;
+      if (i >= casi.length - 1) cont.textContent += '   ·   finito!';
+    });
+  });
+  av.addEventListener('click', function(){ if (i < casi.length - 1){ i++; mostra(); } });
+  mostra();
+})();
+</script>
+</body>
+</html>
