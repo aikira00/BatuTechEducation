@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Una macchina che non esiste</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+:root {
+  --paper:      #f2f5f6;
+  --surface:    #ffffff;
+  --surface-2:  #e9eef0;
+  --ink:        #131a1c;
+  --ink-soft:   #4c595d;
+  --ink-faint:  #7b8a8e;
+  --line:       #d5dfe1;
+  --line-soft:  #e4ebec;
+  --native:     #ab511c;
+  --native-bg:  #f7ece4;
+  --jvm:        #0d6f7b;
+  --jvm-bg:     #e2eff0;
+  --term-bg:    #16211f;
+  --term-ink:   #d5e3df;
+
+  --f-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --f-body:    "Literata", Georgia, "Times New Roman", serif;
+  --f-mono:    "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+
+  --col: 68ch;
+  --wide: 62rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:     #0e1416;
+    --surface:   #151e21;
+    --surface-2: #1c282b;
+    --ink:       #e7eef0;
+    --ink-soft:  #9dafb3;
+    --ink-faint: #74868a;
+    --line:      #29383c;
+    --line-soft: #1f2c2f;
+    --native:    #e2905a;
+    --native-bg: #2a1d13;
+    --jvm:       #52c4d0;
+    --jvm-bg:    #10292d;
+    --term-bg:   #0a1211;
+    --term-ink:  #cfe0db;
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper:     #0e1416;
+  --surface:   #151e21;
+  --surface-2: #1c282b;
+  --ink:       #e7eef0;
+  --ink-soft:  #9dafb3;
+  --ink-faint: #74868a;
+  --line:      #29383c;
+  --line-soft: #1f2c2f;
+  --native:    #e2905a;
+  --native-bg: #2a1d13;
+  --jvm:       #52c4d0;
+  --jvm-bg:    #10292d;
+  --term-bg:   #0a1211;
+  --term-ink:  #cfe0db;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.62;
+  margin: 0;
+  padding: 0 1.25rem 6rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: var(--wide); margin: 0 auto; }
+.col  { max-width: var(--col); }
+
+/* ---------- typography ---------- */
+
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+
+h1 {
+  font-size: clamp(2.4rem, 6.5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3.4vw, 2.05rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.017em;
+}
+
+h3 {
+  font-size: 1.12rem;
+  font-weight: 700;
+  letter-spacing: -0.008em;
+  margin-bottom: 0.3rem;
+}
+
+p { margin: 0; }
+strong { font-weight: 600; }
+
+.lede {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ---------- rhythm ---------- */
+
+header.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: 4.5rem 0 2.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero .col { display: flex; flex-direction: column; gap: 1.1rem; }
+
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+  padding: 3.6rem 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.sec-head { display: flex; flex-direction: column; gap: 0.5rem; }
+.stack    { display: flex; flex-direction: column; gap: 1rem; }
+
+/* ---------- accents ---------- */
+
+.c-native { color: var(--native); }
+.c-jvm    { color: var(--jvm); }
+
+code {
+  font-family: var(--f-mono);
+  font-size: 0.86em;
+  background: var(--surface-2);
+  padding: 0.1em 0.36em;
+  border-radius: 3px;
+}
+
+.slogan {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 4vw, 2.3rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--jvm);
+  text-wrap: balance;
+}
+
+/* ---------- timeline ---------- */
+
+.timeline {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0 1.5rem;
+  border-left: 2px solid var(--line);
+  padding-left: 0;
+  margin-left: 0.4rem;
+}
+
+.tl-row {
+  display: contents;
+}
+
+.tl-year {
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink-faint);
+  padding: 0.85rem 0 0.85rem 1.4rem;
+  position: relative;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.tl-year::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 1.35rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line);
+  border: 2px solid var(--paper);
+}
+
+.tl-body {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.tl-name {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
+}
+
+.tl-why { color: var(--ink-soft); font-size: 0.95rem; }
+
+.tl-row.key .tl-year { color: var(--jvm); }
+.tl-row.key .tl-year::before { background: var(--jvm); width: 12px; height: 12px; left: -7px; top: 1.2rem; }
+.tl-row.key .tl-name { color: var(--jvm); }
+
+.tl-row.c-key .tl-year { color: var(--native); }
+.tl-row.c-key .tl-year::before { background: var(--native); width: 12px; height: 12px; left: -7px; top: 1.2rem; }
+.tl-row.c-key .tl-name { color: var(--native); }
+
+/* ---------- terminal ---------- */
+
+.terms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 1rem;
+}
+
+.term {
+  background: var(--term-bg);
+  color: var(--term-ink);
+  font-family: var(--f-mono);
+  font-size: 0.79rem;
+  line-height: 1.75;
+  border-radius: 7px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+}
+
+.term .cmd::before { content: "$ "; color: #6f8b84; }
+.term .cmd { color: #f0f6f4; font-weight: 700; }
+.term .out { color: #9fb5ae; }
+.term .hit { color: #ffb066; font-weight: 700; }
+.term .none { color: #52c4d0; font-weight: 700; }
+
+/* ---------- figures ---------- */
+
+figure { margin: 0; display: flex; flex-direction: column; gap: 0.85rem; }
+
+figure svg { width: 100%; height: auto; display: block; }
+
+.fig-scroll { overflow-x: auto; }
+
+figcaption {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  max-width: 60ch;
+}
+
+/* ---------- table ---------- */
+
+.tbl-scroll { overflow-x: auto; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+  min-width: 34rem;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+
+thead th {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border-bottom: 1px solid var(--line);
+}
+
+tbody th {
+  font-family: var(--f-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+td { font-family: var(--f-mono); font-size: 0.8rem; color: var(--ink-soft); }
+
+/* ---------- cards ---------- */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 0.9rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.card p { font-size: 0.93rem; color: var(--ink-soft); }
+
+.callout {
+  background: var(--jvm-bg);
+  border-left: 3px solid var(--jvm);
+  border-radius: 0 7px 7px 0;
+  padding: 1.15rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.callout.warn {
+  background: var(--native-bg);
+  border-left-color: var(--native);
+}
+
+.callout p { font-size: 0.97rem; }
+
+/* ---------- code compare ---------- */
+
+.compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 0.9rem;
+}
+
+.snip {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.snip-head {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.snip.n .snip-head { color: var(--native); background: var(--native-bg); }
+.snip.j .snip-head { color: var(--jvm);    background: var(--jvm-bg); }
+
+.snip pre {
+  margin: 0;
+  padding: 1rem;
+  font-family: var(--f-mono);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  color: var(--ink);
+}
+
+.snip .mark {
+  background: var(--jvm);
+  color: var(--surface);
+  padding: 0.05em 0.3em;
+  border-radius: 3px;
+  font-weight: 700;
+}
+
+.snip.n .mark { background: var(--native); }
+
+.snip .cmt { color: var(--ink-faint); }
+
+/* ---------- link card ---------- */
+
+.links { display: flex; flex-direction: column; gap: 0.65rem; }
+
+.lnk {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.85rem 1.05rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.lnk:hover { border-color: var(--jvm); }
+.lnk:focus-visible { outline: 2px solid var(--jvm); outline-offset: 2px; }
+
+.lnk-t { font-weight: 600; font-size: 0.97rem; }
+.lnk-u { font-family: var(--f-mono); font-size: 0.72rem; color: var(--ink-faint); word-break: break-all; }
+
+ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+li::marker { color: var(--ink-faint); }
+
+/* ---------- glossario formati ---------- */
+
+.gloss {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.9rem;
+}
+
+.gl {
+  border-top: 2px solid var(--line);
+  padding-top: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.gl-k {
+  font-family: var(--f-mono);
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--native);
+}
+
+.gl-x { font-size: 0.78rem; font-family: var(--f-mono); color: var(--ink-faint); }
+.gl-d { font-size: 0.9rem; color: var(--ink-soft); }
+
+/* ---------- fisarmonica ---------- */
+
+.acc { display: flex; flex-direction: column; gap: 0.5rem; }
+
+details {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+details[open] { border-color: var(--ink-faint); }
+
+summary {
+  cursor: pointer;
+  padding: 0.85rem 1.1rem;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+summary::-webkit-details-marker { display: none; }
+
+summary::before {
+  content: "+";
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--ink-faint);
+  width: 0.8rem;
+}
+
+details[open] > summary::before { content: "\2212"; }
+
+summary:focus-visible { outline: 2px solid var(--jvm); outline-offset: -2px; }
+
+.tag {
+  margin-left: auto;
+  font-weight: 400;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+details.n > summary { color: var(--native); }
+details.j > summary { color: var(--jvm); }
+
+details pre {
+  margin: 0;
+  padding: 0 1.1rem 1.1rem;
+  font-family: var(--f-mono);
+  font-size: 0.76rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  color: var(--ink);
+}
+
+details pre .cmt { color: var(--ink-faint); }
+details pre .op  { color: var(--native); font-weight: 700; }
+details pre .opj { color: var(--jvm);    font-weight: 700; }
+details pre .kw  { font-weight: 700; }
+
+.acc-note {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  max-width: 60ch;
+}
+
+footer {
+  padding: 2.4rem 0 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+  font-family: var(--f-mono);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+footer .ai {
+  font-size: 0.72rem;
+  line-height: 1.6;
+  max-width: 62ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="col">
+    <span class="eyebrow">Java &amp; OOP · lezione 0 · 4ª informatica</span>
+    <h1>Una macchina<br>che non esiste</h1>
+    <p class="lede">Da due anni scrivete in C. Da oggi si cambia linguaggio — ma prima bisogna capire <em>perché</em>. La risposta sta tutta in un file che nessun processore al mondo sa leggere.</p>
+  </div>
+</header>
+
+<section>
+  <div class="sec-head col">
+    <span class="eyebrow">01 — si parte</span>
+    <h2>Cinquant'anni in cinque minuti</h2>
+  </div>
+  <div class="col stack">
+    <p>Guardate il grafico che corre. Una domanda sola, per ora: <strong>quando compare Java, e cosa succede subito dopo?</strong></p>
+  </div>
+  <div class="links col">
+    <a class="lnk" href="https://www.youtube.com/watch?v=Og847HVwRSI">
+      <span class="lnk-t">Most Popular Programming Languages 1965–2019 · Data Is Beautiful</span>
+      <span class="lnk-u">youtube.com/watch?v=Og847HVwRSI</span>
+    </a>
+    <a class="lnk" href="https://www.youtube.com/watch?v=xOW3Cehg_qg">
+      <span class="lnk-t">Most Popular Programming Languages 1965–2024 · Statistics and Data</span>
+      <span class="lnk-u">youtube.com/watch?v=xOW3Cehg_qg</span>
+    </a>
+  </div>
+  <div class="col">
+    <div class="callout warn">
+      <h3>Attenzione a cosa misura quel grafico</h3>
+      <p>È un indice di <strong>popolarità</strong> — ricerche sul web, annunci di lavoro, righe di codice su GitHub. Non misura la qualità di un linguaggio, e nemmeno quanto codice ci gira dentro davvero in questo momento. Primo in classifica non vuol dire migliore.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head col">
+    <span class="eyebrow">02 — la linea del tempo</span>
+    <h2>Ogni linguaggio nasce dal problema di quello prima</h2>
+  </div>
+  <div class="col stack">
+    <p>Non c'è niente da imparare a memoria qui. C'è una sola cosa da vedere: nessun linguaggio è nato perché qualcuno si annoiava. Ognuno risolve un guaio preciso del proprio tempo.</p>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-row">
+      <div class="tl-year">1957</div>
+      <div class="tl-body"><span class="tl-name">Fortran</span> — <span class="tl-why">scrivere formule matematiche senza fare l'assembly a mano.</span></div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-year">1959</div>
+      <div class="tl-body"><span class="tl-name">COBOL</span> — <span class="tl-why">il gestionale: banche, stipendi. Doveva poterlo leggere anche un contabile. È ancora vivo.</span></div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-year">1967</div>
+      <div class="tl-body"><span class="tl-name">Simula 67</span> — <span class="tl-why">simulare le navi in un porto: servono cose che si comportano. <strong>Qui nascono "classe" e "oggetto".</strong></span></div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-year">1970</div>
+      <div class="tl-body"><span class="tl-name">Pascal</span> — <span class="tl-why">insegnare a programmare in modo ordinato.</span></div>
+    </div>
+    <div class="tl-row c-key">
+      <div class="tl-year">1972</div>
+      <div class="tl-body"><span class="tl-name">C</span> — <span class="tl-why">riscrivere UNIX senza rifare l'assembly per ogni macchina. Nasce la portabilità… <strong>del sorgente</strong>.</span></div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-year">1980</div>
+      <div class="tl-body"><span class="tl-name">Smalltalk-80</span> — <span class="tl-why">e se <em>tutto</em> fosse un oggetto che scambia messaggi con gli altri?</span></div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-year">1985</div>
+      <div class="tl-body"><span class="tl-name">C++</span> — <span class="tl-why">"C con le classi": mettere gli oggetti sopra al C senza perderne la velocità.</span></div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-year">1991</div>
+      <div class="tl-body"><span class="tl-name">Python</span> — <span class="tl-why">leggibilità prima di tutto.</span></div>
+    </div>
+    <div class="tl-row key">
+      <div class="tl-year">1995</div>
+      <div class="tl-body"><span class="tl-name">Java, JavaScript, PHP, Ruby</span> — <span class="tl-why">l'anno d'oro. Arriva il Web e servono linguaggi nuovi per starci dentro.</span></div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-year">2000</div>
+      <div class="tl-body"><span class="tl-name">C#</span> — <span class="tl-why">la risposta di Microsoft a Java.</span></div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-year">2009 →</div>
+      <div class="tl-body"><span class="tl-name">Go, Rust, Kotlin, Swift</span> — <span class="tl-why">tanti processori in parallelo, memoria a prova di errore, telefoni.</span></div>
+    </div>
+  </div>
+
+  <div class="col stack">
+    <h3>I tre scalini che ci riguardano</h3>
+    <ul>
+      <li><strong>Assembly → C.</strong> Il problema: <em>il mio programma gira solo su questa macchina</em>. La soluzione: un linguaggio ad alto livello e un compilatore diverso per ogni macchina.</li>
+      <li><strong>C → oggetti.</strong> Il problema: <em>quando il programma diventa grande non lo governo più</em>.</li>
+      <li><strong>C → Java.</strong> Due problemi insieme: <em>devo ricompilare per ogni piattaforma</em>, e <em>i puntatori mi riempiono il programma di bug</em>.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head col">
+    <span class="eyebrow">03 — il problema</span>
+    <h2>Cosa esce davvero dal compilatore</h2>
+  </div>
+  <div class="col stack">
+    <p>Compilate <code>hello.c</code> come avete sempre fatto. Poi, invece di eseguirlo, <strong>guardate che tipo di file è uscito</strong>.</p>
+  </div>
+
+  <div class="terms">
+    <div class="term">
+      <div class="cmd">gcc hello.c -o hello</div>
+      <div class="cmd">file hello</div>
+      <div class="out">hello: Mach-O 64-bit executable <span class="hit">arm64</span></div>
+    </div>
+    <div class="term">
+      <div class="cmd">javac Hello.java</div>
+      <div class="cmd">file Hello.class</div>
+      <div class="out">Hello.class: compiled Java class data,<br>&nbsp;&nbsp;version 61.0 <span class="none">← nessuna architettura</span></div>
+    </div>
+  </div>
+
+  <div class="col stack">
+    <p>Nel binario C c'è scritto dentro <strong class="c-native">il nome dell'architettura</strong>. Su un PC Windows uscirebbe <code>PE32+ x86-64</code>, su Linux <code>ELF 64-bit x86-64</code>. Nel file Java, di architetture, <strong class="c-jvm">non ce n'è nessuna</strong>.</p>
+    <h3>Quindi in C quante volte devo compilare?</h3>
+    <p>Una per ogni casella di questa tabella. E attenzione: <strong>non conta la marca del processore, conta l'architettura</strong> — Intel e AMD sono la stessa cosa (il 64 bit dell'x86 l'ha inventato AMD nel 2003, per questo su Linux i pacchetti si chiamano ancora <code>amd64</code> anche sugli Intel).</p>
+  </div>
+
+  <div class="col tbl-scroll">
+    <table>
+      <thead>
+        <tr><th></th><th>Windows</th><th>Linux</th><th>macOS</th></tr>
+      </thead>
+      <tbody>
+        <tr><th>x86-64<br>Intel <em>o</em> AMD</th><td>PE32+</td><td>ELF</td><td>Mach-O</td></tr>
+        <tr><th>ARM64</th><td>Windows on ARM</td><td>ELF · Raspberry Pi</td><td>Mach-O · Apple Silicon</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col stack">
+    <p>Sei caselle, sei compilazioni, sei file da distribuire.</p>
+    <h3>PE, ELF, Mach-O: cosa sono quelle sigle</h3>
+    <p>Sono i <strong>formati di file eseguibile</strong>. Un eseguibile non è solo le istruzioni una dopo l'altra: è una scatola con dentro un'etichetta che dice al sistema operativo <em>da dove partire, quanta memoria servirà, quali librerie caricare</em>. Ogni sistema usa la sua scatola, e non sa aprire quelle degli altri.</p>
+  </div>
+
+  <div class="col gloss">
+    <div class="gl">
+      <span class="gl-k">ELF</span>
+      <span class="gl-x">Executable and Linkable Format</span>
+      <span class="gl-d">La scatola di <strong>Linux</strong> e di quasi tutti gli Unix — Raspberry Pi e Android compresi. Dal 1988.</span>
+    </div>
+    <div class="gl">
+      <span class="gl-k">PE</span>
+      <span class="gl-x">Portable Executable</span>
+      <span class="gl-d">La scatola di <strong>Windows</strong>. È quello che c'è davvero dentro un <code>.exe</code> o una <code>.dll</code>.</span>
+    </div>
+    <div class="gl">
+      <span class="gl-k">Mach-O</span>
+      <span class="gl-x">Mach Object</span>
+      <span class="gl-d">La scatola di <strong>macOS</strong> e iOS.</span>
+    </div>
+  </div>
+
+  <div class="col stack">
+    <p>Quindi il sistema operativo rompe la portabilità <strong>anche a parità di processore</strong>: cambia la scatola, cambiano le chiamate di sistema, cambiano le librerie. Stessa identica CPU — e un ELF di Linux su Windows non parte, perché Windows quella scatola non la sa aprire.</p>
+  </div>
+
+  <div class="col stack">
+    <h3>Aprite le due scatole</h3>
+    <p class="acc-note">Questi sono i file veri della nostra demo: i due sorgenti, e cosa ne ha fatto il compilatore. Guardate soprattutto gli ultimi due.</p>
+  </div>
+
+  <div class="col acc">
+    <details class="n">
+      <summary>hello.c <span class="tag">sorgente</span></summary>
+<pre><span class="op">#include</span> &lt;stdio.h&gt;
+
+<span class="kw">int</span> main(<span class="kw">void</span>) {
+    printf(<span class="cmt">"Ciao 4A! Sono un programma in C.\n"</span>);
+
+<span class="op">#if</span>   defined(__aarch64__)
+    printf(<span class="cmt">"  architettura : ARM64\n"</span>);
+<span class="op">#elif</span> defined(__x86_64__)
+    printf(<span class="cmt">"  architettura : x86-64\n"</span>);
+<span class="op">#endif</span>
+
+<span class="op">#if</span>   defined(_WIN32)
+    printf(<span class="cmt">"  sistema      : Windows\n"</span>);
+<span class="op">#elif</span> defined(__APPLE__)
+    printf(<span class="cmt">"  sistema      : macOS\n"</span>);
+<span class="op">#elif</span> defined(__linux__)
+    printf(<span class="cmt">"  sistema      : Linux\n"</span>);
+<span class="op">#endif</span>
+
+    printf(<span class="cmt">"Lo sapevo gia' da quando mi hanno COMPILATO.\n"</span>);
+    <span class="kw">return</span> 0;
+}
+
+<span class="cmt">// Le righe qui sopra le sceglie il PREPROCESSORE, prima
+// della compilazione. Nell'eseguibile finisce UNA SOLA
+// di quelle stringhe, e ci resta per sempre.</span></pre>
+    </details>
+
+    <details class="j">
+      <summary>Hello.java <span class="tag">sorgente</span></summary>
+<pre><span class="kw">public class</span> Hello {
+    <span class="kw">public static void</span> main(String[] args) {
+        System.out.println(<span class="cmt">"Ciao 4A! Sono un programma in Java."</span>);
+        System.out.println(<span class="cmt">"  architettura : "</span> + System.getProperty(<span class="cmt">"os.arch"</span>));
+        System.out.println(<span class="cmt">"  sistema      : "</span> + System.getProperty(<span class="cmt">"os.name"</span>));
+        System.out.println(<span class="cmt">"  JVM          : "</span> + System.getProperty(<span class="cmt">"java.version"</span>));
+        System.out.println(<span class="cmt">"L'ho chiesto alla JVM ADESSO, mentre giro."</span>);
+    }
+}
+
+<span class="cmt">// Qui non c'e' niente di scritto dentro il file:
+// il programma lo CHIEDE alla JVM mentre gira.</span></pre>
+    </details>
+
+    <details class="n">
+      <summary>hello &mdash; compilato <span class="tag">codice macchina arm64</span></summary>
+<pre><span class="cmt">$ objdump -d hello</span>
+
+0000000100000460 &lt;_main&gt;:
+ 100000460:  <span class="op">sub</span>   sp, sp, #0x20
+ 100000464:  <span class="op">stp</span>   x29, x30, [sp, #0x10]
+ 100000468:  <span class="op">add</span>   x29, sp, #0x10
+ 10000046c:  <span class="op">mov</span>   w8, #0x0
+ 100000470:  <span class="op">str</span>   w8, [sp, #0x8]
+ 100000478:  <span class="op">adrp</span>  x0, 0x100000000
+ 10000047c:  <span class="op">add</span>   x0, x0, #0x4ac
+ 100000480:  <span class="op">bl</span>    _printf
+ 100000484:  <span class="op">adrp</span>  x0, 0x100000000
+ 100000488:  <span class="op">add</span>   x0, x0, #0x4ce
+ 10000048c:  <span class="op">bl</span>    _printf
+ 100000490:  <span class="op">ldr</span>   w0, [sp, #0x8]
+ 100000494:  <span class="op">ldp</span>   x29, x30, [sp, #0x10]
+ 100000498:  <span class="op">add</span>   sp, sp, #0x20
+ 10000049c:  <span class="op">ret</span>
+
+<span class="cmt">// sp, x29, w8 sono registri veri di un processore ARM.
+// Su un PC Intel questo elenco sarebbe tutto diverso.</span></pre>
+    </details>
+
+    <details class="j">
+      <summary>Hello.class &mdash; compilato <span class="tag">bytecode</span></summary>
+<pre><span class="cmt">$ javap -c Hello.class</span>
+
+public static void main(java.lang.String[]);
+  Code:
+     0: <span class="opj">getstatic</span>     #7   <span class="cmt">// System.out</span>
+     3: <span class="opj">ldc</span>           #13  <span class="cmt">// "Ciao 4A! Sono un programma in Java."</span>
+     5: <span class="opj">invokevirtual</span> #15  <span class="cmt">// println</span>
+     8: <span class="opj">getstatic</span>     #7   <span class="cmt">// System.out</span>
+    11: <span class="opj">ldc</span>           #21  <span class="cmt">// "Sono nato come sorgente, ora sono bytecode."</span>
+    13: <span class="opj">invokevirtual</span> #15  <span class="cmt">// println</span>
+    16: <span class="opj">return</span>
+
+<span class="cmt">// Somiglia all'assembly: istruzioni, operandi, return.
+// Ma "invokevirtual" non esiste in nessun processore al mondo.
+// Lo capisce solo la JVM.</span></pre>
+    </details>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head col">
+    <span class="eyebrow">04 — la mossa</span>
+    <h2>Spostare il lavoro, non farlo sparire</h2>
+  </div>
+
+  <figure>
+    <div class="fig-scroll">
+      <svg viewBox="0 0 920 330" role="img" aria-label="Confronto fra la catena di compilazione del C e quella di Java: in C il programmatore compila tre volte prima dell'esecuzione, in Java compila una volta sola e la moltiplicazione avviene dopo, dentro le macchine virtuali." xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="ah-n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--native)"/>
+          </marker>
+          <marker id="ah-j" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--jvm)"/>
+          </marker>
+        </defs>
+
+        <g font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" letter-spacing="1.6" fill="var(--ink-faint)">
+          <text x="230" y="14" text-anchor="middle">IN C</text>
+          <text x="690" y="14" text-anchor="middle">IN JAVA</text>
+        </g>
+
+        <line x1="460" y1="24" x2="460" y2="306" stroke="var(--line)" stroke-width="1"/>
+
+        <!-- ============ lato C ============ -->
+        <g stroke="var(--native)" fill="none" stroke-width="1.6">
+          <rect x="170" y="30" width="120" height="34" rx="5" fill="var(--native-bg)"/>
+          <line x1="230" y1="64" x2="98"  y2="104" marker-end="url(#ah-n)"/>
+          <line x1="230" y1="64" x2="230" y2="104" marker-end="url(#ah-n)"/>
+          <line x1="230" y1="64" x2="362" y2="104" marker-end="url(#ah-n)"/>
+          <rect x="33"  y="110" width="124" height="40" rx="5" fill="var(--native-bg)"/>
+          <rect x="168" y="110" width="124" height="40" rx="5" fill="var(--native-bg)"/>
+          <rect x="303" y="110" width="124" height="40" rx="5" fill="var(--native-bg)"/>
+          <line x1="95"  y1="150" x2="95"  y2="228" marker-end="url(#ah-n)"/>
+          <line x1="230" y1="150" x2="230" y2="228" marker-end="url(#ah-n)"/>
+          <line x1="365" y1="150" x2="365" y2="228" marker-end="url(#ah-n)"/>
+          <rect x="33"  y="232" width="124" height="42" rx="5" fill="none" stroke="var(--line)"/>
+          <rect x="168" y="232" width="124" height="42" rx="5" fill="none" stroke="var(--line)"/>
+          <rect x="303" y="232" width="124" height="42" rx="5" fill="none" stroke="var(--line)"/>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="11.5" fill="var(--native)" text-anchor="middle">
+          <text x="230" y="52" font-weight="700">hello.c</text>
+          <text x="95"  y="128">PE32+</text>
+          <text x="95"  y="142" font-size="10">x86-64</text>
+          <text x="230" y="128">ELF</text>
+          <text x="230" y="142" font-size="10">ARM64</text>
+          <text x="365" y="128">Mach-O</text>
+          <text x="365" y="142" font-size="10">arm64</text>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">
+          <text x="95"  y="250">Windows</text>
+          <text x="95"  y="264">PC</text>
+          <text x="230" y="250">Linux</text>
+          <text x="230" y="264">Raspberry</text>
+          <text x="365" y="250">macOS</text>
+          <text x="365" y="264">Mac M1</text>
+        </g>
+        <text x="238" y="88" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="var(--native)">gcc &times;3</text>
+        <text x="230" y="298" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink-faint)" text-anchor="middle">tre compilazioni tue</text>
+
+        <!-- ============ lato Java ============ -->
+        <g stroke="var(--jvm)" fill="none" stroke-width="1.6">
+          <rect x="630" y="30" width="120" height="34" rx="5" fill="var(--jvm-bg)"/>
+          <line x1="690" y1="64" x2="690" y2="104" marker-end="url(#ah-j)"/>
+          <rect x="600" y="110" width="180" height="40" rx="5" fill="var(--jvm-bg)"/>
+          <line x1="690" y1="150" x2="558" y2="228" marker-end="url(#ah-j)"/>
+          <line x1="690" y1="150" x2="690" y2="228" marker-end="url(#ah-j)"/>
+          <line x1="690" y1="150" x2="822" y2="228" marker-end="url(#ah-j)"/>
+          <rect x="493" y="232" width="124" height="42" rx="5" fill="none" stroke="var(--line)"/>
+          <rect x="628" y="232" width="124" height="42" rx="5" fill="none" stroke="var(--line)"/>
+          <rect x="763" y="232" width="124" height="42" rx="5" fill="none" stroke="var(--line)"/>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="11.5" fill="var(--jvm)" text-anchor="middle">
+          <text x="690" y="52" font-weight="700">Hello.java</text>
+          <text x="690" y="128" font-weight="700">Hello.class</text>
+          <text x="690" y="142" font-size="10">bytecode</text>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">
+          <text x="555" y="250" fill="var(--jvm)" font-weight="700">JVM</text>
+          <text x="555" y="264">Windows</text>
+          <text x="690" y="250" fill="var(--jvm)" font-weight="700">JVM</text>
+          <text x="690" y="264">Linux</text>
+          <text x="825" y="250" fill="var(--jvm)" font-weight="700">JVM</text>
+          <text x="825" y="264">macOS</text>
+        </g>
+        <text x="698" y="88" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="var(--jvm)">javac &times;1</text>
+        <text x="690" y="298" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink-faint)" text-anchor="middle">scritte da altri, una volta per tutte</text>
+
+        <!-- ============ la linea di confine ============ -->
+        <line x1="14" y1="193" x2="906" y2="193" stroke="var(--ink-faint)" stroke-width="1" stroke-dasharray="5 5"/>
+        <rect x="386" y="179" width="148" height="28" rx="14" fill="var(--paper)" stroke="var(--ink-faint)" stroke-width="1"/>
+        <text x="460" y="197" font-family="JetBrains Mono, monospace" font-size="10.5" fill="var(--ink-soft)" text-anchor="middle">compili &uarr; &nbsp;esegui &darr;</text>
+      </svg>
+    </div>
+    <figcaption><strong>Guardate dove sta il ventaglio.</strong> In C si apre <em>sopra</em> la linea tratteggiata: il lavoro in più lo fate voi, ogni volta, prima di consegnare. In Java si apre <em>sotto</em>: voi compilate una volta sola, e a moltiplicarsi sono le macchine virtuali — che però le ha già scritte qualcun altro.</figcaption>
+  </figure>
+
+  <div class="col stack">
+    <p>Il file <code>Hello.class</code> non è codice macchina di nessun processore esistente. È il linguaggio macchina di un processore <strong>inventato</strong>: la <strong class="c-jvm">Java Virtual Machine</strong>. Un computer che non esiste, e che ogni piattaforma vera simula via software.</p>
+    <p>Se lo aprite con <code>javap -c Hello.class</code> vedete istruzioni tipo <code>getstatic</code>, <code>ldc</code>, <code>invokevirtual</code>. Somiglia all'assembly che avete già visto — ma nessun chip in commercio sa cosa farsene.</p>
+
+    <div class="callout">
+      <h3>Il punto vero, e non è magia</h3>
+      <p>Qualcuno ha comunque dovuto scrivere una JVM diversa per Windows, per Linux, per macOS, per Android. <strong>Il lavoro di portabilità non è sparito: è stato fatto una volta sola</strong> da chi costruisce la JVM, invece che ogni volta da ogni programmatore.</p>
+      <p>Si chiama <strong>livello di indirezione</strong>, e lo ritroverete tutto l'anno: quando un problema si ripete uguale per tutti, lo si risolve una volta in mezzo e lo si toglie a tutti. È lo stesso schema dei driver, di HTTP, dell'alimentatore del portatile.</p>
+    </div>
+
+    <h3>La controprova: fateli parlare</h3>
+    <p>I due programmi della demo dicono su che macchina stanno girando. Eseguiteli sul Mac della cattedra:</p>
+  </div>
+
+  <div class="terms">
+    <div class="term">
+      <div class="cmd">./hello</div>
+      <div class="out">Ciao 4A! Sono un programma in C.<br>
+      &nbsp;&nbsp;architettura : <span class="hit">ARM64</span><br>
+      &nbsp;&nbsp;sistema&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="hit">macOS</span><br>
+      Lo sapevo già da quando mi hanno COMPILATO.</div>
+    </div>
+    <div class="term">
+      <div class="cmd">java Hello</div>
+      <div class="out">Ciao 4A! Sono un programma in Java.<br>
+      &nbsp;&nbsp;architettura : <span class="none">aarch64</span><br>
+      &nbsp;&nbsp;sistema&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="none">Mac OS X</span><br>
+      &nbsp;&nbsp;JVM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="none">23</span><br>
+      L'ho chiesto alla JVM ADESSO, mentre giro.</div>
+    </div>
+  </div>
+
+  <div class="col stack">
+    <p>Sembrano fare la stessa cosa. <strong>Non la fanno affatto.</strong></p>
+    <ul>
+      <li>Il programma <strong class="c-native">C</strong> lo sa perché gliel'ha <strong>inciso dentro il preprocessore</strong> al momento della compilazione: quelle <code>#if</code> hanno scelto una sola stringa, e nell'eseguibile è finita solo quella. Per sempre. Se lo portate altrove… non parte proprio, quindi la domanda non si pone.</li>
+      <li>Il programma <strong class="c-jvm">Java</strong> non ha niente di scritto dentro: <strong>lo chiede alla JVM mentre gira</strong>. Copiate lo stesso identico <code>Hello.class</code> su un PC del laboratorio e stamperà <code>x86-64</code> e <code>Windows 11</code>. Stesso file. Risposta diversa.</li>
+    </ul>
+    <div class="callout">
+      <p>Ecco cosa vuol dire davvero quello slogan: <strong>il file non sa dove finirà, e non ha bisogno di saperlo.</strong> A saperlo è la JVM, che è già lì ad aspettarlo.</p>
+    </div>
+
+    <p class="slogan">"Write Once, Run&nbsp;Anywhere"</p>
+    <p>Java nasce nel 1991 e non si chiamava Java: si chiamava <strong>Oak</strong>, e non era per il Web. Doveva far girare software su <strong>decoder TV ed elettrodomestici</strong>, dove ogni apparecchio aveva un chip diverso — lì la portabilità era vitale. Fu un flop commerciale: quel mercato non decollò.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head col">
+    <span class="eyebrow">05 — il colpo di fortuna</span>
+    <h2>Perché nel 1995 quella proprietà diventa oro</h2>
+  </div>
+  <div class="col stack">
+    <p>Qui la storia gira, e non è perché "il Web andava di moda". È perché il Web presenta, di colpo e a tutto il pianeta, <strong>esattamente il problema per cui Java era stato costruito</strong>.</p>
+
+    <h3>Primo motivo: non sai chi c'è dall'altra parte</h3>
+    <p>Il Web del 1995 sono pagine di testo fermo, e Netscape vuole metterci dentro cose che si muovono. Ma chi scrive quel programma ha un guaio nuovo: <strong>non ha idea di che computer ci sia dall'altro capo del filo.</strong> Chi apre la pagina può arrivare da un PC con Windows&nbsp;95, da un Mac con processore PowerPC, da una workstation Sun, da una SGI.</p>
+    <p>Mandargli un eseguibile nativo è fuori discussione: dovresti compilarlo per ogni combinazione esistente, e comunque <em>non sai quale mandargli</em> finché non arriva. Un file di bytecode invece va bene per tutti.</p>
+    <div class="callout">
+      <p><strong>Il Web è il problema dei decoder TV, ma su scala planetaria</strong>: tanti apparecchi diversi, un solo programma da consegnare. Oak non era sbagliato. Era arrivato quattro anni presto.</p>
+    </div>
+
+    <h3>Secondo motivo: la gabbia</h3>
+    <p>E questo di solito ci si dimentica di dirlo, ma pesa quanto il primo. Scaricare ed eseguire il programma di uno sconosciuto è una follia — a meno che qualcosa non lo tenga <strong>al guinzaglio</strong>.</p>
+    <p>La JVM <strong>controlla il bytecode prima di eseguirlo</strong>, e poi decide cosa lasciargli fare: niente accesso al vostro disco, niente connessioni dove gli pare. Si chiama <em>sandbox</em>, il recinto di sabbia. Con il codice nativo non è possibile: una volta partito, fa quello che vuole della vostra macchina.</p>
+    <p>Quindi la macchina virtuale non serviva solo a <strong>tradurre</strong>. Serviva anche a <strong>contenere</strong>. Ed è la ragione per cui è stato pensabile far girare nel browser il codice di un estraneo.</p>
+
+    <h3>E poi la distribuzione si risolve da sola</h3>
+    <p>Netscape mette la JVM dentro Navigator nel 1996. Nel giro di pochi mesi, praticamente <strong>ogni browser del pianeta ha una JVM installata</strong>. Il problema di "ma ce l'hanno, la JVM?" sparisce da solo.</p>
+
+    <div class="callout">
+      <h3>Cos'era un'applet</h3>
+      <p>Un <strong>piccolo programma Java che viveva dentro una pagina web</strong>, in un rettangolo in mezzo al testo. Il browser scaricava il <code>.class</code> dal server e lo faceva girare nella propria JVM.</p>
+      <p>Aveva una forma strana: <strong>l'applet non ha <code>main()</code></strong>. Non parte lei — è il browser a chiamarne i metodi al momento giusto: <code>init()</code> quando la carica, <code>paint()</code> ogni volta che va ridisegnata.</p>
+      <p>Nel 1996 l'HTML era carta stampata: testo, immagini, link. L'applet era <strong>l'unico modo</strong> per avere qualcosa di vivo dentro una pagina — animazioni, giochini, grafici di borsa che si aggiornavano, simulazioni di fisica.</p>
+    </div>
+
+    <h3>Come va a finire</h3>
+    <p>Le applet sono morte, e non "cadute in disuso": Chrome ha tolto il supporto ai plugin nel 2015, Oracle le ha <strong>rimosse da Java 11</strong> nel 2018. Oggi non le potreste eseguire nemmeno volendo. Le ha uccise il loro stesso punto di forza — quella gabbia faceva acqua, e il plugin Java è diventato uno dei bersagli più bucati degli anni 2000. Più l'avvio lentissimo, e poi la concorrenza di Flash prima e di JavaScript poi.</p>
+    <p>Ma Java non è morto affatto — si è <strong>spostato dove quella proprietà continua a pagare</strong>:</p>
+    <ul>
+      <li><strong>Sui server.</strong> Sviluppate su Windows o su Mac, mandate in produzione su Linux. Stesso <code>.jar</code>, nessuna ricompilazione. È il pane quotidiano di mezza industria del software, ancora oggi.</li>
+      <li><strong>Su Android.</strong> Milioni di telefoni diversi, un'app sola da pubblicare. Di nuovo lo stesso identico problema.</li>
+    </ul>
+    <p>La proprietà è sempre quella del 1991. È cambiato il posto in cui serviva.</p>
+    <p>E l'idea dell'applet non è morta affatto: <strong>scaricare codice di cui non ti fidi ed eseguirlo in una gabbia dentro il browser</strong> è esattamente quello che fa JavaScript ogni volta che aprite una pagina — e, ancora più da vicino, quello che fa <strong>WebAssembly</strong>: bytecode compatto, una macchina virtuale nel browser, sandbox. L'applet rifatta bene trent'anni dopo. Non era l'idea a essere sbagliata: era fragile l'attrezzo.</p>
+    <p>Ultima cosa, per onestà: i programmatori dell'epoca lo slogan lo storpiavano in <em>"Write Once, Debug Everywhere"</em>.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head col">
+    <span class="eyebrow">06 — il conto</span>
+    <h2>Non tutto è oro</h2>
+  </div>
+  <div class="col stack">
+    <p>Ogni scelta di progetto si paga. Queste sono le tre voci del conto.</p>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>È più lento a partire</h3>
+      <p>Vero, all'inizio. Poi il <strong>JIT</strong> (<em>Just-In-Time</em>) compila al volo in vero codice macchina i pezzi che vengono eseguiti più spesso. Oggi Java è vicino al C su molti carichi — ma parte più lento e consuma più memoria.</p>
+    </div>
+    <div class="card">
+      <h3>Serve la JVM installata</h3>
+      <p>Senza JVM il <code>.class</code> è carta straccia. "Run anywhere" vuol dire <em>ovunque ci sia una JVM</em>, non ovunque e basta.</p>
+    </div>
+    <div class="card">
+      <h3>Decidi meno tu</h3>
+      <p>Niente puntatori, niente <code>malloc</code> e <code>free</code>: alla memoria pensa il <strong>garbage collector</strong>. Comodissimo — ma non scegliete voi <em>quando</em> passa a pulire.</p>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="callout warn">
+      <h3>La postilla in caratteri piccoli</h3>
+      <p>Avete visto che <code>file Hello.class</code> stampa una <strong>version</strong>: 61.0 è Java 17, 67.0 è Java 23. Quel numero è un <strong>pavimento</strong>. Un <code>.class</code> compilato con JDK 23 su una JVM 17 non parte: muore con <code>UnsupportedClassVersionError</code>.</p>
+      <p>La compatibilità è <strong>all'indietro, non in avanti</strong> — esattamente come i file di Word. È il primo errore che incontrerete portando un progetto da casa al laboratorio, quindi lo dico adesso: <em>"Write Once, Run Anywhere"</em>, purché la JVM non sia più vecchia di quella con cui avete compilato.</p>
+    </div>
+  </div>
+
+  <div class="col stack">
+    <h3>Allora perché non è tutto scritto in Java?</h3>
+    <p>Se Java risolve la portabilità, come mai il kernel di Linux, i videogiochi e il firmware del forno a microonde sono <strong>ancora in C</strong>? Le ragioni sono più interessanti del semplice "il C è più veloce".</p>
+
+    <h3 class="c-native">Il kernel: è un problema di circolarità</h3>
+    <p>La JVM, per funzionare, ha bisogno di un sistema operativo sotto di sé: thread, memoria, file glieli deve dare qualcuno. Ma il kernel <strong>è</strong> quel qualcuno. Non potete far girare il kernel sopra la JVM, perché la JVM ha bisogno del kernel. Il serpente si morde la coda.</p>
+    <p>E poi il kernel deve fare tre cose che Java, di proposito, non vi lascia fare:</p>
+    <ul>
+      <li><strong>Partire quando non c'è ancora niente.</strong> All'accensione non esiste nessun runtime da caricare: c'è solo il processore che comincia a leggere istruzioni da un indirizzo.</li>
+      <li><strong>Scrivere a un indirizzo di memoria preciso</strong>, quello dove sta il registro di un dispositivo. In Java non esiste il concetto di "indirizzo 0x40021000".</li>
+      <li><strong>Decidere il layout esatto in memoria.</strong> "Questa struttura è esattamente questi 8 byte, in quest'ordine", perché è così che la scheda di rete se la aspetta. Java non dà nessuna garanzia su come dispone un oggetto in memoria.</li>
+    </ul>
+    <p>Aggiungete il garbage collector: gestire un interrupt richiede tempi certi, non <em>"appena il GC ha finito di pulire"</em>.</p>
+
+    <h3 class="c-native">I videogiochi: non è la media, è il caso peggiore</h3>
+    <p>Questa è la parte controintuitiva. A 60&nbsp;fps avete <strong>16,6 millisecondi per disegnare un frame</strong>. Se il garbage collector decide di prendersi una pausa di 30&nbsp;ms, saltate un frame — e il giocatore <em>lo sente</em>. Non conta quanto siete veloci in media: conta <strong>non fermarsi mai</strong>. Un linguaggio che ogni tanto si prende una pausa a sorpresa, per un gioco, è un problema anche se in media è velocissimo.</p>
+    <p>Poi c'è la memoria. In C un array di <code>struct</code> sono byte uno attaccato all'altro: il processore li tira su a blocchi e la cache lavora bene. In Java un array di oggetti è un array di <strong>riferimenti</strong>, e gli oggetti veri stanno sparsi per l'heap. Su centomila particelle da aggiornare a ogni frame, la differenza non la fanno le istruzioni: la fanno i <em>cache miss</em>.</p>
+
+    <div class="callout warn">
+      <h3>"Ma Minecraft è scritto in Java!"</h3>
+      <p>Verissimo, e infatti la risposta non è "non si può". Si può, e i garbage collector moderni (ZGC, Shenandoah) hanno pause sotto il millisecondo. Il punto è un altro: <strong>in C quel controllo ce l'avete per costruzione, in Java dovete combattere contro il runtime per riprendervelo.</strong></p>
+      <p>Dettaglio che chiude il discorso: la <em>Bedrock Edition</em> di Minecraft — quella per console, telefoni e Switch, dove le risorse sono contate — l'hanno riscritta da zero in C++.</p>
+    </div>
+
+    <p><strong>Non esiste il linguaggio migliore. Esiste quello adatto al vincolo che avete.</strong> Il vincolo del Web nel 1995 era "non so cosa c'è dall'altra parte". Il vincolo di un gioco è "non devo fermarmi mai". Sono problemi diversi, e vincono linguaggi diversi.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head col">
+    <span class="eyebrow">07 — la prossima volta</span>
+    <h2>Quel <code>&amp;s</code> lo scrivete da due anni</h2>
+  </div>
+  <div class="col stack">
+    <p>Un ultimo passaggio, e poi chiudiamo. In C, per lavorare su uno studente, scrivete una <code>struct</code> e delle funzioni che la ricevono. Guardate bene il primo parametro.</p>
+  </div>
+
+  <div class="compare">
+    <div class="snip n">
+      <div class="snip-head">in C — come lo fate ora</div>
+<pre>typedef struct {
+    char  nome[30];
+    float media;
+} Studente;
+
+void aumentaMedia(<span class="mark">Studente *s</span>, float v);
+
+<span class="cmt">/* e quando la chiamate: */</span>
+aumentaMedia(<span class="mark">&amp;s</span>, 0.5);</pre>
+    </div>
+    <div class="snip j">
+      <div class="snip-head">in Java — dalla prossima volta</div>
+<pre>class Studente {
+    private String nome;
+    private float  media;
+
+    void aumentaMedia(float v) { ... }
+}
+
+<span class="cmt">// e quando la chiamate:</span>
+<span class="mark">s</span>.aumentaMedia(0.5);</pre>
+    </div>
+  </div>
+
+  <div class="col stack">
+    <p>Non è sparito niente: quel <code>&amp;s</code> si è solo <strong>spostato davanti al punto</strong>. In Java si chiama <code>this</code>, e non dovete più passarlo a mano perché ci pensa la macchina. Non è una metafora per farvela digerire: è letteralmente quello che succede dentro la JVM, dove l'oggetto su cui chiamate il metodo viene passato come argomento nascosto numero zero.</p>
+
+    <h3>E allora a cosa serve, oltre a scrivere meno?</h3>
+    <ul>
+      <li><strong>Niente lega i due nomi, in C.</strong> Per il compilatore <code>Studente</code> e <code>aumentaMedia</code> sono due nomi scorrelati che stanno vicini per abitudine vostra. Non potete chiedere <em>"cosa posso fare con uno Studente?"</em>: dovete cercare a mano.</li>
+      <li><strong>Il cancello non c'è.</strong> Chi include il vostro header può scrivere <code>s.media = -7;</code> e nessuno lo ferma. In Java quella parola è <code>private</code>, e costa una parola.</li>
+      <li><strong>Il nome del tipo lo incollate voi:</strong> <code>stampaStudente</code>, <code>stampaDocente</code>, <code>stampaCorso</code>. Il C non ha modo di dire "questa funzione appartiene a quel tipo".</li>
+    </ul>
+
+    <div class="callout">
+      <h3>L'idea dell'OOP in una riga</h3>
+      <p>Mettere nella stessa scatola i dati <strong>e le sole operazioni autorizzate a toccarli</strong>, e poi chiudere la scatola.</p>
+      <p style="font-family: var(--f-mono); font-size: 0.88rem;">classe &asymp; struct + le sue funzioni + un cancello</p>
+    </div>
+
+    <h3>Per la prossima volta</h3>
+    <p>Mezza pagina, si consegna e se ne parla cinque minuti in classe: <strong>scegliete un linguaggio del video che oggi non usa quasi più nessuno.</strong> Quando è nato, per risolvere quale problema, e perché secondo voi è finito.</p>
+  </div>
+</section>
+
+<footer class="col">
+  <p>4ª informatica &middot; modulo Java e programmazione a oggetti &middot; lezione 0</p>
+  <p class="ai">Questa pagina è stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilità didattica e scientifica è integralmente sua. L'indicazione è fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
+</footer>
+
+</div>
+</body>
+</html>
