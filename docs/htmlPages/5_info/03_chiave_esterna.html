@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Deve esistere</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+:root{
+  --bg:#EEF0F4; --surface:#FFFFFF; --surface-2:#F5F7FA;
+  --ink:#131A24; --ink-2:#3D4A5C; --ink-3:#6B7887;
+  --rule:#D3D9E2; --rule-strong:#B6C0CD;
+  --navy:#16324F; --navy-soft:rgba(22,50,79,.08);
+  --accent:#C81E4E; --accent-soft:rgba(200,30,78,.10); --accent-line:rgba(200,30,78,.35);
+  --ok:#0F6B5F; --ok-soft:rgba(15,107,95,.10);
+  --warn:#8A5A12; --warn-soft:rgba(138,90,18,.10);
+  --shadow:0 1px 2px rgba(19,26,36,.06), 0 8px 24px -12px rgba(19,26,36,.18);
+  --f-display:"IBM Plex Serif",Georgia,serif;
+  --f-body:"IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --measure:66ch; --wide:min(1080px,94vw);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
+  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
+  --rule:#2A3644; --rule-strong:#3B4A5C;
+  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
+  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
+  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
+  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}}
+:root[data-theme="dark"]{
+  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
+  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
+  --rule:#2A3644; --rule-strong:#3B4A5C;
+  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
+  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
+  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
+  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.page{max-width:var(--wide);margin:0 auto;padding:0 clamp(16px,4vw,32px) 96px}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:clamp(26px,3.6vw,34px);font-weight:600;color:var(--navy)}
+h3{font-size:clamp(19px,2.2vw,22px);font-weight:600;margin-bottom:.2em;color:var(--navy)}
+p{margin:0}
+a{color:var(--accent)}
+.lede{font-size:clamp(18px,2.1vw,20px);color:var(--ink-2);line-height:1.55}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.col{display:flex;flex-direction:column;gap:18px;max-width:var(--measure)}
+.hero{padding:clamp(40px,7vw,72px) 0 clamp(20px,4vw,34px)}
+.hero h1{font-size:clamp(34px,5.6vw,58px);font-weight:700;letter-spacing:-.025em;margin:.28em 0 .34em;color:var(--navy)}
+.hero h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+section{padding:clamp(34px,5vw,56px) 0;border-top:1px solid var(--rule)}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline;margin-bottom:24px}
+.num{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--accent);border:1px solid var(--accent-line);border-radius:3px;padding:2px 7px}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:clamp(18px,3vw,26px);box-shadow:var(--shadow)}
+.stack{display:flex;flex-direction:column;gap:clamp(18px,3vw,28px)}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:16px 20px;border-radius:0 5px 5px 0;max-width:var(--measure)}
+.note.ok{border-left-color:var(--ok);background:var(--ok-soft)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.note .eyebrow{display:block;margin-bottom:6px;color:var(--ink-2)}
+.pull{font-family:var(--f-display);font-size:clamp(20px,2.6vw,25px);line-height:1.4;font-style:italic;color:var(--navy);max-width:32ch;border-top:2px solid var(--navy);border-bottom:1px solid var(--rule);padding:18px 0;margin:4px 0}
+ul.clean,ol.clean{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:9px;color:var(--ink-2)}
+ul.clean li::marker,ol.clean li::marker{color:var(--accent)}
+ul.clean b,ol.clean b{color:var(--ink)}
+code{font-family:var(--f-mono);font-size:.92em;background:var(--surface-2);border:1px solid var(--rule);border-radius:3px;padding:1px 5px}
+.toc{display:flex;flex-wrap:wrap;gap:8px;padding:18px 0 4px;border-top:1px solid var(--rule)}
+.toc a{display:flex;align-items:baseline;gap:7px;font-size:14px;text-decoration:none;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:7px 13px}
+.toc a:hover{border-color:var(--accent-line);color:var(--ink)}
+.toc a span{font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:var(--accent)}
+/* --- tabelle --- */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+caption{text-align:left;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);padding:12px 14px 10px}
+th,td{padding:8px 14px;text-align:left;border-bottom:1px solid var(--rule);white-space:nowrap}
+thead th{font-family:var(--f-mono);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);border-bottom:1px solid var(--rule-strong)}
+tbody tr:last-child td{border-bottom:none}
+td.mono{font-family:var(--f-mono)}
+.due{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media (max-width:820px){.due{grid-template-columns:1fr}}
+/* --- colonne chiave --- */
+th.pk,td.pk{background:var(--navy-soft)}
+th.fk,td.fk{background:var(--accent-soft);font-family:var(--f-mono)}
+.keytag{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;padding:1px 5px;border-radius:3px;margin-left:6px;vertical-align:middle}
+.keytag.pk{background:var(--navy);color:var(--bg)}
+.keytag.fk{background:var(--accent);color:var(--bg)}
+/* --- righe cliccabili --- */
+tr.pick{cursor:pointer;transition:background .15s}
+tr.pick:hover td{background:var(--surface-2)}
+tr.pick:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+tr.on td{background:var(--accent-soft)!important}
+tr.target td{background:var(--navy-soft)!important;box-shadow:inset 3px 0 0 var(--navy)}
+tr.ghost td{opacity:.4}
+tr.nuova td{background:var(--ok-soft)!important;box-shadow:inset 3px 0 0 var(--ok)}
+tr.morta td{background:var(--accent-soft)!important;text-decoration:line-through;text-decoration-color:var(--accent)}
+.nullv{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;color:var(--ink-3);border:1px dashed var(--rule-strong);border-radius:3px;padding:0 6px}
+.legenda{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-3);margin-top:12px;min-height:1.6em}
+.legenda b{color:var(--ink);font-weight:600}
+/* --- console errori --- */
+.term{font-family:var(--f-mono);font-size:13.5px;line-height:1.55;background:var(--surface-2);border:1px solid var(--rule-strong);border-left:3px solid var(--rule-strong);border-radius:0 5px 5px 0;padding:14px 18px;white-space:pre-wrap;color:var(--ink-2);margin-top:16px;display:none}
+.term.show{display:block}
+.term.err{border-left-color:var(--accent);color:var(--accent)}
+.term.good{border-left-color:var(--ok);color:var(--ok)}
+.term .why{display:block;margin-top:10px;padding-top:10px;border-top:1px solid var(--rule);color:var(--ink-2);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.term .why b{color:var(--ink)}
+/* --- bottoni --- */
+.tries{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.try{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font-family:var(--f-mono);font-size:13.5px;background:var(--surface);color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:6px;padding:12px 16px;cursor:pointer;transition:.15s}
+.try:hover{border-color:var(--navy);color:var(--ink)}
+.try .lbl{font-family:var(--f-body);font-size:13px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.1em;flex:0 0 auto}
+.try.done{opacity:.55}
+.switch{display:flex;gap:0;border:1px solid var(--rule-strong);border-radius:6px;overflow:hidden;width:max-content;margin-bottom:4px}
+.switch button{font-family:var(--f-mono);font-size:14px;font-weight:600;background:var(--surface);color:var(--ink-3);border:none;padding:10px 20px;cursor:pointer;transition:.15s}
+.switch button+button{border-left:1px solid var(--rule-strong)}
+.switch button.sel{background:var(--navy);color:var(--bg)}
+.cardbadge{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-3)}
+footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font-size:14px}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <span class="eyebrow">Informatica &middot; Basi di dati &middot; Lezione 3</span>
+  <h1>Deve <em>esistere</em></h1>
+  <p class="lede">La chiave esterna &egrave; una colonna che indica una riga di un'altra tabella. Tutto il resto &mdash; l'integrit&agrave; referenziale, i NULL, gli errori del DBMS &mdash; discende da una sola domanda: <em>quella riga c'&egrave; davvero?</em></p>
+</header>
+
+<nav class="toc" aria-label="Indice">
+  <div style="width:100%;margin-bottom:2px" class="eyebrow">In questa pagina</div>
+  <a href="#s1"><span>01</span>Le due tabelle</a>
+  <a href="#s2"><span>02</span>Perch&eacute; sta di qua</a>
+  <a href="#s3"><span>03</span>Prova a inserire</a>
+  <a href="#s4"><span>04</span>Due errori diversi</a>
+  <a href="#s5"><span>05</span>E se cambiassimo (1,1)?</a>
+  <a href="#s6"><span>06</span>Cancellare dall'altra parte</a>
+</nav>
+
+<!-- ===== 01 ===== -->
+<section id="s1">
+  <div class="sec-head"><span class="num">01</span><h2>Le due tabelle, e il filo che le lega</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>Lo schema E-R della lezione scorsa &mdash; <b>Giocatore</b>, <b>Contratto</b>, <b>Squadra</b> &mdash; tradotto in tabelle diventa questo. L'associazione <code>Contratto</code> non &egrave; diventata una tabella: &egrave; diventata <b>una colonna</b>, <code>NomeSquadra</code>, dentro Giocatore. E si &egrave; portata dietro il suo attributo, <code>Ingaggio</code>.</p>
+      <p><b>Clicca un giocatore</b> per vedere dove punta.</p>
+    </div>
+
+    <div class="due">
+      <div class="tablewrap">
+        <table id="tg">
+          <caption>Giocatore</caption>
+          <thead><tr>
+            <th class="pk">Cognome<span class="keytag pk">PK</span></th>
+            <th class="pk">Data nascita<span class="keytag pk">PK</span></th>
+            <th>Ruolo</th>
+            <th class="fk">NomeSquadra<span class="keytag fk">FK</span></th>
+            <th>Ingaggio</th>
+          </tr></thead>
+          <tbody>
+            <tr class="pick" tabindex="0" data-ref="Juventus"><td class="pk">Rossi</td><td class="pk mono">12/03/1998</td><td>attaccante</td><td class="fk">Juventus</td><td class="mono">1.200.000</td></tr>
+            <tr class="pick" tabindex="0" data-ref="Torino"><td class="pk">Bianchi</td><td class="pk mono">04/07/2001</td><td>portiere</td><td class="fk">Torino</td><td class="mono">400.000</td></tr>
+            <tr class="pick" tabindex="0" data-ref="Juventus"><td class="pk">Verdi</td><td class="pk mono">23/11/1999</td><td>difensore</td><td class="fk">Juventus</td><td class="mono">800.000</td></tr>
+            <tr class="pick" tabindex="0" data-ref="Inter"><td class="pk">Neri</td><td class="pk mono">30/01/2000</td><td>centrocampista</td><td class="fk">Inter</td><td class="mono">950.000</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tablewrap">
+        <table id="ts">
+          <caption>Squadra</caption>
+          <thead><tr>
+            <th class="pk">Nome<span class="keytag pk">PK</span></th>
+            <th>Citt&agrave;</th>
+            <th>Colori sociali</th>
+          </tr></thead>
+          <tbody>
+            <tr data-nome="Juventus"><td class="pk">Juventus</td><td>Torino</td><td>bianconero</td></tr>
+            <tr data-nome="Torino"><td class="pk">Torino</td><td>Torino</td><td>granata</td></tr>
+            <tr data-nome="Inter"><td class="pk">Inter</td><td>Milano</td><td>nerazzurro</td></tr>
+            <tr data-nome="Genoa"><td class="pk">Genoa</td><td>Genova</td><td>rossobl&ugrave;</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="legenda" id="leg1">Nessun giocatore selezionato.</div>
+
+    <div class="note">
+      <span class="eyebrow">Il nome delle cose</span>
+      <p>La colonna <code>NomeSquadra</code> &egrave; la <b>chiave esterna</b>: contiene un valore che &egrave; la <b>chiave primaria</b> di un'altra tabella. Non &egrave; un tipo di dato speciale, non &egrave; un puntatore magico. &Egrave; una normale colonna di testo, su cui per&ograve; il DBMS ha ricevuto una promessa da mantenere.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 02 ===== -->
+<section id="s2">
+  <div class="sec-head"><span class="num">02</span><h2>Perch&eacute; la colonna sta di qua e non di l&agrave;</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>Domanda che arriva sempre: perch&eacute; <code>NomeSquadra</code> sta dentro Giocatore, e non c'&egrave; invece una colonna <code>Giocatori</code> dentro Squadra? La risposta non &egrave; una regola da imparare. &Egrave; una sola frase:</p>
+    </div>
+
+    <div class="pull">Una casella contiene un valore solo.</div>
+
+    <div class="col">
+      <ul class="clean">
+        <li>Un giocatore ha <b>una</b> squadra &rarr; ci sta in una casella. <b>Se la scrive in casa propria.</b></li>
+        <li>Una squadra ha <b>venticinque</b> giocatori &rarr; non ci stanno in una casella. <b>Non scrive niente.</b></li>
+      </ul>
+      <p>Ecco perch&eacute; la chiave esterna finisce sempre dalla parte del <code>(1,1)</code>: &egrave; l'unico lato che ha una cosa sola da ricordare. Se provassi a mettere i giocatori dentro Squadra avresti due sole strade, entrambe brutte: una casella con dentro una lista, oppure la riga della Juventus ripetuta venticinque volte. Sono esattamente i guai degli archivi su file da cui eravamo partiti.</p>
+    </div>
+
+    <div class="note warn">
+      <span class="eyebrow">Se qualcuno &egrave; sveglio</span>
+      <p>Qui la chiave primaria di Giocatore &egrave; la <b>coppia</b> Cognome + Data di nascita: ci vogliono tutti e due i valori per identificare una riga. Prima o poi qualcuno chieder&agrave; &laquo;e se due si chiamano uguale e sono nati lo stesso giorno?&raquo;. Ha ragione: &egrave; il motivo per cui nella realt&agrave; si usa un codice inventato apposta.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 03 ===== -->
+<section id="s3">
+  <div class="sec-head"><span class="num">03</span><h2>Prova a inserire una riga</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>Il vincolo si capisce quando lo si rompe. Qui sotto ci sono tre inserimenti da provare: il database ne accetta uno solo. <b>Prima di cliccare, prova a indovinare quali passano</b> &mdash; e soprattutto <em>perch&eacute;</em>.</p>
+    </div>
+
+    <div class="panel">
+      <div class="tries">
+        <button class="try" data-esito="ok">
+          <span class="lbl">A</span>
+          <span>INSERT &rarr; ('Gialli', '18/05/2002', 'attaccante', <b>'Torino'</b>, 300000)</span>
+        </button>
+        <button class="try" data-esito="fk">
+          <span class="lbl">B</span>
+          <span>INSERT &rarr; ('Blu', '02/09/1997', 'portiere', <b>'Milan'</b>, 700000)</span>
+        </button>
+        <button class="try" data-esito="null">
+          <span class="lbl">C</span>
+          <span>INSERT &rarr; ('Grigi', '14/02/2003', 'difensore', <b>NULL</b>, NULL)</span>
+        </button>
+      </div>
+      <div class="term" id="term3"></div>
+    </div>
+
+    <div class="note">
+      <span class="eyebrow">La domanda che smaschera tutto</span>
+      <p>Per ogni riga rifiutata, fatti questa domanda: <b>&laquo;in che squadra gioca?&raquo;</b>. Per la riga B non esiste risposta &mdash; punta a una squadra che non c'&egrave;. Per la riga C la risposta c'&egrave; ed &egrave; &laquo;in nessuna&raquo;: il problema non &egrave; che sia priva di senso, &egrave; che <em>questo</em> schema ha deciso che non pu&ograve; succedere.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 04 ===== -->
+<section id="s4">
+  <div class="sec-head"><span class="num">04</span><h2>Due errori diversi, che sembrano lo stesso</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>B e C vengono rifiutate tutte e due, ma <b>per motivi che non hanno niente in comune</b>. Confonderli &egrave; l'errore pi&ugrave; frequente su questo argomento.</p>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Riga</th><th>Che cosa sbaglia</th><th>Vincolo violato</th><th>Da dove viene il vincolo</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="mono">'Milan'</td>
+            <td>punta a una riga che <b>non esiste</b></td>
+            <td class="mono">integrit&agrave; referenziale</td>
+            <td>dalla <b>chiave esterna</b></td>
+          </tr>
+          <tr>
+            <td class="mono">NULL</td>
+            <td>il valore <b>manca</b></td>
+            <td class="mono">NOT NULL</td>
+            <td>dalla <b>cardinalit&agrave; minima 1</b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note ok">
+      <span class="eyebrow">Da tenere</span>
+      <p>L'integrit&agrave; referenziale dice una cosa sola: <b>il valore nella colonna FK deve esistere fra le chiavi primarie della tabella puntata &mdash; oppure essere NULL.</b> Nient'altro. Notate quell'<em>oppure essere NULL</em>: per l'integrit&agrave; referenziale il NULL va benissimo. A rifiutarlo qui &egrave; un vincolo diverso.</p>
+    </div>
+
+    <div class="col">
+      <p>Detto in un altro modo: <b>l'integrit&agrave; referenziale controlla dove punti, il NOT NULL controlla se punti.</b> Sono due controlli indipendenti, e infatti fra un attimo ne spegneremo uno e vedremo l'altro restare in piedi.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 05 ===== -->
+<section id="s5">
+  <div class="sec-head"><span class="num">05</span><h2>E se la cardinalit&agrave; fosse (0,N)?</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>Nello schema E-R avevamo scritto <code>(1,1)</code> dal lato Giocatore: <em>ogni giocatore ha un contratto</em>. Ma &egrave; una <b>nostra decisione</b>, non una legge di natura: nel calcio vero esistono gli <b>svincolati</b>. Cambiamo la cardinalit&agrave; minima e guardiamo che cosa succede alla tabella.</p>
+    </div>
+
+    <div class="panel">
+      <div class="switch" role="group" aria-label="Cardinalit&agrave; minima lato Giocatore">
+        <button id="b11" class="sel">(1,1) &mdash; sempre sotto contratto</button>
+        <button id="b01">(0,1) &mdash; pu&ograve; essere svincolato</button>
+      </div>
+      <p class="cardbadge" id="sqlline">NomeSquadra VARCHAR(40) <b>NOT NULL</b></p>
+      <div class="tries" style="margin-top:16px">
+        <button class="try" id="tryNull">
+          <span class="lbl">C</span>
+          <span>INSERT &rarr; ('Grigi', '14/02/2003', 'difensore', <b>NULL</b>, NULL)</span>
+        </button>
+      </div>
+      <div class="term" id="term5"></div>
+    </div>
+
+    <div class="pull">Il NOT NULL non &egrave; una regola di SQL: &egrave; la cardinalit&agrave; minima che hai scelto tu.</div>
+
+    <div class="col">
+      <p>&Egrave; il punto in cui il modello concettuale smette di sembrare un disegno da fare prima di lavorare davvero. Quel numerino <code>0</code> o <code>1</code> nello schema E-R <b>diventa</b> una parola nel <code>CREATE TABLE</code>, e da quella parola dipende se una riga entra nel database oppure viene respinta. Non &egrave; una traduzione approssimativa: &egrave; una corrispondenza esatta.</p>
+    </div>
+
+    <div class="note warn">
+      <span class="eyebrow">Una crepa da notare</span>
+      <p>Con <code>(0,1)</code> il giocatore svincolato ha <code>NomeSquadra</code> a NULL &mdash; e allora anche <code>Ingaggio</code> deve essere NULL, perch&eacute; l'ingaggio senza contratto non vuol dire niente. Ma la tabella, cos&igrave; com'&egrave;, <b>non lo impedisce</b>: nessuno vieta una riga senza squadra e con 700.000 euro di ingaggio. Tenetelo da parte: &egrave; il primo argomento serio a favore dell'altra traduzione, quella con la tabella <code>Contratto</code> separata, dove le due colonne stanno insieme e la riga o c'&egrave; tutta o non c'&egrave;.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 06 ===== -->
+<section id="s6">
+  <div class="sec-head"><span class="num">06</span><h2>Cancellare dall'altra parte</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>Fin qui abbiamo provato a <b>inserire</b> giocatori. Ma il vincolo lavora anche nel verso opposto: prova a <b>cancellare una squadra</b> e guarda quando il database ti lascia fare.</p>
+    </div>
+
+    <div class="panel">
+      <div class="tries">
+        <button class="try" data-team="Juventus"><span class="lbl">DELETE</span><span>DELETE FROM Squadra WHERE Nome = <b>'Juventus'</b></span></button>
+        <button class="try" data-team="Inter"><span class="lbl">DELETE</span><span>DELETE FROM Squadra WHERE Nome = <b>'Inter'</b></span></button>
+        <button class="try" data-team="Genoa"><span class="lbl">DELETE</span><span>DELETE FROM Squadra WHERE Nome = <b>'Genoa'</b></span></button>
+      </div>
+      <div class="term" id="term6"></div>
+    </div>
+
+    <div class="col">
+      <p>Il Genoa si cancella senza problemi: non ha giocatori, nessuna riga resterebbe a puntare nel vuoto. Le altre due no. <b>Il vincolo non blocca tutto per principio: blocca esattamente ci&ograve; che produrrebbe righe orfane</b>, e niente di pi&ugrave;.</p>
+      <p>E qui nasce la domanda successiva, che &egrave; una domanda di progetto e non di sintassi: se la Juventus fallisce davvero, che ne facciamo dei suoi giocatori? Li cancelliamo con lei? Li lasciamo svincolati? Vietiamo del tutto l'operazione? Sono le tre risposte che in SQL si chiamano <code>CASCADE</code>, <code>SET NULL</code> e <code>RESTRICT</code> &mdash; ma prima ancora di essere parole chiave sono <b>tre decisioni diverse su come funziona il mondo che state modellando</b>.</p>
+    </div>
+
+    <div class="note">
+      <span class="eyebrow">In una riga</span>
+      <p>Una chiave esterna &egrave; una <b>promessa</b>: &laquo;questo valore, l&agrave; dentro, c'&egrave;&raquo;. Il DBMS non fa altro che impedirvi di tradirla &mdash; n&eacute; quando scrivete da questa parte, n&eacute; quando cancellate da quell'altra.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="eyebrow">Nota sulla realizzazione</span>
+  <p style="margin-top:8px">Questa pagina &egrave; stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilit&agrave; didattica e scientifica &egrave; integralmente sua. L'indicazione &egrave; fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ---------- 01 · il filo fra le due tabelle ---------- */
+  var righeG = Array.prototype.slice.call(document.querySelectorAll('#tg tbody tr'));
+  var righeS = Array.prototype.slice.call(document.querySelectorAll('#ts tbody tr'));
+  var leg1 = document.getElementById('leg1');
+
+  function pulisci1(){
+    righeG.forEach(function(r){ r.classList.remove('on'); });
+    righeS.forEach(function(r){ r.classList.remove('target','ghost'); });
+  }
+  function accendi(r){
+    var era = r.classList.contains('on');
+    pulisci1();
+    if (era){ leg1.textContent = 'Nessun giocatore selezionato.'; return; }
+    r.classList.add('on');
+    var ref = r.getAttribute('data-ref');
+    var cognome = r.cells[0].textContent;
+    righeS.forEach(function(s){
+      if (s.getAttribute('data-nome') === ref) s.classList.add('target');
+      else s.classList.add('ghost');
+    });
+    leg1.innerHTML = 'Il valore <b>' + ref + '</b> nella colonna FK di <b>' + cognome +
+                     '</b> &egrave; la chiave primaria di quella riga di Squadra. Il filo regge.';
+  }
+  righeG.forEach(function(r){
+    r.addEventListener('click', function(){ accendi(r); });
+    r.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); accendi(r); }
+    });
+  });
+
+  /* ---------- utilità console ---------- */
+  function mostra(el, tipo, testo, perche){
+    el.className = 'term show ' + tipo;
+    el.innerHTML = testo + (perche ? '<span class="why">' + perche + '</span>' : '');
+  }
+
+  /* ---------- 03 · i tre inserimenti ---------- */
+  var term3 = document.getElementById('term3');
+  var esiti = {
+    ok: {
+      tipo: 'good',
+      testo: 'Query OK, 1 row affected',
+      perche: '<b>Passa.</b> Il valore <code>\'Torino\'</code> esiste fra le chiavi primarie di Squadra: la riga punta a qualcosa di reale.'
+    },
+    fk: {
+      tipo: 'err',
+      testo: "ERROR 1452 (23000): Cannot add or update a child row:\na foreign key constraint fails (`calcio`.`Giocatore`,\nCONSTRAINT `fk_squadra` FOREIGN KEY (`NomeSquadra`)\nREFERENCES `Squadra` (`Nome`))",
+      perche: '<b>Integrit&agrave; referenziale.</b> Il Milan non c\'&egrave; in Squadra. Se il database accettasse questa riga, alla domanda &laquo;in che squadra gioca Blu?&raquo; non ci sarebbe risposta: il valore indicherebbe il vuoto.'
+    },
+    null: {
+      tipo: 'err',
+      testo: "ERROR 1048 (23000): Column 'NomeSquadra' cannot be null",
+      perche: '<b>Attenzione: errore diverso.</b> Qui non c\'entra la chiave esterna. La colonna &egrave; <code>NOT NULL</code> perch&eacute; nello schema E-R avevamo scritto <code>(1,1)</code>: <em>ogni</em> giocatore ha un contratto. Un giocatore senza squadra non &egrave; un dato assurdo &mdash; &egrave; uno svincolato &mdash; ma noi abbiamo deciso che nel nostro mondo non esiste.'
+    }
+  };
+  Array.prototype.slice.call(document.querySelectorAll('#s3 .try')).forEach(function(b){
+    b.addEventListener('click', function(){
+      var e = esiti[b.getAttribute('data-esito')];
+      Array.prototype.slice.call(document.querySelectorAll('#s3 .try')).forEach(function(x){ x.classList.remove('done'); });
+      b.classList.add('done');
+      mostra(term3, e.tipo, e.testo, e.perche);
+    });
+  });
+
+  /* ---------- 05 · la cardinalità minima cambia tutto ---------- */
+  var b11 = document.getElementById('b11'),
+      b01 = document.getElementById('b01'),
+      sqlline = document.getElementById('sqlline'),
+      tryNull = document.getElementById('tryNull'),
+      term5 = document.getElementById('term5');
+  var obbligatorio = true;
+
+  function setCard(v){
+    obbligatorio = v;
+    b11.classList.toggle('sel', v);
+    b01.classList.toggle('sel', !v);
+    sqlline.innerHTML = v
+      ? 'NomeSquadra VARCHAR(40) <b>NOT NULL</b>'
+      : 'NomeSquadra VARCHAR(40) &nbsp;<b>&larr; il NOT NULL &egrave; sparito</b>';
+    term5.className = 'term';
+    tryNull.classList.remove('done');
+  }
+  b11.addEventListener('click', function(){ setCard(true); });
+  b01.addEventListener('click', function(){ setCard(false); });
+
+  tryNull.addEventListener('click', function(){
+    tryNull.classList.add('done');
+    if (obbligatorio){
+      mostra(term5, 'err',
+        "ERROR 1048 (23000): Column 'NomeSquadra' cannot be null",
+        'Rifiutata, come prima. Con <code>(1,1)</code> il giocatore senza squadra non pu&ograve; esistere. Ora prova a spostare l\'interruttore su <code>(0,1)</code> e riprova lo <b>stesso identico</b> INSERT.');
+    } else {
+      mostra(term5, 'good',
+        'Query OK, 1 row affected',
+        '<b>La stessa riga, adesso, passa.</b> Non &egrave; cambiato l\'INSERT: &egrave; cambiato lo schema. E il NULL ora ha un significato preciso, che siamo noi ad avergli dato: <b>questo giocatore &egrave; svincolato</b>. Nota bene che l\'integrit&agrave; referenziale non &egrave; stata toccata: prova ancora a scrivere <code>\'Milan\'</code> e verrai respinta lo stesso.');
+    }
+  });
+
+  /* ---------- 06 · cancellare una squadra ---------- */
+  var term6 = document.getElementById('term6');
+  var quanti = { Juventus: 2, Inter: 1, Genoa: 0 };
+  var chi = { Juventus: 'Rossi e Verdi', Inter: 'Neri' };
+
+  Array.prototype.slice.call(document.querySelectorAll('#s6 .try')).forEach(function(b){
+    b.addEventListener('click', function(){
+      var t = b.getAttribute('data-team'), n = quanti[t];
+      Array.prototype.slice.call(document.querySelectorAll('#s6 .try')).forEach(function(x){ x.classList.remove('done'); });
+      b.classList.add('done');
+      if (n === 0){
+        mostra(term6, 'good', 'Query OK, 1 row affected',
+          '<b>Cancellata.</b> Il Genoa non ha giocatori: nessuna riga di Giocatore rimane a puntare nel vuoto, quindi la promessa non viene tradita e il DBMS non ha motivo di opporsi.');
+      } else {
+        mostra(term6, 'err',
+          "ERROR 1451 (23000): Cannot delete or update a parent row:\na foreign key constraint fails (`calcio`.`Giocatore`,\nCONSTRAINT `fk_squadra` FOREIGN KEY (`NomeSquadra`)\nREFERENCES `Squadra` (`Nome`))",
+          '<b>Bloccata.</b> ' + (n === 1 ? 'C\'&egrave; ' : 'Ci sono ') + '<b>' + n + '</b> giocator' + (n === 1 ? 'e' : 'i') +
+          ' (' + chi[t] + ') con <code>NomeSquadra = \'' + t + '\'</code>. Cancellando la squadra ' + (n === 1 ? 'quella riga rimarrebbe orfana' : 'quelle righe rimarrebbero orfane') +
+          ': punterebbero a una squadra che non esiste pi&ugrave;. &Egrave; lo stesso identico problema della riga &laquo;Milan&raquo;, prodotto per&ograve; da una cancellazione invece che da un inserimento.');
+      }
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
