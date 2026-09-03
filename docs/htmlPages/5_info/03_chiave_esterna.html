@@ -146,20 +146,20 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
   <div class="sec-head"><span class="num">01</span><h2>Le due tabelle, e il filo che le lega</h2></div>
   <div class="stack">
     <div class="col">
-      <p>Lo schema E-R della lezione scorsa &mdash; <b>Giocatore</b>, <b>Contratto</b>, <b>Squadra</b> &mdash; tradotto in tabelle diventa questo. L'associazione <code>Contratto</code> non &egrave; diventata una tabella: &egrave; diventata <b>una colonna</b>, <code>NomeSquadra</code>, dentro Giocatore. E si &egrave; portata dietro il suo attributo, <code>Ingaggio</code>.</p>
+      <p>Lo schema E-R della lezione scorsa &mdash; <b>Giocatore</b>, <b>Contratto</b>, <b>Squadra</b> &mdash; tradotto in tabelle diventa questo. L'associazione <code>CONTRATTO</code> non &egrave; diventata una tabella: &egrave; diventata <b>una colonna</b>, <code>nome_squadra</code>, dentro Giocatore. E si &egrave; portata dietro il suo attributo, <code>ingaggio</code>.</p>
       <p><b>Clicca un giocatore</b> per vedere dove punta.</p>
     </div>
 
     <div class="due">
       <div class="tablewrap">
         <table id="tg">
-          <caption>Giocatore</caption>
+          <caption>GIOCATORE</caption>
           <thead><tr>
-            <th class="pk">Cognome<span class="keytag pk">PK</span></th>
-            <th class="pk">Data nascita<span class="keytag pk">PK</span></th>
-            <th>Ruolo</th>
-            <th class="fk">NomeSquadra<span class="keytag fk">FK</span></th>
-            <th>Ingaggio</th>
+            <th class="pk">cognome<span class="keytag pk">PK</span></th>
+            <th class="pk">data_nascita<span class="keytag pk">PK</span></th>
+            <th>ruolo</th>
+            <th class="fk">nome_squadra<span class="keytag fk">FK</span></th>
+            <th>ingaggio</th>
           </tr></thead>
           <tbody>
             <tr class="pick" tabindex="0" data-ref="Juventus"><td class="pk">Rossi</td><td class="pk mono">12/03/1998</td><td>attaccante</td><td class="fk">Juventus</td><td class="mono">1.200.000</td></tr>
@@ -172,11 +172,11 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
 
       <div class="tablewrap">
         <table id="ts">
-          <caption>Squadra</caption>
+          <caption>SQUADRA</caption>
           <thead><tr>
-            <th class="pk">Nome<span class="keytag pk">PK</span></th>
-            <th>Citt&agrave;</th>
-            <th>Colori sociali</th>
+            <th class="pk">nome<span class="keytag pk">PK</span></th>
+            <th>citta</th>
+            <th>colori_sociali</th>
           </tr></thead>
           <tbody>
             <tr data-nome="Juventus"><td class="pk">Juventus</td><td>Torino</td><td>bianconero</td></tr>
@@ -191,7 +191,7 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
 
     <div class="note">
       <span class="eyebrow">Il nome delle cose</span>
-      <p>La colonna <code>NomeSquadra</code> &egrave; la <b>chiave esterna</b>: contiene un valore che &egrave; la <b>chiave primaria</b> di un'altra tabella. Non &egrave; un tipo di dato speciale, non &egrave; un puntatore magico. &Egrave; una normale colonna di testo, su cui per&ograve; il DBMS ha ricevuto una promessa da mantenere.</p>
+      <p>La colonna <code>nome_squadra</code> &egrave; la <b>chiave esterna</b>: contiene un valore che &egrave; la <b>chiave primaria</b> di un'altra tabella. Non &egrave; un tipo di dato speciale, non &egrave; un puntatore magico. &Egrave; una normale colonna di testo, su cui per&ograve; il DBMS ha ricevuto una promessa da mantenere.</p>
     </div>
   </div>
 </section>
@@ -201,7 +201,7 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
   <div class="sec-head"><span class="num">02</span><h2>Perch&eacute; la colonna sta di qua e non di l&agrave;</h2></div>
   <div class="stack">
     <div class="col">
-      <p>Domanda che arriva sempre: perch&eacute; <code>NomeSquadra</code> sta dentro Giocatore, e non c'&egrave; invece una colonna <code>Giocatori</code> dentro Squadra? La risposta non &egrave; una regola da imparare. &Egrave; una sola frase:</p>
+      <p>Domanda che arriva sempre: perch&eacute; <code>nome_squadra</code> sta dentro Giocatore, e non c'&egrave; invece una colonna <code>Giocatori</code> dentro Squadra? La risposta non &egrave; una regola da imparare. &Egrave; una sola frase:</p>
     </div>
 
     <div class="pull">Un campo contiene un valore solo.</div>
@@ -306,7 +306,7 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
         <button id="b11" class="sel">(1,1) &mdash; sempre sotto contratto</button>
         <button id="b01">(0,1) &mdash; pu&ograve; essere svincolato</button>
       </div>
-      <p class="cardbadge" id="sqlline">NomeSquadra VARCHAR(40) <b>NOT NULL</b></p>
+      <p class="cardbadge" id="sqlline">nome_squadra VARCHAR(40) <b>NOT NULL</b></p>
       <div class="tries" style="margin-top:16px">
         <button class="try" id="tryNull">
           <span class="lbl">C</span>
@@ -324,7 +324,7 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
 
     <div class="note warn">
       <span class="eyebrow">Una crepa da notare</span>
-      <p>Con <code>(0,1)</code> il giocatore svincolato ha <code>NomeSquadra</code> a NULL &mdash; e allora anche <code>Ingaggio</code> deve essere NULL, perch&eacute; l'ingaggio senza contratto non vuol dire niente. Ma la tabella, cos&igrave; com'&egrave;, <b>non lo impedisce</b>: nessuno vieta una riga senza squadra e con 700.000 euro di ingaggio. Tenetelo da parte: &egrave; il primo argomento serio a favore dell'altra traduzione, quella con la tabella <code>Contratto</code> separata, dove le due colonne stanno insieme e la riga o c'&egrave; tutta o non c'&egrave;.</p>
+      <p>Con <code>(0,1)</code> il giocatore svincolato ha <code>nome_squadra</code> a NULL &mdash; e allora anche <code>ingaggio</code> deve essere NULL, perch&eacute; l'ingaggio senza contratto non vuol dire niente. Ma la tabella, cos&igrave; com'&egrave;, <b>non lo impedisce</b>: nessuno vieta una riga senza squadra e con 700.000 euro di ingaggio. Tenetelo da parte: &egrave; il primo argomento serio a favore dell'altra traduzione, quella con la tabella <code>CONTRATTO</code> separata, dove le due colonne stanno insieme e la riga o c'&egrave; tutta o non c'&egrave;.</p>
     </div>
   </div>
 </section>
@@ -415,12 +415,12 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
     },
     fk: {
       tipo: 'err',
-      testo: "ERROR 1452 (23000): Cannot add or update a child row:\na foreign key constraint fails (`calcio`.`Giocatore`,\nCONSTRAINT `fk_squadra` FOREIGN KEY (`NomeSquadra`)\nREFERENCES `Squadra` (`Nome`))",
+      testo: "ERROR 1452 (23000): Cannot add or update a child row:\na foreign key constraint fails (`calcio`.`Giocatore`,\nCONSTRAINT `fk_squadra` FOREIGN KEY (`nome_squadra`)\nREFERENCES `Squadra` (`Nome`))",
       perche: '<b>Integrit&agrave; referenziale.</b> Il Milan non c\'&egrave; in Squadra. Se il database accettasse questa riga, alla domanda &laquo;in che squadra gioca Blu?&raquo; non ci sarebbe risposta: il valore indicherebbe il vuoto.'
     },
     null: {
       tipo: 'err',
-      testo: "ERROR 1048 (23000): Column 'NomeSquadra' cannot be null",
+      testo: "ERROR 1048 (23000): Column 'nome_squadra' cannot be null",
       perche: '<b>Attenzione: errore diverso.</b> Qui non c\'entra la chiave esterna. La colonna &egrave; <code>NOT NULL</code> perch&eacute; nello schema E-R avevamo scritto <code>(1,1)</code>: <em>ogni</em> giocatore ha un contratto. Un giocatore senza squadra non &egrave; un dato assurdo &mdash; &egrave; uno svincolato &mdash; ma noi abbiamo deciso che nel nostro mondo non esiste.'
     }
   };
@@ -446,8 +446,8 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
     b11.classList.toggle('sel', v);
     b01.classList.toggle('sel', !v);
     sqlline.innerHTML = v
-      ? 'NomeSquadra VARCHAR(40) <b>NOT NULL</b>'
-      : 'NomeSquadra VARCHAR(40) &nbsp;<b>&larr; il NOT NULL &egrave; sparito</b>';
+      ? 'nome_squadra VARCHAR(40) <b>NOT NULL</b>'
+      : 'nome_squadra VARCHAR(40) &nbsp;<b>&larr; il NOT NULL &egrave; sparito</b>';
     term5.className = 'term';
     tryNull.classList.remove('done');
   }
@@ -458,7 +458,7 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
     tryNull.classList.add('done');
     if (obbligatorio){
       mostra(term5, 'err',
-        "ERROR 1048 (23000): Column 'NomeSquadra' cannot be null",
+        "ERROR 1048 (23000): Column 'nome_squadra' cannot be null",
         'Rifiutata, come prima. Con <code>(1,1)</code> il giocatore senza squadra non pu&ograve; esistere. Ora prova a spostare l\'interruttore su <code>(0,1)</code> e riprova lo <b>stesso identico</b> INSERT.');
     } else {
       mostra(term5, 'good',
@@ -482,9 +482,9 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
           '<b>Cancellata.</b> Il Genoa non ha giocatori: nessuna riga di Giocatore rimane a puntare nel vuoto, quindi la promessa non viene tradita e il DBMS non ha motivo di opporsi.');
       } else {
         mostra(term6, 'err',
-          "ERROR 1451 (23000): Cannot delete or update a parent row:\na foreign key constraint fails (`calcio`.`Giocatore`,\nCONSTRAINT `fk_squadra` FOREIGN KEY (`NomeSquadra`)\nREFERENCES `Squadra` (`Nome`))",
+          "ERROR 1451 (23000): Cannot delete or update a parent row:\na foreign key constraint fails (`calcio`.`Giocatore`,\nCONSTRAINT `fk_squadra` FOREIGN KEY (`nome_squadra`)\nREFERENCES `Squadra` (`Nome`))",
           '<b>Bloccata.</b> ' + (n === 1 ? 'C\'&egrave; ' : 'Ci sono ') + '<b>' + n + '</b> giocator' + (n === 1 ? 'e' : 'i') +
-          ' (' + chi[t] + ') con <code>NomeSquadra = \'' + t + '\'</code>. Cancellando la squadra ' + (n === 1 ? 'quella riga rimarrebbe orfana' : 'quelle righe rimarrebbero orfane') +
+          ' (' + chi[t] + ') con <code>nome_squadra = \'' + t + '\'</code>. Cancellando la squadra ' + (n === 1 ? 'quella riga rimarrebbe orfana' : 'quelle righe rimarrebbero orfane') +
           ': punterebbero a una squadra che non esiste pi&ugrave;. &Egrave; lo stesso identico problema della riga &laquo;Milan&raquo;, prodotto per&ograve; da una cancellazione invece che da un inserimento.');
       }
     });
