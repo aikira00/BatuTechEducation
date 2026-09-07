@@ -668,7 +668,9 @@ footer .ai {
   <div class="col stack">
     <p>Nel binario C c'è scritto dentro <strong class="c-native">il nome dell'architettura</strong>. Su un PC Windows uscirebbe <code>PE32+ x86-64</code>, su Linux <code>ELF 64-bit x86-64</code>. Nel file Java, di architetture, <strong class="c-jvm">non ce n'è nessuna</strong>.</p>
     <h3>Quindi in C quante volte devo compilare?</h3>
-    <p>Una per ogni casella di questa tabella. E attenzione: <strong>non conta la marca del processore, conta l'architettura</strong> — Intel e AMD sono la stessa cosa (il 64 bit dell'x86 l'ha inventato AMD nel 2003, per questo su Linux i pacchetti si chiamano ancora <code>amd64</code> anche sugli Intel).</p>
+    <p>Una per ogni casella di questa tabella. E attenzione a cosa conta davvero: <strong>non la marca del processore, ma l'architettura</strong> — cioè l'<strong>ISA</strong>, l'<em>Instruction Set Architecture</em>: l'insieme delle istruzioni che quel processore sa eseguire. È un fatto di <em>progetto</em>, non di fabbrica.</p>
+    <p>L'architettura dei PC di oggi si chiama <strong><code>x86-64</code></strong>, e si chiama anche <strong><code>AMD64</code></strong>: sono <strong>due nomi per la stessa ISA</strong>. Intel e AMD sono due aziende diverse che costruiscono processori diversi, ma che <strong>implementano la stessa ISA</strong> — quindi eseguono gli stessi identici binari.</p>
+    <p>Il doppio nome è un residuo storico: il 64 bit dell'x86 l'ha progettato <strong>AMD</strong> nel 2003, e Intel l'ha adottato dopo. Per questo su Linux i pacchetti si chiamano ancora <code>amd64</code> anche quando li installate su un Intel: quel nome non indica il produttore, indica <strong>l'architettura</strong>.</p>
   </div>
 
   <div class="col tbl-scroll">
@@ -989,7 +991,8 @@ public static void main(java.lang.String[]);
     <p>Ma Java non è morto affatto — si è <strong>spostato dove quella proprietà continua a pagare</strong>:</p>
     <ul>
       <li><strong>Sui server.</strong> Sviluppate su Windows o su Mac, mandate in produzione su Linux. Stesso <code>.jar</code>, nessuna ricompilazione. È il pane quotidiano di mezza industria del software, ancora oggi.</li>
-      <li><strong>Su Android.</strong> Milioni di telefoni diversi, un'app sola da pubblicare. Di nuovo lo stesso identico problema.</li>
+      <li><strong>Su Android.</strong> Milioni di telefoni diversi, un'app sola da pubblicare. Di nuovo lo stesso identico problema.
+        <br><small><em>Precisazione per i curiosi:</em> Android non usa la JVM di Oracle. Il vostro <code>.java</code> passa comunque da <code>javac</code> e diventa <code>.class</code>, ma poi un secondo strumento lo converte in un formato diverso, il <strong><code>.dex</code></strong>, che gira su <strong>ART</strong> (<em>Android Runtime</em>). Macchina virtuale diversa, bytecode diverso — <strong>ma l'idea è esattamente quella di cui stiamo parlando</strong>: un formato intermedio, e un runtime per ogni dispositivo.</small></li>
     </ul>
     <p>La proprietà è sempre quella del 1991. È cambiato il posto in cui serviva.</p>
     <p>E l'idea dell'applet non è morta affatto: <strong>scaricare codice di cui non ti fidi ed eseguirlo in una gabbia dentro il browser</strong> è esattamente quello che fa JavaScript ogni volta che aprite una pagina — e, ancora più da vicino, quello che fa <strong>WebAssembly</strong>: bytecode compatto, una macchina virtuale nel browser, sandbox. L'applet rifatta bene trent'anni dopo. Non era l'idea a essere sbagliata: era fragile l'attrezzo.</p>
@@ -1017,7 +1020,8 @@ public static void main(java.lang.String[]);
     </div>
     <div class="card">
       <h3>Decidi meno tu</h3>
-      <p>Niente puntatori, niente <code>malloc</code> e <code>free</code>: alla memoria pensa il <strong>garbage collector</strong>. Comodissimo — ma non scegliete voi <em>quando</em> passa a pulire.</p>
+      <p>Niente <strong>gestione manuale</strong> dei puntatori, niente <code>malloc</code> e <code>free</code>: alla memoria pensa il <strong>garbage collector</strong>. Comodissimo — ma non scegliete voi <em>quando</em> passa a pulire.</p>
+      <p><strong>Ma attenzione</strong>: non è vero che in Java i puntatori non ci sono. Ci sono, si chiamano <strong>riferimenti</strong>, e ve ne accorgerete presto — la <code>NullPointerException</code>, l'errore che vedrete più spesso quest'anno, ha la parola <em>pointer</em> nel nome. Quello che sparisce è il <strong>controllo manuale</strong>: niente aritmetica dei puntatori, niente dereferenziazione esplicita, niente indirizzi da leggere. Un riferimento potete solo seguirlo, non manipolarlo.</p>
     </div>
   </div>
 

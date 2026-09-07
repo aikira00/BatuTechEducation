@@ -105,13 +105,21 @@ demo si sgonfia. Serve: PC → Mac della cattedra, oppure → Linux, oppure → 
 
 **Sulla chiavetta metto due file soli**: `Hello.class` e il binario C `hello`. **Niente sorgenti** — se porto il `.java` la dimostrazione perde senso, perché potrei ricompilare.
 
-**Il giorno prima**, sul PC del lab:
+**Versione del laboratorio: JDK 21, ma su qualche macchina è 17.** ✅ *(verificato)*
+
+Quindi **compilo sempre con `--release 17`**: il `.class` che ne esce (version 61.0) gira sia sulle macchine a 17 sia su quelle a 21, e anche sul mio Mac che ha il 23. È il minimo comune denominatore.
+
+```bash
+javac --release 17 Hello.java
+```
+
+⚠️ **Se compilo senza `--release`** il mio JDK 23 produce un `.class` version 67.0, che sulle macchine a 17 **e anche su quelle a 21** muore con `UnsupportedClassVersionError`. Non è un rischio teorico: è la macchina che mi capiterebbe sotto mano.
+
+Controllo comunque il giorno prima, che le aule cambiano:
 
 ```bash
 java -version
 ```
-
-Serve **17 o superiore** (è la versione con cui compilo, vedi sotto). Se è più vecchia, ricompilo con quel numero; se è più recente va benissimo.
 
 **In classe**, dalla cartella dove sta il file:
 
