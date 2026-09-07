@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La linea del contratto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+:root {
+  --paper:#f2f5f6; --surface:#ffffff; --surface-2:#e9eef0;
+  --ink:#131a1c; --ink-soft:#4c595d; --ink-faint:#7b8a8e;
+  --line:#d5dfe1; --line-soft:#e4ebec;
+  --native:#ab511c; --native-bg:#f7ece4;
+  --jvm:#0d6f7b; --jvm-bg:#e2eff0;
+  --ok:#1f6f43; --ok-bg:#e3f0e8;
+  --no:#9c2f2f; --no-bg:#f6e6e6;
+  --f-display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Literata",Georgia,"Times New Roman",serif;
+  --f-mono:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  --col:68ch; --wide:62rem;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0e1416; --surface:#151e21; --surface-2:#1c282b;
+  --ink:#e7eef0; --ink-soft:#9dafb3; --ink-faint:#74868a;
+  --line:#29383c; --line-soft:#1f2c2f;
+  --native:#e2905a; --native-bg:#2a1d13;
+  --jvm:#52c4d0; --jvm-bg:#10292d;
+  --ok:#6cc48d; --ok-bg:#132a1d;
+  --no:#e8807f; --no-bg:#2c1618;
+}}
+:root[data-theme="dark"]{
+  --paper:#0e1416; --surface:#151e21; --surface-2:#1c282b;
+  --ink:#e7eef0; --ink-soft:#9dafb3; --ink-faint:#74868a;
+  --line:#29383c; --line-soft:#1f2c2f;
+  --native:#e2905a; --native-bg:#2a1d13;
+  --jvm:#52c4d0; --jvm-bg:#10292d;
+  --ok:#6cc48d; --ok-bg:#132a1d;
+  --no:#e8807f; --no-bg:#2c1618;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.62;margin:0;padding:0 1.25rem 6rem;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--wide);margin:0 auto}
+.col{max-width:var(--col)}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(2.3rem,6.2vw,3.7rem);font-weight:800;line-height:1.03;letter-spacing:-.025em}
+h2{font-size:clamp(1.5rem,3.4vw,2.05rem);font-weight:700;line-height:1.12;letter-spacing:-.017em}
+h3{font-size:1.12rem;font-weight:700;letter-spacing:-.008em;margin-bottom:.3rem}
+p{margin:0}
+strong{font-weight:600}
+.lede{font-size:1.2rem;line-height:1.5;color:var(--ink-soft)}
+.eyebrow{font-family:var(--f-mono);font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)}
+header.hero{display:flex;flex-direction:column;gap:1.1rem;padding:4.5rem 0 2.5rem;border-bottom:1px solid var(--line)}
+.hero .col{display:flex;flex-direction:column;gap:1.1rem}
+section{display:flex;flex-direction:column;gap:1.3rem;padding:3.6rem 0;border-bottom:1px solid var(--line-soft)}
+.sec-head{display:flex;flex-direction:column;gap:.5rem}
+.stack{display:flex;flex-direction:column;gap:1rem}
+.c-native{color:var(--native)} .c-jvm{color:var(--jvm)}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--surface-2);padding:.1em .36em;border-radius:3px}
+figure{margin:0;display:flex;flex-direction:column;gap:.85rem}
+figure svg{width:100%;height:auto;display:block}
+.fig-scroll{overflow-x:auto}
+figcaption{font-size:.9rem;color:var(--ink-soft);max-width:60ch}
+.callout{background:var(--jvm-bg);border-left:3px solid var(--jvm);border-radius:0 7px 7px 0;padding:1.15rem 1.35rem;display:flex;flex-direction:column;gap:.55rem}
+.callout.warn{background:var(--native-bg);border-left-color:var(--native)}
+.callout p{font-size:.97rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.9rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:1.1rem 1.2rem;display:flex;flex-direction:column;gap:.4rem}
+.card p{font-size:.93rem;color:var(--ink-soft)}
+ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:.5rem}
+li::marker{color:var(--ink-faint)}
+
+/* comparatore */
+.cmp{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:1.3rem;display:flex;flex-direction:column;gap:1.1rem}
+.cmp-pick{display:grid;grid-template-columns:1fr auto 1fr;gap:.8rem;align-items:end}
+@media (max-width:34rem){.cmp-pick{grid-template-columns:1fr;}.cmp-vs{text-align:center}}
+.fld{display:flex;flex-direction:column;gap:.35rem}
+.fld label{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+.fld select{font-family:var(--f-body);font-size:.95rem;padding:.6rem .7rem;border:1px solid var(--line);border-radius:7px;background:var(--surface-2);color:var(--ink);width:100%}
+.fld select:focus-visible{outline:2px solid var(--jvm);outline-offset:1px}
+.cmp-vs{font-family:var(--f-mono);font-size:.8rem;font-weight:700;color:var(--ink-faint);padding-bottom:.7rem}
+.rows{display:flex;flex-direction:column;gap:.5rem}
+.row{display:grid;grid-template-columns:minmax(9rem,auto) 1fr;gap:.6rem 1rem;padding:.75rem .9rem;border-radius:8px;background:var(--surface-2);align-items:baseline}
+@media (max-width:34rem){.row{grid-template-columns:1fr;gap:.25rem}}
+.row .k{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+.row .v{font-size:.95rem}
+.row.ok{background:var(--ok-bg)} .row.ok .v{color:var(--ok);font-weight:600}
+.row.no{background:var(--no-bg)} .row.no .v{color:var(--no);font-weight:600}
+.row.warn{background:var(--native-bg)} .row.warn .v{color:var(--native);font-weight:600}
+.morale{border-top:1px solid var(--line);padding-top:.95rem;font-size:1rem}
+.morale strong{font-family:var(--f-display);letter-spacing:-.01em}
+
+/* fisarmonica */
+.acc{display:flex;flex-direction:column;gap:.5rem}
+details{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+details[open]{border-color:var(--ink-faint)}
+summary{cursor:pointer;padding:.9rem 1.1rem;font-family:var(--f-mono);font-size:.79rem;font-weight:700;letter-spacing:.03em;list-style:none;display:flex;align-items:baseline;gap:.7rem}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";font-size:1rem;color:var(--ink-faint);width:.8rem;flex:none}
+details[open]>summary::before{content:"\2212"}
+summary:focus-visible{outline:2px solid var(--jvm);outline-offset:-2px}
+details .body{padding:0 1.1rem 1.1rem 2.6rem;display:flex;flex-direction:column;gap:.6rem;font-size:.95rem;color:var(--ink-soft)}
+details .body strong{color:var(--ink)}
+
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.9rem}
+.gl{border-top:2px solid var(--native);padding-top:.65rem;display:flex;flex-direction:column;gap:.2rem}
+.gl-k{font-family:var(--f-mono);font-size:.84rem;font-weight:700;color:var(--native)}
+.gl-d{font-size:.9rem;color:var(--ink-soft)}
+
+footer{padding:2.4rem 0 0;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink-faint);font-family:var(--f-mono);display:flex;flex-direction:column;gap:.8rem}
+footer .ai{font-size:.72rem;line-height:1.6;max-width:62ch}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="col">
+    <span class="eyebrow">Java &amp; OOP · scheda · 4ª informatica</span>
+    <h1>La linea<br>del contratto</h1>
+    <p class="lede">Comprate un computer nuovo e i vostri programmi vanno più veloci. Nessuno li ha ricompilati: sono gli <strong>stessi identici file</strong>. Ma se provate a lanciarli su un Mac con chip M2, non partono nemmeno. <strong>Perché nel primo caso funziona e nel secondo no?</strong></p>
+  </div>
+</header>
+
+<section>
+  <div class="sec-head col">
+    <span class="eyebrow">01 — provate voi</span>
+    <h2>Due macchine: il programma ci gira?</h2>
+  </div>
+  <div class="col stack">
+    <p>Prima di leggere la spiegazione, <strong>provate a indovinare</strong>. Scegliete due processori e chiedetevi: un programma compilato sul primo, funziona sul secondo? Va più veloce? Poi guardate la risposta.</p>
+  </div>
+
+  <div class="cmp">
+    <div class="cmp-pick">
+      <div class="fld">
+        <label for="a">Compilo il programma su…</label>
+        <select id="a"></select>
+      </div>
+      <div class="cmp-vs">e lo porto su ▸</div>
+      <div class="fld">
+        <label for="b">…questa macchina</label>
+        <select id="b"></select>
+      </div>
+    </div>
+    <div class="rows" id="out" aria-live="polite"></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head col">
+    <span class="eyebrow">02 — la spiegazione</span>
+    <h2>C'è una linea, e divide due mondi</h2>
+  </div>
+  <div class="col stack">
+    <p>Tutte le risposte del comparatore vengono da una sola idea. Fra il vostro programma e il silicio c'è <strong>una linea di confine</strong>, e su quella linea è scritto un contratto.</p>
+  </div>
+
+  <figure>
+    <div class="fig-scroll">
+      <svg viewBox="0 0 880 360" role="img" aria-label="Uno schema diviso da una linea orizzontale: sopra ci sono il programma, il compilatore e il sistema operativo, che vedono solo l'ISA; sulla linea sta l'ISA come contratto; sotto ci sono pipeline, cache, unità di esecuzione, predizione dei salti e numero di core, cioè la microarchitettura. Cambiare qualcosa sopra la linea rompe i binari; cambiare qualcosa sotto li lascia funzionare più velocemente." xmlns="http://www.w3.org/2000/svg">
+        <text x="30" y="26" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" letter-spacing="1.8" fill="var(--ink-faint)">SOPRA LA LINEA · QUELLO CHE IL SOFTWARE VEDE</text>
+
+        <g stroke="var(--jvm)" stroke-width="1.6" fill="var(--jvm-bg)">
+          <rect x="40"  y="46" width="230" height="46" rx="7"/>
+          <rect x="325" y="46" width="230" height="46" rx="7"/>
+          <rect x="610" y="46" width="230" height="46" rx="7"/>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="12.5" fill="var(--jvm)" text-anchor="middle" font-weight="700">
+          <text x="155" y="75">il vostro programma</text>
+          <text x="440" y="75">il compilatore</text>
+          <text x="725" y="75">il sistema operativo</text>
+        </g>
+
+        <text x="440" y="126" font-family="Literata, Georgia, serif" font-size="13.5" fill="var(--jvm)" text-anchor="middle" font-style="italic">tutti e tre conoscono solo le istruzioni scritte nel contratto</text>
+
+        <line x1="20" y1="180" x2="860" y2="180" stroke="var(--ink)" stroke-width="2.5"/>
+        <rect x="300" y="161" width="280" height="38" rx="19" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.5"/>
+        <text x="440" y="185" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">ISA · il contratto</text>
+
+        <text x="440" y="232" font-family="Literata, Georgia, serif" font-size="13.5" fill="var(--native)" text-anchor="middle" font-style="italic">qui sotto si può cambiare tutto, purché il contratto sia rispettato</text>
+
+        <g stroke="var(--native)" stroke-width="1.6" fill="var(--native-bg)">
+          <rect x="40"  y="252" width="150" height="46" rx="7"/>
+          <rect x="205" y="252" width="150" height="46" rx="7"/>
+          <rect x="370" y="252" width="150" height="46" rx="7"/>
+          <rect x="535" y="252" width="150" height="46" rx="7"/>
+          <rect x="700" y="252" width="140" height="46" rx="7"/>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="11.5" fill="var(--native)" text-anchor="middle" font-weight="700">
+          <text x="115" y="280">pipeline</text>
+          <text x="280" y="280">cache</text>
+          <text x="445" y="273">unità di</text>
+          <text x="445" y="288">esecuzione</text>
+          <text x="610" y="273">predizione</text>
+          <text x="610" y="288">dei salti</text>
+          <text x="770" y="280">quanti core</text>
+        </g>
+
+        <text x="30" y="336" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" letter-spacing="1.8" fill="var(--ink-faint)">SOTTO LA LINEA · COME È FATTO DENTRO — LA MICROARCHITETTURA</text>
+      </svg>
+    </div>
+    <figcaption>L'ISA è la <strong>specifica</strong>: quali istruzioni esistono e come si scrivono in binario. La microarchitettura è <strong>come un chip preciso la realizza</strong>. Il software vede solo la linea; sotto, non guarda mai.</figcaption>
+  </figure>
+
+  <div class="cards">
+    <div class="card">
+      <h3 class="c-jvm">ISA — il contratto</h3>
+      <p>Sta scritto in un <strong>documento</strong>: Intel e ARM pubblicano manuali di migliaia di pagine con l'elenco delle istruzioni, dei registri e di come si codificano. <code>x86-64</code> e <code>ARM64</code> sono due contratti diversi.</p>
+    </div>
+    <div class="card">
+      <h3 class="c-native">Microarchitettura — l'implementazione</h3>
+      <p>Come quel contratto è realizzato <strong>in silicio</strong> in un chip specifico. Alder Lake, Zen 4, Cortex-A76 sono microarchitetture. Il software non sa nemmeno quale sta usando.</p>
+    </div>
+  </div>
+
+  <div class="col stack">
+    <h3>Le due regole che spiegano tutto</h3>
+    <ul>
+      <li><strong class="c-jvm">Cambiate qualcosa sopra la linea</strong> — cioè cambiate ISA — e i binari <strong>non girano più</strong>. Le istruzioni scritte dentro il file, quel processore non le conosce proprio. È il caso Intel → Apple M2.</li>
+      <li><strong class="c-native">Cambiate qualcosa sotto la linea</strong> — cioè cambiate microarchitettura — e gli <strong>stessi identici binari girano, solo più veloci</strong>. Non serve ricompilare niente, non serve fare niente.</li>
+    </ul>
+    <div class="callout">
+      <p><strong>Ecco perché il computer nuovo è più veloce senza che nessuno abbia toccato i vostri programmi.</strong> Trent'anni di miglioramenti sono avvenuti <em>sotto</em> la linea: cache più grandi, pipeline più profonde, previsioni più azzeccate. Il contratto è rimasto quello, e i file continuano a funzionare.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head col">
+    <span class="eyebrow">03 — sotto la linea</span>
+    <h2>Cosa cambia davvero fra un chip vecchio e uno nuovo</h2>
+  </div>
+  <div class="col stack">
+    <p>Un ripasso in una riga per ciascuno — bastano per capire che sono <strong>scelte di costruzione</strong>, non istruzioni nuove:</p>
+  </div>
+  <div class="col gloss">
+    <div class="gl">
+      <span class="gl-k">pipeline</span>
+      <span class="gl-d">L'istruzione è divisa in fasi e più istruzioni avanzano insieme, come una catena di montaggio. Più stadi e meno intoppi = più istruzioni finite al secondo.</span>
+    </div>
+    <div class="gl">
+      <span class="gl-k">cache</span>
+      <span class="gl-d">Memoria piccola e velocissima dentro il processore, che tiene i dati usati più spesso. Più è grande e più raramente si aspetta la RAM, che al confronto è lentissima.</span>
+    </div>
+    <div class="gl">
+      <span class="gl-k">predizione dei salti</span>
+      <span class="gl-d">Davanti a un <code>if</code> il processore <em>indovina</em> quale ramo prenderete e comincia a lavorarci prima di saperlo. Se indovina di più, butta via meno lavoro.</span>
+    </div>
+    <div class="gl">
+      <span class="gl-k">esecuzione fuori ordine</span>
+      <span class="gl-d">Se un'istruzione è ferma ad aspettare un dato, il processore ne esegue altre più avanti e poi rimette tutto in ordine. Voi non ve ne accorgete.</span>
+    </div>
+  </div>
+  <div class="col stack">
+    <div class="callout warn">
+      <p><strong>Nessuna di queste è un'istruzione nuova.</strong> Sono modi diversi di eseguire <em>le stesse</em> istruzioni. Per questo il vostro binario del 2015 gira su un processore del 2025 — e ci gira più veloce senza sapere perché.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head col">
+    <span class="eyebrow">04 — l'eccezione</span>
+    <h2>Ma allora il contratto non cambia mai?</h2>
+  </div>
+  <div class="col stack">
+    <p>Cambia, ma solo <strong>aggiungendo</strong>. Ogni tanto arrivano istruzioni nuove — si chiamano <strong>estensioni</strong> — e si accumulano da trent'anni: SSE nel 1999, AVX nel 2011, AVX2 nel 2013, AVX-512 nel 2016 (su Intel; AMD ce l'ha solo dal 2022).</p>
+    <p>Quindi "stessa ISA" vuol dire, più precisamente: <strong>stessa base, più un insieme di estensioni che può essere diverso</strong>. Un programma che usa AVX-512 su un processore che non ce l'ha muore con <code>Illegal instruction</code>.</p>
+    <div class="callout">
+      <p>È la <strong>terza volta</strong> che incontriamo questa regola: la compatibilità va <strong>all'indietro, non in avanti</strong>. Un processore nuovo esegue codice vecchio; uno vecchio non può eseguire codice che usa istruzioni che non conosce. Esattamente come la versione della JVM, esattamente come i file di Word.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head col">
+    <span class="eyebrow">05 — e allora</span>
+    <h2>Come si sfrutta un processore nuovo?</h2>
+  </div>
+  <div class="col stack">
+    <p>Domanda legittima: se devo consegnare <strong>un binario solo</strong> che funzioni su tutti, come faccio a usare le istruzioni nuove di chi ce le ha? Ci sono cinque risposte, e si usano tutte insieme.</p>
+  </div>
+
+  <div class="col acc">
+    <details open>
+      <summary>1 · Non lo sfrutti — e nel 90% dei casi va benissimo</summary>
+      <div class="body">
+        <p>È la risposta che si dimentica sempre. <strong>La maggior parte del guadagno arriva gratis</strong>, da sotto la linea: cache più grandi, previsioni migliori, più unità di esecuzione. Lo stesso identico binario gira più veloce senza che nessuno faccia niente.</p>
+        <p>È esattamente il senso del contratto: tutto ciò che migliora sotto la linea è <strong>trasparente</strong>.</p>
+      </div>
+    </details>
+    <details>
+      <summary>2 · Punti a un pavimento, non a un processore</summary>
+      <div class="body">
+        <p>L'industria si è messa d'accordo su gradini standard: <code>x86-64-v2</code> (grosso modo SSE4.2, 2009), <code>v3</code> (AVX2, 2013), <code>v4</code> (AVX-512). Non dici "compila per <em>questa</em> macchina", dici <strong>"compila per almeno questo livello"</strong>.</p>
+        <p>È il compromesso che usano le distribuzioni Linux: Red Hat 9, per esempio, richiede almeno il v2.</p>
+      </div>
+    </details>
+    <details>
+      <summary>3 · Metti più versioni della stessa funzione nello stesso file</summary>
+      <div class="body">
+        <p>La risposta professionale. Il programma <strong>chiede al processore all'avvio cosa sa fare</strong> — c'è un'istruzione apposta, <code>CPUID</code> — e sceglie la versione giusta fra quelle che si porta dietro.</p>
+        <p>Lo fanno tutte le librerie serie: <strong>ffmpeg</strong> per i video, <strong>OpenSSL</strong> per la crittografia, le librerie matematiche. In C si scrive con <code>target_clones("avx2","sse4.2","default")</code>.</p>
+        <p>Notate cosa sta succedendo: <strong>decidere a runtime guardando la macchina che si trova sotto.</strong> Vi ricorda qualcosa?</p>
+      </div>
+    </details>
+    <details>
+      <summary>4 · Se c'è un JIT, è gratis — ed è il punto forte del bytecode</summary>
+      <div class="body">
+        <p>Java, C# e JavaScript compilano <strong>sulla macchina dove girano</strong>. Quindi la JVM sa <em>esattamente</em> che processore ha sotto, e può usare le istruzioni migliori disponibili senza che nessuno spedisca versioni multiple.</p>
+        <p>Questo è il pagamento concreto di una frase che abbiamo già detto: <em>"il JIT sa cose che un compilatore statico non può sapere"</em>. Ora sappiamo dire quali: <strong>sa il modello di CPU</strong>. Un binario C deve indovinare al momento della compilazione; la JVM guarda.</p>
+      </div>
+    </details>
+    <details>
+      <summary>5 · Il lavoro sporco lo fanno le librerie</summary>
+      <div class="body">
+        <p>Quasi nessuno scrive a mano istruzioni vettoriali. Si chiama una libreria che dentro fa il punto 3 — e il vostro programma resta portabile ed è comunque veloce.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="col stack">
+    <h3>E perché non compilano tutti per il massimo?</h3>
+    <p>Perché escluderebbero chiunque abbia hardware più vecchio, e <strong>il guadagno spesso non c'è</strong>. Le istruzioni vettoriali servono se macinate numeri: grafica, video, crittografia, calcolo scientifico. Per il codice normale — pieno di <code>if</code> e di salti fra strutture sparse in memoria — <strong>il collo di bottiglia è la memoria, non le istruzioni</strong>, e AVX-512 non cambia niente. Su alcuni processori Intel fa perfino <em>scendere</em> la frequenza, peggiorando le cose.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head col">
+    <span class="eyebrow">06 — attenzione ai nomi</span>
+    <h2>i5, i7, i9 non vogliono dire quello che pensate</h2>
+  </div>
+  <div class="col stack">
+    <p><strong>i3, i5, i7, i9 sono fasce di prezzo, non generazioni.</strong> Un i5 e un i9 <em>della stessa generazione</em> hanno la <strong>stessa ISA e la stessa microarchitettura</strong>: cambiano quanti core hanno, quanta cache, a che frequenza vanno.</p>
+    <div class="callout warn">
+      <p>Conseguenza importante: <strong>fra un i5 e un i9 non c'è niente da "sfruttare meglio"</strong> a livello di istruzioni. Il binario è identico e resta identico. Quello che l'i9 vi dà in più sono <strong>più core</strong> — e i core non si sfruttano ricompilando: si sfruttano <strong>scrivendo un programma che fa più cose in parallelo</strong>. È un problema di come scrivete il software, non di come lo compilate.</p>
+    </div>
+    <p>Le istruzioni nuove arrivano invece con le <strong>generazioni</strong> (la 12ª, la 14ª…), che sono microarchitetture diverse. E il nome della microarchitettura è un'altra cosa ancora: Alder Lake, Raptor Lake, Zen 4.</p>
+  </div>
+</section>
+
+<footer class="col">
+  <p>4ª informatica &middot; modulo Java e programmazione a oggetti &middot; scheda di approfondimento</p>
+  <p class="ai">Questa pagina è stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilità didattica e scientifica è integralmente sua. L'indicazione è fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
+</footer>
+
+</div>
+
+<script>
+/* "pot" = potenza indicativa di un singolo core, solo per dare un ordine di
+   grandezza: serve a dire più veloce / più lento, mai a dare un numero. */
+const CPU = {
+  i5_12: {n:"PC · Intel Core i5, 12ª gen (2021)", isa:"x86-64", u:"Alder Lake", core:"6+4 core", ext:["SSE4.2","AVX2"], pot:8},
+  i9_12: {n:"PC · Intel Core i9, 12ª gen (2021)", isa:"x86-64", u:"Alder Lake", core:"8+8 core", ext:["SSE4.2","AVX2"], pot:8},
+  i9_14: {n:"PC · Intel Core i9, 14ª gen (2023)", isa:"x86-64", u:"Raptor Lake", core:"8+16 core", ext:["SSE4.2","AVX2"], pot:10},
+  ryzen: {n:"PC · AMD Ryzen 7 (2022)", isa:"x86-64", u:"Zen 4", core:"8 core", ext:["SSE4.2","AVX2","AVX-512"], pot:9},
+  core2: {n:"PC · Intel Core 2 Duo (2006)", isa:"x86-64", u:"Core", core:"2 core", ext:["SSE4.1"], pot:1},
+  m2:    {n:"Mac · Apple M2 (2022)", isa:"ARM64", u:"Avalanche + Blizzard", core:"4+4 core", ext:["NEON"], pot:9},
+  rpi5:  {n:"Raspberry Pi 5 (2023)", isa:"ARM64", u:"Cortex-A76", core:"4 core", ext:["NEON"], pot:3}
+};
+
+const selA = document.getElementById("a"), selB = document.getElementById("b"), out = document.getElementById("out");
+for (const k in CPU) {
+  selA.add(new Option(CPU[k].n, k));
+  selB.add(new Option(CPU[k].n, k));
+}
+selA.value = "i9_12"; selB.value = "i9_14";
+
+function row(cls, k, v) {
+  return '<div class="row ' + cls + '"><span class="k">' + k + '</span><span class="v">' + v + '</span></div>';
+}
+
+function aggiorna() {
+  const a = CPU[selA.value], b = CPU[selB.value];
+  const stessaIsa = a.isa === b.isa;
+  const stessaU = a.u === b.u;
+  const perse = a.ext.filter(e => !b.ext.includes(e));
+  let h = "";
+
+  h += row(stessaIsa ? "ok" : "no", "stessa ISA?",
+      stessaIsa ? "Sì — tutti e due " + a.isa
+                : "No — " + a.isa + " contro " + b.isa);
+
+  h += row("", "stessa microarchitettura?",
+      stessaU ? "Sì — tutti e due " + a.u + " (" + a.core + " contro " + b.core + ")"
+              : a.u + " contro " + b.u);
+
+  const d = b.pot - a.pot;
+  const velocita = Math.abs(d) <= 1 ? "Più o meno uguale."
+                 : (d > 0 ? "Più veloce." : "Più lento.");
+  const perche = " E dipende <strong>solo</strong> da com'è costruita sotto la linea, non dal contratto: il contratto è identico.";
+
+  if (!stessaIsa) {
+    h += row("no", "il binario ci gira?", "No. Non parte affatto.");
+    h += row("", "va più veloce?", "La domanda non si pone: non parte.");
+    h += '<p class="morale"><strong>Contratti diversi.</strong> Le istruzioni dentro quel file, questo processore non le conosce proprio: è come consegnargli un testo in una lingua che non parla. È il motivo per cui i programmi Intel non girano nativamente sui Mac con chip M — e per cui Apple ha dovuto scrivere <strong>Rosetta</strong>, che li traduce da un\'ISA all\'altra.</p>';
+  } else if (perse.length) {
+    h += row("warn", "il binario ci gira?", "Dipende: se è stato compilato usando " + perse.join(", ") + ", no → <code>Illegal instruction</code>. Altrimenti sì.");
+    h += row("", "e se gira?", velocita + perche);
+    h += '<p class="morale"><strong>Stesso contratto, estensioni diverse.</strong> ' + b.n.split("·")[1].trim() + ' non ha ' + perse.join(", ") + '. E attenzione: <strong>non è solo questione di anzianità</strong> — le estensioni si aggiungono, ma a volte si tolgono. Intel ha rimosso AVX-512 dai suoi processori per uso comune, mentre AMD ce l\'ha messo. Ecco perché in pratica si compila per il <strong>minimo comune denominatore</strong>.</p>';
+  } else if (stessaU) {
+    h += row("ok", "il binario ci gira?", "Sì, identico. Nemmeno se ne accorge.");
+    h += row("", "va più veloce?", "No, non per le istruzioni: è lo stesso chip. Cambia solo quanti core avete.");
+    h += '<p class="morale"><strong>Stessa ISA <em>e</em> stessa microarchitettura.</strong> Sono lo stesso processore in due tagli diversi. Qui non c\'è niente da "sfruttare meglio" ricompilando: se volete usare i core in più, dovete <strong>scrivere il programma in modo parallelo</strong>. È un problema di come scrivete il software, non di come lo compilate.</p>';
+  } else {
+    h += row("ok", "il binario ci gira?", "Sì, senza toccare niente.");
+    h += row(d > 1 ? "ok" : "", "va più veloce?", velocita + perche);
+    h += '<p class="morale"><strong>Stesso contratto, implementazioni diverse.</strong> ' + a.u + ' e ' + b.u + ' sono costruiti in modo diverso sotto la linea: cache, pipeline, previsione dei salti. Il vostro file non lo sa e non deve saperlo — <strong>gira comunque</strong>. Che poi vada più veloce o più lento è tutto merito, o colpa, della microarchitettura.</p>';
+  }
+  out.innerHTML = h;
+}
+
+selA.addEventListener("change", aggiorna);
+selB.addEventListener("change", aggiorna);
+aggiorna();
+</script>
+</body>
+</html>
