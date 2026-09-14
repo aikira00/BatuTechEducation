@@ -353,13 +353,19 @@ pre.code i{color:var(--ink-3);font-style:normal}
         <caption>Chi fa cosa nei sistemi che usate tutti i giorni</caption>
         <thead><tr><th>Sistema</th><th>Il server serve a&hellip;</th><th>In peer-to-peer avviene&hellip;</th></tr></thead>
         <tbody>
-          <tr><td>BitTorrent</td><td>il <i>tracker</i>: dire chi ha quali pezzi</td><td>tutto lo scambio dei pezzi</td></tr>
+          <tr><td>BitTorrent</td><td>il <i>tracker</i>: dare l'elenco di <b>chi sta scaricando</b> quel file &mdash; e oggi se ne pu&ograve; fare a meno</td><td>tutto lo scambio dei pezzi, e sono i peer a dirsi a vicenda quali pezzi hanno</td></tr>
           <tr><td>Videochiamata (WebRTC)</td><td>far incontrare i due e superare i NAT</td><td>audio e video, che vanno diretti</td></tr>
           <tr><td>Blockchain</td><td>&mdash; (non c'&egrave;)</td><td>tutto: nodi tutti pari</td></tr>
           <tr><td>Web, posta, database</td><td>tutto</td><td>&mdash; (niente)</td></tr>
         </tbody>
       </table>
     </div>
+    <div class="note ok">
+      <span class="eyebrow">Come funziona davvero BitTorrent</span>
+      <p>Il file &egrave; tagliato in <b>pezzi</b>, e nel file <code>.torrent</code> c'&egrave; l'<b>hash di ogni pezzo</b>: cos&igrave; ognuno pu&ograve; verificare quello che riceve e accettare dati anche da sconosciuti. Quando due peer si collegano si scambiano una <b>bitfield</b>, la mappa dei pezzi che possiedono, e poi si chiedono i pezzi a vicenda &mdash; partendo sempre dal <b>pi&ugrave; raro</b>, cos&igrave; nessun pezzo diventa introvabile.</p>
+      <p style="margin-top:10px">E non si tratta di generosit&agrave;: vale il <b>tit-for-tat</b>. Ogni peer manda dati soprattutto a chi gliene sta mandando, e mette in pausa gli altri. Chi scarica senza dare niente viene servito pochissimo.</p>
+    </div>
+
     <div class="note">
       <span class="eyebrow">Da chiedersi davanti a un sistema nuovo</span>
       <p>Non &laquo;&egrave; client-server o peer-to-peer?&raquo;, ma <b>&laquo;quale parte &egrave; centralizzata e quale no?&raquo;</b>. Di solito la parte centralizzata &egrave; quella che serve a <b>trovarsi</b>, e quella distribuita &egrave; quella che <b>consuma banda</b>.</p>
@@ -599,7 +605,7 @@ new Thread(() -&gt; {
     { t:'Una <b>videochiamata</b> fra due persone: l\'app le fa incontrare, poi audio e video viaggiano direttamente da un telefono all\'altro.', v:'ib',
       s:'Ibrido: il server serve solo alle presentazioni, i dati veri vanno peer-to-peer. &Egrave; il modello di WebRTC.' },
     { t:'Scaricate una <b>distribuzione Linux via BitTorrent</b>: mentre scaricate, state anche caricando pezzi per gli altri.', v:'ib',
-      s:'Ibrido: il <i>tracker</i> &egrave; un server che dice chi ha cosa, ma i pezzi se li scambiano i peer. Il fatto che carichiate mentre scaricate &egrave; la firma del peer-to-peer.' },
+      s:'Ibrido &mdash; ma sempre meno. Il <i>tracker</i> &egrave; un server che d&agrave; solo <b>l\'elenco dei peer</b>: non ha il file e non sa chi ha quali pezzi, perch&eacute; quello se lo dicono i peer fra loro. Con la DHT e i magnet link il tracker non serve nemmeno pi&ugrave;, e allora &egrave; peer-to-peer puro.' },
     { t:'Il <b>server TCP in Java</b> che scrivete in laboratorio, con i client che si collegano alla porta 5000.', v:'cs',
       s:'Client-server puro: un programma fa <code>accept()</code>, l\'altro fa <code>new Socket(...)</code>, e non si scambiano mai i ruoli.' },
     { t:'In una <b>rete blockchain</b> ogni nodo tiene una copia del registro e la confronta con quella degli altri.', v:'p2p',
