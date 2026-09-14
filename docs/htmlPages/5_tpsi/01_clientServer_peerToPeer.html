@@ -160,6 +160,16 @@ svg.net{width:100%;height:auto;display:block}
 .barra{height:7px;border-radius:4px;background:var(--surface-2);border:1px solid var(--rule);overflow:hidden;margin-top:9px}
 .barra span{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
 .round{font-family:var(--f-mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+/* --- simulazione traffico --- */
+.pacchetto{fill:var(--accent);stroke:var(--surface);stroke-width:1.2}
+.pacchetto.giu{fill:var(--ok)}
+.nodo.inattivo circle{opacity:.22}
+.nodo.inattivo text{opacity:.22}
+.filo.inattivo{opacity:.18}
+.srv-carico circle{stroke:var(--warn);stroke-width:3.4}
+label.slider{display:inline-flex;align-items:center;gap:9px;font-family:var(--f-mono);font-size:13.5px;color:var(--ink-3);border:1px solid var(--rule);border-radius:6px;padding:7px 14px;background:var(--surface)}
+label.slider b{color:var(--ink);font-size:15px;min-width:1ch}
+label.slider input[type=range]{accent-color:var(--accent);width:110px}
 /* --- codice --- */
 pre.code{font-family:var(--f-mono);font-size:13.5px;line-height:1.55;background:var(--surface-2);border:1px solid var(--rule);border-left:3px solid var(--navy);border-radius:0 5px 5px 0;padding:14px 16px;overflow-x:auto;margin:0;color:var(--ink-2)}
 pre.code b{color:var(--accent);font-weight:600}
@@ -179,10 +189,11 @@ pre.code i{color:var(--ink-3);font-style:normal}
   <div style="width:100%;margin-bottom:2px" class="eyebrow">In questa pagina</div>
   <a href="#s1"><span>01</span>Non &egrave; la macchina, &egrave; il ruolo</a>
   <a href="#s2"><span>02</span>Le due reti a confronto</a>
-  <a href="#s3"><span>03</span>Perch&eacute; il peer-to-peer esiste</a>
-  <a href="#s4"><span>04</span>Quasi nessuno &egrave; puro</a>
-  <a href="#s5"><span>05</span>Come si vede nel codice</a>
-  <a href="#s6"><span>06</span>Provaci tu</a>
+  <a href="#s3"><span>03</span>Il traffico in movimento</a>
+  <a href="#s4"><span>04</span>Perch&eacute; il peer-to-peer esiste</a>
+  <a href="#s5"><span>05</span>Quasi nessuno &egrave; puro</a>
+  <a href="#s6"><span>06</span>Come si vede nel codice</a>
+  <a href="#s7"><span>07</span>Provaci tu</a>
 </nav>
 
 <!-- ===== 01 ===== -->
@@ -249,7 +260,47 @@ pre.code i{color:var(--ink-3);font-style:normal}
 
 <!-- ===== 03 ===== -->
 <section id="s3">
-  <div class="sec-head"><span class="num">03</span><h2>Perch&eacute; il peer-to-peer esiste</h2>
+  <div class="sec-head"><span class="num">03</span><h2>Il traffico in movimento</h2>
+    <p class="eyebrow" style="grid-column:2">quando chiedono tutti insieme</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>Finora abbiamo guardato <b>una</b> richiesta alla volta. In rete per&ograve; le richieste arrivano tutte insieme, e l&igrave; le due architetture si comportano in modo molto diverso. Avvia la simulazione, guardala un po', poi <b>alza il numero di nodi</b> e guarda cosa succede alla coda.</p>
+    </div>
+
+    <div class="comandi">
+      <button id="b-play" class="primario">Avvia</button>
+      <button id="b-sim-reset">Azzera</button>
+      <label class="slider">nodi attivi <input type="range" id="b-n" min="2" max="6" value="3" aria-label="numero di nodi attivi"> <b id="b-n-val">3</b></label>
+    </div>
+
+    <div class="reti">
+      <div class="rete">
+        <h4>Client-server</h4>
+        <svg class="net" id="sim-cs" viewBox="0 0 400 330" role="img" aria-label="Simulazione: pi&ugrave; client mandano richieste a un unico server, che le serve una alla volta"></svg>
+        <p class="conta">richieste servite: <b id="ok-cs">0</b> &nbsp;&middot;&nbsp; in attesa al server: <b id="coda-cs">0</b></p>
+      </div>
+      <div class="rete">
+        <h4>Peer-to-peer</h4>
+        <svg class="net" id="sim-p2p" viewBox="0 0 400 330" role="img" aria-label="Simulazione: i peer si scambiano pacchetti direttamente fra loro"></svg>
+        <p class="conta">scambi completati: <b id="ok-p2p">0</b> &nbsp;&middot;&nbsp; nessuna coda</p>
+      </div>
+    </div>
+
+    <p class="esito" id="es-sim" style="font-size:15.5px;margin-top:2px"></p>
+
+    <div class="note warn">
+      <span class="eyebrow">Cosa cambia alzando i nodi</span>
+      <p>Nel client-server ogni richiesta deve passare da <b>un'unica porta</b>: il server ne serve una alla volta e le altre <b>aspettano in coda</b>. Aggiungi client e la coda si allunga: l'attesa cresce anche se la rete &egrave; velocissima. Nel peer-to-peer gli scambi avvengono <b>in parallelo</b> fra coppie diverse, quindi aggiungere peer aggiunge anche canali: la rete non ha un punto che si stringe.</p>
+      <p style="margin-top:10px"><b>Da guardare:</b> fino a <b>4 nodi</b> il server sta al passo e la coda si svuota; dal <b>quinto</b> in poi le richieste arrivano pi&ugrave; in fretta di quanto lui riesca a servirle e la coda non rientra pi&ugrave;. Il peer-to-peer, alla stessa velocit&agrave;, non se ne accorge nemmeno.</p>
+    </div>
+
+    <p class="pull">Nel client-server pi&ugrave; utenti vogliono dire pi&ugrave; carico. Nel peer-to-peer, pi&ugrave; utenti vogliono dire anche pi&ugrave; aiuto.</p>
+  </div>
+</section>
+
+<!-- ===== 04 ===== -->
+<section id="s4">
+  <div class="sec-head"><span class="num">04</span><h2>Perch&eacute; il peer-to-peer esiste</h2>
     <p class="eyebrow" style="grid-column:2">lo stesso file da mandare a otto persone</p></div>
   <div class="stack">
     <div class="col">
@@ -288,9 +339,9 @@ pre.code i{color:var(--ink-3);font-style:normal}
   </div>
 </section>
 
-<!-- ===== 04 ===== -->
-<section id="s4">
-  <div class="sec-head"><span class="num">04</span><h2>Quasi nessuno &egrave; puro</h2>
+<!-- ===== 05 ===== -->
+<section id="s5">
+  <div class="sec-head"><span class="num">05</span><h2>Quasi nessuno &egrave; puro</h2>
     <p class="eyebrow" style="grid-column:2">i modelli ibridi, che poi sono la norma</p></div>
   <div class="stack">
     <div class="col">
@@ -316,9 +367,9 @@ pre.code i{color:var(--ink-3);font-style:normal}
   </div>
 </section>
 
-<!-- ===== 05 ===== -->
-<section id="s5">
-  <div class="sec-head"><span class="num">05</span><h2>Come si vede nel codice</h2>
+<!-- ===== 06 ===== -->
+<section id="s6">
+  <div class="sec-head"><span class="num">06</span><h2>Come si vede nel codice</h2>
     <p class="eyebrow" style="grid-column:2">le stesse socket, montate diversamente</p></div>
   <div class="stack">
     <div class="col">
@@ -352,9 +403,9 @@ new Thread(() -&gt; {
   </div>
 </section>
 
-<!-- ===== 06 ===== -->
-<section id="s6">
-  <div class="sec-head"><span class="num">06</span><h2>Provaci tu</h2>
+<!-- ===== 07 ===== -->
+<section id="s7">
+  <div class="sec-head"><span class="num">07</span><h2>Provaci tu</h2>
     <p class="eyebrow" style="grid-column:2">sei casi, uno per volta</p></div>
   <div class="quiz">
     <p class="qtesto" id="q-testo"></p>
@@ -588,6 +639,174 @@ new Thread(() -&gt; {
   });
   qav.addEventListener('click', function(){ if (qi < casi.length - 1){ qi++; mostraCaso(); } });
   mostraCaso();
+})();
+</script>
+
+<script>
+(function(){
+  var NOMI = ['A','B','C','D','E','F'], CX = 200, CY = 165, R = 118;
+  var pos = NOMI.map(function(_, i){
+    var a = -Math.PI/2 + i * Math.PI/3;
+    return { x: CX + R*Math.cos(a), y: CY + R*Math.sin(a) };
+  });
+  var SRV = { x: CX, y: CY };
+
+  function el(tag, attr){
+    var e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var k in attr) e.setAttribute(k, attr[k]);
+    return e;
+  }
+
+  function pannello(id, tipo){
+    var svg = document.getElementById(id); svg.innerHTML = '';
+    var gF = el('g',{}), gN = el('g',{}), gP = el('g',{});
+    svg.appendChild(gF); svg.appendChild(gN); svg.appendChild(gP);
+    var fili = {};
+    if (tipo === 'cs'){
+      pos.forEach(function(p,i){
+        var l = el('line',{x1:p.x,y1:p.y,x2:SRV.x,y2:SRV.y,'class':'filo'});
+        gF.appendChild(l); fili[i] = [l];
+      });
+    } else {
+      for (var i=0;i<6;i++) fili[i] = [];
+      for (var a=0;a<6;a++) for (var b=a+1;b<6;b++){
+        var l2 = el('line',{x1:pos[a].x,y1:pos[a].y,x2:pos[b].x,y2:pos[b].y,'class':'filo'});
+        gF.appendChild(l2); fili[a].push(l2); fili[b].push(l2);
+      }
+    }
+    var nodi = pos.map(function(p,i){
+      var g = el('g',{'class':'nodo'});
+      g.appendChild(el('circle',{cx:p.x,cy:p.y,r:24}));
+      var t = el('text',{x:p.x,y:p.y+5}); t.textContent = NOMI[i];
+      g.appendChild(t); gN.appendChild(g); return g;
+    });
+    var srv = null;
+    if (tipo === 'cs'){
+      srv = el('g',{'class':'nodo srv'});
+      srv.appendChild(el('circle',{cx:SRV.x,cy:SRV.y,r:28}));
+      var ts = el('text',{x:SRV.x,y:SRV.y+5}); ts.textContent = 'S';
+      srv.appendChild(ts); gN.appendChild(srv);
+    }
+    return { gP:gP, nodi:nodi, srv:srv, fili:fili };
+  }
+
+  var cs = pannello('sim-cs','cs'), p2p = pannello('sim-p2p','p2p');
+  var attivi = 3, gira = false;
+  var pacCS = [], pacP2P = [], coda = [], servendo = null, servTime = 0;
+  var okCS = 0, okP2P = 0, prossCS = [], prossP2P = [], ultimo = 0, picco = 0;
+
+  var bPlay = document.getElementById('b-play');
+  var bN = document.getElementById('b-n'), bNval = document.getElementById('b-n-val');
+  var esSim = document.getElementById('es-sim');
+
+  function pacchetto(lista, gP, a, b, cls, dur, fine){
+    var c = el('circle',{ r:6, cx:a.x, cy:a.y, 'class':'pacchetto ' + (cls||'') });
+    gP.appendChild(c);
+    lista.push({ a:a, b:b, el:c, t:0, dur:dur, fine:fine });
+  }
+  function avanza(lista, dt){
+    for (var i = lista.length-1; i >= 0; i--){
+      var q = lista[i]; q.t += dt / q.dur;
+      if (q.t >= 1){
+        if (q.el.parentNode) q.el.parentNode.removeChild(q.el);
+        lista.splice(i,1); if (q.fine) q.fine();
+      } else {
+        q.el.setAttribute('cx', q.a.x + (q.b.x - q.a.x) * q.t);
+        q.el.setAttribute('cy', q.a.y + (q.b.y - q.a.y) * q.t);
+      }
+    }
+  }
+  function inCoda(){ return coda.length + (servendo !== null ? 1 : 0); }
+
+  function aggiornaAttivi(){
+    for (var i=0;i<6;i++){
+      var spento = (i >= attivi);
+      cs.nodi[i].classList.toggle('inattivo', spento);
+      p2p.nodi[i].classList.toggle('inattivo', spento);
+      cs.fili[i].forEach(function(l){ l.classList.toggle('inattivo', spento); });
+    }
+    // i fili p2p si spengono se toccano un nodo inattivo
+    var visti = [];
+    for (var k=0;k<6;k++) p2p.fili[k].forEach(function(l){
+      if (visti.indexOf(l) === -1) visti.push(l);
+    });
+    visti.forEach(function(l){
+      var x1 = +l.getAttribute('x1'), y1 = +l.getAttribute('y1');
+      var x2 = +l.getAttribute('x2'), y2 = +l.getAttribute('y2');
+      function idx(x,y){ for (var i=0;i<6;i++) if (Math.abs(pos[i].x-x)<1 && Math.abs(pos[i].y-y)<1) return i; return -1; }
+      var s = (idx(x1,y1) >= attivi) || (idx(x2,y2) >= attivi);
+      l.classList.toggle('inattivo', s);
+    });
+  }
+
+  function aggiorna(){
+    document.getElementById('ok-cs').textContent = okCS;
+    document.getElementById('ok-p2p').textContent = okP2P;
+    document.getElementById('coda-cs').textContent = inCoda();
+    if (cs.srv) cs.srv.classList.toggle('srv-carico', inCoda() >= 3);
+    if (inCoda() > picco) picco = inCoda();
+    if (picco >= 4){
+      esSim.innerHTML = 'La coda al server ha toccato <b>' + picco + ' richieste in attesa</b>: quei client stanno fermi ad aspettare, e non &egrave; colpa della rete. Nel peer-to-peer non c\'&egrave; nessuna coda perch&eacute; non c\'&egrave; nessun punto obbligato.';
+    } else if (okCS + okP2P > 0){
+      esSim.innerHTML = 'Con pochi nodi le due reti si somigliano. Prova ad alzare il cursore fino a 6.';
+    } else { esSim.textContent = ''; }
+  }
+
+  function azzera(){
+    pacCS.concat(pacP2P).forEach(function(q){ if (q.el.parentNode) q.el.parentNode.removeChild(q.el); });
+    pacCS = []; pacP2P = []; coda = []; servendo = null; servTime = 0;
+    okCS = 0; okP2P = 0; picco = 0;
+    for (var i=0;i<6;i++){ prossCS[i] = Math.random()*900; prossP2P[i] = Math.random()*900; }
+    aggiorna();
+  }
+
+  function frame(ts){
+    if (!ultimo) ultimo = ts;
+    var dt = Math.min(60, ts - ultimo); ultimo = ts;
+    if (gira){
+      for (var i=0;i<attivi;i++){
+        prossCS[i] -= dt;
+        if (prossCS[i] <= 0){
+          prossCS[i] = 1500 + Math.random()*800;
+          (function(k){ pacchetto(pacCS, cs.gP, pos[k], SRV, '', 850, function(){ coda.push(k); }); })(i);
+        }
+        prossP2P[i] -= dt;
+        if (prossP2P[i] <= 0){
+          prossP2P[i] = 1500 + Math.random()*800;
+          var j = i; while (j === i) j = Math.floor(Math.random()*attivi);
+          (function(a,b){
+            pacchetto(pacP2P, p2p.gP, pos[a], pos[b], '', 850, function(){
+              pacchetto(pacP2P, p2p.gP, pos[b], pos[a], 'giu', 850, function(){ okP2P++; });
+            });
+          })(i,j);
+        }
+      }
+      if (servendo === null && coda.length){ servendo = coda.shift(); servTime = 420; }
+      if (servendo !== null){
+        servTime -= dt;
+        if (servTime <= 0){
+          var cl = servendo; servendo = null;
+          pacchetto(pacCS, cs.gP, SRV, pos[cl], 'giu', 850, function(){ okCS++; });
+        }
+      }
+      avanza(pacCS, dt); avanza(pacP2P, dt);
+      aggiorna();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  bPlay.addEventListener('click', function(){
+    gira = !gira;
+    bPlay.textContent = gira ? 'Pausa' : 'Avvia';
+    ultimo = 0;
+  });
+  document.getElementById('b-sim-reset').addEventListener('click', azzera);
+  bN.addEventListener('input', function(){
+    attivi = +bN.value; bNval.textContent = attivi;
+    aggiornaAttivi(); aggiorna();
+  });
+
+  aggiornaAttivi(); azzera(); requestAnimationFrame(frame);
 })();
 </script>
 </body>
