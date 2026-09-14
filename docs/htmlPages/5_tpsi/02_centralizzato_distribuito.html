@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Dove sta il centro</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+:root{
+  --bg:#EEF0F4; --surface:#FFFFFF; --surface-2:#F5F7FA;
+  --ink:#131A24; --ink-2:#3D4A5C; --ink-3:#6B7887;
+  --rule:#D3D9E2; --rule-strong:#B6C0CD;
+  --navy:#16324F; --navy-soft:rgba(22,50,79,.08);
+  --accent:#C81E4E; --accent-soft:rgba(200,30,78,.10); --accent-line:rgba(200,30,78,.35);
+  --ok:#0F6B5F; --ok-soft:rgba(15,107,95,.10);
+  --warn:#8A5A12; --warn-soft:rgba(138,90,18,.10);
+  --shadow:0 1px 2px rgba(19,26,36,.06), 0 8px 24px -12px rgba(19,26,36,.18);
+  --f-display:"IBM Plex Serif",Georgia,serif;
+  --f-body:"IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --measure:66ch; --wide:min(1080px,94vw);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
+  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
+  --rule:#2A3644; --rule-strong:#3B4A5C;
+  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
+  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
+  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
+  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}}
+:root[data-theme="dark"]{
+  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
+  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
+  --rule:#2A3644; --rule-strong:#3B4A5C;
+  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
+  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
+  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
+  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.page{max-width:var(--wide);margin:0 auto;padding:0 clamp(16px,4vw,32px) 96px}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:clamp(26px,3.6vw,34px);font-weight:600;color:var(--navy)}
+h3{font-size:clamp(19px,2.2vw,22px);font-weight:600;margin-bottom:.2em;color:var(--navy)}
+p{margin:0}
+a{color:var(--accent)}
+.lede{font-size:clamp(18px,2.1vw,20px);color:var(--ink-2);line-height:1.55}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.col{display:flex;flex-direction:column;gap:18px;max-width:var(--measure)}
+.hero{padding:clamp(40px,7vw,72px) 0 clamp(20px,4vw,34px)}
+.hero h1{font-size:clamp(34px,5.6vw,58px);font-weight:700;letter-spacing:-.025em;margin:.28em 0 .34em;color:var(--navy)}
+.hero h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+section{padding:clamp(34px,5vw,56px) 0;border-top:1px solid var(--rule)}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline;margin-bottom:24px}
+.num{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--accent);border:1px solid var(--accent-line);border-radius:3px;padding:2px 7px}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:clamp(18px,3vw,26px);box-shadow:var(--shadow)}
+.stack{display:flex;flex-direction:column;gap:clamp(18px,3vw,28px)}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:16px 20px;border-radius:0 5px 5px 0;max-width:var(--measure)}
+.note.ok{border-left-color:var(--ok);background:var(--ok-soft)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.note .eyebrow{display:block;margin-bottom:6px;color:var(--ink-2)}
+.pull{font-family:var(--f-display);font-size:clamp(20px,2.6vw,25px);line-height:1.4;font-style:italic;color:var(--navy);max-width:32ch;border-top:2px solid var(--navy);border-bottom:1px solid var(--rule);padding:18px 0;margin:4px 0}
+ul.clean,ol.clean{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:9px;color:var(--ink-2)}
+ul.clean li::marker,ol.clean li::marker{color:var(--accent)}
+ul.clean b,ol.clean b{color:var(--ink)}
+code{font-family:var(--f-mono);font-size:.92em;background:var(--surface-2);border:1px solid var(--rule);border-radius:3px;padding:1px 5px}
+/* --- indice --- */
+.toc{display:flex;flex-wrap:wrap;gap:8px;padding:18px 0 4px;border-top:1px solid var(--rule)}
+.toc a{display:flex;align-items:baseline;gap:7px;font-size:14px;text-decoration:none;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:7px 13px}
+.toc a:hover{border-color:var(--accent-line);color:var(--ink)}
+.toc a span{font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:var(--accent)}
+/* --- diagrammi istanze --- */
+.demo{width:100%;height:auto;display:block;user-select:none}
+.inst rect{fill:var(--surface-2);stroke:var(--rule-strong);stroke-width:1.4;transition:fill .15s,stroke .15s}
+.inst text{fill:var(--ink);font-family:var(--f-body);font-size:14px;font-weight:600;pointer-events:none}
+.inst{cursor:pointer}
+.inst:hover rect{stroke:var(--navy)}
+.inst.on rect{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2}
+.inst.linked rect{fill:var(--navy-soft);stroke:var(--navy);stroke-width:2}
+.lnk{stroke:var(--rule-strong);stroke-width:1.6;transition:stroke .15s,stroke-width .15s}
+.lnk.on{stroke:var(--accent);stroke-width:2.6}
+.hdr{fill:var(--ink-3);font-family:var(--f-mono);font-size:12px;letter-spacing:.12em}
+.hint{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-3);margin-top:12px}
+/* --- due domande --- */
+.qbox{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:6px 0}
+@media (max-width:700px){.qbox{grid-template-columns:1fr}}
+.qcard{background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:14px 18px}
+.qcard .q{font-family:var(--f-display);font-style:italic;color:var(--navy);font-size:17px;margin-bottom:6px}
+.qcard .a{font-size:15px;color:var(--ink-2)}
+.qcard .a b{color:var(--accent);font-family:var(--f-mono)}
+/* --- tabelle --- */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+caption{text-align:left;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);padding:12px 14px 10px}
+th,td{padding:8px 14px;text-align:left;border-bottom:1px solid var(--rule);white-space:nowrap}
+thead th{font-family:var(--f-mono);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);border-bottom:1px solid var(--rule-strong)}
+tbody tr:last-child td{border-bottom:none}
+td.mono{font-family:var(--f-mono)}
+.rip{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.due{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.due{grid-template-columns:1fr}}
+/* --- quiz --- */
+.quiz{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:clamp(18px,3vw,28px);box-shadow:var(--shadow)}
+.qtesto{font-size:clamp(17px,2vw,21px);color:var(--ink);line-height:1.45;margin-bottom:18px}
+.qtesto b{color:var(--navy)}
+.scelte{display:flex;gap:10px;flex-wrap:wrap}
+.scelte button{font-family:var(--f-mono);font-size:15px;font-weight:600;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:6px;padding:11px 22px;cursor:pointer;transition:.15s}
+.scelte button:hover:not(:disabled){border-color:var(--navy);color:var(--ink)}
+.scelte button.giusta{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.scelte button.sbagliata{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.scelte button:disabled{cursor:default}
+.feedback{margin-top:16px;font-size:15.5px;color:var(--ink-2);line-height:1.5;display:none}
+.feedback.show{display:block}
+.feedback b{color:var(--ink)}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--f-mono);font-size:13px;color:var(--ink-3)}
+.qnav button{font-family:var(--f-mono);font-size:14px;background:var(--navy);color:var(--bg);border:none;border-radius:6px;padding:9px 20px;cursor:pointer}
+.qnav button:disabled{opacity:.35;cursor:default}
+footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font-size:14px}
+
+/* --- topologie --- */
+.topologie{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:900px){.topologie{grid-template-columns:1fr}}
+.topo{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px 16px 12px;box-shadow:var(--shadow)}
+.topo h4{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 2px}
+.topo .sub{font-size:13px;color:var(--ink-3);margin-bottom:6px}
+svg.topo-svg{width:100%;height:auto;display:block;cursor:pointer}
+.tn circle{fill:var(--surface-2);stroke:var(--rule-strong);stroke-width:1.8;transition:.2s}
+.tn.hub circle{fill:var(--navy-soft);stroke:var(--navy);stroke-width:2.4;r:13}
+.tn:hover circle{stroke:var(--accent)}
+.tn.morto circle{fill:none;stroke:var(--rule);stroke-dasharray:3 3}
+.tn.isolato circle{fill:var(--warn-soft);stroke:var(--warn)}
+.te{stroke:var(--rule-strong);stroke-width:1.5;transition:.2s}
+.te.spento{stroke:var(--rule);stroke-dasharray:3 4;opacity:.5}
+.te.isolato{stroke:var(--warn);opacity:.55}
+.esiti{font-family:var(--f-mono);font-size:13px;color:var(--ink-3);line-height:1.75;margin-top:8px}
+.esiti b{color:var(--ink);font-size:14.5px}
+.esiti .rotto{color:var(--accent)}
+.comandi{display:flex;flex-wrap:wrap;gap:9px;margin:4px 0 16px}
+.comandi button{font-family:var(--f-mono);font-size:14px;font-weight:600;background:var(--surface);color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:6px;padding:9px 16px;cursor:pointer;transition:.15s}
+.comandi button:hover{border-color:var(--navy);color:var(--ink)}
+.comandi button.primario{background:var(--navy);color:var(--bg);border-color:var(--navy)}
+.comandi button.pericolo{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+/* --- griglia due assi --- */
+.assi{display:grid;grid-template-columns:auto 1fr 1fr;gap:0;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--surface);font-size:14.5px}
+.assi>div{padding:14px 16px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule)}
+.assi>div:nth-child(3n){border-right:none}
+.assi .th{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);font-weight:600}
+.assi .rh{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);font-weight:600;display:flex;align-items:center}
+.assi b{color:var(--navy);display:block;margin-bottom:3px;font-family:var(--f-body);font-size:15px}
+.assi .sorpresa b{color:var(--accent)}
+@media (max-width:760px){.assi{grid-template-columns:1fr}.assi>div{border-right:none}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <span class="eyebrow">TPSI &middot; Progettazione di protocolli &middot; Architetture</span>
+  <h1>Dove sta <em>il centro</em></h1>
+  <p class="lede">Centralizzato, decentralizzato, distribuito: tre modi di collegare gli stessi nodi. La differenza non si vede guardando il disegno da fermi &mdash; si vede quando qualcosa si rompe.</p>
+</header>
+
+<nav class="toc" aria-label="Indice">
+  <div style="width:100%;margin-bottom:2px" class="eyebrow">In questa pagina</div>
+  <a href="#s1"><span>01</span>Tre modi, gli stessi dodici nodi</a>
+  <a href="#s2"><span>02</span>Quanti colpi regge</a>
+  <a href="#s3"><span>03</span>Due assi da non confondere</a>
+  <a href="#s4"><span>04</span>Perch&eacute; &egrave; nata cos&igrave;</a>
+</nav>
+
+<!-- ===== 01 ===== -->
+<section id="s1">
+  <div class="sec-head"><span class="num">01</span><h2>Tre modi, gli stessi dodici nodi</h2>
+    <p class="eyebrow" style="grid-column:2">il disegno di Paul Baran, 1964</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>Nel 1964 un ingegnere della RAND, <b>Paul Baran</b>, disegn&ograve; tre reti con lo stesso numero di nodi e si chiese quale delle tre sopravvivesse a un attacco. Quel disegno &egrave; uno dei pi&ugrave; famosi dell'informatica, e le tre parole che us&ograve; si usano ancora oggi.</p>
+      <ul class="clean">
+        <li><b>Centralizzata:</b> un nodo al centro, tutti gli altri attaccati a lui. Nessuno parla con nessuno se non passando dal centro.</li>
+        <li><b>Decentralizzata:</b> non un centro, ma <b>alcuni</b> centri, collegati fra loro, ognuno con il suo gruppetto.</li>
+        <li><b>Distribuita:</b> nessun centro. Ogni nodo ha pi&ugrave; vicini, e fra due nodi qualsiasi esistono <b>pi&ugrave; strade</b>.</li>
+      </ul>
+      <p>Da fermi si somigliano: dodici pallini e delle righe. La domanda che le distingue &egrave; un'altra.</p>
+    </div>
+    <p class="pull">Quanti nodi devi spegnere prima che la rete si spezzi in pezzi che non si parlano pi&ugrave;?</p>
+  </div>
+</section>
+
+<!-- ===== 02 ===== -->
+<section id="s2">
+  <div class="sec-head"><span class="num">02</span><h2>Quanti colpi regge</h2>
+    <p class="eyebrow" style="grid-column:2">clicca un nodo per spegnerlo</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>Ogni rete ha <b>dodici nodi</b>. Spegni i nodi cliccandoci sopra, oppure usa i due pulsanti: il <b>guasto</b> colpisce un nodo a caso &mdash; come un cavo tranciato o un blackout &mdash; mentre l'<b>attacco</b> colpisce di proposito il nodo con pi&ugrave; collegamenti, cio&egrave; quello che fa pi&ugrave; danno.</p>
+      <p>Sotto ogni rete c'&egrave; scritto in quanti <b>tronconi</b> si &egrave; spezzata e quanti nodi restano nel pi&ugrave; grande: sono i nodi che riescono ancora a parlarsi fra loro.</p>
+    </div>
+
+    <div class="comandi">
+      <button id="b-guasto">Guasto a caso</button>
+      <button id="b-attacco" class="pericolo">Attacco mirato</button>
+      <button id="b-reset" class="primario">Ricomincia</button>
+    </div>
+
+    <div class="topologie" id="topologie"></div>
+
+    <p class="esito" id="verdetto" style="font-size:15.5px;color:var(--ink-2);line-height:1.5;margin-top:6px"></p>
+
+    <div class="note warn">
+      <span class="eyebrow">La prova da fare in due mosse</span>
+      <p>Premi <b>una sola volta</b> &laquo;attacco mirato&raquo;. La rete centralizzata &egrave; gi&agrave; finita: dodici nodi diventano <b>undici pezzi separati</b>. La decentralizzata perde un gruppetto ma il resto regge. La distribuita non se ne accorge nemmeno. E continuando a colpire regge fino al <b>sesto</b> colpo: l'attacco mirato cerca il nodo pi&ugrave; collegato, ma l&igrave; sono <b>tutti uguali</b> &mdash; non c'&egrave; un bersaglio che valga la pena.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 03 ===== -->
+<section id="s3">
+  <div class="sec-head"><span class="num">03</span><h2>Due assi da non confondere</h2>
+    <p class="eyebrow" style="grid-column:2">topologia e ruoli sono cose diverse</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>Qui casca quasi tutti, ed &egrave; bene saperlo: <b>centralizzato/distribuito</b> e <b>client-server/peer-to-peer</b> non sono sinonimi. Sono due domande diverse:</p>
+      <div class="qbox">
+        <div class="qcard">
+          <div class="q">Topologia</div>
+          <div class="a">Dove stanno i collegamenti e i dati? <b>Uno solo</b> o <b>tanti</b>?</div>
+        </div>
+        <div class="qcard">
+          <div class="q">Ruoli</div>
+          <div class="a">Chi chiede e chi risponde? Sempre <b>gli stessi</b> o <b>tutti e due</b>?</div>
+        </div>
+      </div>
+      <p>Le due domande si incrociano, e le caselle sono tutte e quattro piene. Le pi&ugrave; interessanti sono quelle in diagonale, evidenziate.</p>
+    </div>
+
+    <div class="assi">
+      <div class="th"></div>
+      <div class="th">Ruoli: client-server</div>
+      <div class="th">Ruoli: peer-to-peer</div>
+
+      <div class="rh">Topologia<br>centralizzata</div>
+      <div><b>Il server in laboratorio</b>Un programma in ascolto sulla 5000 e i vostri client. Un solo punto, un solo ruolo fisso.</div>
+      <div class="sorpresa"><b>Napster (1999)</b>I file stavano sui computer degli utenti &mdash; peer-to-peer puro &mdash; ma l'elenco di chi aveva cosa stava su <b>un server solo</b>. Bastarono una causa e una sentenza per spegnerlo.</div>
+
+      <div class="rh">Topologia<br>distribuita</div>
+      <div class="sorpresa"><b>Google, Netflix, il web di oggi</b>Migliaia di server sparsi nel mondo, nessuno indispensabile: infrastruttura distribuitissima. Ma per voi restano <b>server</b>, e voi restate client.</div>
+      <div><b>BitTorrent con DHT, blockchain</b>Nessun centro n&eacute; nella rete n&eacute; nei ruoli: ogni nodo &egrave; server e client, e non esiste una macchina che, spenta, fermi tutto.</div>
+    </div>
+
+    <div class="note">
+      <span class="eyebrow">Le due caselle che smontano l'equivoco</span>
+      <p><b>Napster</b> era peer-to-peer nei ruoli ma centralizzato nella topologia: per questo &egrave; bastato spegnere <b>una</b> macchina per chiuderlo. <b>Google</b> &egrave; il contrario: client-server nei ruoli, ma cos&igrave; distribuito che spegnere un datacenter non lo ferma. Se i due assi fossero la stessa cosa, nessuno dei due esisterebbe.</p>
+    </div>
+
+    <p class="hint">I ruoli li abbiamo visti nell'altra pagina: <a href="01_clientServer_peerToPeer.html">Chi chiede e chi risponde</a>.</p>
+  </div>
+</section>
+
+<!-- ===== 04 ===== -->
+<section id="s4">
+  <div class="sec-head"><span class="num">04</span><h2>Perch&eacute; &egrave; nata cos&igrave;</h2>
+    <p class="eyebrow" style="grid-column:2">la domanda a cui Baran stava rispondendo</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>Baran non stava progettando Internet: stava rispondendo a una domanda della guerra fredda, cio&egrave; <b>come far sopravvivere le comunicazioni a un attacco che distrugge met&agrave; della rete</b>. La risposta fu che serviva una topologia distribuita &mdash; ma una topologia distribuita ha un problema: se non esiste un percorso fisso, come fa un messaggio a sapere che strada prendere?</p>
+      <p>La soluzione che propose &egrave; quella che usiamo tutti i giorni: spezzare il messaggio in <b>pacchetti</b>, mettere su ognuno l'indirizzo di destinazione, e lasciare che ogni nodo lo inoltri al vicino che gli sembra migliore <b>in quel momento</b>. Se una strada salta, il pacchetto successivo ne prende un'altra da solo.</p>
+    </div>
+    <div class="note ok">
+      <span class="eyebrow">Il collegamento con il resto del corso</span>
+      <p>La <b>commutazione di pacchetto</b> non &egrave; nata per efficienza, ma per <b>sopravvivenza</b>: &egrave; figlia della topologia distribuita. E il fatto che IP consegni i pacchetti &laquo;alla meglio&raquo;, senza garanzie, viene da l&igrave; &mdash; &egrave; anche il motivo per cui sopra IP &egrave; servito un TCP che rimette le cose in ordine.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="eyebrow">Nota sulla realizzazione</span>
+  <p style="margin-top:8px">Questa pagina &egrave; stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilit&agrave; didattica e scientifica &egrave; integralmente sua. L'indicazione &egrave; fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var N = 12, CX = 180, CY = 180;
+  function pol(cx, cy, r, ang){ return { x: cx + r*Math.cos(ang), y: cy + r*Math.sin(ang) }; }
+
+  /* ---- le tre topologie: 12 nodi ciascuna ---- */
+  function centralizzata(){
+    var nodi = [{ x:CX, y:CY, hub:true }], archi = [];
+    for (var i=0;i<11;i++){
+      var p = pol(CX, CY, 132, -Math.PI/2 + i*2*Math.PI/11);
+      nodi.push({ x:p.x, y:p.y, hub:false }); archi.push([0, i+1]);
+    }
+    return { nodi:nodi, archi:archi };
+  }
+  function decentralizzata(){
+    var nodi = [], archi = [];
+    for (var h=0;h<3;h++){
+      var c = pol(CX, CY, 80, -Math.PI/2 + h*2*Math.PI/3);
+      nodi.push({ x:c.x, y:c.y, hub:true });
+    }
+    archi.push([0,1],[1,2],[0,2]);
+    for (var h2=0;h2<3;h2++){
+      var base = -Math.PI/2 + h2*2*Math.PI/3;
+      for (var k=0;k<3;k++){
+        var p = pol(nodi[h2].x, nodi[h2].y, 68, base + (k-1)*0.85);
+        nodi.push({ x:p.x, y:p.y, hub:false });
+        archi.push([h2, nodi.length-1]);
+      }
+    }
+    return { nodi:nodi, archi:archi };
+  }
+  function distribuita(){
+    var nodi = [], archi = [];
+    for (var i=0;i<N;i++){
+      var p = pol(CX, CY, 132, -Math.PI/2 + i*2*Math.PI/N);
+      nodi.push({ x:p.x, y:p.y, hub:false });
+    }
+    for (var j=0;j<N;j++){ archi.push([j, (j+1)%N]); archi.push([j, (j+2)%N]); }
+    return { nodi:nodi, archi:archi };
+  }
+
+  var RETI = [
+    { id:'centralizzata', nome:'Centralizzata', sub:'un solo centro', dati:centralizzata() },
+    { id:'decentralizzata', nome:'Decentralizzata', sub:'alcuni centri', dati:decentralizzata() },
+    { id:'distribuita', nome:'Distribuita', sub:'nessun centro', dati:distribuita() }
+  ];
+
+  var cont = document.getElementById('topologie');
+  RETI.forEach(function(r){
+    var d = document.createElement('div'); d.className = 'topo';
+    d.innerHTML = '<h4>' + r.nome + '</h4><p class="sub">' + r.sub + '</p>' +
+      '<svg class="topo-svg" id="svg-' + r.id + '" viewBox="0 0 360 360" role="img" aria-label="rete ' + r.nome + '"></svg>' +
+      '<p class="esiti" id="es-' + r.id + '"></p>';
+    cont.appendChild(d);
+  });
+
+  function el(tag, attr){
+    var e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var k in attr) e.setAttribute(k, attr[k]);
+    return e;
+  }
+
+  RETI.forEach(function(r){
+    var svg = document.getElementById('svg-' + r.id);
+    var gA = el('g',{}), gN = el('g',{});
+    svg.appendChild(gA); svg.appendChild(gN);
+    r.morti = {}; r.colpi = 0;
+    r.elArchi = r.dati.archi.map(function(a){
+      var l = el('line',{ x1:r.dati.nodi[a[0]].x, y1:r.dati.nodi[a[0]].y,
+                          x2:r.dati.nodi[a[1]].x, y2:r.dati.nodi[a[1]].y, 'class':'te' });
+      gA.appendChild(l); return l;
+    });
+    r.elNodi = r.dati.nodi.map(function(n, i){
+      var g = el('g',{ 'class':'tn' + (n.hub ? ' hub' : '') });
+      g.appendChild(el('circle',{ cx:n.x, cy:n.y, r: n.hub ? 13 : 10 }));
+      g.addEventListener('click', function(){ colpisci(r, i); });
+      gN.appendChild(g); return g;
+    });
+  });
+
+  function grado(r, i){
+    var g = 0;
+    r.dati.archi.forEach(function(a){
+      if (a[0] === i && !r.morti[a[1]]) g++;
+      if (a[1] === i && !r.morti[a[0]]) g++;
+    });
+    return g;
+  }
+  function componenti(r){
+    var vivi = [], vicini = {};
+    for (var i=0;i<r.dati.nodi.length;i++) if (!r.morti[i]){ vivi.push(i); vicini[i] = []; }
+    r.dati.archi.forEach(function(a){
+      if (!r.morti[a[0]] && !r.morti[a[1]]){ vicini[a[0]].push(a[1]); vicini[a[1]].push(a[0]); }
+    });
+    var visti = {}, comp = [];
+    vivi.forEach(function(s){
+      if (visti[s]) return;
+      var coda = [s], gruppo = []; visti[s] = true;
+      while (coda.length){
+        var v = coda.shift(); gruppo.push(v);
+        vicini[v].forEach(function(w){ if (!visti[w]){ visti[w] = true; coda.push(w); } });
+      }
+      comp.push(gruppo);
+    });
+    comp.sort(function(a,b){ return b.length - a.length; });
+    return comp;
+  }
+
+  function disegna(r){
+    var comp = componenti(r);
+    var grande = comp.length ? comp[0] : [];
+    r.elNodi.forEach(function(g, i){
+      g.classList.toggle('morto', !!r.morti[i]);
+      g.classList.toggle('isolato', !r.morti[i] && grande.indexOf(i) === -1);
+    });
+    r.elArchi.forEach(function(l, k){
+      var a = r.dati.archi[k];
+      var spento = r.morti[a[0]] || r.morti[a[1]];
+      l.classList.toggle('spento', spento);
+      l.classList.toggle('isolato', !spento && grande.indexOf(a[0]) === -1);
+    });
+    var testo = 'colpi: <b>' + r.colpi + '</b><br>tronconi: <b' + (comp.length > 1 ? ' class="rotto"' : '') + '>' +
+                comp.length + '</b><br>nel pi&ugrave; grande: <b>' + grande.length + '</b> nodi';
+    document.getElementById('es-' + r.id).innerHTML = testo;
+    r.tronconi = comp.length; r.grande = grande.length;
+  }
+
+  function colpisci(r, i){
+    if (r.morti[i]) return;
+    r.morti[i] = true; r.colpi++;
+    disegna(r); verdetto();
+  }
+  function verdetto(){
+    var c = RETI[0], d = RETI[1], p = RETI[2];
+    var v = document.getElementById('verdetto');
+    if (c.colpi === 0 && d.colpi === 0 && p.colpi === 0){ v.textContent = ''; return; }
+    var frasi = [];
+    if (c.tronconi > 1) frasi.push('la <b>centralizzata</b> &egrave; in ' + c.tronconi + ' pezzi');
+    else frasi.push('la <b>centralizzata</b> regge ancora');
+    if (d.tronconi > 1) frasi.push('la <b>decentralizzata</b> in ' + d.tronconi);
+    else frasi.push('la <b>decentralizzata</b> regge');
+    if (p.tronconi > 1) frasi.push('la <b>distribuita</b> in ' + p.tronconi);
+    else frasi.push('la <b>distribuita</b> &egrave; ancora tutta intera');
+    v.innerHTML = frasi.join(', ') + '.';
+  }
+
+  document.getElementById('b-attacco').addEventListener('click', function(){
+    RETI.forEach(function(r){
+      var best = -1, bg = -1;
+      for (var i=0;i<r.dati.nodi.length;i++){
+        if (r.morti[i]) continue;
+        var g = grado(r, i);
+        if (g > bg){ bg = g; best = i; }
+      }
+      if (best >= 0) colpisci(r, best);
+    });
+  });
+  document.getElementById('b-guasto').addEventListener('click', function(){
+    RETI.forEach(function(r){
+      var vivi = [];
+      for (var i=0;i<r.dati.nodi.length;i++) if (!r.morti[i]) vivi.push(i);
+      if (vivi.length) colpisci(r, vivi[Math.floor(Math.random()*vivi.length)]);
+    });
+  });
+  document.getElementById('b-reset').addEventListener('click', function(){
+    RETI.forEach(function(r){ r.morti = {}; r.colpi = 0; disegna(r); });
+    document.getElementById('verdetto').textContent = '';
+  });
+
+  RETI.forEach(disegna);
+})();
+</script>
+</body>
+</html>
