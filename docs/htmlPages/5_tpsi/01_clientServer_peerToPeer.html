@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Chi chiede e chi risponde</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+:root{
+  --bg:#EEF0F4; --surface:#FFFFFF; --surface-2:#F5F7FA;
+  --ink:#131A24; --ink-2:#3D4A5C; --ink-3:#6B7887;
+  --rule:#D3D9E2; --rule-strong:#B6C0CD;
+  --navy:#16324F; --navy-soft:rgba(22,50,79,.08);
+  --accent:#C81E4E; --accent-soft:rgba(200,30,78,.10); --accent-line:rgba(200,30,78,.35);
+  --ok:#0F6B5F; --ok-soft:rgba(15,107,95,.10);
+  --warn:#8A5A12; --warn-soft:rgba(138,90,18,.10);
+  --shadow:0 1px 2px rgba(19,26,36,.06), 0 8px 24px -12px rgba(19,26,36,.18);
+  --f-display:"IBM Plex Serif",Georgia,serif;
+  --f-body:"IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --measure:66ch; --wide:min(1080px,94vw);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
+  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
+  --rule:#2A3644; --rule-strong:#3B4A5C;
+  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
+  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
+  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
+  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+}}
+:root[data-theme="dark"]{
+  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
+  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
+  --rule:#2A3644; --rule-strong:#3B4A5C;
+  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
+  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
+  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
+  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.page{max-width:var(--wide);margin:0 auto;padding:0 clamp(16px,4vw,32px) 96px}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:clamp(26px,3.6vw,34px);font-weight:600;color:var(--navy)}
+h3{font-size:clamp(19px,2.2vw,22px);font-weight:600;margin-bottom:.2em;color:var(--navy)}
+p{margin:0}
+a{color:var(--accent)}
+.lede{font-size:clamp(18px,2.1vw,20px);color:var(--ink-2);line-height:1.55}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.col{display:flex;flex-direction:column;gap:18px;max-width:var(--measure)}
+.hero{padding:clamp(40px,7vw,72px) 0 clamp(20px,4vw,34px)}
+.hero h1{font-size:clamp(34px,5.6vw,58px);font-weight:700;letter-spacing:-.025em;margin:.28em 0 .34em;color:var(--navy)}
+.hero h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+section{padding:clamp(34px,5vw,56px) 0;border-top:1px solid var(--rule)}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline;margin-bottom:24px}
+.num{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--accent);border:1px solid var(--accent-line);border-radius:3px;padding:2px 7px}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:clamp(18px,3vw,26px);box-shadow:var(--shadow)}
+.stack{display:flex;flex-direction:column;gap:clamp(18px,3vw,28px)}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:16px 20px;border-radius:0 5px 5px 0;max-width:var(--measure)}
+.note.ok{border-left-color:var(--ok);background:var(--ok-soft)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.note .eyebrow{display:block;margin-bottom:6px;color:var(--ink-2)}
+.pull{font-family:var(--f-display);font-size:clamp(20px,2.6vw,25px);line-height:1.4;font-style:italic;color:var(--navy);max-width:32ch;border-top:2px solid var(--navy);border-bottom:1px solid var(--rule);padding:18px 0;margin:4px 0}
+ul.clean,ol.clean{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:9px;color:var(--ink-2)}
+ul.clean li::marker,ol.clean li::marker{color:var(--accent)}
+ul.clean b,ol.clean b{color:var(--ink)}
+code{font-family:var(--f-mono);font-size:.92em;background:var(--surface-2);border:1px solid var(--rule);border-radius:3px;padding:1px 5px}
+/* --- indice --- */
+.toc{display:flex;flex-wrap:wrap;gap:8px;padding:18px 0 4px;border-top:1px solid var(--rule)}
+.toc a{display:flex;align-items:baseline;gap:7px;font-size:14px;text-decoration:none;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:7px 13px}
+.toc a:hover{border-color:var(--accent-line);color:var(--ink)}
+.toc a span{font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:var(--accent)}
+/* --- diagrammi istanze --- */
+.demo{width:100%;height:auto;display:block;user-select:none}
+.inst rect{fill:var(--surface-2);stroke:var(--rule-strong);stroke-width:1.4;transition:fill .15s,stroke .15s}
+.inst text{fill:var(--ink);font-family:var(--f-body);font-size:14px;font-weight:600;pointer-events:none}
+.inst{cursor:pointer}
+.inst:hover rect{stroke:var(--navy)}
+.inst.on rect{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2}
+.inst.linked rect{fill:var(--navy-soft);stroke:var(--navy);stroke-width:2}
+.lnk{stroke:var(--rule-strong);stroke-width:1.6;transition:stroke .15s,stroke-width .15s}
+.lnk.on{stroke:var(--accent);stroke-width:2.6}
+.hdr{fill:var(--ink-3);font-family:var(--f-mono);font-size:12px;letter-spacing:.12em}
+.hint{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-3);margin-top:12px}
+/* --- due domande --- */
+.qbox{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:6px 0}
+@media (max-width:700px){.qbox{grid-template-columns:1fr}}
+.qcard{background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:14px 18px}
+.qcard .q{font-family:var(--f-display);font-style:italic;color:var(--navy);font-size:17px;margin-bottom:6px}
+.qcard .a{font-size:15px;color:var(--ink-2)}
+.qcard .a b{color:var(--accent);font-family:var(--f-mono)}
+/* --- tabelle --- */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+caption{text-align:left;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);padding:12px 14px 10px}
+th,td{padding:8px 14px;text-align:left;border-bottom:1px solid var(--rule);white-space:nowrap}
+thead th{font-family:var(--f-mono);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);border-bottom:1px solid var(--rule-strong)}
+tbody tr:last-child td{border-bottom:none}
+td.mono{font-family:var(--f-mono)}
+.rip{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.due{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.due{grid-template-columns:1fr}}
+/* --- quiz --- */
+.quiz{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:clamp(18px,3vw,28px);box-shadow:var(--shadow)}
+.qtesto{font-size:clamp(17px,2vw,21px);color:var(--ink);line-height:1.45;margin-bottom:18px}
+.qtesto b{color:var(--navy)}
+.scelte{display:flex;gap:10px;flex-wrap:wrap}
+.scelte button{font-family:var(--f-mono);font-size:15px;font-weight:600;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:6px;padding:11px 22px;cursor:pointer;transition:.15s}
+.scelte button:hover:not(:disabled){border-color:var(--navy);color:var(--ink)}
+.scelte button.giusta{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.scelte button.sbagliata{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.scelte button:disabled{cursor:default}
+.feedback{margin-top:16px;font-size:15.5px;color:var(--ink-2);line-height:1.5;display:none}
+.feedback.show{display:block}
+.feedback b{color:var(--ink)}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--f-mono);font-size:13px;color:var(--ink-3)}
+.qnav button{font-family:var(--f-mono);font-size:14px;background:var(--navy);color:var(--bg);border:none;border-radius:6px;padding:9px 20px;cursor:pointer}
+.qnav button:disabled{opacity:.35;cursor:default}
+footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font-size:14px}
+
+/* --- rete: client-server vs peer to peer --- */
+.reti{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:820px){.reti{grid-template-columns:1fr}}
+.rete{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px 16px 10px;box-shadow:var(--shadow)}
+.rete h4{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:2px}
+.rete .esito{font-size:14.5px;color:var(--ink-2);min-height:3.1em;margin-top:6px;line-height:1.45}
+.rete .esito b{color:var(--navy)}
+.rete .esito.ko b{color:var(--accent)}
+svg.net{width:100%;height:auto;display:block}
+.nodo circle{fill:var(--surface-2);stroke:var(--rule-strong);stroke-width:2;transition:.2s}
+.nodo text{fill:var(--ink-2);font-family:var(--f-mono);font-size:13px;font-weight:600;text-anchor:middle;pointer-events:none}
+.nodo.srv circle{fill:var(--navy-soft);stroke:var(--navy);stroke-width:2.6}
+.nodo.ha circle{fill:var(--ok-soft);stroke:var(--ok);stroke-width:2.6}
+.nodo.chiede circle{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2.6}
+.nodo.morto circle{fill:none;stroke:var(--rule);stroke-dasharray:4 4}
+.nodo.morto text{fill:var(--rule-strong)}
+.filo{stroke:var(--rule-strong);stroke-width:1.5;transition:.2s}
+.filo.attivo{stroke:var(--accent);stroke-width:3}
+.filo.spento{stroke:var(--rule);stroke-dasharray:3 5}
+.pallina{fill:var(--accent);opacity:0}
+.pallina.on{opacity:1}
+.comandi{display:flex;flex-wrap:wrap;gap:9px;margin:4px 0 16px}
+.comandi button{font-family:var(--f-mono);font-size:14px;font-weight:600;background:var(--surface);color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:6px;padding:9px 16px;cursor:pointer;transition:.15s}
+.comandi button:hover:not(:disabled){border-color:var(--navy);color:var(--ink)}
+.comandi button.primario{background:var(--navy);color:var(--bg);border-color:var(--navy)}
+.comandi button:disabled{opacity:.4;cursor:default}
+/* --- diffusione a round --- */
+.giro{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:820px){.giro{grid-template-columns:1fr}}
+.nodini{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 8px}
+.nodini i{width:30px;height:30px;border-radius:5px;border:1.6px solid var(--rule-strong);background:var(--surface-2);display:block;transition:.25s}
+.nodini i.pieno{background:var(--ok-soft);border-color:var(--ok)}
+.nodini i.sorgente{background:var(--navy-soft);border-color:var(--navy)}
+.conta{font-family:var(--f-mono);font-size:13.5px;color:var(--ink-3)}
+.conta b{color:var(--ink);font-size:15px}
+.barra{height:7px;border-radius:4px;background:var(--surface-2);border:1px solid var(--rule);overflow:hidden;margin-top:9px}
+.barra span{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.round{font-family:var(--f-mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+/* --- codice --- */
+pre.code{font-family:var(--f-mono);font-size:13.5px;line-height:1.55;background:var(--surface-2);border:1px solid var(--rule);border-left:3px solid var(--navy);border-radius:0 5px 5px 0;padding:14px 16px;overflow-x:auto;margin:0;color:var(--ink-2)}
+pre.code b{color:var(--accent);font-weight:600}
+pre.code i{color:var(--ink-3);font-style:normal}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <span class="eyebrow">TPSI &middot; Progettazione di protocolli &middot; Architetture</span>
+  <h1>Chi chiede e <em>chi risponde</em></h1>
+  <p class="lede">Client-server e peer-to-peer non sono due tipi di computer: sono due modi di distribuire i ruoli in una conversazione. Da quella scelta discende tutto il resto — chi si ferma se cade un nodo, e chi rallenta quando gli utenti aumentano.</p>
+</header>
+
+<nav class="toc" aria-label="Indice">
+  <div style="width:100%;margin-bottom:2px" class="eyebrow">In questa pagina</div>
+  <a href="#s1"><span>01</span>Non &egrave; la macchina, &egrave; il ruolo</a>
+  <a href="#s2"><span>02</span>Le due reti a confronto</a>
+  <a href="#s3"><span>03</span>Perch&eacute; il peer-to-peer esiste</a>
+  <a href="#s4"><span>04</span>Quasi nessuno &egrave; puro</a>
+  <a href="#s5"><span>05</span>Come si vede nel codice</a>
+  <a href="#s6"><span>06</span>Provaci tu</a>
+</nav>
+
+<!-- ===== 01 ===== -->
+<section id="s1">
+  <div class="sec-head"><span class="num">01</span><h2>Non &egrave; la macchina, &egrave; il ruolo</h2>
+    <p class="eyebrow" style="grid-column:2">due parole che descrivono un comportamento</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>Quando diciamo &laquo;server&raquo; viene in mente un armadio pieno di lucine in una sala refrigerata. Ma nella programmazione di rete <b>server</b> e <b>client</b> non sono oggetti: sono <b>ruoli in una conversazione</b>, e li puoi avere tutti e due sullo stesso portatile.</p>
+      <div class="qbox">
+        <div class="qcard">
+          <div class="q">Chi &egrave; il server?</div>
+          <div class="a">Quello che <b>sta in ascolto</b> su una porta e aspetta. Non comincia mai lui: risponde.</div>
+        </div>
+        <div class="qcard">
+          <div class="q">Chi &egrave; il client?</div>
+          <div class="a">Quello che <b>apre la connessione</b> e fa la prima richiesta. Deve sapere dove trovare l'altro.</div>
+        </div>
+      </div>
+      <p>Da qui discende una cosa pratica che vale sempre: <b>il server deve essere raggiungibile e stare acceso prima</b>, il client no. Per questo il server ha un indirizzo e una porta che si conoscono in anticipo, e il client si prende una porta qualsiasi.</p>
+    </div>
+    <div class="note">
+      <span class="eyebrow">La differenza in una riga</span>
+      <p>Nel <b>client-server</b> i due ruoli stanno su macchine diverse e non si scambiano mai. Nel <b>peer-to-peer</b> ogni nodo fa <b>tutti e due i ruoli</b>: &egrave; server per chi gli chiede qualcosa e client quando chiede lui.</p>
+    </div>
+    <p class="pull">Un peer non &egrave; un client pi&ugrave; potente: &egrave; un programma che ascolta e chiama allo stesso tempo.</p>
+  </div>
+</section>
+
+<!-- ===== 02 ===== -->
+<section id="s2">
+  <div class="sec-head"><span class="num">02</span><h2>Le due reti a confronto</h2>
+    <p class="eyebrow" style="grid-column:2">stessi sei nodi, stessa richiesta</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>Sotto ci sono due reti con gli stessi sei nodi. A sinistra uno di loro fa il server; a destra sono tutti pari. Il nodo <b style="color:var(--accent)">A</b> vuole un file che ce l'ha il nodo <b style="color:var(--ok)">D</b>. Prova a vedere che strada fa.</p>
+    </div>
+
+    <div class="comandi">
+      <button id="b-chiede" class="primario">A chiede il file</button>
+      <button id="b-guasto">Spegni un nodo</button>
+      <button id="b-reset">Ricomincia</button>
+    </div>
+
+    <div class="reti">
+      <div class="rete">
+        <h4>Client-server</h4>
+        <svg class="net" id="svg-cs" viewBox="0 0 400 330" role="img" aria-label="Rete client-server: sei nodi collegati tutti a un server centrale"></svg>
+        <p class="esito" id="es-cs">Tutti i nodi parlano solo con il centro. Fra loro non c'&egrave; nessun filo.</p>
+      </div>
+      <div class="rete">
+        <h4>Peer-to-peer</h4>
+        <svg class="net" id="svg-p2p" viewBox="0 0 400 330" role="img" aria-label="Rete peer to peer: sei nodi collegati fra loro"></svg>
+        <p class="esito" id="es-p2p">Ogni nodo &egrave; collegato a tutti gli altri. Non c'&egrave; un centro.</p>
+      </div>
+    </div>
+
+    <div class="note warn">
+      <span class="eyebrow">Quello che si vede spegnendo un nodo</span>
+      <p>Nel client-server c'&egrave; <b>un</b> nodo che, se cade, ferma tutto: si chiama <b>single point of failure</b>. Nel peer-to-peer non esiste un nodo cos&igrave;: se ne spegni uno, gli altri continuano — perde solo chi stava scaricando proprio da lui.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 03 ===== -->
+<section id="s3">
+  <div class="sec-head"><span class="num">03</span><h2>Perch&eacute; il peer-to-peer esiste</h2>
+    <p class="eyebrow" style="grid-column:2">lo stesso file da mandare a otto persone</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>La resistenza ai guasti &egrave; una bella propriet&agrave;, ma non &egrave; il motivo per cui il peer-to-peer &egrave; nato. Il motivo &egrave; un altro, ed &egrave; aritmetica.</p>
+      <p>Immagina di dover far arrivare lo stesso file a <b>otto</b> persone. Con un server, le copie le spedisce tutte lui: otto volte. Con il peer-to-peer, appena un nodo ha ricevuto il file <b>pu&ograve; passarlo a sua volta</b>. Fai avanzare la simulazione un giro alla volta.</p>
+    </div>
+
+    <div class="comandi">
+      <button id="b-giro" class="primario">Avanti di un giro</button>
+      <button id="b-giro-reset">Ricomincia</button>
+    </div>
+
+    <div class="giro">
+      <div class="rete">
+        <h4>Client-server</h4>
+        <p class="round" id="r-cs">Giro 0</p>
+        <div class="nodini" id="n-cs"></div>
+        <p class="conta">hanno il file: <b id="c-cs">0</b> / 8 &nbsp;&middot;&nbsp; copie spedite dal server: <b id="s-cs">0</b></p>
+        <div class="barra"><span id="bar-cs"></span></div>
+      </div>
+      <div class="rete">
+        <h4>Peer-to-peer</h4>
+        <p class="round" id="r-p2p">Giro 0</p>
+        <div class="nodini" id="n-p2p"></div>
+        <p class="conta">hanno il file: <b id="c-p2p">0</b> / 8 &nbsp;&middot;&nbsp; copie spedite dalla sorgente: <b id="s-p2p">0</b></p>
+        <div class="barra"><span id="bar-p2p"></span></div>
+      </div>
+    </div>
+
+    <p class="esito" id="es-giro" style="font-size:15.5px;color:var(--ink-2);margin-top:4px"></p>
+
+    <div class="note ok">
+      <span class="eyebrow">Il conto che spiega tutto</span>
+      <p>Il server serve <b>un nodo alla volta</b>: per otto nodi servono otto giri, e il carico cresce insieme agli utenti. Nel peer-to-peer i nodi che hanno il file <b>raddoppiano a ogni giro</b> (1, 2, 4, 8): bastano <b>tre giri</b>, e la sorgente ne ha spedite <b>tre invece di sette</b> &mdash; il resto del lavoro l'hanno fatto gli altri nodi. Pi&ugrave; gente arriva, pi&ugrave; la rete diventa veloce — esattamente il contrario del client-server.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 04 ===== -->
+<section id="s4">
+  <div class="sec-head"><span class="num">04</span><h2>Quasi nessuno &egrave; puro</h2>
+    <p class="eyebrow" style="grid-column:2">i modelli ibridi, che poi sono la norma</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>Nella realt&agrave; quasi nessun sistema &egrave; solo l'uno o solo l'altro, perch&eacute; il peer-to-peer ha un problema che il client-server non ha: <b>come faccio a sapere chi c'&egrave;?</b> Se non esiste un centro, a chi chiedo l'indirizzo degli altri?</p>
+      <p>La soluzione quasi sempre adottata &egrave; un <b>server piccolo per le presentazioni</b> e poi peer-to-peer per i dati veri.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <caption>Chi fa cosa nei sistemi che usate tutti i giorni</caption>
+        <thead><tr><th>Sistema</th><th>Il server serve a&hellip;</th><th>In peer-to-peer avviene&hellip;</th></tr></thead>
+        <tbody>
+          <tr><td>BitTorrent</td><td>il <i>tracker</i>: dire chi ha quali pezzi</td><td>tutto lo scambio dei pezzi</td></tr>
+          <tr><td>Videochiamata (WebRTC)</td><td>far incontrare i due e superare i NAT</td><td>audio e video, che vanno diretti</td></tr>
+          <tr><td>Blockchain</td><td>&mdash; (non c'&egrave;)</td><td>tutto: nodi tutti pari</td></tr>
+          <tr><td>Web, posta, database</td><td>tutto</td><td>&mdash; (niente)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <span class="eyebrow">Da chiedersi davanti a un sistema nuovo</span>
+      <p>Non &laquo;&egrave; client-server o peer-to-peer?&raquo;, ma <b>&laquo;quale parte &egrave; centralizzata e quale no?&raquo;</b>. Di solito la parte centralizzata &egrave; quella che serve a <b>trovarsi</b>, e quella distribuita &egrave; quella che <b>consuma banda</b>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 05 ===== -->
+<section id="s5">
+  <div class="sec-head"><span class="num">05</span><h2>Come si vede nel codice</h2>
+    <p class="eyebrow" style="grid-column:2">le stesse socket, montate diversamente</p></div>
+  <div class="stack">
+    <div class="col">
+      <p>In laboratorio la differenza si tocca con mano, ed &egrave; sorprendentemente piccola: i pezzi sono gli stessi, cambia <b>chi ne ha quali</b>.</p>
+    </div>
+    <div class="due">
+      <div>
+        <p class="eyebrow" style="margin-bottom:8px">Client-server &mdash; due programmi diversi</p>
+<pre class="code"><i>// Server.java &mdash; ascolta e basta</i>
+<b>ServerSocket</b> s = new ServerSocket(5000);
+Socket c = s.accept();      <i>// aspetta qui</i>
+
+<i>// Client.java &mdash; chiama e basta</i>
+<b>Socket</b> s = new Socket("10.0.0.7", 5000);</pre>
+      </div>
+      <div>
+        <p class="eyebrow" style="margin-bottom:8px">Peer-to-peer &mdash; un programma solo</p>
+<pre class="code"><i>// Peer.java &mdash; fa tutte e due le cose</i>
+<b>ServerSocket</b> in = new ServerSocket(5000);
+new Thread(() -&gt; {
+    while (true) servi(in.accept());   <i>// ascolto</i>
+}).start();
+
+<b>Socket</b> out = new Socket(altroPeer, 5000);  <i>// chiamo</i></pre>
+      </div>
+    </div>
+    <div class="note">
+      <span class="eyebrow">La riga che fa la differenza</span>
+      <p>Un peer apre <b>un <code>ServerSocket</code> e un <code>Socket</code></b>, e deve farlo <b>in due thread diversi</b>: mentre ascolta non pu&ograve; stare fermo ad aspettare, perch&eacute; deve anche poter chiamare. &Egrave; il motivo per cui un peer &egrave; sempre un po' pi&ugrave; complicato di un client.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 06 ===== -->
+<section id="s6">
+  <div class="sec-head"><span class="num">06</span><h2>Provaci tu</h2>
+    <p class="eyebrow" style="grid-column:2">sei casi, uno per volta</p></div>
+  <div class="quiz">
+    <p class="qtesto" id="q-testo"></p>
+    <div class="scelte">
+      <button data-v="cs">Client-server</button>
+      <button data-v="p2p">Peer-to-peer</button>
+      <button data-v="ib">Ibrido</button>
+    </div>
+    <p class="feedback" id="q-fb"></p>
+    <div class="qnav"><span id="q-cont"></span><button id="q-av">Caso successivo</button></div>
+  </div>
+</section>
+
+<footer>
+  <span class="eyebrow">Nota sulla realizzazione</span>
+  <p style="margin-top:8px">Questa pagina &egrave; stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilit&agrave; didattica e scientifica &egrave; integralmente sua. L'indicazione &egrave; fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var NOMI = ['A','B','C','D','E','F'];
+  var CX = 200, CY = 165, R = 118;
+  var pos = NOMI.map(function(_, i){
+    var a = -Math.PI/2 + i * Math.PI/3;
+    return { x: CX + R*Math.cos(a), y: CY + R*Math.sin(a) };
+  });
+  var CHIEDE = 0, HA = 3, SRV = { x: CX, y: CY };
+
+  function el(tag, attr){
+    var e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var k in attr) e.setAttribute(k, attr[k]);
+    return e;
+  }
+  function nodo(g, p, testo, cls){
+    var gg = el('g', { 'class': 'nodo ' + (cls||''), 'data-n': testo });
+    gg.appendChild(el('circle', { cx: p.x, cy: p.y, r: 26 }));
+    var t = el('text', { x: p.x, y: p.y + 5 }); t.textContent = testo;
+    gg.appendChild(t); g.appendChild(gg); return gg;
+  }
+
+  function costruisci(svgId, tipo){
+    var svg = document.getElementById(svgId);
+    svg.innerHTML = '';
+    var gFili = el('g', {}), gNodi = el('g', {});
+    svg.appendChild(gFili); svg.appendChild(gNodi);
+    var fili = {};
+    function filo(a, b, chiave){
+      var l = el('line', { x1:a.x, y1:a.y, x2:b.x, y2:b.y, 'class':'filo' });
+      gFili.appendChild(l); fili[chiave] = l;
+    }
+    if (tipo === 'cs'){
+      pos.forEach(function(p,i){ filo(p, SRV, i + '-s'); });
+    } else {
+      for (var i=0;i<6;i++) for (var j=i+1;j<6;j++) filo(pos[i], pos[j], i+'-'+j);
+    }
+    var nodi = pos.map(function(p,i){
+      var cls = (i===CHIEDE ? 'chiede' : (i===HA && tipo==='p2p' ? 'ha' : ''));
+      return nodo(gNodi, p, NOMI[i], cls);
+    });
+    var srv = null;
+    if (tipo === 'cs'){
+      srv = nodo(gNodi, SRV, 'S', 'srv');
+      var t = el('text', { x: CX, y: CY + 46, 'class':'hdr' });
+      t.setAttribute('text-anchor','middle'); t.textContent = 'SERVER';
+      gNodi.appendChild(t);
+    }
+    var pallina = el('circle', { r: 7, cx: 0, cy: 0, 'class':'pallina' });
+    svg.appendChild(pallina);
+    return { svg:svg, fili:fili, nodi:nodi, srv:srv, pallina:pallina };
+  }
+
+  var cs = costruisci('svg-cs','cs'), p2p = costruisci('svg-p2p','p2p');
+  var esCS = document.getElementById('es-cs'), esP2P = document.getElementById('es-p2p');
+  var occupato = false, spento = false;
+
+  function viaggia(rete, tappe, fatto){
+    var i = 0;
+    function tratta(){
+      if (i >= tappe.length - 1){ rete.pallina.classList.remove('on'); if (fatto) fatto(); return; }
+      var a = tappe[i], b = tappe[i+1], t0 = null, dur = 620;
+      rete.pallina.classList.add('on');
+      function passo(ts){
+        if (!t0) t0 = ts;
+        var k = Math.min(1, (ts - t0)/dur);
+        rete.pallina.setAttribute('cx', a.x + (b.x-a.x)*k);
+        rete.pallina.setAttribute('cy', a.y + (b.y-a.y)*k);
+        if (k < 1) requestAnimationFrame(passo); else { i++; tratta(); }
+      }
+      requestAnimationFrame(passo);
+    }
+    tratta();
+  }
+
+  function pulisci(){
+    [cs,p2p].forEach(function(r){
+      for (var k in r.fili) r.fili[k].classList.remove('attivo');
+    });
+  }
+
+  document.getElementById('b-chiede').addEventListener('click', function(){
+    if (occupato) return;
+    pulisci();
+    if (spento){
+      esCS.innerHTML = 'Il server &egrave; spento: <b>la richiesta non arriva da nessuna parte</b>. Nessuno pu&ograve; fare niente.';
+      esCS.className = 'esito ko';
+      esP2P.innerHTML = 'Il nodo B &egrave; spento, ma A e D non ne avevano bisogno: <b>lo scambio funziona lo stesso</b>.';
+      esP2P.className = 'esito';
+      var t2 = [pos[CHIEDE], pos[HA], pos[CHIEDE]];
+      occupato = true;
+      p2p.fili['0-3'].classList.add('attivo');
+      viaggia(p2p, t2, function(){ occupato = false; });
+      return;
+    }
+    occupato = true;
+    cs.fili[CHIEDE + '-s'].classList.add('attivo');
+    p2p.fili['0-3'].classList.add('attivo');
+    esCS.innerHTML = 'A non pu&ograve; chiedere a D: non c'+String.fromCharCode(39)+'&egrave; nessun filo fra loro. Passa dal centro: <b>2 salti</b>.';
+    esCS.className = 'esito';
+    esP2P.innerHTML = 'A chiede direttamente a D, che il file ce l'+String.fromCharCode(39)+'ha: <b>1 salto</b>.';
+    esP2P.className = 'esito';
+    viaggia(cs, [pos[CHIEDE], SRV, pos[CHIEDE]], function(){ occupato = false; });
+    viaggia(p2p, [pos[CHIEDE], pos[HA], pos[CHIEDE]], null);
+  });
+
+  document.getElementById('b-guasto').addEventListener('click', function(){
+    spento = true; pulisci();
+    cs.srv.classList.add('morto');
+    for (var k in cs.fili) cs.fili[k].classList.add('spento');
+    p2p.nodi[1].classList.add('morto');
+    for (var k2 in p2p.fili) if (k2.indexOf('1') === 0 || k2.indexOf('-1') > 0) p2p.fili[k2].classList.add('spento');
+    esCS.innerHTML = '&Egrave; caduto il server: <b>tutta la rete &egrave; ferma</b>. Un solo nodo tiene in piedi tutto, ed &egrave; il suo punto debole.';
+    esCS.className = 'esito ko';
+    esP2P.innerHTML = '&Egrave; caduto il nodo B: <b>gli altri cinque continuano a parlarsi</b>. Nessuno era indispensabile.';
+    esP2P.className = 'esito';
+  });
+
+  document.getElementById('b-reset').addEventListener('click', function(){
+    spento = false; occupato = false;
+    cs = costruisci('svg-cs','cs'); p2p = costruisci('svg-p2p','p2p');
+    esCS.innerHTML = 'Tutti i nodi parlano solo con il centro. Fra loro non c'+String.fromCharCode(39)+'&egrave; nessun filo.';
+    esP2P.innerHTML = 'Ogni nodo &egrave; collegato a tutti gli altri. Non c'+String.fromCharCode(39)+'&egrave; un centro.';
+    esCS.className = esP2P.className = 'esito';
+  });
+
+  /* ---------- diffusione a giri ---------- */
+  var N = 8, giro = 0, avutiCS = 0, avutiP2P = 0, sorgP2P = 0;
+  var nCS = document.getElementById('n-cs'), nP2P = document.getElementById('n-p2p');
+  function disegnaNodini(cont, quanti){
+    cont.innerHTML = '';
+    for (var i=0;i<N;i++){
+      var i2 = document.createElement('i');
+      if (i < quanti) i2.className = (i===0 ? 'pieno sorgente' : 'pieno');
+      cont.appendChild(i2);
+    }
+  }
+  function aggiorna(){
+    disegnaNodini(nCS, avutiCS); disegnaNodini(nP2P, avutiP2P);
+    document.getElementById('c-cs').textContent = avutiCS;
+    document.getElementById('c-p2p').textContent = avutiP2P;
+    document.getElementById('s-cs').textContent = Math.max(0, avutiCS - 1);
+    document.getElementById('s-p2p').textContent = sorgP2P;
+    document.getElementById('r-cs').textContent = 'Giro ' + giro;
+    document.getElementById('r-p2p').textContent = 'Giro ' + giro;
+    document.getElementById('bar-cs').style.width = (avutiCS/N*100) + '%';
+    document.getElementById('bar-p2p').style.width = (avutiP2P/N*100) + '%';
+    var msg = document.getElementById('es-giro');
+    if (avutiP2P >= N && avutiCS < N){
+      msg.innerHTML = '<b>Il peer-to-peer ha finito al giro ' + giro + '</b>, mentre il server &egrave; ancora a ' + avutiCS + ' nodi su ' + N + '. E la sorgente ne ha spedite solo ' + sorgP2P + '.';
+    } else if (avutiCS >= N){
+      msg.innerHTML = 'Finito anche il client-server, al giro ' + giro + ': <b>' + (N-1) + ' copie spedite dal server</b> contro <b>1</b> della sorgente peer-to-peer.';
+    } else { msg.textContent = ''; }
+    document.getElementById('b-giro').disabled = (avutiCS >= N);
+  }
+  document.getElementById('b-giro').addEventListener('click', function(){
+    giro++;
+    if (avutiCS < N) avutiCS = Math.min(N, avutiCS + 1);
+    if (avutiP2P < N){ sorgP2P++; avutiP2P = Math.min(N, avutiP2P * 2); }
+    aggiorna();
+  });
+  document.getElementById('b-giro-reset').addEventListener('click', function(){
+    giro = 0; avutiCS = 1; avutiP2P = 1; sorgP2P = 0; aggiorna();
+  });
+  avutiCS = 1; avutiP2P = 1; sorgP2P = 0; aggiorna();
+
+  /* ---------- quiz ---------- */
+  var casi = [
+    { t:'Aprite <b>itisavogadro.it</b> nel browser: il vostro computer chiede una pagina e la scuola la manda.', v:'cs',
+      s:'Il browser apre la connessione, il web server sta in ascolto sulla 80 o sulla 443. I ruoli non si scambiano mai.' },
+    { t:'Una <b>videochiamata</b> fra due persone: l\'app le fa incontrare, poi audio e video viaggiano direttamente da un telefono all\'altro.', v:'ib',
+      s:'Ibrido: il server serve solo alle presentazioni, i dati veri vanno peer-to-peer. &Egrave; il modello di WebRTC.' },
+    { t:'Scaricate una <b>distribuzione Linux via BitTorrent</b>: mentre scaricate, state anche caricando pezzi per gli altri.', v:'ib',
+      s:'Ibrido: il <i>tracker</i> &egrave; un server che dice chi ha cosa, ma i pezzi se li scambiano i peer. Il fatto che carichiate mentre scaricate &egrave; la firma del peer-to-peer.' },
+    { t:'Il <b>server TCP in Java</b> che scrivete in laboratorio, con i client che si collegano alla porta 5000.', v:'cs',
+      s:'Client-server puro: un programma fa <code>accept()</code>, l\'altro fa <code>new Socket(...)</code>, e non si scambiano mai i ruoli.' },
+    { t:'In una <b>rete blockchain</b> ogni nodo tiene una copia del registro e la confronta con quella degli altri.', v:'p2p',
+      s:'Peer-to-peer puro: non c\'&egrave; nessun nodo centrale, e ogni nodo fa esattamente quello che fanno gli altri.' },
+    { t:'Giocate in LAN e uno di voi <b>ospita la partita</b>: gli altri si collegano al suo computer.', v:'cs',
+      s:'Client-server, anche se gira su un portatile come gli altri: quel programma sta in ascolto e gli altri lo chiamano. Il ruolo non dipende dalla macchina.' }
+  ];
+  var qi = 0, risposto = false, giuste = 0;
+  var qt = document.getElementById('q-testo'), qfb = document.getElementById('q-fb');
+  var qav = document.getElementById('q-av'), qcont = document.getElementById('q-cont');
+  var qbtns = Array.prototype.slice.call(document.querySelectorAll('.scelte button'));
+  var ETICH = { cs:'Client-server', p2p:'Peer-to-peer', ib:'Ibrido' };
+  function mostraCaso(){
+    risposto = false;
+    qt.innerHTML = casi[qi].t;
+    qfb.classList.remove('show'); qfb.innerHTML = '';
+    qbtns.forEach(function(b){ b.disabled = false; b.className = ''; });
+    qav.disabled = true;
+    qcont.textContent = 'Caso ' + (qi+1) + ' di ' + casi.length + '   \u00b7   risposte esatte: ' + giuste;
+  }
+  qbtns.forEach(function(b){
+    b.addEventListener('click', function(){
+      if (risposto) return;
+      risposto = true;
+      var scelta = b.getAttribute('data-v'), giusta = casi[qi].v;
+      qbtns.forEach(function(o){
+        o.disabled = true;
+        if (o.getAttribute('data-v') === giusta) o.className = 'giusta';
+      });
+      if (scelta !== giusta) b.className = 'sbagliata'; else giuste++;
+      qfb.innerHTML = (scelta === giusta ? '<b>Esatto.</b> ' : '<b>Non ci siamo.</b> La risposta &egrave; <b>' + ETICH[giusta] + '</b>. ') + casi[qi].s;
+      qfb.classList.add('show');
+      qav.disabled = (qi >= casi.length - 1);
+      qcont.textContent = 'Caso ' + (qi+1) + ' di ' + casi.length + '   \u00b7   risposte esatte: ' + giuste;
+      if (qi >= casi.length - 1) qcont.textContent += '   \u00b7   finito!';
+    });
+  });
+  qav.addEventListener('click', function(){ if (qi < casi.length - 1){ qi++; mostraCaso(); } });
+  mostraCaso();
+})();
+</script>
+</body>
+</html>
