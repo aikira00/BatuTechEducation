@@ -132,10 +132,10 @@ svg.topo-svg{width:100%;height:auto;display:block;cursor:pointer}
 .tn circle{fill:var(--surface-2);stroke:var(--rule-strong);stroke-width:1.8;transition:.2s}
 .tn.hub circle{fill:var(--navy-soft);stroke:var(--navy);stroke-width:2.4;r:13}
 .tn:hover circle{stroke:var(--accent)}
-.tn.morto circle{fill:none;stroke:var(--rule);stroke-dasharray:3 3}
-.tn.isolato circle{fill:var(--warn-soft);stroke:var(--warn)}
-.te{stroke:var(--rule-strong);stroke-width:1.5;transition:.2s}
-.te.spento{stroke:var(--rule);stroke-dasharray:3 4;opacity:.5}
+.tn.morto circle{fill:none;stroke:var(--rule-strong);stroke-dasharray:3 3;opacity:.6}
+.tn.isolato circle{fill:var(--warn);fill-opacity:.45;stroke:var(--warn);stroke-width:2.4}
+.te{stroke:var(--ink-3);stroke-width:1.6;opacity:.7;transition:.2s}
+.te.spento{stroke:var(--rule);stroke-dasharray:3 4;opacity:.45}
 .te.isolato{stroke:var(--warn);opacity:.55}
 .esiti{font-family:var(--f-mono);font-size:13px;color:var(--ink-3);line-height:1.75;margin-top:8px}
 .esiti b{color:var(--ink);font-size:14.5px}
@@ -151,8 +151,8 @@ svg.topo-svg{width:100%;height:auto;display:block;cursor:pointer}
 .assi>div:nth-child(3n){border-right:none}
 .assi .th{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);font-weight:600}
 .assi .rh{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);font-weight:600;display:flex;align-items:center}
-.assi b{color:var(--navy);display:block;margin-bottom:3px;font-family:var(--f-body);font-size:15px}
-.assi .sorpresa b{color:var(--accent)}
+.assi .tit{color:var(--navy);display:block;margin-bottom:5px;font-weight:700;font-size:15.5px}
+.assi .sorpresa .tit{color:var(--accent)}
 @media (max-width:760px){.assi{grid-template-columns:1fr}.assi>div{border-right:none}}
 </style>
 </head>
@@ -181,7 +181,7 @@ svg.topo-svg{width:100%;height:auto;display:block;cursor:pointer}
     <div class="col">
       <p>Nel 1964 un ingegnere della RAND, <b>Paul Baran</b>, disegn&ograve; tre reti con lo stesso numero di nodi e si chiese quale delle tre sopravvivesse a un attacco. Quel disegno &egrave; uno dei pi&ugrave; famosi dell'informatica, e le tre parole che us&ograve; si usano ancora oggi.</p>
       <ul class="clean">
-        <li><b>Centralizzata:</b> un nodo al centro, tutti gli altri attaccati a lui. Nessuno parla con nessuno se non passando dal centro.</li>
+        <li><b>Centralizzata:</b> un nodo al centro, tutti gli altri attaccati a lui. Due nodi qualsiasi possono parlarsi solo passando di l&igrave;.</li>
         <li><b>Decentralizzata:</b> non un centro, ma <b>alcuni</b> centri, collegati fra loro, ognuno con il suo gruppetto.</li>
         <li><b>Distribuita:</b> nessun centro. Ogni nodo ha pi&ugrave; vicini, e fra due nodi qualsiasi esistono <b>pi&ugrave; strade</b>.</li>
       </ul>
@@ -197,8 +197,12 @@ svg.topo-svg{width:100%;height:auto;display:block;cursor:pointer}
     <p class="eyebrow" style="grid-column:2">clicca un nodo per spegnerlo</p></div>
   <div class="stack">
     <div class="col">
-      <p>Ogni rete ha <b>dodici nodi</b>. Spegni i nodi cliccandoci sopra, oppure usa i due pulsanti: il <b>guasto</b> colpisce un nodo a caso &mdash; come un cavo tranciato o un blackout &mdash; mentre l'<b>attacco</b> colpisce di proposito il nodo con pi&ugrave; collegamenti, cio&egrave; quello che fa pi&ugrave; danno.</p>
-      <p>Sotto ogni rete c'&egrave; scritto in quanti <b>tronconi</b> si &egrave; spezzata e quanti nodi restano nel pi&ugrave; grande: sono i nodi che riescono ancora a parlarsi fra loro.</p>
+      <p>Ogni rete ha <b>dodici nodi</b>. Spegnili cliccandoci sopra, oppure usa i due pulsanti.</p>
+      <ul class="clean">
+        <li><b>Guasto a caso:</b> cade un nodo qualsiasi. &Egrave; il cavo tranciato, il blackout, il computer che si rompe.</li>
+        <li><b>Attacco mirato:</b> cade il nodo con pi&ugrave; collegamenti, cio&egrave; quello che fa pi&ugrave; danno. &Egrave; qualcuno che sa dove colpire.</li>
+      </ul>
+      <p>Sotto ogni rete c'&egrave; scritto in quanti <b>pezzi</b> si &egrave; spezzata. Due nodi finiti in pezzi diversi non riescono pi&ugrave; a parlarsi: &egrave; quello il danno vero. I nodi rimasti tagliati fuori diventano <b style="color:var(--warn)">arancioni</b>.</p>
     </div>
 
     <div class="comandi">
@@ -213,7 +217,13 @@ svg.topo-svg{width:100%;height:auto;display:block;cursor:pointer}
 
     <div class="note warn">
       <span class="eyebrow">La prova da fare in due mosse</span>
-      <p>Premi <b>una sola volta</b> &laquo;attacco mirato&raquo;. La rete centralizzata &egrave; gi&agrave; finita: dodici nodi diventano <b>undici pezzi separati</b>. La decentralizzata perde un gruppetto ma il resto regge. La distribuita non se ne accorge nemmeno. E continuando a colpire regge fino al <b>sesto</b> colpo: l'attacco mirato cerca il nodo pi&ugrave; collegato, ma l&igrave; sono <b>tutti uguali</b> &mdash; non c'&egrave; un bersaglio che valga la pena.</p>
+      <p>Premi <b>una sola volta</b> &laquo;attacco mirato&raquo; e guarda i tre numeri.</p>
+      <ul class="clean">
+        <li>La <b>centralizzata</b> &egrave; gi&agrave; finita: dodici nodi diventano <b>undici pezzi</b>, e ognuno resta solo.</li>
+        <li>La <b>decentralizzata</b> perde un gruppetto, ma gli altri otto nodi continuano a parlarsi.</li>
+        <li>La <b>distribuita</b> non se ne accorge nemmeno: &egrave; ancora tutta intera.</li>
+      </ul>
+      <p>Poi continua a colpire: per spezzare la distribuita servono <b>quattro o cinque</b> colpi, a seconda di dove cadono. Il motivo &egrave; che l'attacco cerca il nodo pi&ugrave; collegato, ma l&igrave; <b>sono tutti uguali</b> &mdash; non esiste un bersaglio che convenga, e chi attacca finisce per andare a caso come chiunque altro.</p>
     </div>
   </div>
 </section>
@@ -224,18 +234,18 @@ svg.topo-svg{width:100%;height:auto;display:block;cursor:pointer}
     <p class="eyebrow" style="grid-column:2">topologia e ruoli sono cose diverse</p></div>
   <div class="stack">
     <div class="col">
-      <p>Qui casca quasi tutti, ed &egrave; bene saperlo: <b>centralizzato/distribuito</b> e <b>client-server/peer-to-peer</b> non sono sinonimi. Sono due domande diverse:</p>
+      <p>Qui ci cascano quasi tutti, ed &egrave; bene saperlo: <b>centralizzato/distribuito</b> e <b>client-server/peer-to-peer</b> non sono sinonimi. Sono due domande diverse:</p>
       <div class="qbox">
         <div class="qcard">
           <div class="q">Topologia</div>
-          <div class="a">Dove stanno i collegamenti e i dati? <b>Uno solo</b> o <b>tanti</b>?</div>
+          <div class="a">Dove stanno i collegamenti e i dati? <b>In un posto solo</b>, o <b>sparsi fra tanti</b>?</div>
         </div>
         <div class="qcard">
           <div class="q">Ruoli</div>
-          <div class="a">Chi chiede e chi risponde? Sempre <b>gli stessi</b> o <b>tutti e due</b>?</div>
+          <div class="a">Chi chiede e chi risponde? Ruoli <b>fissi</b>, o ognuno fa <b>tutti e due</b>?</div>
         </div>
       </div>
-      <p>Le due domande si incrociano, e le caselle sono tutte e quattro piene. Le pi&ugrave; interessanti sono quelle in diagonale, evidenziate.</p>
+      <p>Le due domande si incrociano, e le caselle sono tutte e quattro piene. Le pi&ugrave; interessanti sono le due in diagonale, quelle scritte in rosso.</p>
     </div>
 
     <div class="assi">
@@ -244,17 +254,22 @@ svg.topo-svg{width:100%;height:auto;display:block;cursor:pointer}
       <div class="th">Ruoli: peer-to-peer</div>
 
       <div class="rh">Topologia<br>centralizzata</div>
-      <div><b>Il server in laboratorio</b>Un programma in ascolto sulla 5000 e i vostri client. Un solo punto, un solo ruolo fisso.</div>
-      <div class="sorpresa"><b>Napster (1999)</b>I file stavano sui computer degli utenti &mdash; peer-to-peer puro &mdash; ma l'elenco di chi aveva cosa stava su <b>un server solo</b>. Bastarono una causa e una sentenza per spegnerlo.</div>
+      <div><span class="tit">Il server in laboratorio</span>Un programma in ascolto sulla 5000 e i vostri client. Un solo punto, un solo ruolo fisso.</div>
+      <div class="sorpresa"><span class="tit">Napster (1999)</span>I file stavano sui computer degli utenti &mdash; peer-to-peer puro &mdash; ma l'elenco di chi aveva cosa stava su <b>un server solo</b>. Bastarono una causa e una sentenza per spegnerlo.</div>
 
       <div class="rh">Topologia<br>distribuita</div>
-      <div class="sorpresa"><b>Google, Netflix, il web di oggi</b>Migliaia di server sparsi nel mondo, nessuno indispensabile: infrastruttura distribuitissima. Ma per voi restano <b>server</b>, e voi restate client.</div>
-      <div><b>BitTorrent con DHT, blockchain</b>Nessun centro n&eacute; nella rete n&eacute; nei ruoli: ogni nodo &egrave; server e client, e non esiste una macchina che, spenta, fermi tutto.</div>
+      <div class="sorpresa"><span class="tit">Google, Netflix, il web di oggi</span>Migliaia di server sparsi nel mondo, nessuno indispensabile: la topologia &egrave; distribuita quanto si pu&ograve;. Ma per voi restano <b>server</b>, e voi restate client.</div>
+      <div><span class="tit">BitTorrent con DHT, blockchain</span>Nessun centro n&eacute; nella rete n&eacute; nei ruoli: ogni nodo &egrave; server e client, e non esiste una macchina che, spenta, fermi tutto.</div>
     </div>
 
     <div class="note">
       <span class="eyebrow">Le due caselle che smontano l'equivoco</span>
       <p><b>Napster</b> era peer-to-peer nei ruoli ma centralizzato nella topologia: per questo &egrave; bastato spegnere <b>una</b> macchina per chiuderlo. <b>Google</b> &egrave; il contrario: client-server nei ruoli, ma cos&igrave; distribuito che spegnere un datacenter non lo ferma. Se i due assi fossero la stessa cosa, nessuno dei due esisterebbe.</p>
+    </div>
+
+    <div class="note warn">
+      <span class="eyebrow">Una precisazione onesta</span>
+      <p>Nemmeno le reti pi&ugrave; distribuite sono centralizzate a zero: un residuo ce l'hanno <b>per entrare</b>. Un nodo blockchain appena acceso non conosce nessuno, e per trovare i primi vicini usa dei <b>DNS seed</b> o una lista di <b>nodi di avvio</b> scritta dentro il programma; lo stesso fa un client BitTorrent per agganciare la DHT. &Egrave; un punto centralizzato piccolissimo, usato una volta sola: da l&igrave; in poi la rete cammina da s&eacute;. Ma esiste, e vale la pena saperlo.</p>
     </div>
 
     <p class="hint">I ruoli li abbiamo visti nell'altra pagina: <a href="01_clientServer_peerToPeer.html">Chi chiede e chi risponde</a>.</p>
@@ -308,7 +323,7 @@ svg.topo-svg{width:100%;height:auto;display:block;cursor:pointer}
     for (var h2=0;h2<3;h2++){
       var base = -Math.PI/2 + h2*2*Math.PI/3;
       for (var k=0;k<3;k++){
-        var p = pol(nodi[h2].x, nodi[h2].y, 68, base + (k-1)*0.85);
+        var p = pol(nodi[h2].x, nodi[h2].y, 58, base + (k-1)*0.9);
         nodi.push({ x:p.x, y:p.y, hub:false });
         archi.push([h2, nodi.length-1]);
       }
@@ -321,7 +336,7 @@ svg.topo-svg{width:100%;height:auto;display:block;cursor:pointer}
       var p = pol(CX, CY, 132, -Math.PI/2 + i*2*Math.PI/N);
       nodi.push({ x:p.x, y:p.y, hub:false });
     }
-    for (var j=0;j<N;j++){ archi.push([j, (j+1)%N]); archi.push([j, (j+2)%N]); }
+    for (var j=0;j<N;j++){ archi.push([j, (j+1)%N]); archi.push([j, (j+5)%N]); }
     return { nodi:nodi, archi:archi };
   }
 
@@ -394,7 +409,7 @@ svg.topo-svg{width:100%;height:auto;display:block;cursor:pointer}
 
   function disegna(r){
     var comp = componenti(r);
-    var grande = comp.length ? comp[0] : [];
+    var grande = (comp.length && comp[0].length > 1) ? comp[0] : [];
     r.elNodi.forEach(function(g, i){
       g.classList.toggle('morto', !!r.morti[i]);
       g.classList.toggle('isolato', !r.morti[i] && grande.indexOf(i) === -1);
@@ -405,8 +420,12 @@ svg.topo-svg{width:100%;height:auto;display:block;cursor:pointer}
       l.classList.toggle('spento', spento);
       l.classList.toggle('isolato', !spento && grande.indexOf(a[0]) === -1);
     });
-    var testo = 'colpi: <b>' + r.colpi + '</b><br>tronconi: <b' + (comp.length > 1 ? ' class="rotto"' : '') + '>' +
-                comp.length + '</b><br>nel pi&ugrave; grande: <b>' + grande.length + '</b> nodi';
+    var piu = comp.length ? comp[0].length : 0;
+    var stato = comp.length <= 1
+      ? 'ancora <b>tutta intera</b>'
+      : 'spezzata in <b class="rotto">' + comp.length + ' pezzi</b>';
+    var testo = 'colpi: <b>' + r.colpi + '</b><br>la rete &egrave; ' + stato +
+                '<br>pezzo pi&ugrave; grande: <b>' + piu + '</b> ' + (piu === 1 ? 'nodo' : 'nodi');
     document.getElementById('es-' + r.id).innerHTML = testo;
     r.tronconi = comp.length; r.grande = grande.length;
   }
@@ -421,24 +440,26 @@ svg.topo-svg{width:100%;height:auto;display:block;cursor:pointer}
     var v = document.getElementById('verdetto');
     if (c.colpi === 0 && d.colpi === 0 && p.colpi === 0){ v.textContent = ''; return; }
     var frasi = [];
-    if (c.tronconi > 1) frasi.push('la <b>centralizzata</b> &egrave; in ' + c.tronconi + ' pezzi');
-    else frasi.push('la <b>centralizzata</b> regge ancora');
-    if (d.tronconi > 1) frasi.push('la <b>decentralizzata</b> in ' + d.tronconi);
-    else frasi.push('la <b>decentralizzata</b> regge');
-    if (p.tronconi > 1) frasi.push('la <b>distribuita</b> in ' + p.tronconi);
-    else frasi.push('la <b>distribuita</b> &egrave; ancora tutta intera');
+    function dire(nome, r){
+      return r.tronconi > 1
+        ? 'la <b>' + nome + '</b> &egrave; in ' + r.tronconi + ' pezzi'
+        : 'la <b>' + nome + '</b> &egrave; ancora intera';
+    }
+    frasi.push(dire('centralizzata', c), dire('decentralizzata', d), dire('distribuita', p));
     v.innerHTML = frasi.join(', ') + '.';
   }
 
   document.getElementById('b-attacco').addEventListener('click', function(){
     RETI.forEach(function(r){
-      var best = -1, bg = -1;
+      var bg = -1, pari = [];
       for (var i=0;i<r.dati.nodi.length;i++){
         if (r.morti[i]) continue;
         var g = grado(r, i);
-        if (g > bg){ bg = g; best = i; }
+        if (g > bg){ bg = g; pari = [i]; }
+        else if (g === bg) pari.push(i);
       }
-      if (best >= 0) colpisci(r, best);
+      /* a parita' di collegamenti il bersaglio e' uno qualsiasi fra i piu' connessi */
+      if (pari.length) colpisci(r, pari[Math.floor(Math.random()*pari.length)]);
     });
   });
   document.getElementById('b-guasto').addEventListener('click', function(){

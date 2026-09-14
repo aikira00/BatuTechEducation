@@ -488,15 +488,17 @@ new Thread(() -&gt; {
 
   var cs = costruisci('svg-cs','cs'), p2p = costruisci('svg-p2p','p2p');
   var esCS = document.getElementById('es-cs'), esP2P = document.getElementById('es-p2p');
-  var occupato = false, spento = false;
+  var occupato = false, spento = false, gen = 0;
 
   function viaggia(rete, tappe, fatto){
-    var i = 0;
+    var i = 0, mio = gen;
     function tratta(){
+      if (mio !== gen) return;                    // azzerata nel frattempo
       if (i >= tappe.length - 1){ rete.pallina.classList.remove('on'); if (fatto) fatto(); return; }
       var a = tappe[i], b = tappe[i+1], t0 = null, dur = 620;
       rete.pallina.classList.add('on');
       function passo(ts){
+        if (mio !== gen) return;
         if (!t0) t0 = ts;
         var k = Math.min(1, (ts - t0)/dur);
         rete.pallina.setAttribute('cx', a.x + (b.x-a.x)*k);
@@ -552,7 +554,7 @@ new Thread(() -&gt; {
   });
 
   document.getElementById('b-reset').addEventListener('click', function(){
-    spento = false; occupato = false;
+    spento = false; occupato = false; gen++;
     cs = costruisci('svg-cs','cs'); p2p = costruisci('svg-p2p','p2p');
     esCS.innerHTML = 'Tutti i nodi parlano solo con il centro. Fra loro non c'+String.fromCharCode(39)+'&egrave; nessun filo.';
     esP2P.innerHTML = 'Ogni nodo &egrave; collegato a tutti gli altri. Non c'+String.fromCharCode(39)+'&egrave; un centro.';
@@ -584,7 +586,7 @@ new Thread(() -&gt; {
     if (avutiP2P >= N && avutiCS < N){
       msg.innerHTML = '<b>Il peer-to-peer ha finito al giro ' + giro + '</b>, mentre il server &egrave; ancora a ' + avutiCS + ' nodi su ' + N + '. E la sorgente ne ha spedite solo ' + sorgP2P + '.';
     } else if (avutiCS >= N){
-      msg.innerHTML = 'Finito anche il client-server, al giro ' + giro + ': <b>' + (N-1) + ' copie spedite dal server</b> contro <b>1</b> della sorgente peer-to-peer.';
+      msg.innerHTML = 'Finito anche il client-server, al giro ' + giro + ': <b>' + (N-1) + ' copie spedite dal server</b> contro <b>' + sorgP2P + '</b> della sorgente peer-to-peer.';
     } else { msg.textContent = ''; }
     document.getElementById('b-giro').disabled = (avutiCS >= N);
   }
@@ -605,8 +607,8 @@ new Thread(() -&gt; {
       s:'Il browser apre la connessione, il web server sta in ascolto sulla 80 o sulla 443. I ruoli non si scambiano mai.' },
     { t:'Una <b>videochiamata</b> fra due persone: l\'app le fa incontrare, poi audio e video viaggiano direttamente da un telefono all\'altro.', v:'ib',
       s:'Ibrido: il server serve solo alle presentazioni, i dati veri vanno peer-to-peer. &Egrave; il modello di WebRTC.' },
-    { t:'Scaricate una <b>distribuzione Linux via BitTorrent</b>: mentre scaricate, state anche caricando pezzi per gli altri.', v:'ib',
-      s:'Ibrido &mdash; ma sempre meno. Il <i>tracker</i> &egrave; un server che d&agrave; solo <b>l\'elenco dei peer</b>: non ha il file e non sa chi ha quali pezzi, perch&eacute; quello se lo dicono i peer fra loro. Con la DHT e i magnet link il tracker non serve nemmeno pi&ugrave;, e allora &egrave; peer-to-peer puro.' },
+    { t:'Scaricate una <b>distribuzione Linux via BitTorrent</b>, di quelli classici con il file <code>.torrent</code> e il <b>tracker</b>: mentre scaricate, state anche caricando pezzi per gli altri.', v:'ib',
+      s:'Ibrido: il <i>tracker</i> &egrave; un server, e d&agrave; <b>l\'elenco dei peer</b> &mdash; non ha il file e non sa chi ha quali pezzi, perch&eacute; quello se lo dicono i peer fra loro. Tutto il resto &egrave; peer-to-peer, e caricare mentre si scarica ne &egrave; la firma. <i>Nei torrent di oggi, con DHT e magnet link, il tracker sparisce del tutto: in quel caso la risposta diventa peer-to-peer puro.</i>' },
     { t:'Il <b>server TCP in Java</b> che scrivete in laboratorio, con i client che si collegano alla porta 5000.', v:'cs',
       s:'Client-server puro: un programma fa <code>accept()</code>, l\'altro fa <code>new Socket(...)</code>, e non si scambiano mai i ruoli.' },
     { t:'In una <b>rete blockchain</b> ogni nodo tiene una copia del registro e la confronta con quella degli altri.', v:'p2p',
