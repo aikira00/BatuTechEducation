@@ -1087,10 +1087,13 @@ aumentaMedia(<span class="mark">&amp;s</span>, 0.5);</pre>
       <div class="snip-head">in Java — dalla prossima volta</div>
 <pre>class Studente {
     private String nome;
-    private float  media;
+    private double media;
 
-    void aumentaMedia(float v) { ... }
+    void aumentaMedia(double v) { ... }
 }
+
+<span class="cmt">// prima si crea l'oggetto:</span>
+Studente <span class="mark">s</span> = new Studente();
 
 <span class="cmt">// e quando la chiamate:</span>
 <span class="mark">s</span>.aumentaMedia(0.5);</pre>
