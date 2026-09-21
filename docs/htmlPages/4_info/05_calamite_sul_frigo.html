@@ -100,7 +100,10 @@ p code,li code{background:var(--surface-2);padding:.08em .34em;border-radius:4px
 .slot:empty::before{content:attr(data-empty);color:var(--ink-3);font-size:13.5px;font-family:var(--f-body);padding:6px 4px}
 .slot .magnet{transform:none;box-shadow:0 1px 0 var(--magnet-shadow)}
 .slot-cls{border-color:color-mix(in srgb,var(--sa-fill) 45%,var(--rule))}
-.slot-main{border-color:color-mix(in srgb,var(--fa-fill) 45%,var(--rule))}
+.slot-met{border-color:color-mix(in srgb,var(--fa-fill) 45%,var(--rule))}
+.zone-lbl{font-family:var(--f-head);font-size:13px;font-style:italic;margin:10px 0 0 22px}
+.sa-lbl{color:var(--sa)} .fa-lbl{color:var(--fa)}
+.slot-main{border-color:color-mix(in srgb,var(--ink-3) 45%,var(--rule))}
 .sep{height:14px}
 
 .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
@@ -148,12 +151,13 @@ footer .ai{font-size:12.5px;line-height:1.5}
 <header class="hero">
   <h1>Calamite sul frigo</h1>
   <p class="lede">Qualcuno ha scritto un programma Java con le calamite sul frigo, e le calamite sono cadute. Rimettile al loro posto così che il programma, eseguito, stampi <strong>esattamente</strong> l'output qui sotto.</p>
-  <p class="hero-meta">4ª informatica · esercizio sulla lezione «Un tipo tutto mio» · 20 minuti circa. Le graffe sono già al loro posto. <strong>Una calamita è un'intrusa</strong>: non va usata, e dovrai spiegare perché.</p>
+  <p class="hero-meta">4ª informatica · esercizio sulla lezione «Un tipo tutto mio» · 20 minuti circa. Le graffe sono già al loro posto. <strong>Due calamite sono intruse</strong>: non vanno usate, e dovrai spiegare perché.</p>
 </header>
 
 <div class="brief">
   <div class="prose">
     <p>Il programma ha due classi. <code>Distributore</code> descrive com'è fatto un distributore di lattine: cosa <em>sa</em> (quante lattine ha, se è acceso) e cosa <em>fa</em>. <code>DistributoreTestDrive</code> contiene il <code>main</code> e serve a provarlo.</p>
+    <p>Le variabili d'istanza sono <code>private</code>: da fuori della classe nessuno le può toccare direttamente. Si passa dai metodi <code>public</code>: un <strong>getter</strong> per leggere (<code>getLattine()</code>, e per i <code>boolean</code> si usa <code>is</code>: <code>isAcceso()</code>) e un <strong>setter</strong> per modificare (<code>setAcceso(...)</code>).</p>
     <p>Trascina le calamite dal frigo dentro le due classi, nell'ordine giusto. Poi premi <strong>Compila ed esegui</strong>: se il codice non compila vedrai l'errore di <code>javac</code>, se compila vedrai cosa stampa.</p>
   </div>
   <div class="term" aria-label="Output atteso">
@@ -173,8 +177,11 @@ lattine rimaste: 1</pre>
 
   <div class="editor">
     <p class="file">Distributore.java</p>
-    <div class="shell"><span class="kw">class</span> Distributore {</div>
-    <div class="slot slot-cls" id="cls" data-empty="variabili d'istanza e metodi"></div>
+    <div class="shell"><span class="kw">public class</span> Distributore {</div>
+    <p class="zone-lbl sa-lbl">// variabili d'istanza: cosa sa</p>
+    <div class="slot slot-cls" id="clsF" data-empty="le variabili d'istanza (private)"></div>
+    <p class="zone-lbl fa-lbl">// metodi: cosa fa</p>
+    <div class="slot slot-met" id="clsM" data-empty="i metodi (public), getter e setter compresi"></div>
     <div class="shell">}</div>
     <div class="sep"></div>
     <p class="file">DistributoreTestDrive.java</p>
@@ -199,7 +206,7 @@ lattine rimaste: 1</pre>
 </div>
 
 <div class="print-only">
-  <p style="margin-top:6mm"><strong>Ritaglia le calamite</strong> e ricomponi le due classi su un foglio. Le graffe mancano: aggiungile tu. Una calamita è intrusa.</p>
+  <p style="margin-top:6mm"><strong>Ritaglia le calamite</strong> e ricomponi le due classi su un foglio. Le graffe mancano: aggiungile tu. Due calamite sono intruse.</p>
   <div class="cut" id="cut"></div>
 </div>
 
@@ -207,20 +214,26 @@ lattine rimaste: 1</pre>
   <h2>Dopo che funziona</h2>
   <ol class="qs">
     <li>Nel <code>main</code> ci sono due chiamate a <code>eroga()</code>, ma la lattina esce una volta sola. Quale riga impedisce la seconda, e perché?
-      <details><summary>Controlla</summary><p><code>d.acceso = false;</code> cambia lo stato dell'oggetto <em>prima</em> dell'<code>if</code>. Quando l'<code>if</code> legge <code>d.acceso</code>, trova <code>false</code> e salta il blocco.</p></details></li>
-    <li>Sposta <code>d.acceso = false;</code> dopo l'<code>if</code>, senza toccare il resto. Prevedi l'output, poi verifica con il pulsante.
-      <details><summary>Controlla</summary><p>Tre righe: due lattine erogate, e siccome l'<code>if</code> sta dopo <code>mostraScorte()</code>, le scorte stampate dicono ancora 1. L'ordine delle istruzioni conta: lo stato è quello del momento in cui la riga viene eseguita.</p></details></li>
-    <li>Metti <code>d.mostraScorte();</code> prima di <code>d.eroga();</code>. Perché adesso stampa 2?
-      <details><summary>Controlla</summary><p><code>eroga()</code> toglie una lattina alla <em>sua</em> variabile <code>lattine</code>. Se chiedi le scorte prima, l'oggetto non ha ancora erogato niente.</p></details></li>
-    <li>La calamita intrusa: provala nel <code>main</code> e leggi l'errore. Cosa manca per poterla chiamare?
-      <details><summary>Controlla</summary><p><code>Distributore.eroga()</code> chiede alla <em>classe</em> di erogare. Ma la classe è solo la descrizione: la lattina esce da <em>un</em> distributore, cioè da un oggetto. Serve un telecomando: <code>d.eroga()</code>.</p></details></li>
-    <li>Nell'ordine delle calamite dentro <code>class Distributore</code> c'è una sola soluzione giusta?
+      <details><summary>Controlla</summary><p><code>d.setAcceso(false);</code> cambia lo stato dell'oggetto <em>prima</em> dell'<code>if</code>. Quando l'<code>if</code> chiede <code>d.isAcceso()</code>, la risposta è <code>false</code> e il blocco viene saltato.</p></details></li>
+    <li>Sposta <code>d.setAcceso(false);</code> dopo l'<code>if</code>, senza toccare il resto. Prevedi l'output, poi verifica con il pulsante.
+      <details><summary>Controlla</summary><p>Tre righe: due lattine erogate, e siccome l'<code>if</code> sta dopo la stampa delle scorte, le scorte dicono ancora 1. Lo stato è quello del momento in cui la riga viene eseguita.</p></details></li>
+    <li>Prova l'intrusa <code>d.acceso = false;</code> nel <code>main</code> e leggi l'errore. Fa la stessa cosa di <code>d.setAcceso(false);</code>: perché una compila e l'altra no?
+      <details><summary>Controlla</summary><p><code>acceso</code> è <code>private</code>: solo il codice dentro <code>Distributore</code> la può toccare. Il <code>main</code> sta in un'altra classe, quindi deve chiedere all'oggetto attraverso un metodo <code>public</code>. È l'<strong>incapsulamento</strong>: l'oggetto decide come si cambia il suo stato.</p></details></li>
+    <li>E l'altra intrusa, <code>Distributore.eroga();</code>? Cosa manca per poterla chiamare?
+      <details><summary>Controlla</summary><p>Chiede alla <em>classe</em> di erogare. Ma la classe è solo la descrizione: la lattina esce da <em>un</em> distributore, cioè da un oggetto. Serve un telecomando: <code>d.eroga()</code>.</p></details></li>
+    <li>Perché non c'è un metodo <code>setLattine</code>? Scrivilo tu, in modo che un numero negativo venga rifiutato.
+      <details><summary>Controlla</summary><pre style="margin:8px 0 0;background:var(--code-bg);color:var(--code-ink);padding:10px 14px;border-radius:8px;font-family:var(--f-head);font-size:14px">public void setLattine(int n) {
+    if (n &gt;= 0) {
+        lattine = n;
+    }
+}</pre><p>Ecco a cosa serve il setter: se <code>lattine</code> fosse pubblica, chiunque potrebbe scrivere <code>d.lattine = -3</code>. Con il setter la classe si difende da sola. È lo stesso problema della media −5 di «Un tipo tutto mio».</p></details></li>
+    <li>Dentro ciascuno dei due scomparti di <code>Distributore</code>, l'ordine delle calamite conta?
       <details><summary>Controlla</summary><p>No. Variabili d'istanza e metodi possono stare in qualunque ordine: la classe è una descrizione, non una sequenza di istruzioni. Per convenzione si scrivono prima le variabili, poi i metodi. Nel <code>main</code> invece l'ordine è tutto.</p></details></li>
   </ol>
 </section>
 
 <footer>
-  <p>Il formato «Code Magnets» viene da K. Sierra, B. Bates, T. Gee, <em>Head First Java</em>, 3ª ed., O'Reilly 2022, cap. 2, p. 43. Il programma qui è diverso e scritto per questa classe: stessa idea, un distributore al posto della batteria.</p>
+  <p>Il formato «Code Magnets» viene da K. Sierra, B. Bates, T. Gee, <em>Head First Java</em>, 3ª ed., O'Reilly 2022, cap. 2, p. 43. Il programma qui è diverso e scritto per questa classe: stessa idea, un distributore al posto della batteria, con variabili <code>private</code>, getter e setter.</p>
   <p class="ai">Questa pagina è stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilità didattica e scientifica è integralmente sua. L'indicazione è fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
 </footer>
 
@@ -232,7 +245,7 @@ lattine rimaste: 1</pre>
 "use strict";
 var $ = function(id){ return document.getElementById(id); };
 function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-var RE = /(\/\/.*$)|("(?:[^"\\\n]|\\.)*")|\b(class|public|static|void|int|boolean|String|new|true|false|if)\b|\b(\d+)\b/gm;
+var RE = /(\/\/.*$)|("(?:[^"\\\n]|\\.)*")|\b(class|public|private|static|void|int|boolean|String|new|true|false|if|return)\b|\b(\d+)\b/gm;
 function hl(src){
   var re = new RegExp(RE.source,"gm"), out = "", last = 0, m;
   while((m = re.exec(src))){
@@ -243,22 +256,26 @@ function hl(src){
   return out + esc(src.slice(last));
 }
 
-/* kind: field | method | stmt | intruso.  zone: dove va nella soluzione */
+/* kind: field | method | stmt | intruso */
 var M = [
-  {id:"f-lat",  kind:"field",  zone:"cls",  code:"int lattine = 2;"},
-  {id:"f-acc",  kind:"field",  zone:"cls",  code:"boolean acceso = true;"},
-  {id:"m-ero",  kind:"method", zone:"cls",  code:'void eroga() {\n    System.out.println("clunk! ecco la tua lattina");\n    lattine = lattine - 1;\n}'},
-  {id:"m-sco",  kind:"method", zone:"cls",  code:'void mostraScorte() {\n    System.out.println("lattine rimaste: " + lattine);\n}'},
-  {id:"s-new",  kind:"stmt",   zone:"main", code:"Distributore d = new Distributore();"},
-  {id:"s-ero",  kind:"stmt",   zone:"main", code:"d.eroga();"},
-  {id:"s-off",  kind:"stmt",   zone:"main", code:"d.acceso = false;"},
-  {id:"s-sco",  kind:"stmt",   zone:"main", code:"d.mostraScorte();"},
-  {id:"s-if",   kind:"stmt",   zone:"main", code:"if (d.acceso == true) {\n    d.eroga();\n}"},
-  {id:"x-sta",  kind:"intruso",zone:"pool", code:"Distributore.eroga();"}
+  {id:"f-lat", kind:"field",   code:"private int lattine = 2;"},
+  {id:"f-acc", kind:"field",   code:"private boolean acceso = true;"},
+  {id:"m-ero", kind:"method",  code:'public void eroga() {\n    System.out.println("clunk! ecco la tua lattina");\n    lattine = lattine - 1;\n}'},
+  {id:"m-getL",kind:"method",  code:"public int getLattine() {\n    return lattine;\n}"},
+  {id:"m-isA", kind:"method",  code:"public boolean isAcceso() {\n    return acceso;\n}"},
+  {id:"m-set", kind:"method",  code:"public void setAcceso(boolean a) {\n    acceso = a;\n}"},
+  {id:"s-new", kind:"stmt",    code:"Distributore d = new Distributore();"},
+  {id:"s-ero", kind:"stmt",    code:"d.eroga();"},
+  {id:"s-set", kind:"stmt",    code:"d.setAcceso(false);"},
+  {id:"s-pr",  kind:"stmt",    code:'System.out.println("lattine rimaste: " + d.getLattine());'},
+  {id:"s-if",  kind:"stmt",    code:"if (d.isAcceso()) {\n    d.eroga();\n}"},
+  {id:"x-sta", kind:"intruso", code:"Distributore.eroga();"},
+  {id:"x-dir", kind:"intruso", code:"d.acceso = false;"}
 ];
-var SOL = {cls:["f-lat","f-acc","m-ero","m-sco"], main:["s-new","s-ero","s-off","s-sco","s-if"]};
+var SOL = {clsF:["f-lat","f-acc"], clsM:["m-ero","m-getL","m-isA","m-set"], main:["s-new","s-ero","s-set","s-pr","s-if"]};
 /* ordine sparso fisso: è anche quello della versione stampata */
-var SCRAMBLE = ["s-off","m-sco","s-new","x-sta","f-acc","s-if","m-ero","s-sco","f-lat","s-ero"];
+var SCRAMBLE = ["s-set","m-getL","x-dir","s-new","f-acc","m-set","s-if","x-sta","m-ero","s-pr","f-lat","m-isA","s-ero"];
+var ZONES = ["pool","clsF","clsM","main"];
 var byId = {}; M.forEach(function(m){ byId[m.id] = m; });
 var TARGET = ["clunk! ecco la tua lattina","lattine rimaste: 1"];
 
@@ -269,7 +286,7 @@ function el(m){
   return d;
 }
 function fill(order){
-  ["pool","cls","main"].forEach(function(z){ $(z).innerHTML = ""; });
+  ZONES.forEach(function(z){ $(z).innerHTML = ""; });
   order.forEach(function(id){ $("pool").appendChild(el(byId[id])); });
   sel = null; count(); resetRun();
 }
@@ -286,8 +303,8 @@ function resetRun(){
 /* ---------- trascinamento (SortableJS) + tocca-e-metti ---------- */
 var sel = null;
 if(window.Sortable){
-  ["pool","cls","main"].forEach(function(z){
-    Sortable.create($(z), {group:"frigo", animation:150, ghostClass:"ghost", delay:0,
+  ZONES.forEach(function(z){
+    Sortable.create($(z), {group:"frigo", animation:150, ghostClass:"ghost",
       onStart:function(){ document.querySelectorAll(".slot").forEach(function(s){ s.classList.add("drop-hint"); }); },
       onEnd:function(){ document.querySelectorAll(".slot").forEach(function(s){ s.classList.remove("drop-hint"); }); count(); resetRun(); }});
   });
@@ -311,24 +328,38 @@ document.addEventListener("keydown", function(e){
 /* ---------- compilatore e JVM in miniatura ---------- */
 function ids(z){ return Array.prototype.map.call($(z).children, function(x){ return x.dataset.id; }); }
 function mark(id){ var x = document.querySelector('.editor .magnet[data-id="'+id+'"]'); if(x) x.classList.add("bad"); }
+function first(id){ return esc(byId[id].code.split("\n")[0].replace(" {","")); }
+
+/* scomparti: Java compilerebbe lo stesso, ma nell'esercizio ogni cosa ha il suo posto */
+function misplaced(){
+  var out = [];
+  ids("clsF").forEach(function(id){ if(byId[id].kind === "method") out.push({id:id, why:"<code>"+first(id)+"</code> è un metodo: è qualcosa che il distributore <em>fa</em>. Va nello scomparto dei metodi."}); });
+  ids("clsM").forEach(function(id){ if(byId[id].kind === "field") out.push({id:id, why:"<code>"+first(id)+"</code> è una variabile d'istanza: è qualcosa che il distributore <em>sa</em>. Va nello scomparto delle variabili."}); });
+  return out;
+}
 
 function compile(cls, main){
   var errs = [], has = function(a,id){ return a.indexOf(id) >= 0; };
   cls.forEach(function(id){
     var k = byId[id].kind;
-    if(k === "stmt" || k === "intruso"){
-      errs.push({id:id, file:"Distributore.java", msg:"<identifier> expected",
-        why:"Un'istruzione come <code>"+esc(byId[id].code.split("\n")[0])+"</code> non può stare direttamente nella classe: le istruzioni vivono dentro i metodi. Nella classe ci sono solo cosa <em>sa</em> e cosa <em>fa</em>."});
-    }
+    if(k === "stmt" || k === "intruso") errs.push({id:id, file:"Distributore.java", msg:"<identifier> expected",
+      why:"Un'istruzione come <code>"+first(id)+"</code> non può stare direttamente nella classe: le istruzioni vivono dentro i metodi. Nella classe ci sono solo cosa <em>sa</em> e cosa <em>fa</em>."});
   });
   main.forEach(function(id){
-    if(byId[id].kind === "method") errs.push({id:id, file:"DistributoreTestDrive.java", msg:"illegal start of expression",
-      why:"Un metodo non si può scrivere dentro un altro metodo. <code>"+esc(byId[id].code.split("(")[0])+"()</code> è qualcosa che il distributore <em>fa</em>: va dentro <code>class Distributore</code>."});
+    var k = byId[id].kind;
+    if(k === "method") errs.push({id:id, file:"DistributoreTestDrive.java", msg:"illegal start of expression",
+      why:"Un metodo non si può scrivere dentro un altro metodo. <code>"+first(id)+"</code> è qualcosa che il distributore <em>fa</em>: va dentro <code>class Distributore</code>."});
+    if(k === "field") errs.push({id:id, file:"DistributoreTestDrive.java", msg:"illegal start of expression",
+      why:"<code>private</code> ha senso solo per le variabili d'istanza di una classe. Dentro il <code>main</code> non si può usare: questa calamita descrive cosa <em>sa</em> il distributore, e va in <code>class Distributore</code>."});
   });
-  if(!has(cls,"f-lat")) ["m-ero","m-sco"].forEach(function(id){
-    if(has(cls,id)) errs.push({id:id, file:"Distributore.java", msg:"cannot find symbol\n  symbol:   variable lattine\n  location: class Distributore",
-      why:"Il metodo usa <code>lattine</code>, ma la classe non dice che un distributore ha delle lattine. Manca una variabile d'istanza."});
+  var FIELD_USE = {"m-ero":"f-lat", "m-getL":"f-lat", "m-isA":"f-acc", "m-set":"f-acc"};
+  Object.keys(FIELD_USE).forEach(function(mid){
+    var f = FIELD_USE[mid], name = f === "f-lat" ? "lattine" : "acceso";
+    if(has(cls,mid) && !has(cls,f)) errs.push({id:mid, file:"Distributore.java", msg:"cannot find symbol\n  symbol:   variable "+name+"\n  location: class Distributore",
+      why:"Il metodo usa <code>"+name+"</code>, ma la classe non dice che un distributore ce l'ha. Manca una variabile d'istanza."});
   });
+  var NEED = {"s-ero":[["m-ero","method eroga()"]], "s-set":[["m-set","method setAcceso(boolean)"]],
+              "s-pr":[["m-getL","method getLattine()"]], "s-if":[["m-isA","method isAcceso()"],["m-ero","method eroga()"]]};
   var declared = false;
   main.forEach(function(id){
     var m = byId[id];
@@ -341,30 +372,36 @@ function compile(cls, main){
     }
     if(!declared){ errs.push({id:id, file:"DistributoreTestDrive.java", msg:"cannot find symbol\n  symbol:   variable d",
       why:"Qui si usa <code>d</code>, ma <code>d</code> non esiste ancora. Prima si crea l'oggetto e si collega il telecomando, poi si premono i tasti."}); return; }
-    var need = {"s-ero":["m-ero","method eroga()"], "s-if":["f-acc","variable acceso"], "s-off":["f-acc","variable acceso"], "s-sco":["m-sco","method mostraScorte()"]}[id];
-    if(need && !has(cls,need[0])) errs.push({id:id, file:"DistributoreTestDrive.java", msg:"cannot find symbol\n  symbol:   "+need[1]+"\n  location: variable d of type Distributore",
-      why:"Il <code>main</code> chiede all'oggetto qualcosa che la classe <code>Distributore</code> non descrive. Controlla che dentro la classe ci sia <code>"+need[1].split(" ")[1]+"</code>."});
-    if(id === "s-if" && errs.length === 0 && !has(cls,"m-ero")) errs.push({id:id, file:"DistributoreTestDrive.java", msg:"cannot find symbol\n  symbol:   method eroga()", why:"Dentro l'<code>if</code> si chiama <code>eroga()</code>, che la classe non ha."});
+    if(id === "x-dir"){
+      if(has(cls,"f-acc")) errs.push({id:id, file:"DistributoreTestDrive.java", msg:"acceso has private access in Distributore",
+        why:"<code>acceso</code> è <code>private</code>: solo il codice dentro <code>Distributore</code> la può toccare. Da fuori si chiede all'oggetto con un metodo <code>public</code>: il setter."});
+      else errs.push({id:id, file:"DistributoreTestDrive.java", msg:"cannot find symbol\n  symbol:   variable acceso", why:"La classe non ha una variabile <code>acceso</code>. E anche se l'avesse, sarebbe <code>private</code>."});
+      return;
+    }
+    (NEED[id] || []).some(function(n){
+      if(has(cls,n[0])) return false;
+      errs.push({id:id, file:"DistributoreTestDrive.java", msg:"cannot find symbol\n  symbol:   "+n[1]+"\n  location: variable d of type Distributore",
+        why:"Il <code>main</code> chiede all'oggetto <code>"+esc(n[1].split(" ")[1])+"</code>, ma la classe <code>Distributore</code> non ha questo metodo."});
+      return true;
+    });
   });
   return errs;
 }
 
-function run(cls, main){
+function run(main){
   var o = null, out = [];
-  var lat = 2, acc = true;   /* valori iniziali delle variabili d'istanza */
   main.forEach(function(id){
-    if(id === "s-new") o = {lattine:lat, acceso:acc};
+    if(id === "s-new") o = {lattine:2, acceso:true};
     else if(id === "s-ero" || (id === "s-if" && o.acceso)){ out.push("clunk! ecco la tua lattina"); o.lattine--; }
-    else if(id === "s-off") o.acceso = false;
-    else if(id === "s-sco") out.push("lattine rimaste: " + o.lattine);
-    /* una variabile d'istanza trascinata nel main diventa una variabile locale: compila, ma non serve a niente */
+    else if(id === "s-set") o.acceso = false;
+    else if(id === "s-pr") out.push("lattine rimaste: " + o.lattine);
   });
   return out;
 }
 
 $("b-run").onclick = function(){
   document.querySelectorAll(".magnet.bad").forEach(function(x){ x.classList.remove("bad"); });
-  var cls = ids("cls"), main = ids("main"), con = $("console"), v = $("verdict");
+  var cls = ids("clsF").concat(ids("clsM")), main = ids("main"), con = $("console"), v = $("verdict");
   var head = '<span class="prompt">&gt; javac Distributore.java DistributoreTestDrive.java</span>\n';
   if(!cls.length && !main.length){ con.innerHTML = head + '<span class="prompt">// le classi sono vuote: trascina qualche calamita</span>'; return; }
   var errs = compile(cls, main);
@@ -374,24 +411,32 @@ $("b-run").onclick = function(){
       '\n<span class="err">'+errs.length+(errs.length === 1 ? " error" : " errors")+"</span>";
     shown.forEach(function(e){ mark(e.id); });
     v.className = "verdict bad no-print";
-    v.innerHTML = "<strong>Non compila.</strong> " + shown[0].why + (errs.length > 1 ? " La calamita colpevole è evidenziata; partite dal primo errore." : " La calamita colpevole è evidenziata.");
+    v.innerHTML = "<strong>Non compila.</strong> " + shown[0].why + (errs.length > 1 ? " Le calamite colpevoli sono evidenziate: partite dal primo errore." : " La calamita colpevole è evidenziata.");
     return;
   }
-  var out = run(cls, main);
+  var mis = misplaced();
+  if(mis.length){
+    con.innerHTML = head + '<span class="prompt">// compila, ma la classe è in disordine</span>';
+    mis.forEach(function(e){ mark(e.id); });
+    v.className = "verdict bad no-print";
+    v.innerHTML = "<strong>Scomparto sbagliato.</strong> " + mis[0].why + " Java lo compilerebbe lo stesso, ma una classe ordinata si legge a colpo d'occhio: prima cosa sa, poi cosa fa.";
+    return;
+  }
+  var out = run(main);
   con.innerHTML = head + '<span class="prompt">&gt; java DistributoreTestDrive</span>\n' + (out.length ? '<span class="ok">'+esc(out.join("\n"))+"</span>" : '<span class="prompt">(nessun output)</span>');
   var ok = out.length === TARGET.length && out.every(function(l,i){ return l === TARGET[i]; });
-  var left = ids("pool").filter(function(id){ return id !== "x-sta"; });
+  var left = ids("pool").filter(function(id){ return byId[id].kind !== "intruso"; });
   if(ok && !left.length){
     v.className = "verdict ok no-print";
-    v.innerHTML = "<strong>Compila e stampa esattamente l'output atteso.</strong> E l'intrusa è rimasta sul frigo. Adesso passate alle domande qui sotto.";
+    v.innerHTML = "<strong>Compila e stampa esattamente l'output atteso.</strong> E le due intruse sono rimaste sul frigo. Adesso passate alle domande qui sotto.";
   } else if(ok){
     v.className = "verdict ok no-print";
-    v.innerHTML = "<strong>L'output è giusto</strong>, ma sul frigo c'è ancora qualcosa oltre all'intrusa. Tutte le altre calamite vanno usate: dove può andare quella che manca senza cambiare l'output?";
+    v.innerHTML = "<strong>L'output è giusto</strong>, ma sul frigo c'è ancora qualcosa oltre alle intruse. Tutte le altre calamite vanno usate: dove può andare quella che manca senza cambiare l'output?";
   } else {
     v.className = "verdict bad no-print";
     var hint;
     if(!out.length) hint = "Il <code>main</code> non stampa niente: quali istruzioni fanno lavorare l'oggetto?";
-    else if(out.filter(function(l){ return l.indexOf("clunk") === 0; }).length > 1) hint = "Escono due lattine. Qualcosa dovrebbe impedire la seconda: guarda in che ordine avvengono <code>d.acceso = false;</code> e l'<code>if</code>.";
+    else if(out.filter(function(l){ return l.indexOf("clunk") === 0; }).length > 1) hint = "Escono due lattine. Qualcosa dovrebbe impedire la seconda: guarda in che ordine avvengono <code>d.setAcceso(false);</code> e l'<code>if</code>.";
     else if(out.indexOf("lattine rimaste: 2") >= 0) hint = "Le scorte dicono 2: state chiedendo le scorte prima che il distributore abbia erogato.";
     else if(out[0] && out[0].indexOf("lattine") === 0) hint = "La prima riga dell'output atteso è la lattina, non le scorte.";
     else hint = "Confronta riga per riga con l'output atteso. Manca qualcosa, o c'è qualcosa in più?";
@@ -407,8 +452,9 @@ $("b-shuffle").onclick = function(){
 $("b-sol").onclick = function(){
   if(!confirm("Mostrare la soluzione? Le calamite verranno messe al loro posto.")) return;
   fill(SCRAMBLE);
-  SOL.cls.forEach(function(id){ $("cls").appendChild(document.querySelector('.pool [data-id="'+id+'"]')); });
-  SOL.main.forEach(function(id){ $("main").appendChild(document.querySelector('.pool [data-id="'+id+'"]')); });
+  Object.keys(SOL).forEach(function(z){
+    SOL[z].forEach(function(id){ $(z).appendChild(document.querySelector('.pool [data-id="'+id+'"]')); });
+  });
   count();
 };
 $("b-print").onclick = function(){ window.print(); };
