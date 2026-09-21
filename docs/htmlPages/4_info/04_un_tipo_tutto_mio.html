@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Un tipo tutto mio: classi e oggetti in Java</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* ------------------------------------------------------------------
+   Token: chiaro = "fluo chiaro" (verde neon + ciano elettrico),
+          scuro  = neon su quasi-nero (ciano, magenta, giallo).
+   Il colore ha un significato fisso in tutta la pagina:
+     --sa  = ciò che l'oggetto SA  (stato, variabili d'istanza)
+     --fa  = ciò che l'oggetto FA  (metodi)
+     --hot = attenzione: qui qualcosa si rompe
+------------------------------------------------------------------- */
+:root{
+  --bg:#F2F4F6; --surface:#FFFFFF; --surface-2:#E8ECF0;
+  --ink:#0F1218; --ink-2:#3B4350; --ink-3:#69717E; --rule:#D3D8DF;
+  --sa:#00748F; --sa-fill:#1FE4FF; --sa-soft:rgba(31,228,255,.18);
+  --fa:#0A7A30; --fa-fill:#3DFF1A; --fa-soft:rgba(61,255,26,.20);
+  --hot:#B00058; --hot-fill:#FF2E93; --hot-soft:rgba(255,46,147,.12);
+  --on-fill:#0B0A12;
+  --code-bg:#11131A; --code-ink:#E9ECF5; --code-dim:#8A91A6;
+  --f-head:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --f-body:"Manrope", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --measure:66ch; --wide:min(1060px,94vw);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C0A12; --surface:#15121E; --surface-2:#1E1A2B;
+    --ink:#F3F0FA; --ink-2:#BBB5CB; --ink-3:#8A839E; --rule:#2D2842;
+    --sa:#2EE6FF; --sa-fill:#2EE6FF; --sa-soft:rgba(46,230,255,.13);
+    --fa:#FF5ABD; --fa-fill:#FF3DAE; --fa-soft:rgba(255,61,174,.15);
+    --hot:#FFE14A; --hot-fill:#FFE14A; --hot-soft:rgba(255,225,74,.12);
+    --code-bg:#07060B;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C0A12; --surface:#15121E; --surface-2:#1E1A2B;
+  --ink:#F3F0FA; --ink-2:#BBB5CB; --ink-3:#8A839E; --rule:#2D2842;
+  --sa:#2EE6FF; --sa-fill:#2EE6FF; --sa-soft:rgba(46,230,255,.13);
+  --fa:#FF5ABD; --fa-fill:#FF3DAE; --fa-soft:rgba(255,61,174,.15);
+  --hot:#FFE14A; --hot-fill:#FFE14A; --hot-soft:rgba(255,225,74,.12);
+  --code-bg:#07060B;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);
+  font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.page{max-width:var(--wide);margin:0 auto;padding:0 clamp(16px,4vw,32px) 96px}
+h1,h2,h3{font-family:var(--f-head);margin:0;line-height:1.15;text-wrap:balance}
+p{margin:0}
+strong{font-weight:700}
+code,.mono{font-family:var(--f-head);font-size:.9em}
+p code,li code,td code{background:var(--surface-2);padding:.08em .34em;border-radius:4px}
+.prose{max-width:var(--measure);display:flex;flex-direction:column;gap:16px}
+.sa{color:var(--sa);font-weight:700}
+.fa{color:var(--fa);font-weight:700}
+.hot{color:var(--hot);font-weight:700}
+:focus-visible{outline:3px solid var(--sa-fill);outline-offset:2px;border-radius:4px}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(36px,7vw,76px) 0 clamp(20px,4vw,36px)}
+.hero h1{font-size:clamp(34px,6vw,60px);font-weight:800;letter-spacing:-.03em}
+.hero .lede{font-size:clamp(18px,2.1vw,20px);color:var(--ink-2);max-width:60ch;margin-top:18px}
+.stmt{display:flex;flex-wrap:wrap;gap:10px 18px;margin:clamp(24px,4vw,40px) 0 0;align-items:flex-start}
+.stmt-part{display:flex;flex-direction:column;gap:8px}
+.stmt-code{font-family:var(--f-head);font-weight:700;font-size:clamp(24px,4.6vw,46px);letter-spacing:-.02em;white-space:nowrap;line-height:1.1}
+.stmt-note{border-top:4px solid currentColor;padding-top:8px;font-size:14.5px;line-height:1.35;max-width:24ch;color:var(--ink-2)}
+.stmt-note b{font-family:var(--f-head);color:var(--ink)}
+.p1 .stmt-code,.p1 .stmt-note{color:var(--sa)} .p1 .stmt-note span{color:var(--ink-2)}
+.p2 .stmt-code,.p2 .stmt-note{color:var(--fa)} .p2 .stmt-note span{color:var(--ink-2)}
+.p3 .stmt-code,.p3 .stmt-note{color:var(--ink)} .p3 .stmt-note span{color:var(--ink-2)}
+.hero-meta{margin-top:28px;font-size:15px;color:var(--ink-3);max-width:70ch}
+
+/* ---------- sezioni ---------- */
+.sec{padding:clamp(36px,6vw,64px) 0 0}
+.sec-head{display:flex;gap:16px;align-items:baseline;margin-bottom:20px}
+.num{font-family:var(--f-head);font-weight:800;font-size:clamp(26px,3.4vw,34px);color:var(--ink-3);min-width:1.4ch}
+h2{font-size:clamp(24px,3.4vw,33px);font-weight:700;letter-spacing:-.02em}
+h3{font-size:18px;font-weight:700;margin-bottom:6px}
+.note{border-left:4px solid var(--hot-fill);background:var(--hot-soft);padding:14px 18px;border-radius:0 8px 8px 0;max-width:var(--measure)}
+.note.calm{border-left-color:var(--sa-fill);background:var(--sa-soft)}
+
+/* ---------- codice ---------- */
+pre{margin:0;background:var(--code-bg);color:var(--code-ink);font-family:var(--f-head);font-size:14px;line-height:1.6;
+  padding:16px 18px;border-radius:10px;overflow-x:auto;tab-size:4}
+pre code{font-size:inherit}
+.file{font-family:var(--f-head);font-size:13px;color:var(--ink-3);margin:0 0 6px 4px}
+.t-c{color:var(--code-dim);font-style:italic}
+.t-s{color:#FFE14A}
+.t-k{color:#2EE6FF}
+.t-n{color:#FF8AD0}
+.codes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px;margin-top:22px}
+.codes>div{min-width:0}
+
+/* ---------- lab (blocchi interattivi) ---------- */
+.lab{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:clamp(16px,2.6vw,26px);margin-top:24px}
+.lab-title{font-family:var(--f-head);font-weight:700;font-size:15px;margin-bottom:4px}
+.lab-help{color:var(--ink-3);font-size:15px;margin-bottom:16px;max-width:70ch}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+button{font-family:var(--f-head);font-size:14px;font-weight:500;color:var(--ink);background:var(--surface-2);
+  border:1px solid var(--rule);border-radius:8px;padding:9px 14px;cursor:pointer;line-height:1.2}
+button:hover{border-color:var(--ink-3)}
+button.primary{background:var(--sa-fill);color:var(--on-fill);border-color:transparent;font-weight:700}
+button.danger{background:var(--hot-fill);color:var(--on-fill);border-color:transparent;font-weight:700}
+button:disabled{opacity:.4;cursor:not-allowed}
+.status{margin-top:16px;min-height:3.2em;font-size:15.5px;color:var(--ink-2);max-width:74ch}
+.status b{color:var(--hot)}
+.scroll{overflow-x:auto}
+
+/* liste parallele */
+.plists{border-collapse:separate;border-spacing:6px;font-family:var(--f-head);font-size:15px}
+.plists th{font-weight:500;color:var(--ink-3);font-size:13px;text-align:center;padding:0 4px}
+.plists th.rowname{text-align:right;padding-right:10px;color:var(--ink);font-size:15px;font-weight:700}
+.plists td{background:var(--surface-2);border:1.5px solid var(--rule);border-radius:8px;padding:9px 14px;text-align:center;min-width:92px;transition:background .25s,border-color .25s}
+.plists td.moved{background:var(--hot-soft);border-color:var(--hot-fill);color:var(--hot);font-weight:700}
+.plists td.ghost{border-style:dashed;color:var(--hot);background:transparent;font-size:13px}
+.readout{margin-top:14px;display:grid;gap:6px;font-family:var(--f-head);font-size:14px}
+.readout div{padding:6px 10px;border-radius:6px;background:var(--surface-2)}
+.readout div.bad{background:var(--hot-soft);color:var(--hot)}
+
+/* sa / fa */
+.sorter{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:24px;align-items:start}
+@media (max-width:760px){.sorter{grid-template-columns:1fr}}
+.pool{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border-radius:999px;padding:8px 14px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.uml{border:2px solid var(--ink);border-radius:10px;overflow:hidden;background:var(--surface)}
+.uml-name{font-family:var(--f-head);font-weight:800;text-align:center;padding:10px;border-bottom:2px solid var(--ink);font-size:17px}
+.box{display:block;width:100%;text-align:left;border:0;border-radius:0;background:transparent;padding:12px 14px;min-height:92px;font-family:var(--f-body)}
+.box+.box{border-top:2px solid var(--ink)}
+.box:hover{background:var(--surface-2)}
+.box-label{font-family:var(--f-head);font-weight:800;font-size:15px;display:block;margin-bottom:6px}
+.box.k-sa .box-label{color:var(--sa)} .box.k-fa .box-label{color:var(--fa)} .box.k-no .box-label{color:var(--ink-3)}
+.box ul{margin:0;padding:0;list-style:none;font-family:var(--f-head);font-size:14.5px;line-height:1.7}
+.box.k-sa{background:linear-gradient(var(--sa-soft),var(--sa-soft))}
+.box.k-fa{background:linear-gradient(var(--fa-soft),var(--fa-soft))}
+.outside{margin-top:12px;border:2px dashed var(--rule);border-radius:10px;overflow:hidden}
+.box.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media (prefers-reduced-motion:reduce){.box.shake{animation:none}.plists td{transition:none}}
+
+/* rubrica */
+.rubrica{display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:800px){.rubrica{grid-template-columns:1fr}}
+.phone{border:3px solid var(--ink);border-radius:30px;padding:14px 12px 18px;background:var(--surface-2);max-width:340px}
+.phone-notch{width:70px;height:6px;border-radius:3px;background:var(--ink);margin:0 auto 12px;opacity:.7}
+.zone{border-radius:14px;padding:12px;background:var(--surface)}
+.zone+.zone{margin-top:10px}
+.zone-tag{font-family:var(--f-head);font-size:12.5px;font-weight:700;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px;white-space:nowrap}
+.zone.z-class{border:2px solid var(--fa-fill)} .zone.z-class .zone-tag{color:var(--fa)}
+.zone.z-objs{border:2px solid var(--sa-fill)} .zone.z-objs .zone-tag{color:var(--sa)}
+.field{display:block;margin-bottom:8px}
+.field span{display:block;font-size:12.5px;color:var(--ink-3);font-family:var(--f-head)}
+.field input{width:100%;font:inherit;font-size:16px;color:var(--ink);background:transparent;border:0;border-bottom:1.5px solid var(--rule);padding:4px 0;border-radius:0}
+.field input:focus{outline:none;border-bottom-color:var(--sa-fill)}
+.contact{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--rule)}
+.contact:first-of-type{border-top:0}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--sa-fill);color:var(--on-fill);display:grid;place-items:center;font-family:var(--f-head);font-weight:800;flex:none}
+.contact-main{flex:1;min-width:0;line-height:1.25}
+.contact-main b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.contact-main small{color:var(--ink-3);font-family:var(--f-head);font-size:12.5px}
+.contact button{padding:6px 10px;font-size:13px}
+.empty{color:var(--ink-3);font-size:14.5px;padding:6px 0}
+.console{background:var(--code-bg);color:#3DFF1A;font-family:var(--f-head);font-size:13.5px;border-radius:10px;padding:12px 16px;margin-top:12px;min-height:46px;white-space:pre-wrap}
+.console.err{color:#FF6FA8}
+.counter{font-family:var(--f-head);font-size:15px;margin-bottom:10px}
+.counter b{font-size:22px}
+
+/* tabella metafore */
+table.meta{border-collapse:collapse;width:100%;min-width:620px;font-size:15.5px;margin-top:6px}
+table.meta th,table.meta td{text-align:left;vertical-align:top;padding:10px 14px 10px 0;border-bottom:1px solid var(--rule)}
+table.meta th{font-family:var(--f-head);font-size:13.5px;color:var(--ink-3);font-weight:500}
+
+/* stepper stack/heap */
+.stepper{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:24px;align-items:start}
+@media (max-width:860px){.stepper{grid-template-columns:1fr}}
+.lines{background:var(--code-bg);border-radius:10px;padding:12px 0;font-family:var(--f-head);font-size:14px;line-height:1.5;overflow-x:auto}
+.line{display:block;padding:3px 16px;color:var(--code-dim);white-space:pre;border-left:4px solid transparent}
+.line.done{color:var(--code-ink)}
+.line.now{color:#0B0A12;background:#FFE14A;border-left-color:#FF3DAE;font-weight:700}
+.mem{min-width:540px;width:100%;height:auto;display:block}
+.mem .panel{fill:var(--surface-2);stroke:var(--rule)}
+.mem .ptitle{font-family:var(--f-head);font-size:13px;fill:var(--ink-3)}
+.mem .remote{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.mem .rname{font-family:var(--f-head);font-size:20px;font-weight:800;fill:var(--ink)}
+.mem .rstate{font-family:var(--f-head);font-size:11.5px;fill:var(--ink-3)}
+.mem .key{fill:var(--ink-3)}
+.mem .led{fill:var(--rule)} .mem .led.on{fill:var(--sa-fill)}
+.mem .obj{fill:var(--sa-soft);stroke:var(--sa);stroke-width:2}
+.mem .otitle{font-family:var(--f-head);font-size:13px;font-weight:800;fill:var(--sa)}
+.mem .ofield{font-family:var(--f-head);font-size:14px;fill:var(--ink)}
+.mem .ofield.chg{fill:var(--hot);font-weight:800}
+.mem .wire{fill:none;stroke:var(--sa);stroke-width:2.5}
+.mem .head{fill:var(--sa)}
+.mem .dead .obj{stroke-dasharray:6 5;fill:transparent;stroke:var(--ink-3)}
+.mem .dead .otitle,.mem .dead .ofield{fill:var(--ink-3)}
+.mem .gc{font-family:var(--f-head);font-size:12.5px;fill:var(--hot);font-weight:700}
+.mem [hidden]{display:none}
+.caption{margin-top:14px;font-size:16px;min-height:5.2em;max-width:72ch}
+.stepno{font-family:var(--f-head);font-size:13px;color:var(--ink-3)}
+
+/* chiusura */
+ol.take{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:10px;max-width:var(--measure)}
+ol.take li::marker{font-family:var(--f-head);font-weight:800;color:var(--ink-3)}
+.ex{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:18px;margin-top:8px}
+.ex>div{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px 20px;min-width:0}
+.ex p+p,.ex p+pre,.ex pre+p{margin-top:10px}
+details{margin-top:12px}
+summary{cursor:pointer;font-family:var(--f-head);font-size:14px;color:var(--sa);font-weight:700}
+details>*:not(summary){margin-top:10px}
+.teacher{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:16px 20px;margin-top:40px}
+.teacher ul{margin:8px 0 0;padding-left:1.2em;max-width:var(--measure)}
+.teacher li{margin-bottom:6px}
+.teacher .t{font-family:var(--f-head);font-size:13.5px;color:var(--ink-3);margin-right:6px}
+footer{margin-top:40px;color:var(--ink-3);font-size:14.5px;max-width:var(--measure)}
+footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
+@media print{.btns,button{display:none}.lab,pre{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ============================ HERO ============================ -->
+<header class="hero">
+  <h1>Un tipo tutto mio</h1>
+  <p class="lede">Classi e oggetti in Java. Si parte da un programma Python che si rompe senza dire niente, e si arriva a capire ogni pezzo di questa riga, nell'ordine in cui la JVM la esegue:</p>
+
+  <div class="stmt" aria-label="Studente s = new Studente();">
+    <div class="stmt-part p1">
+      <span class="stmt-code">Studente s</span>
+      <span class="stmt-note"><b>1</b> <span>dichiaro un telecomando che sa comandare solo oggetti Studente</span></span>
+    </div>
+    <div class="stmt-part p3">
+      <span class="stmt-code">=</span>
+      <span class="stmt-note"><b>3</b> <span>collego il telecomando all'oggetto</span></span>
+    </div>
+    <div class="stmt-part p2">
+      <span class="stmt-code">new Studente();</span>
+      <span class="stmt-note"><b>2</b> <span>costruisco un oggetto in memoria, seguendo la classe</span></span>
+    </div>
+  </div>
+
+  <p class="hero-meta">4ª informatica, due ore. Serve sapere: le liste in Python, e cosa fanno <code>javac</code> e la JVM con un file <code>.java</code>.</p>
+</header>
+
+<!-- ============================ 1. PROBLEMA ============================ -->
+<section class="sec" id="problema">
+  <div class="sec-head"><span class="num">1</span><h2>Tre liste che non si parlano</h2></div>
+  <div class="prose">
+    <p>Il registro di classe, scritto come lo avreste scritto in seconda. Tre liste. A tenerle insieme c'è una cosa sola: la <strong>posizione</strong>. Lo studente in posizione 0 ha la media in posizione 0 e le assenze in posizione 0.</p>
+  </div>
+  <div class="codes">
+    <div>
+<pre data-lang="py"><code>nomi    = ["Rossi", "Bianchi", "Verdi"]
+medie   = [6.5, 8.0, 5.5]
+assenze = [12, 3, 20]
+
+# pagella dello studente i: tre liste, stesso indice
+i = 0
+print(nomi[i], medie[i], assenze[i])</code></pre>
+    </div>
+  </div>
+
+  <div class="lab" id="lab-liste">
+    <div class="lab-title">Prova a romperlo</div>
+    <p class="lab-help">Due operazioni normalissime. Guarda cosa succede alle pagelle sotto la tabella.</p>
+    <div class="scroll"><table class="plists" id="plists"></table></div>
+    <div class="readout" id="readout"></div>
+    <div class="btns">
+      <button class="danger" id="b-sort">Esegui medie.sort()</button>
+      <button class="danger" id="b-append">Esegui nomi.append("Neri")</button>
+      <button id="b-reset">Ripristina</button>
+    </div>
+    <p class="status" id="liste-status">Per ora è tutto allineato.</p>
+  </div>
+
+  <div class="prose" style="margin-top:28px">
+    <p>Secondo guaio, stessa origine. Per stampare una pagella bisogna passare i pezzi uno per uno, e nell'ordine giusto:</p>
+  </div>
+  <div class="codes"><div>
+<pre data-lang="py"><code>def stampa_pagella(nome, cognome, classe, media, assenze):
+    print(cognome, nome, classe, "media", media, "assenze", assenze)
+
+stampa_pagella("Anna", "Rossi", "4B", 12, 6.5)
+# media e assenze scambiate: Python non protesta, la pagella è falsa</code></pre>
+  </div></div>
+  <div class="note" style="margin-top:24px">
+    <p><strong>Diagnosi.</strong> Il legame tra il nome, la media e le assenze di Rossi esiste solo nella testa di chi programma. Nel codice non è scritto da nessuna parte, quindi nessuno può difenderlo: né Python, né un compilatore.</p>
+  </div>
+</section>
+
+<!-- ============================ 2. BISOGNO ============================ -->
+<section class="sec" id="bisogno">
+  <div class="sec-head"><span class="num">2</span><h2>Ci serve un tipo che si chiami Studente</h2></div>
+  <div class="prose">
+    <p>Vorremmo che i dati di uno studente viaggiassero insieme, come una cosa sola. E vorremmo poter dire al linguaggio <em>che cos'è</em> quella cosa. In Java sapete già scrivere la prima riga. La seconda è quella che ci manca:</p>
+  </div>
+  <div class="codes"><div>
+<pre data-lang="java"><code>int x = 5;                      // tipo del linguaggio: int.   Valore: 5
+Studente s = new Studente();    // tipo MIO: Studente.         Valore: un oggetto studente</code></pre>
+  </div></div>
+  <div class="prose" style="margin-top:22px">
+    <p>Java conosce <code>int</code>, <code>double</code>, <code>boolean</code>, <code>String</code>. Non conosce <code>Studente</code>, né <code>Canzone</code>, né <code>Partita</code>. Non può: non sa cosa vi serve.</p>
+    <p>Una <strong>classe</strong> è il modo per aggiungere al linguaggio un tipo che gli manca: descrive com'è fatto. Un <strong>oggetto</strong> è un valore di quel tipo: esiste in memoria mentre il programma gira, come il <code>5</code> dentro <code>x</code>.</p>
+  </div>
+</section>
+
+<!-- ============================ 3. SA / FA ============================ -->
+<section class="sec" id="safa">
+  <div class="sec-head"><span class="num">3</span><h2>Prima del codice: cosa sa, cosa fa</h2></div>
+  <div class="prose">
+    <p>Una classe si progetta su carta, con due domande sugli oggetti che ne nasceranno.</p>
+    <p>Cosa <span class="sa">sa</span> di sé ogni oggetto? Sono i suoi dati: le <strong>variabili d'istanza</strong>, cioè il suo stato. Cosa <span class="fa">fa</span>? Sono i <strong>metodi</strong>: il suo comportamento, che lavora su quei dati.</p>
+    <p>Il disegno è un rettangolo con il nome in alto e due scomparti. Da qui in poi i colori restano questi in tutta la pagina.</p>
+  </div>
+
+  <div class="lab" id="lab-safa">
+    <div class="lab-title">Progetta Studente</div>
+    <p class="lab-help">Scegli una voce, poi il riquadro dove va. Attenzione: due voci non appartengono a un singolo studente.</p>
+    <div class="sorter">
+      <div>
+        <div class="pool" id="pool"></div>
+        <p class="status" id="safa-status">Nove voci da sistemare.</p>
+      </div>
+      <div>
+        <div class="uml">
+          <div class="uml-name">Studente</div>
+          <button class="box k-sa" data-box="sa"><span class="box-label">sa</span><ul></ul></button>
+          <button class="box k-fa" data-box="fa"><span class="box-label">fa</span><ul></ul></button>
+        </div>
+        <div class="outside">
+          <button class="box k-no" data-box="no"><span class="box-label">non è suo</span><ul></ul></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prose" style="margin-top:24px">
+    <p>Su carta, a coppie: stesso rettangolo per <code>Televisione</code>, <code>Canzone</code> e <code>Monopattino</code> a noleggio. Almeno tre cose che sa e tre che fa.</p>
+  </div>
+</section>
+
+<!-- ============================ 4. RUBRICA ============================ -->
+<section class="sec" id="rubrica">
+  <div class="sec-head"><span class="num">4</span><h2>Una classe che avete già in tasca</h2></div>
+  <div class="prose">
+    <p>Aprite la rubrica del telefono e premete +. Compare una scheda con dei campi vuoti: nome, numero. Non è nessuno. Dice solo <em>come è fatto</em> un contatto. Quella scheda vuota è la <span class="fa">classe</span>.</p>
+    <p>Compilate e salvate: adesso esiste un contatto, con i suoi valori. È un <span class="sa">oggetto</span>. Duecento contatti in rubrica, una sola forma del contatto.</p>
+  </div>
+
+  <div class="lab" id="lab-rubrica">
+    <div class="lab-title">Salvare un contatto è una new</div>
+    <p class="lab-help">Compila e salva un paio di contatti, poi chiamali. A destra c'è il Java che stai scrivendo senza accorgertene.</p>
+    <div class="rubrica">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="zone z-class">
+          <div class="zone-tag"><span>classe Contatto</span><span>scheda vuota</span></div>
+          <label class="field"><span>nome</span><input id="f-nome" autocomplete="off" maxlength="18" placeholder="Marta"></label>
+          <label class="field"><span>numero</span><input id="f-num" autocomplete="off" maxlength="16" inputmode="tel" placeholder="333 1234567"></label>
+          <div class="btns" style="margin-top:8px">
+            <button class="primary" id="b-salva">Salva contatto</button>
+            <button id="b-esempio">Riempi con un esempio</button>
+          </div>
+        </div>
+        <div class="zone z-objs">
+          <div class="zone-tag"><span>oggetti Contatto</span><span id="n-obj">0</span></div>
+          <div id="contatti"><p class="empty">Nessun contatto. Compila la scheda sopra e salva: stai per eseguire una <code>new</code>.</p></div>
+        </div>
+      </div>
+      <div style="min-width:0">
+        <p class="counter">Classi: <b>1</b> &nbsp; Oggetti: <b id="n-obj2">0</b></p>
+        <pre data-lang="java" id="live"><code></code></pre>
+        <div class="console" id="rub-console" aria-live="polite">// qui compare l'output di chiama()</div>
+        <div class="btns"><button id="b-svuota">Svuota la rubrica</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prose" style="margin-top:24px">
+    <p><code>chiama()</code> è lo stesso per tutti i contatti, ma ogni volta compone un numero diverso: usa lo stato dell'oggetto su cui lo invocate. Stesso metodo, risultato diverso.</p>
+    <div class="note calm"><p><strong>Dove la metafora si rompe.</strong> Nella rubrica siete voi a chiamare il contatto. In Java è l'oggetto stesso a eseguire il metodo, usando i propri dati. Tenetelo a mente: tra qualche lezione questo «se stesso» avrà un nome, <code>this</code>.</p></div>
+    <p>Altre due immagini utili, ognuna con il suo punto debole:</p>
+  </div>
+  <div class="scroll"><table class="meta">
+    <thead><tr><th>Immagine</th><th>Cosa spiega bene</th><th>Dove si rompe</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Progetto dell'architetto</strong> e case costruite</td><td>Nel progetto non si abita: la classe da sola non contiene dati. Stesso progetto, pareti di colore diverso: stesso tipo, stato diverso.</td><td>Una casa non fa niente: i metodi restano fuori.</td></tr>
+      <tr><td><strong>Specie ed esemplare</strong> in un videogioco</td><td>La scheda della specie dice che esistono punti vita, livello, mosse. Ogni esemplare ha i <em>suoi</em> punti vita. Le mosse sono metodi: l'effetto dipende dallo stato di chi le usa.</td><td>Fa pensare a famiglie e sottospecie: quella è l'ereditarietà, un'altra storia.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============================ 5. JAVA ============================ -->
+<section class="sec" id="java">
+  <div class="sec-head"><span class="num">5</span><h2>In Java: Studente e StudenteTestDrive</h2></div>
+  <div class="prose">
+    <p>Due file. Il primo è il rettangolo della sezione 3 tradotto in Java. Il secondo serve solo a provarlo.</p>
+  </div>
+  <div class="codes">
+    <div>
+      <p class="file">Studente.java</p>
+<pre data-lang="java"><code>// La classe descrive COM'È FATTO uno studente.
+// Qui dentro non c'è nessuno studente.
+class Studente {
+
+    // --- cosa SA: variabili d'istanza (stato) ---
+    // Ogni oggetto avrà la SUA copia di queste variabili.
+    int matricola;
+    String nome;
+    double media;
+    int assenze;
+
+    // --- cosa FA: metodi (comportamento) ---
+    // Il codice è uno solo, ma lavora sui dati
+    // dell'oggetto su cui viene chiamato.
+    void presentati() {
+        System.out.println(nome + ": media " + media
+                                + ", assenze " + assenze);
+    }
+
+    void aggiungiAssenza() {
+        // cambia lo stato di QUESTO studente, non degli altri
+        assenze = assenze + 1;
+    }
+}</code></pre>
+    </div>
+    <div>
+      <p class="file">StudenteTestDrive.java</p>
+<pre data-lang="java"><code>// Una seconda classe, che serve solo a provare la prima.
+// main non è "il programma": è la porta da cui entra la JVM.
+public class StudenteTestDrive {
+    public static void main(String[] args) {
+
+        Studente a = new Studente();   // primo oggetto
+        a.nome = "Rossi";
+        a.media = 6.5;
+
+        Studente b = new Studente();   // secondo oggetto:
+        b.nome = "Bianchi";            // stessi campi, valori suoi
+        b.media = 8.0;
+
+        a.aggiungiAssenza();           // tocca solo Rossi
+
+        a.presentati();   // Rossi: media 6.5, assenze 1
+        b.presentati();   // Bianchi: media 8.0, assenze 0
+        // stesso metodo, output diverso:
+        // cambia lo stato di chi lo esegue
+    }
+}</code></pre>
+    </div>
+  </div>
+  <div class="prose" style="margin-top:24px">
+    <p>Il guaio della sezione 1 non può più succedere: non si possono ordinare le medie lasciando indietro i nomi, perché la media sta <em>dentro</em> lo studente.</p>
+    <h3 style="margin-top:12px">Dove sta la classe, dove stanno gli oggetti</h3>
+    <p>Compilate da terminale e guardate cosa compare nella cartella:</p>
+  </div>
+  <div class="codes"><div>
+<pre data-lang="ps"><code>javac Studente.java StudenteTestDrive.java
+Get-ChildItem *.class        # Studente.class e StudenteTestDrive.class
+java StudenteTestDrive
+javap -c StudenteTestDrive   # il bytecode: cercate l'istruzione new</code></pre>
+  </div></div>
+  <div class="prose" style="margin-top:22px">
+    <p>Ogni classe diventa un file <code>.class</code> di bytecode. La JVM lo carica <strong>una volta</strong>. Gli oggetti nel file non ci sono: nascono mentre il programma gira, ogni volta che viene eseguita un'istruzione <code>new</code>, quanti ne servono. Una classe sul disco, tanti oggetti in memoria. Con NetBeans i <code>.class</code> finiscono in <code>build/classes</code> o <code>target/classes</code> dentro il progetto.</p>
+  </div>
+</section>
+
+<!-- ============================ 6. TELECOMANDO ============================ -->
+<section class="sec" id="telecomando">
+  <div class="sec-head"><span class="num">6</span><h2>Cosa c'è davvero dentro s</h2></div>
+  <div class="prose">
+    <p>Dentro <code>int x</code> c'è il numero. Dentro <code>Studente s</code> <strong>non c'è lo studente</strong>. L'oggetto vive in una zona di memoria chiamata heap. La variabile contiene soltanto il modo per raggiungerlo.</p>
+    <p>Pensatela come un <strong>telecomando</strong>: <code>s</code> è il telecomando, l'oggetto è la TV, e il punto in <code>s.media</code> è il tasto che premete. Eseguite il programma una riga alla volta.</p>
+  </div>
+
+  <div class="lab" id="lab-mem">
+    <div class="stepper">
+      <div>
+        <div class="lines" id="lines"></div>
+        <div class="console" id="mem-console" aria-live="polite">// output</div>
+      </div>
+      <div style="min-width:0">
+        <div class="scroll">
+        <svg class="mem" viewBox="0 0 640 320" role="img" aria-labelledby="mem-t">
+          <title id="mem-t">Stack con le variabili s e t, heap con l'oggetto Studente</title>
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0L10 5L0 10z"/></marker>
+          </defs>
+          <rect class="panel" x="6" y="6" width="232" height="308" rx="12"/>
+          <text class="ptitle" x="20" y="30">stack: le variabili di main</text>
+          <rect class="panel" x="262" y="6" width="372" height="308" rx="12"/>
+          <text class="ptitle" x="276" y="30">heap: dove vivono gli oggetti</text>
+
+          <g id="r-s" hidden>
+            <rect class="remote" x="28" y="56" width="178" height="74" rx="14"/>
+            <text class="rname" x="46" y="90">s</text>
+            <circle class="led" id="led-s" cx="188" cy="74" r="5"/>
+            <circle class="key" cx="84" cy="84" r="5"/><circle class="key" cx="104" cy="84" r="5"/><circle class="key" cx="124" cy="84" r="5"/>
+            <text class="rstate" id="st-s" x="46" y="116">non collegato</text>
+          </g>
+          <g id="r-t" hidden>
+            <rect class="remote" x="28" y="196" width="178" height="74" rx="14"/>
+            <text class="rname" x="46" y="230">t</text>
+            <circle class="led" id="led-t" cx="188" cy="214" r="5"/>
+            <circle class="key" cx="84" cy="224" r="5"/><circle class="key" cx="104" cy="224" r="5"/><circle class="key" cx="124" cy="224" r="5"/>
+            <text class="rstate" id="st-t" x="46" y="256">non collegato</text>
+          </g>
+
+          <g id="obj" hidden>
+            <rect class="obj" x="400" y="84" width="212" height="150" rx="16"/>
+            <text class="otitle" x="418" y="112">oggetto Studente</text>
+            <text class="ofield" id="o-nome" x="418" y="146">nome = null</text>
+            <text class="ofield" id="o-media" x="418" y="174">media = 0.0</text>
+            <text class="ofield" id="o-ass" x="418" y="202">assenze = 0</text>
+            <text class="gc" id="gc" x="400" y="262" hidden>irraggiungibile: lo prende il garbage collector</text>
+          </g>
+
+          <path class="wire" id="w-s" d="M206 93 C 300 93, 310 140, 398 140" marker-end="url(#ah)" hidden/>
+          <path class="wire" id="w-t" d="M206 233 C 300 233, 310 186, 398 186" marker-end="url(#ah)" hidden/>
+        </svg>
+        </div>
+        <p class="stepno" id="stepno">Passo 0 di 10</p>
+        <p class="caption" id="caption"></p>
+        <div class="btns">
+          <button id="b-prev">Indietro</button>
+          <button class="primary" id="b-next">Avanti</button>
+          <button id="b-restart">Ricomincia</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 7. SI ROMPERÀ ============================ -->
+<section class="sec" id="rotture">
+  <div class="sec-head"><span class="num">7</span><h2>Due cose che si romperanno presto</h2></div>
+  <div class="prose">
+    <p>La nostra classe funziona, ma si fida troppo. Provate queste righe in <code>StudenteTestDrive</code>:</p>
+  </div>
+  <div class="codes"><div>
+<pre data-lang="java"><code>a.media = -5;        // compila, gira, e il registro contiene una media impossibile
+
+Studente c = new Studente();
+c.presentati();      // null: media 0.0, assenze 0   (nessuno ha dato un nome a c)</code></pre>
+  </div></div>
+  <div class="prose" style="margin-top:22px">
+    <p>Chi controlla che una media sia sensata? Chi garantisce che uno studente nasca con un nome? Per ora nessuno. Sono i problemi delle prossime due lezioni. Prima di allora, provate a romperla voi in altri modi.</p>
+  </div>
+</section>
+
+<!-- ============================ 8. CHIUSURA ============================ -->
+<section class="sec" id="casa">
+  <div class="sec-head"><span class="num">8</span><h2>Da portare a casa</h2></div>
+  <ol class="take">
+    <li>Una classe è un tipo che aggiungo al linguaggio. Un oggetto è un valore di quel tipo, vivo in memoria mentre il programma gira.</li>
+    <li>Ogni oggetto <span class="sa">sa</span> qualcosa (variabili d'istanza) e <span class="fa">fa</span> qualcosa (metodi). Un metodo lavora sui dati dell'oggetto su cui lo chiamo.</li>
+    <li>Una classe, quanti oggetti voglio. Stessi campi, ognuno con i suoi valori.</li>
+    <li>La variabile non contiene l'oggetto: contiene il telecomando. <code>t = s</code> copia il telecomando, non lo studente.</li>
+    <li><code>Studente.class</code> sta sul disco. Gli oggetti nascono con <code>new</code> nello heap e muoiono quando nessuno li può più raggiungere.</li>
+  </ol>
+
+  <h3 style="margin-top:36px">Esercizi</h3>
+  <div class="ex">
+    <div>
+      <p><strong>1. Su carta.</strong> Rettangolo sa/fa per <code>Canzone</code> e per <code>Monopattino</code> a noleggio: almeno tre voci per scomparto. Per ciascuno trovate un dato che sembra suo ma non lo è, e dite a quale altro tipo apparterrebbe.</p>
+    </div>
+    <div>
+      <p><strong>2. Codice.</strong> Scrivete <code>Canzone</code> e <code>CanzoneTestDrive</code>. Tre oggetti. Il metodo <code>riproduci()</code> stampa titolo e artista e aumenta di uno <code>ascolti</code>. Riproducete la prima canzone tre volte e verificate che gli ascolti delle altre restino a zero.</p>
+    </div>
+    <div>
+      <p><strong>3. Prevedi l'output</strong>, senza eseguire. Poi disegna stack e heap alla fine del programma.</p>
+<pre data-lang="java"><code>Studente a = new Studente();
+Studente b = new Studente();
+a.nome = "Rossi";
+b.nome = "Verdi";
+b = a;
+b.nome = "Neri";
+System.out.println(a.nome);</code></pre>
+      <details><summary>Controlla</summary><p>Stampa <code>Neri</code>. Dopo <code>b = a</code> i due telecomandi comandano lo stesso oggetto. Gli oggetti creati sono due, ma quello di Verdi non è più raggiungibile da nessuno.</p></details>
+    </div>
+    <div>
+      <p><strong>4. Dentro il bytecode.</strong> Eseguite <code>javap -c StudenteTestDrive</code>. Quante volte compare <code>new</code>? Coincide con il sorgente? Poi <code>javap -c Studente</code>: trovate i nomi dei metodi. In quale dei due file è scritto che Rossi ha media 6.5, e perché proprio lì?</p>
+    </div>
+  </div>
+
+  <details class="teacher">
+    <summary>Per chi insegna: scaletta di due ore ed errori tipici</summary>
+    <ul>
+      <li><span class="t">0–15</span> Liste parallele. Meglio farle rompere a loro in Python che mostrarlo: l'errore silenzioso deve essere una sorpresa.</li>
+      <li><span class="t">15–25</span> Il tipo che manca: <code>int x</code> accanto a <code>Studente s</code>.</li>
+      <li><span class="t">25–45</span> Sa/fa: <code>Televisione</code> insieme alla lavagna, poi a coppie su carta.</li>
+      <li><span class="t">45–55</span> Rubrica dal vivo, telefoni in mano: «premete +, cosa vedete?»</li>
+      <li><span class="t">55–85</span> Laboratorio: <code>Studente</code>, <code>StudenteTestDrive</code>, <code>javap</code>.</li>
+      <li><span class="t">85–110</span> Telecomando passo per passo, poi esercizio 3 in silenzio e confronto.</li>
+      <li><span class="t">110–120</span> «Rompetela»: media −5 e studente senza nome. Si chiude sul problema, non sulla soluzione.</li>
+    </ul>
+    <p style="margin-top:12px"><strong>Errori tipici da stanare.</strong> «La classe è il primo oggetto.» «<code>t = s</code> fa una copia.» «<code>main</code> è il programma.» «Ogni oggetto si porta dietro una copia dei metodi» (no: il codice sta una volta sola nella classe, è lo stato a essere per-oggetto).</p>
+  </details>
+</section>
+
+<footer>
+  <p>Le immagini «sa/fa», rubrica e telecomando vengono da K. Sierra, B. Bates, T. Gee, <em>Head First Java</em>, 3ª ed., O'Reilly 2022, capitoli 1–3. Qui sono riscritte e adattate all'esempio guida <code>Studente</code>.</p>
+  <p class="ai">Questa pagina è stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilità didattica e scientifica è integralmente sua. L'indicazione è fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+/* ---------- evidenziazione minima del codice ---------- */
+var RE = {
+  java:/(\/\/.*$)|("(?:[^"\\\n]|\\.)*")|\b(class|public|static|void|int|double|boolean|String|new|null|return|private)\b|\b(\d+(?:\.\d+)?)\b/gm,
+  py:/(#.*$)|("(?:[^"\\\n]|\\.)*")|\b(def|return|print|for|in|if|else)\b|\b(\d+(?:\.\d+)?)\b/gm,
+  ps:/(#.*$)|("(?:[^"\\\n]|\\.)*")|\b(javac|javap|java|Get-ChildItem)\b|(\d+(?:\.\d+)?)(?!\w)/gm
+};
+function hl(src, lang){
+  var re = new RegExp(RE[lang].source, "gm"), out = "", last = 0, m;
+  while((m = re.exec(src))){
+    out += esc(src.slice(last, m.index));
+    var c = m[1] ? "c" : m[2] ? "s" : m[3] ? "k" : "n";
+    out += '<span class="t-' + c + '">' + esc(m[0]) + "</span>";
+    last = re.lastIndex;
+    if(m[0] === "") re.lastIndex++;
+  }
+  return out + esc(src.slice(last));
+}
+document.querySelectorAll("pre[data-lang]").forEach(function(pre){
+  if(pre.id === "live") return;
+  var code = pre.querySelector("code");
+  code.innerHTML = hl(code.textContent, pre.dataset.lang);
+});
+
+/* ---------- 1. liste parallele ---------- */
+(function(){
+  var TRUE = {Rossi:[6.5,12], Bianchi:[8.0,3], Verdi:[5.5,20]};
+  var st;
+  function reset(){ st = {nomi:["Rossi","Bianchi","Verdi"], medie:[6.5,8.0,5.5], assenze:[12,3,20], sorted:false, appended:false}; }
+  function fmt(n){ return Number.isInteger(n) ? n.toFixed(1) : String(n); }
+  function draw(){
+    var n = Math.max(st.nomi.length, st.medie.length, st.assenze.length), h = "<tr><th></th>";
+    for(var i=0;i<n;i++) h += "<th>["+i+"]</th>";
+    h += "</tr>";
+    [["nomi",st.nomi],["medie",st.medie],["assenze",st.assenze]].forEach(function(r){
+      h += '<tr><th class="rowname">'+r[0]+"</th>";
+      for(var i=0;i<n;i++){
+        if(i >= r[1].length){ h += '<td class="ghost">IndexError</td>'; continue; }
+        var v = r[1][i], moved = false;
+        if(r[0]==="medie" && st.sorted) moved = TRUE[st.nomi[i]] && TRUE[st.nomi[i]][0] !== v;
+        if(r[0]==="nomi" && i===3) moved = true;
+        h += "<td"+(moved?' class="moved"':"")+">"+(r[0]==="medie"?fmt(v):esc(String(v)))+"</td>";
+      }
+      h += "</tr>";
+    });
+    $("plists").innerHTML = h;
+    var ro = "";
+    st.nomi.forEach(function(nome,i){
+      var m = st.medie[i], a = st.assenze[i], t = TRUE[nome];
+      if(m === undefined){ ro += '<div class="bad">pagella ['+i+"]: "+nome+", media ???, assenze ???  (medie["+i+"] non esiste)</div>"; return; }
+      var bad = t && (t[0]!==m || t[1]!==a);
+      ro += "<div"+(bad?' class="bad"':"")+">pagella ["+i+"]: "+nome+", media "+fmt(m)+", assenze "+a+(bad?"   (la sua media vera era "+fmt(t[0])+")":"")+"</div>";
+    });
+    $("readout").innerHTML = ro;
+    $("b-sort").disabled = st.sorted; $("b-append").disabled = st.appended;
+  }
+  $("b-sort").onclick = function(){
+    st.medie.sort(function(a,b){return a-b;}); st.sorted = true; draw();
+    $("liste-status").innerHTML = "Le medie sono in ordine. I nomi e le assenze sono rimasti dov'erano. <b>Verdi, venti assenze, adesso ha 8.0.</b> Nessun errore, nessun avviso: il programma è sbagliato e non lo sa.";
+  };
+  $("b-append").onclick = function(){
+    st.nomi.push("Neri"); st.appended = true; draw();
+    $("liste-status").innerHTML = "È arrivato Neri, ma solo in una lista su tre. <b>Le liste hanno lunghezze diverse</b> e Python lo scoprirà soltanto quando qualcuno chiederà <code>medie[3]</code>.";
+  };
+  $("b-reset").onclick = function(){ reset(); draw(); $("liste-status").textContent = "Per ora è tutto allineato."; };
+  reset(); draw();
+})();
+
+/* ---------- 3. sa / fa ---------- */
+(function(){
+  var items = [
+    {t:"matricola", k:"sa", why:"È un dato che ogni studente ha, diverso per ciascuno: stato."},
+    {t:"presentati()", k:"fa", why:"È un'azione: lo studente usa i propri dati per presentarsi."},
+    {t:"media", k:"sa", why:"Ogni studente ha la sua: stato."},
+    {t:"mediaDellaClasse", k:"no", why:"È un dato della 4B, non di un singolo studente. Servirà un altro tipo: Classe."},
+    {t:"aggiungiAssenza()", k:"fa", why:"Un'azione che modifica lo stato di quello studente."},
+    {t:"nome", k:"sa", why:"Stato."},
+    {t:"stampaTuttiGliStudenti()", k:"no", why:"Un singolo studente non conosce gli altri. È un lavoro per chi possiede l'elenco."},
+    {t:"assenze", k:"sa", why:"Stato: un numero che cambia nel tempo, ma resta un dato dello studente."},
+    {t:"calcolaEsito()", k:"fa", why:"Un'azione che legge media e assenze dello studente e decide."}
+  ];
+  var sel = null, left = items.length, pool = $("pool"), status = $("safa-status");
+  var names = {sa:"«sa»", fa:"«fa»", no:"«non è suo»"};
+  items.forEach(function(it,i){
+    var b = document.createElement("button");
+    b.className = "chip"; b.textContent = it.t; b.setAttribute("aria-pressed","false");
+    b.onclick = function(){
+      if(sel !== null) pool.querySelector('[data-i="'+sel+'"]').setAttribute("aria-pressed","false");
+      sel = (sel === i) ? null : i;
+      if(sel !== null){ b.setAttribute("aria-pressed","true"); status.textContent = "Dove va " + it.t + "?"; }
+    };
+    b.dataset.i = i; pool.appendChild(b);
+  });
+  document.querySelectorAll("#lab-safa .box").forEach(function(box){
+    box.onclick = function(){
+      if(sel === null){ status.textContent = "Prima scegli una voce dall'elenco."; return; }
+      var it = items[sel], chip = pool.querySelector('[data-i="'+sel+'"]');
+      if(it.k === box.dataset.box){
+        var li = document.createElement("li"); li.textContent = it.t; box.querySelector("ul").appendChild(li);
+        chip.remove(); sel = null; left--;
+        status.innerHTML = "<strong>" + esc(it.t) + "</strong> va in " + names[it.k] + ". " + it.why +
+          (left ? " Ne restano " + left + "." : " Fatto: questo rettangolo è la tua classe, pronta da tradurre in Java.");
+      } else {
+        box.classList.remove("shake"); void box.offsetWidth; box.classList.add("shake");
+        var hint = it.k === "no" ? "Chiediti: un singolo studente lo possiede, o lo può fare da solo?"
+                 : it.k === "sa" ? "È una cosa che lo studente ha, non una cosa che fa."
+                 : "Le parentesi dicono che è un'azione.";
+        status.innerHTML = "<b>Non qui.</b> " + hint;
+      }
+    };
+  });
+})();
+
+/* ---------- 4. rubrica ---------- */
+(function(){
+  var list = [], EX = [["Marta","333 1234567"],["Samir","347 9876543"],["Nonna","011 5550142"],["Luca","320 4412098"]];
+  var live = $("live").querySelector("code"), con = $("rub-console"), calls = [];
+  function draw(){
+    $("n-obj").textContent = list.length; $("n-obj2").textContent = list.length;
+    var box = $("contatti");
+    if(!list.length){ box.innerHTML = '<p class="empty">Nessun contatto. Compila la scheda sopra e salva: stai per eseguire una <code>new</code>.</p>'; }
+    else {
+      box.innerHTML = "";
+      list.forEach(function(c,i){
+        var d = document.createElement("div"); d.className = "contact";
+        d.innerHTML = '<span class="avatar">'+esc(c[0].charAt(0).toUpperCase())+'</span><span class="contact-main"><b>'+esc(c[0])+'</b><small>c'+(i+1)+" &nbsp;"+esc(c[1])+"</small></span>";
+        var b = document.createElement("button"); b.textContent = "chiama()";
+        b.onclick = function(){ calls.push(i); con.className = "console"; con.textContent = "Sto chiamando " + c[0] + " al " + c[1] + "..."; code(); };
+        d.appendChild(b); box.appendChild(d);
+      });
+    }
+    code();
+  }
+  function code(){
+    var s = "// La classe Contatto è scritta una volta sola, altrove.\n// Qui sotto: quello che hai fatto tu con il telefono.\n";
+    if(!list.length) s += "\n// (ancora nessuna new)";
+    list.forEach(function(c,i){
+      var v = "c"+(i+1);
+      s += "\nContatto "+v+" = new Contatto();   // Salva: nasce un oggetto\n"+v+'.nome = "'+c[0]+'";\n'+v+'.numero = "'+c[1]+'";\n';
+    });
+    if(calls.length){
+      s += "\n";
+      calls.slice(-3).forEach(function(i){ s += "c"+(i+1)+".chiama();   // stesso metodo, usa i dati di c"+(i+1)+"\n"; });
+    }
+    live.innerHTML = hl(s, "java");
+  }
+  function salva(){
+    var n = $("f-nome").value.trim(), t = $("f-num").value.trim();
+    if(!n || !t){ con.className = "console err"; con.textContent = "Scheda incompleta: servono un nome e un numero per salvare."; return; }
+    if(list.length >= 5){ con.className = "console err"; con.textContent = "Cinque oggetti bastano per capire. Svuota la rubrica per ricominciare."; return; }
+    list.push([n.replace(/"/g,""), t.replace(/"/g,"")]);
+    $("f-nome").value = ""; $("f-num").value = "";
+    con.className = "console"; con.textContent = "// new Contatto(): la scheda è tornata vuota, l'oggetto è in rubrica";
+    draw(); $("f-nome").focus();
+  }
+  $("b-salva").onclick = salva;
+  ["f-nome","f-num"].forEach(function(id){ $(id).addEventListener("keydown", function(e){ if(e.key === "Enter") salva(); }); });
+  $("b-esempio").onclick = function(){ var e = EX[list.length % EX.length]; $("f-nome").value = e[0]; $("f-num").value = e[1]; };
+  $("b-svuota").onclick = function(){ list = []; calls = []; con.className = "console"; con.textContent = "// rubrica vuota. La classe Contatto c'è ancora: la scheda non è sparita."; draw(); };
+  draw();
+})();
+
+/* ---------- 6. stack / heap ---------- */
+(function(){
+  var LINES = [
+    "Studente s;",
+    "s = new Studente();",
+    's.nome = "Rossi";  s.media = 6.5;',
+    "Studente t = s;",
+    "t.media = 4.0;",
+    "System.out.println(s.media);",
+    "s = null;",
+    "t = null;",
+    "t.presentati();"
+  ];
+  /* s,t: 0 assente, 1 non collegato, 2 collegato, 3 null.  o: 0 assente, 1 vivo, 2 irraggiungibile */
+  var STEPS = [
+    {l:-1,s:0,t:0,o:0, cap:"Premi Avanti per eseguire il programma una riga alla volta."},
+    {l:0,s:1,t:0,o:0, cap:"Dichiaro una variabile di tipo Studente. È un telecomando che sa comandare solo oggetti Studente, ma non è ancora collegato a niente. Nessun oggetto esiste."},
+    {l:1,s:1,t:0,o:1, cap:"Prima si esegue il lato destro: <code>new Studente()</code> costruisce l'oggetto nello heap. I campi partono dai valori di default: <code>null</code>, <code>0.0</code>, <code>0</code>."},
+    {l:1,s:2,t:0,o:1, cap:"Poi l'assegnazione programma il telecomando: da ora <code>s</code> raggiunge quell'oggetto. Dentro <code>s</code> non c'è lo studente: c'è il modo per arrivarci."},
+    {l:2,s:2,t:0,o:1, nome:"Rossi", media:"6.5", chg:["nome","media"], cap:"Il punto è il tasto del telecomando. <code>s.media = 6.5</code> significa: vai all'oggetto comandato da <code>s</code> e cambia la sua media."},
+    {l:3,s:2,t:2,o:1, nome:"Rossi", media:"6.5", cap:"Attenzione: nessuna <code>new</code>, quindi nessun oggetto nuovo. Ho copiato il telecomando, non lo studente. Due telecomandi, una sola TV."},
+    {l:4,s:2,t:2,o:1, nome:"Rossi", media:"4.0", chg:["media"], cap:"Cambio la media premendo il tasto sul telecomando <code>t</code>."},
+    {l:5,s:2,t:2,o:1, nome:"Rossi", media:"4.0", out:"4.0", cap:"Stampa 4.0, non 6.5. <code>s</code> e <code>t</code> comandano lo stesso oggetto: quello che cambio da uno lo vedo dall'altro. È l'errore più frequente del primo mese di Java."},
+    {l:6,s:3,t:2,o:1, nome:"Rossi", media:"4.0", cap:"<code>s</code> non comanda più niente. L'oggetto però è ancora raggiungibile da <code>t</code>, quindi resta vivo."},
+    {l:7,s:3,t:3,o:2, nome:"Rossi", media:"4.0", cap:"Nessun telecomando punta più all'oggetto. Nessuno potrà mai più usarlo: il garbage collector della JVM si riprenderà quella memoria. Non l'avete distrutto voi: l'avete abbandonato."},
+    {l:8,s:3,t:3,o:2, nome:"Rossi", media:"4.0", err:'Exception in thread "main" java.lang.NullPointerException', cap:"Premo un tasto su un telecomando senza TV. <code>NullPointerException</code> non è un errore misterioso: vuol dire «questa variabile in questo momento non comanda nessun oggetto»."}
+  ];
+  var i = 0, lines = $("lines");
+  LINES.forEach(function(t,n){ var s = document.createElement("span"); s.className = "line"; s.textContent = (n+1) + "  " + t; lines.appendChild(s); });
+  var STATE = ["", "non collegato", "collegato", "null"];
+  /* negli elementi SVG la proprietà .hidden non esiste: si lavora sull'attributo */
+  function show(id, on){ var el = $(id); if(on) el.removeAttribute("hidden"); else el.setAttribute("hidden",""); }
+  function remote(id, v){
+    show("r-"+id, v !== 0);
+    $("st-"+id).textContent = STATE[v];
+    $("led-"+id).setAttribute("class", "led" + (v === 2 ? " on" : ""));
+    show("w-"+id, v === 2);
+  }
+  function draw(){
+    var st = STEPS[i];
+    lines.querySelectorAll(".line").forEach(function(el,n){ el.className = "line" + (n === st.l ? " now" : n < st.l ? " done" : ""); });
+    remote("s", st.s); remote("t", st.t);
+    show("obj", st.o !== 0);
+    $("obj").setAttribute("class", st.o === 2 ? "dead" : "");
+    show("gc", st.o === 2);
+    var chg = st.chg || [];
+    $("o-nome").textContent = "nome = " + (st.nome ? '"'+st.nome+'"' : "null");
+    $("o-nome").setAttribute("class", "ofield" + (chg.indexOf("nome") >= 0 ? " chg" : ""));
+    $("o-media").textContent = "media = " + (st.media || "0.0");
+    $("o-media").setAttribute("class", "ofield" + (chg.indexOf("media") >= 0 ? " chg" : ""));
+    var con = $("mem-console"), out = "";
+    for(var k = 0; k <= i; k++) if(STEPS[k].out) out = STEPS[k].out;
+    con.className = "console" + (st.err ? " err" : "");
+    con.textContent = st.err ? out + "\n" + st.err : (out || "// output");
+    $("caption").innerHTML = st.cap;
+    $("stepno").textContent = "Passo " + i + " di " + (STEPS.length - 1);
+    $("b-prev").disabled = i === 0; $("b-next").disabled = i === STEPS.length - 1;
+  }
+  $("b-next").onclick = function(){ if(i < STEPS.length - 1){ i++; draw(); } };
+  $("b-prev").onclick = function(){ if(i > 0){ i--; draw(); } };
+  $("b-restart").onclick = function(){ i = 0; draw(); };
+  draw();
+})();
+})();
+</script>
+</body>
+</html>
