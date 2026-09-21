@@ -214,10 +214,6 @@ ol.take li::marker{font-family:var(--f-head);font-weight:800;color:var(--ink-3)}
 details{margin-top:12px}
 summary{cursor:pointer;font-family:var(--f-head);font-size:14px;color:var(--sa);font-weight:700}
 details>*:not(summary){margin-top:10px}
-.teacher{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:16px 20px;margin-top:40px}
-.teacher ul{margin:8px 0 0;padding-left:1.2em;max-width:var(--measure)}
-.teacher li{margin-bottom:6px}
-.teacher .t{font-family:var(--f-head);font-size:13.5px;color:var(--ink-3);margin-right:6px}
 footer{margin-top:40px;color:var(--ink-3);font-size:14.5px;max-width:var(--measure)}
 footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
 @media print{.btns,button{display:none}.lab,pre{break-inside:avoid}}
@@ -598,19 +594,6 @@ System.out.println(a.nome);</code></pre>
     </div>
   </div>
 
-  <details class="teacher">
-    <summary>Per chi insegna: scaletta di due ore ed errori tipici</summary>
-    <ul>
-      <li><span class="t">0–15</span> Array paralleli in C. Meglio farli rompere a loro che mostrarlo: l'errore silenzioso deve essere una sorpresa.</li>
-      <li><span class="t">15–25</span> Il tipo che manca: <code>int x</code> accanto a <code>Studente s</code>.</li>
-      <li><span class="t">25–45</span> Sa/fa: <code>Televisione</code> insieme alla lavagna, poi a coppie su carta.</li>
-      <li><span class="t">45–55</span> Rubrica dal vivo, telefoni in mano: «premete +, cosa vedete?»</li>
-      <li><span class="t">55–85</span> Laboratorio: <code>Studente</code>, <code>StudenteTestDrive</code>, <code>javap</code>.</li>
-      <li><span class="t">85–110</span> Telecomando passo per passo, poi esercizio 3 in silenzio e confronto.</li>
-      <li><span class="t">110–120</span> «Rompetela»: media −5 e studente senza nome. Si chiude sul problema, non sulla soluzione.</li>
-    </ul>
-    <p style="margin-top:12px"><strong>Errori tipici da stanare.</strong> «La classe è il primo oggetto.» «<code>t = s</code> fa una copia.» «<code>main</code> è il programma.» «Ogni oggetto si porta dietro una copia dei metodi» (no: il codice sta una volta sola nella classe, è lo stato a essere per-oggetto).</p>
-  </details>
 </section>
 
 <footer>
