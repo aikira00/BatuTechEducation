@@ -164,6 +164,8 @@ footer .ai{font-size:12.5px;line-height:1.5}
     <div class="term-bar"><span>Output atteso</span></div>
 <pre><span class="prompt">&gt; java DistributoreTestDrive</span>
 clunk! ecco la tua lattina
+acceso: false
+distributore spento: niente lattina
 lattine rimaste: 1</pre>
   </div>
 </div>
@@ -213,10 +215,12 @@ lattine rimaste: 1</pre>
 <section class="sec" id="dopo">
   <h2>Dopo che funziona</h2>
   <ol class="qs">
-    <li>Nel <code>main</code> ci sono due chiamate a <code>eroga()</code>, ma la lattina esce una volta sola. Quale riga impedisce la seconda, e perché?
-      <details><summary>Controlla</summary><p><code>d.setAcceso(false);</code> cambia lo stato dell'oggetto <em>prima</em> dell'<code>if</code>. Quando l'<code>if</code> chiede <code>d.isAcceso()</code>, la risposta è <code>false</code> e il blocco viene saltato.</p></details></li>
-    <li>Sposta <code>d.setAcceso(false);</code> dopo l'<code>if</code>, senza toccare il resto. Prevedi l'output, poi verifica con il pulsante.
-      <details><summary>Controlla</summary><p>Tre righe: due lattine erogate, e siccome l'<code>if</code> sta dopo la stampa delle scorte, le scorte dicono ancora 1. Lo stato è quello del momento in cui la riga viene eseguita.</p></details></li>
+    <li>Nel <code>main</code> ci sono due chiamate a <code>eroga()</code>, ma la lattina esce una volta sola. Chi decide di non erogare la seconda?
+      <details><summary>Controlla</summary><p>Il distributore stesso. <code>eroga()</code> controlla la <em>sua</em> variabile <code>acceso</code>: dopo <code>d.setAcceso(false);</code> vale <code>false</code>, quindi il metodo stampa il messaggio e non tocca le lattine. Il <code>main</code> non deve controllare niente: l'oggetto usa il proprio stato per decidere cosa fare.</p></details></li>
+    <li>Perché il controllo sta dentro <code>eroga()</code> e non dentro <code>isAcceso()</code>?
+      <details><summary>Controlla</summary><p><code>isAcceso()</code> è un getter: il suo compito è solo rispondere alla domanda «sei acceso?». Se stampasse messaggi, ogni volta che qualcuno lo chiede comparirebbe una scritta. Il controllo va dove c'è l'azione: è <code>eroga()</code> che deve rifiutarsi di erogare.</p></details></li>
+    <li>Sposta <code>d.setAcceso(false);</code> dopo la seconda <code>d.eroga();</code>, senza toccare il resto. Prevedi l'output, poi verifica con il pulsante.
+      <details><summary>Controlla</summary><p><code>clunk!</code>, <code>acceso: true</code>, di nuovo <code>clunk!</code>, e <code>lattine rimaste: 0</code>. Lo spegnimento arriva troppo tardi. Lo stato è quello del momento in cui la riga viene eseguita.</p></details></li>
     <li>Prova l'intrusa <code>d.acceso = false;</code> nel <code>main</code> e leggi l'errore. Fa la stessa cosa di <code>d.setAcceso(false);</code>: perché una compila e l'altra no?
       <details><summary>Controlla</summary><p><code>acceso</code> è <code>private</code>: solo il codice dentro <code>Distributore</code> la può toccare. Il <code>main</code> sta in un'altra classe, quindi deve chiedere all'oggetto attraverso un metodo <code>public</code>. È l'<strong>incapsulamento</strong>: l'oggetto decide come si cambia il suo stato.</p></details></li>
     <li>E l'altra intrusa, <code>Distributore.eroga();</code>? Cosa manca per poterla chiamare?
@@ -260,7 +264,7 @@ function hl(src){
 var M = [
   {id:"f-lat", kind:"field",   code:"private int lattine = 2;"},
   {id:"f-acc", kind:"field",   code:"private boolean acceso = true;"},
-  {id:"m-ero", kind:"method",  code:'public void eroga() {\n    System.out.println("clunk! ecco la tua lattina");\n    lattine = lattine - 1;\n}'},
+  {id:"m-ero", kind:"method",  code:'public void eroga() {\n    if (acceso) {\n        System.out.println("clunk! ecco la tua lattina");\n        lattine = lattine - 1;\n    } else {\n        System.out.println("distributore spento: niente lattina");\n    }\n}'},
   {id:"m-getL",kind:"method",  code:"public int getLattine() {\n    return lattine;\n}"},
   {id:"m-isA", kind:"method",  code:"public boolean isAcceso() {\n    return acceso;\n}"},
   {id:"m-set", kind:"method",  code:"public void setAcceso(boolean a) {\n    acceso = a;\n}"},
@@ -268,16 +272,17 @@ var M = [
   {id:"s-ero", kind:"stmt",    code:"d.eroga();"},
   {id:"s-set", kind:"stmt",    code:"d.setAcceso(false);"},
   {id:"s-pr",  kind:"stmt",    code:'System.out.println("lattine rimaste: " + d.getLattine());'},
-  {id:"s-if",  kind:"stmt",    code:"if (d.isAcceso()) {\n    d.eroga();\n}"},
+  {id:"s-acc", kind:"stmt",    code:'System.out.println("acceso: " + d.isAcceso());'},
+  {id:"s-ero2",kind:"stmt",    code:"d.eroga();"},
   {id:"x-sta", kind:"intruso", code:"Distributore.eroga();"},
   {id:"x-dir", kind:"intruso", code:"d.acceso = false;"}
 ];
-var SOL = {clsF:["f-lat","f-acc"], clsM:["m-ero","m-getL","m-isA","m-set"], main:["s-new","s-ero","s-set","s-pr","s-if"]};
+var SOL = {clsF:["f-lat","f-acc"], clsM:["m-ero","m-getL","m-isA","m-set"], main:["s-new","s-ero","s-set","s-acc","s-ero2","s-pr"]};
 /* ordine sparso fisso: è anche quello della versione stampata */
-var SCRAMBLE = ["s-set","m-getL","x-dir","s-new","f-acc","m-set","s-if","x-sta","m-ero","s-pr","f-lat","m-isA","s-ero"];
+var SCRAMBLE = ["s-set","m-getL","x-dir","s-ero2","s-new","f-acc","m-set","s-acc","x-sta","m-ero","s-pr","f-lat","m-isA","s-ero"];
 var ZONES = ["pool","clsF","clsM","main"];
 var byId = {}; M.forEach(function(m){ byId[m.id] = m; });
-var TARGET = ["clunk! ecco la tua lattina","lattine rimaste: 1"];
+var TARGET = ["clunk! ecco la tua lattina","acceso: false","distributore spento: niente lattina","lattine rimaste: 1"];
 
 function el(m){
   var d = document.createElement("div");
@@ -352,14 +357,14 @@ function compile(cls, main){
     if(k === "field") errs.push({id:id, file:"DistributoreTestDrive.java", msg:"illegal start of expression",
       why:"<code>private</code> ha senso solo per le variabili d'istanza di una classe. Dentro il <code>main</code> non si può usare: questa calamita descrive cosa <em>sa</em> il distributore, e va in <code>class Distributore</code>."});
   });
-  var FIELD_USE = {"m-ero":"f-lat", "m-getL":"f-lat", "m-isA":"f-acc", "m-set":"f-acc"};
+  var FIELD_USE = {"m-ero":["f-acc","f-lat"], "m-getL":["f-lat"], "m-isA":["f-acc"], "m-set":["f-acc"]};
   Object.keys(FIELD_USE).forEach(function(mid){
-    var f = FIELD_USE[mid], name = f === "f-lat" ? "lattine" : "acceso";
-    if(has(cls,mid) && !has(cls,f)) errs.push({id:mid, file:"Distributore.java", msg:"cannot find symbol\n  symbol:   variable "+name+"\n  location: class Distributore",
+    var f = FIELD_USE[mid].filter(function(x){ return !has(cls,x); })[0], name = f === "f-lat" ? "lattine" : "acceso";
+    if(has(cls,mid) && f) errs.push({id:mid, file:"Distributore.java", msg:"cannot find symbol\n  symbol:   variable "+name+"\n  location: class Distributore",
       why:"Il metodo usa <code>"+name+"</code>, ma la classe non dice che un distributore ce l'ha. Manca una variabile d'istanza."});
   });
   var NEED = {"s-ero":[["m-ero","method eroga()"]], "s-set":[["m-set","method setAcceso(boolean)"]],
-              "s-pr":[["m-getL","method getLattine()"]], "s-if":[["m-isA","method isAcceso()"],["m-ero","method eroga()"]]};
+              "s-pr":[["m-getL","method getLattine()"]], "s-acc":[["m-isA","method isAcceso()"]], "s-ero2":[["m-ero","method eroga()"]]};
   var declared = false;
   main.forEach(function(id){
     var m = byId[id];
@@ -392,8 +397,12 @@ function run(main){
   var o = null, out = [];
   main.forEach(function(id){
     if(id === "s-new") o = {lattine:2, acceso:true};
-    else if(id === "s-ero" || (id === "s-if" && o.acceso)){ out.push("clunk! ecco la tua lattina"); o.lattine--; }
+    else if(id === "s-ero" || id === "s-ero2"){
+      if(o.acceso){ out.push("clunk! ecco la tua lattina"); o.lattine--; }
+      else out.push("distributore spento: niente lattina");
+    }
     else if(id === "s-set") o.acceso = false;
+    else if(id === "s-acc") out.push("acceso: " + o.acceso);
     else if(id === "s-pr") out.push("lattine rimaste: " + o.lattine);
   });
   return out;
@@ -436,7 +445,9 @@ $("b-run").onclick = function(){
     v.className = "verdict bad no-print";
     var hint;
     if(!out.length) hint = "Il <code>main</code> non stampa niente: quali istruzioni fanno lavorare l'oggetto?";
-    else if(out.filter(function(l){ return l.indexOf("clunk") === 0; }).length > 1) hint = "Escono due lattine. Qualcosa dovrebbe impedire la seconda: guarda in che ordine avvengono <code>d.setAcceso(false);</code> e l'<code>if</code>.";
+    else if(out.filter(function(l){ return l.indexOf("clunk") === 0; }).length > 1) hint = "Escono due lattine: il distributore era ancora acceso alla seconda <code>eroga()</code>. Guarda dove sta <code>d.setAcceso(false);</code>.";
+    else if(out.indexOf("acceso: true") >= 0) hint = "Stampa <code>acceso: true</code>: state chiedendo se è acceso prima di spegnerlo.";
+    else if(out[0] && out[0].indexOf("distributore spento") === 0) hint = "Il distributore è già spento alla prima <code>eroga()</code>: lo state spegnendo troppo presto.";
     else if(out.indexOf("lattine rimaste: 2") >= 0) hint = "Le scorte dicono 2: state chiedendo le scorte prima che il distributore abbia erogato.";
     else if(out[0] && out[0].indexOf("lattine") === 0) hint = "La prima riga dell'output atteso è la lattina, non le scorte.";
     else hint = "Confronta riga per riga con l'output atteso. Manca qualcosa, o c'è qualcosa in più?";
