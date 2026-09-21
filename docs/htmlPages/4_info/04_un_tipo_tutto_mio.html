@@ -172,10 +172,6 @@ button:disabled{opacity:.4;cursor:not-allowed}
 .counter{font-family:var(--f-head);font-size:15px;margin-bottom:10px}
 .counter b{font-size:22px}
 
-/* tabella metafore */
-table.meta{border-collapse:collapse;width:100%;min-width:620px;font-size:15.5px;margin-top:6px}
-table.meta th,table.meta td{text-align:left;vertical-align:top;padding:10px 14px 10px 0;border-bottom:1px solid var(--rule)}
-table.meta th{font-family:var(--f-head);font-size:13.5px;color:var(--ink-3);font-weight:500}
 
 /* stepper stack/heap */
 .stepper{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:24px;align-items:start}
@@ -190,7 +186,6 @@ table.meta th{font-family:var(--f-head);font-size:13.5px;color:var(--ink-3);font
 .mem .remote{fill:var(--surface);stroke:var(--ink);stroke-width:2}
 .mem .rname{font-family:var(--f-head);font-size:20px;font-weight:800;fill:var(--ink)}
 .mem .rstate{font-family:var(--f-head);font-size:11.5px;fill:var(--ink-3)}
-.mem .key{fill:var(--ink-3)}
 .mem .led{fill:var(--rule)} .mem .led.on{fill:var(--sa-fill)}
 .mem .obj{fill:var(--sa-soft);stroke:var(--sa);stroke-width:2}
 .mem .otitle{font-family:var(--f-head);font-size:13px;font-weight:800;fill:var(--sa)}
@@ -230,11 +225,11 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
   <div class="stmt" aria-label="Studente s = new Studente();">
     <div class="stmt-part p1">
       <span class="stmt-code">Studente s</span>
-      <span class="stmt-note"><b>1</b> <span>dichiaro un telecomando che sa comandare solo oggetti Studente</span></span>
+      <span class="stmt-note"><b>1</b> <span>dichiaro una variabile che può riferirsi solo a oggetti Studente</span></span>
     </div>
     <div class="stmt-part p3">
       <span class="stmt-code">=</span>
-      <span class="stmt-note"><b>3</b> <span>collego il telecomando all'oggetto</span></span>
+      <span class="stmt-note"><b>3</b> <span>la variabile riceve il riferimento all'oggetto</span></span>
     </div>
     <div class="stmt-part p2">
       <span class="stmt-code">new Studente();</span>
@@ -242,14 +237,13 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
     </div>
   </div>
 
-  <p class="hero-meta">4ª informatica, due ore. Serve sapere: gli array e le <code>struct</code> in C, e cosa fanno <code>javac</code> e la JVM con un file <code>.java</code>.</p>
 </header>
 
 <!-- ============================ 1. PROBLEMA ============================ -->
 <section class="sec" id="problema">
   <div class="sec-head"><span class="num">1</span><h2>Tre array che non si parlano</h2></div>
   <div class="prose">
-    <p>Il registro di classe, scritto come lo avreste scritto in terza. Tre array. A tenerli insieme c'è una cosa sola: la <strong>posizione</strong>. Lo studente in posizione 0 ha la media in posizione 0 e le assenze in posizione 0.</p>
+    <p>Il registro di classe con tre array. A tenerli insieme c'è una cosa sola: la <strong>posizione</strong>. Lo studente in posizione 0 ha la media in posizione 0 e le assenze in posizione 0.</p>
   </div>
   <div class="codes">
     <div>
@@ -345,9 +339,6 @@ Studente s = new Studente();    // tipo MIO: Studente.         Valore: un oggett
     </div>
   </div>
 
-  <div class="prose" style="margin-top:24px">
-    <p>Su carta, a coppie: stesso rettangolo per <code>Televisione</code>, <code>Canzone</code> e <code>Monopattino</code> a noleggio. Almeno tre cose che sa e tre che fa.</p>
-  </div>
 </section>
 
 <!-- ============================ 4. RUBRICA ============================ -->
@@ -390,15 +381,7 @@ Studente s = new Studente();    // tipo MIO: Studente.         Valore: un oggett
   <div class="prose" style="margin-top:24px">
     <p><code>chiama()</code> è lo stesso per tutti i contatti, ma ogni volta compone un numero diverso: usa lo stato dell'oggetto su cui lo invocate. Stesso metodo, risultato diverso.</p>
     <div class="note calm"><p><strong>Dove la metafora si rompe.</strong> Nella rubrica siete voi a chiamare il contatto. In Java è l'oggetto stesso a eseguire il metodo, usando i propri dati. Tenetelo a mente: tra qualche lezione questo «se stesso» avrà un nome, <code>this</code>.</p></div>
-    <p>Altre due immagini utili, ognuna con il suo punto debole:</p>
   </div>
-  <div class="scroll"><table class="meta">
-    <thead><tr><th>Immagine</th><th>Cosa spiega bene</th><th>Dove si rompe</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Progetto dell'architetto</strong> e case costruite</td><td>Nel progetto non si abita: la classe da sola non contiene dati. Stesso progetto, pareti di colore diverso: stesso tipo, stato diverso.</td><td>Una casa non fa niente: i metodi restano fuori.</td></tr>
-      <tr><td><strong>Specie ed esemplare</strong> in un videogioco</td><td>La scheda della specie dice che esistono punti vita, livello, mosse. Ogni esemplare ha i <em>suoi</em> punti vita. Le mosse sono metodi: l'effetto dipende dallo stato di chi le usa.</td><td>Fa pensare a famiglie e sottospecie: quella è l'ereditarietà, un'altra storia.</td></tr>
-    </tbody>
-  </table></div>
 </section>
 
 <!-- ============================ 5. JAVA ============================ -->
@@ -476,12 +459,11 @@ javap -c StudenteTestDrive   # il bytecode: cercate l'istruzione new</code></pre
   </div>
 </section>
 
-<!-- ============================ 6. TELECOMANDO ============================ -->
-<section class="sec" id="telecomando">
+<!-- ============================ 6. RIFERIMENTI ============================ -->
+<section class="sec" id="riferimenti">
   <div class="sec-head"><span class="num">6</span><h2>Cosa c'è davvero dentro s</h2></div>
   <div class="prose">
-    <p>Dentro <code>int x</code> c'è il numero. Dentro <code>Studente s</code> <strong>non c'è lo studente</strong>. L'oggetto vive in una zona di memoria chiamata heap. La variabile contiene soltanto il modo per raggiungerlo.</p>
-    <p>Pensatela come un <strong>telecomando</strong>: <code>s</code> è il telecomando, l'oggetto è la TV, e il punto in <code>s.media</code> è il tasto che premete. Eseguite il programma una riga alla volta.</p>
+    <p>Dentro <code>int x</code> c'è il numero. Dentro <code>Studente s</code> <strong>non c'è lo studente</strong>. L'oggetto vive in una zona di memoria chiamata heap. La variabile contiene soltanto il modo per raggiungerlo: un <strong>riferimento</strong>. Eseguite il programma una riga alla volta.</p>
   </div>
 
   <div class="lab" id="lab-mem">
@@ -506,15 +488,13 @@ javap -c StudenteTestDrive   # il bytecode: cercate l'istruzione new</code></pre
             <rect class="remote" x="28" y="56" width="178" height="74" rx="14"/>
             <text class="rname" x="46" y="90">s</text>
             <circle class="led" id="led-s" cx="188" cy="74" r="5"/>
-            <circle class="key" cx="84" cy="84" r="5"/><circle class="key" cx="104" cy="84" r="5"/><circle class="key" cx="124" cy="84" r="5"/>
-            <text class="rstate" id="st-s" x="46" y="116">non collegato</text>
+            <text class="rstate" id="st-s" x="46" y="116">non inizializzata</text>
           </g>
           <g id="r-t" hidden>
             <rect class="remote" x="28" y="196" width="178" height="74" rx="14"/>
             <text class="rname" x="46" y="230">t</text>
             <circle class="led" id="led-t" cx="188" cy="214" r="5"/>
-            <circle class="key" cx="84" cy="224" r="5"/><circle class="key" cx="104" cy="224" r="5"/><circle class="key" cx="124" cy="224" r="5"/>
-            <text class="rstate" id="st-t" x="46" y="256">non collegato</text>
+            <text class="rstate" id="st-t" x="46" y="256">non inizializzata</text>
           </g>
 
           <g id="obj" hidden>
@@ -566,7 +546,7 @@ c.presentati();      // null: media 0.0, assenze 0   (nessuno ha dato un nome a 
     <li>Una classe è un tipo che aggiungo al linguaggio. Un oggetto è un valore di quel tipo, vivo in memoria mentre il programma gira.</li>
     <li>Ogni oggetto <span class="sa">sa</span> qualcosa (variabili d'istanza) e <span class="fa">fa</span> qualcosa (metodi). Un metodo lavora sui dati dell'oggetto su cui lo chiamo.</li>
     <li>Una classe, quanti oggetti voglio. Stessi campi, ognuno con i suoi valori.</li>
-    <li>La variabile non contiene l'oggetto: contiene il telecomando. <code>t = s</code> copia il telecomando, non lo studente.</li>
+    <li>La variabile non contiene l'oggetto: contiene un riferimento. <code>t = s</code> copia il riferimento, non lo studente.</li>
     <li><code>Studente.class</code> sta sul disco. Gli oggetti nascono con <code>new</code> nello heap e muoiono quando nessuno li può più raggiungere.</li>
   </ol>
 
@@ -587,7 +567,7 @@ b.nome = "Verdi";
 b = a;
 b.nome = "Neri";
 System.out.println(a.nome);</code></pre>
-      <details><summary>Controlla</summary><p>Stampa <code>Neri</code>. Dopo <code>b = a</code> i due telecomandi comandano lo stesso oggetto. Gli oggetti creati sono due, ma quello di Verdi non è più raggiungibile da nessuno.</p></details>
+      <details><summary>Controlla</summary><p>Stampa <code>Neri</code>. Dopo <code>b = a</code> le due variabili si riferiscono allo stesso oggetto. Gli oggetti creati sono due, ma quello di Verdi non è più raggiungibile da nessuno.</p></details>
     </div>
     <div>
       <p><strong>4. Dentro il bytecode.</strong> Eseguite <code>javap -c StudenteTestDrive</code>. Quante volte compare <code>new</code>? Coincide con il sorgente? Poi <code>javap -c Studente</code>: trovate i nomi dei metodi. In quale dei due file è scritto che Rossi ha media 6.5, e perché proprio lì?</p>
@@ -597,7 +577,7 @@ System.out.println(a.nome);</code></pre>
 </section>
 
 <footer>
-  <p>Le immagini «sa/fa», rubrica e telecomando sono ispirate a K. Sierra, B. Bates, T. Gee, <em>Head First Java</em>, 3ª ed., O'Reilly 2022, capitoli 1–3. Testi, codice ed esempi sono originali, costruiti attorno all'esempio guida <code>Studente</code>.</p>
+  <p>Le immagini «sa/fa» e rubrica sono ispirate a K. Sierra, B. Bates, T. Gee, <em>Head First Java</em>, 3ª ed., O'Reilly 2022, capitoli 1–3. Testi, codice ed esempi sono originali, costruiti attorno all'esempio guida <code>Studente</code>.</p>
   <p class="ai">Questa pagina è stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilità didattica e scientifica è integralmente sua. L'indicazione è fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
 </footer>
 
@@ -793,20 +773,20 @@ document.querySelectorAll("pre[data-lang]").forEach(function(pre){
   /* s,t: 0 assente, 1 non collegato, 2 collegato, 3 null.  o: 0 assente, 1 vivo, 2 irraggiungibile */
   var STEPS = [
     {l:-1,s:0,t:0,o:0, cap:"Premi Avanti per eseguire il programma una riga alla volta."},
-    {l:0,s:1,t:0,o:0, cap:"Dichiaro una variabile di tipo Studente. È un telecomando che sa comandare solo oggetti Studente, ma non è ancora collegato a niente. Nessun oggetto esiste."},
+    {l:0,s:1,t:0,o:0, cap:"Dichiaro una variabile di tipo Studente. Può riferirsi solo a oggetti Studente, ma per ora non si riferisce a niente. Nessun oggetto esiste."},
     {l:1,s:1,t:0,o:1, cap:"Prima si esegue il lato destro: <code>new Studente()</code> costruisce l'oggetto nello heap. I campi partono dai valori di default: <code>null</code>, <code>0.0</code>, <code>0</code>."},
-    {l:1,s:2,t:0,o:1, cap:"Poi l'assegnazione programma il telecomando: da ora <code>s</code> raggiunge quell'oggetto. Dentro <code>s</code> non c'è lo studente: c'è il modo per arrivarci."},
-    {l:2,s:2,t:0,o:1, nome:"Rossi", media:"6.5", chg:["nome","media"], cap:"Il punto è il tasto del telecomando. <code>s.media = 6.5</code> significa: vai all'oggetto comandato da <code>s</code> e cambia la sua media."},
-    {l:3,s:2,t:2,o:1, nome:"Rossi", media:"6.5", cap:"Attenzione: nessuna <code>new</code>, quindi nessun oggetto nuovo. Ho copiato il telecomando, non lo studente. Due telecomandi, una sola TV."},
-    {l:4,s:2,t:2,o:1, nome:"Rossi", media:"4.0", chg:["media"], cap:"Cambio la media premendo il tasto sul telecomando <code>t</code>."},
-    {l:5,s:2,t:2,o:1, nome:"Rossi", media:"4.0", out:"4.0", cap:"Stampa 4.0, non 6.5. <code>s</code> e <code>t</code> comandano lo stesso oggetto: quello che cambio da uno lo vedo dall'altro. È l'errore più frequente del primo mese di Java."},
-    {l:6,s:3,t:2,o:1, nome:"Rossi", media:"4.0", cap:"<code>s</code> non comanda più niente. L'oggetto però è ancora raggiungibile da <code>t</code>, quindi resta vivo."},
-    {l:7,s:3,t:3,o:2, nome:"Rossi", media:"4.0", cap:"Nessun telecomando punta più all'oggetto. Nessuno potrà mai più usarlo: il garbage collector della JVM si riprenderà quella memoria. Non l'avete distrutto voi: l'avete abbandonato."},
-    {l:8,s:3,t:3,o:2, nome:"Rossi", media:"4.0", err:'Exception in thread "main" java.lang.NullPointerException', cap:"Premo un tasto su un telecomando senza TV. <code>NullPointerException</code> non è un errore misterioso: vuol dire «questa variabile in questo momento non comanda nessun oggetto»."}
+    {l:1,s:2,t:0,o:1, cap:"Poi l'assegnazione copia in <code>s</code> il riferimento: da ora <code>s</code> raggiunge quell'oggetto. Dentro <code>s</code> non c'è lo studente: c'è il modo per arrivarci."},
+    {l:2,s:2,t:0,o:1, nome:"Rossi", media:"6.5", chg:["nome","media"], cap:"Il punto segue il riferimento. <code>s.media = 6.5</code> significa: vai all'oggetto a cui si riferisce <code>s</code> e cambia la sua media."},
+    {l:3,s:2,t:2,o:1, nome:"Rossi", media:"6.5", cap:"Attenzione: nessuna <code>new</code>, quindi nessun oggetto nuovo. Ho copiato il riferimento, non lo studente. Due variabili, un solo oggetto."},
+    {l:4,s:2,t:2,o:1, nome:"Rossi", media:"4.0", chg:["media"], cap:"Cambio la media passando da <code>t</code>."},
+    {l:5,s:2,t:2,o:1, nome:"Rossi", media:"4.0", out:"4.0", cap:"Stampa 4.0, non 6.5. <code>s</code> e <code>t</code> si riferiscono allo stesso oggetto: quello che cambio da uno lo vedo dall'altro. È l'errore più frequente del primo mese di Java."},
+    {l:6,s:3,t:2,o:1, nome:"Rossi", media:"4.0", cap:"<code>s</code> non si riferisce più a niente. L'oggetto però è ancora raggiungibile da <code>t</code>, quindi resta vivo."},
+    {l:7,s:3,t:3,o:2, nome:"Rossi", media:"4.0", cap:"Nessuna variabile si riferisce più all'oggetto. Nessuno potrà mai più usarlo: il garbage collector della JVM si riprenderà quella memoria. Non l'avete distrutto voi: l'avete abbandonato."},
+    {l:8,s:3,t:3,o:2, nome:"Rossi", media:"4.0", err:'Exception in thread "main" java.lang.NullPointerException', cap:"Uso il punto su una variabile che vale <code>null</code>. <code>NullPointerException</code> non è un errore misterioso: vuol dire «questa variabile in questo momento non si riferisce a nessun oggetto»."}
   ];
   var i = 0, lines = $("lines");
   LINES.forEach(function(t,n){ var s = document.createElement("span"); s.className = "line"; s.textContent = (n+1) + "  " + t; lines.appendChild(s); });
-  var STATE = ["", "non collegato", "collegato", "null"];
+  var STATE = ["", "non inizializzata", "→ oggetto", "null"];
   /* negli elementi SVG la proprietà .hidden non esiste: si lavora sull'attributo */
   function show(id, on){ var el = $(id); if(on) el.removeAttribute("hidden"); else el.setAttribute("hidden",""); }
   function remote(id, v){

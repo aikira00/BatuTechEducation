@@ -220,7 +220,7 @@ lattine rimaste: 1</pre>
     <li>Prova l'intrusa <code>d.acceso = false;</code> nel <code>main</code> e leggi l'errore. Fa la stessa cosa di <code>d.setAcceso(false);</code>: perché una compila e l'altra no?
       <details><summary>Controlla</summary><p><code>acceso</code> è <code>private</code>: solo il codice dentro <code>Distributore</code> la può toccare. Il <code>main</code> sta in un'altra classe, quindi deve chiedere all'oggetto attraverso un metodo <code>public</code>. È l'<strong>incapsulamento</strong>: l'oggetto decide come si cambia il suo stato.</p></details></li>
     <li>E l'altra intrusa, <code>Distributore.eroga();</code>? Cosa manca per poterla chiamare?
-      <details><summary>Controlla</summary><p>Chiede alla <em>classe</em> di erogare. Ma la classe è solo la descrizione: la lattina esce da <em>un</em> distributore, cioè da un oggetto. Serve un telecomando: <code>d.eroga()</code>.</p></details></li>
+      <details><summary>Controlla</summary><p>Chiede alla <em>classe</em> di erogare. Ma la classe è solo la descrizione: la lattina esce da <em>un</em> distributore, cioè da un oggetto. Serve una variabile che si riferisca a un distributore: <code>d.eroga()</code>.</p></details></li>
     <li>Perché non c'è un metodo <code>setLattine</code>? Scrivilo tu, in modo che un numero negativo venga rifiutato.
       <details><summary>Controlla</summary><pre style="margin:8px 0 0;background:var(--code-bg);color:var(--code-ink);padding:10px 14px;border-radius:8px;font-family:var(--f-head);font-size:14px">public void setLattine(int n) {
     if (n &gt;= 0) {
@@ -371,7 +371,7 @@ function compile(cls, main){
       return;
     }
     if(!declared){ errs.push({id:id, file:"DistributoreTestDrive.java", msg:"cannot find symbol\n  symbol:   variable d",
-      why:"Qui si usa <code>d</code>, ma <code>d</code> non esiste ancora. Prima si crea l'oggetto e si collega il telecomando, poi si premono i tasti."}); return; }
+      why:"Qui si usa <code>d</code>, ma <code>d</code> non esiste ancora. Prima si crea l'oggetto e si assegna il riferimento a <code>d</code>, poi lo si usa."}); return; }
     if(id === "x-dir"){
       if(has(cls,"f-acc")) errs.push({id:id, file:"DistributoreTestDrive.java", msg:"acceso has private access in Distributore",
         why:"<code>acceso</code> è <code>private</code>: solo il codice dentro <code>Distributore</code> la può toccare. Da fuori si chiede all'oggetto con un metodo <code>public</code>: il setter."});
