@@ -113,7 +113,7 @@ button:disabled{opacity:.4;cursor:not-allowed}
 .status b{color:var(--hot)}
 .scroll{overflow-x:auto}
 
-/* liste parallele */
+/* array paralleli */
 .plists{border-collapse:separate;border-spacing:6px;font-family:var(--f-head);font-size:15px}
 .plists th{font-weight:500;color:var(--ink-3);font-size:13px;text-align:center;padding:0 4px}
 .plists th.rowname{text-align:right;padding-right:10px;color:var(--ink);font-size:15px;font-weight:700}
@@ -229,7 +229,7 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
 <!-- ============================ HERO ============================ -->
 <header class="hero">
   <h1>Un tipo tutto mio</h1>
-  <p class="lede">Classi e oggetti in Java. Si parte da un programma Python che si rompe senza dire niente, e si arriva a capire ogni pezzo di questa riga, nell'ordine in cui la JVM la esegue:</p>
+  <p class="lede">Classi e oggetti in Java. Si parte da un programma C che si rompe senza dire niente, e si arriva a capire ogni pezzo di questa riga, nell'ordine in cui la JVM la esegue:</p>
 
   <div class="stmt" aria-label="Studente s = new Studente();">
     <div class="stmt-part p1">
@@ -246,24 +246,27 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
     </div>
   </div>
 
-  <p class="hero-meta">4ª informatica, due ore. Serve sapere: le liste in Python, e cosa fanno <code>javac</code> e la JVM con un file <code>.java</code>.</p>
+  <p class="hero-meta">4ª informatica, due ore. Serve sapere: gli array e le <code>struct</code> in C, e cosa fanno <code>javac</code> e la JVM con un file <code>.java</code>.</p>
 </header>
 
 <!-- ============================ 1. PROBLEMA ============================ -->
 <section class="sec" id="problema">
-  <div class="sec-head"><span class="num">1</span><h2>Tre liste che non si parlano</h2></div>
+  <div class="sec-head"><span class="num">1</span><h2>Tre array che non si parlano</h2></div>
   <div class="prose">
-    <p>Il registro di classe, scritto come lo avreste scritto in seconda. Tre liste. A tenerle insieme c'è una cosa sola: la <strong>posizione</strong>. Lo studente in posizione 0 ha la media in posizione 0 e le assenze in posizione 0.</p>
+    <p>Il registro di classe, scritto come lo avreste scritto in terza. Tre array. A tenerli insieme c'è una cosa sola: la <strong>posizione</strong>. Lo studente in posizione 0 ha la media in posizione 0 e le assenze in posizione 0.</p>
   </div>
   <div class="codes">
     <div>
-<pre data-lang="py"><code>nomi    = ["Rossi", "Bianchi", "Verdi"]
-medie   = [6.5, 8.0, 5.5]
-assenze = [12, 3, 20]
+<pre data-lang="c"><code>#define MAX 30
 
-# pagella dello studente i: tre liste, stesso indice
-i = 0
-print(nomi[i], medie[i], assenze[i])</code></pre>
+char  nomi[MAX][20] = {"Rossi", "Bianchi", "Verdi"};
+float medie[MAX]    = {6.5, 8.0, 5.5};
+int   assenze[MAX]  = {12, 3, 20};
+int   n = 3;                        // studenti inseriti
+
+// pagella dello studente i: tre array, stesso indice
+int i = 0;
+printf("%s %.1f %d\n", nomi[i], medie[i], assenze[i]);</code></pre>
     </div>
   </div>
 
@@ -273,8 +276,8 @@ print(nomi[i], medie[i], assenze[i])</code></pre>
     <div class="scroll"><table class="plists" id="plists"></table></div>
     <div class="readout" id="readout"></div>
     <div class="btns">
-      <button class="danger" id="b-sort">Esegui medie.sort()</button>
-      <button class="danger" id="b-append">Esegui nomi.append("Neri")</button>
+      <button class="danger" id="b-sort">ordina(medie, n);</button>
+      <button class="danger" id="b-append">strcpy(nomi[n], "Neri"); n++;</button>
       <button id="b-reset">Ripristina</button>
     </div>
     <p class="status" id="liste-status">Per ora è tutto allineato.</p>
@@ -284,14 +287,18 @@ print(nomi[i], medie[i], assenze[i])</code></pre>
     <p>Secondo guaio, stessa origine. Per stampare una pagella bisogna passare i pezzi uno per uno, e nell'ordine giusto:</p>
   </div>
   <div class="codes"><div>
-<pre data-lang="py"><code>def stampa_pagella(nome, cognome, classe, media, assenze):
-    print(cognome, nome, classe, "media", media, "assenze", assenze)
+<pre data-lang="c"><code>void stampa_pagella(char nome[], char cognome[], char classe[],
+                    float media, int assenze) {
+    printf("%s %s %s media %.1f assenze %d\n",
+           cognome, nome, classe, media, assenze);
+}
 
-stampa_pagella("Anna", "Rossi", "4B", 12, 6.5)
-# media e assenze scambiate: Python non protesta, la pagella è falsa</code></pre>
+stampa_pagella("Anna", "Rossi", "4B", 12, 6.5);
+// media e assenze scambiate: il compilatore converte in silenzio
+// (12 diventa 12.0, 6.5 diventa 6) e la pagella è falsa</code></pre>
   </div></div>
   <div class="note" style="margin-top:24px">
-    <p><strong>Diagnosi.</strong> Il legame tra il nome, la media e le assenze di Rossi esiste solo nella testa di chi programma. Nel codice non è scritto da nessuna parte, quindi nessuno può difenderlo: né Python, né un compilatore.</p>
+    <p><strong>Diagnosi.</strong> Il legame tra il nome, la media e le assenze di Rossi esiste solo nella testa di chi programma. Nel codice non è scritto da nessuna parte, quindi nessuno può difenderlo: nemmeno il compilatore.</p>
   </div>
 </section>
 
@@ -308,6 +315,7 @@ Studente s = new Studente();    // tipo MIO: Studente.         Valore: un oggett
   <div class="prose" style="margin-top:22px">
     <p>Java conosce <code>int</code>, <code>double</code>, <code>boolean</code>, <code>String</code>. Non conosce <code>Studente</code>, né <code>Canzone</code>, né <code>Partita</code>. Non può: non sa cosa vi serve.</p>
     <p>Una <strong>classe</strong> è il modo per aggiungere al linguaggio un tipo che gli manca: descrive com'è fatto. Un <strong>oggetto</strong> è un valore di quel tipo: esiste in memoria mentre il programma gira, come il <code>5</code> dentro <code>x</code>.</p>
+    <div class="note calm"><p><strong>«Ma in C c'era la struct.»</strong> Vero, ed è metà della risposta: una <code>struct Studente</code> tiene insieme nome, media e assenze, e il problema della sezione 1 sparisce. Però le funzioni che lavorano su quei dati restano fuori, e chiunque può scrivere <code>s.media = -5</code>. Una classe mette nello stesso posto i dati <em>e</em> il codice che li usa. Questa è l'altra metà.</p></div>
   </div>
 </section>
 
@@ -593,7 +601,7 @@ System.out.println(a.nome);</code></pre>
   <details class="teacher">
     <summary>Per chi insegna: scaletta di due ore ed errori tipici</summary>
     <ul>
-      <li><span class="t">0–15</span> Liste parallele. Meglio farle rompere a loro in Python che mostrarlo: l'errore silenzioso deve essere una sorpresa.</li>
+      <li><span class="t">0–15</span> Array paralleli in C. Meglio farli rompere a loro che mostrarlo: l'errore silenzioso deve essere una sorpresa.</li>
       <li><span class="t">15–25</span> Il tipo che manca: <code>int x</code> accanto a <code>Studente s</code>.</li>
       <li><span class="t">25–45</span> Sa/fa: <code>Televisione</code> insieme alla lavagna, poi a coppie su carta.</li>
       <li><span class="t">45–55</span> Rubrica dal vivo, telefoni in mano: «premete +, cosa vedete?»</li>
@@ -621,7 +629,7 @@ function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/
 /* ---------- evidenziazione minima del codice ---------- */
 var RE = {
   java:/(\/\/.*$)|("(?:[^"\\\n]|\\.)*")|\b(class|public|static|void|int|double|boolean|String|new|null|return|private)\b|\b(\d+(?:\.\d+)?)\b/gm,
-  py:/(#.*$)|("(?:[^"\\\n]|\\.)*")|\b(def|return|print|for|in|if|else)\b|\b(\d+(?:\.\d+)?)\b/gm,
+  c:/(\/\/.*$)|("(?:[^"\\\n]|\\.)*")|\b(define|char|float|int|void|return|printf|strcpy)\b|\b(\d+(?:\.\d+)?)\b/gm,
   ps:/(#.*$)|("(?:[^"\\\n]|\\.)*")|\b(javac|javap|java|Get-ChildItem)\b|(\d+(?:\.\d+)?)(?!\w)/gm
 };
 function hl(src, lang){
@@ -641,45 +649,52 @@ document.querySelectorAll("pre[data-lang]").forEach(function(pre){
   code.innerHTML = hl(code.textContent, pre.dataset.lang);
 });
 
-/* ---------- 1. liste parallele ---------- */
+/* ---------- 1. array paralleli ---------- */
 (function(){
   var TRUE = {Rossi:[6.5,12], Bianchi:[8.0,3], Verdi:[5.5,20]};
   var st;
-  function reset(){ st = {nomi:["Rossi","Bianchi","Verdi"], medie:[6.5,8.0,5.5], assenze:[12,3,20], sorted:false, appended:false}; }
+  /* ph = cella mai scritta: vale 0 perché l'array è stato inizializzato a zero */
+  function reset(){ st = {nomi:["Rossi","Bianchi","Verdi"],
+    medie:[{v:6.5},{v:8.0},{v:5.5}], assenze:[{v:12},{v:3},{v:20}], sorted:false, appended:false}; }
   function fmt(n){ return Number.isInteger(n) ? n.toFixed(1) : String(n); }
   function draw(){
-    var n = Math.max(st.nomi.length, st.medie.length, st.assenze.length), h = "<tr><th></th>";
+    var n = st.nomi.length, h = "<tr><th></th>";
     for(var i=0;i<n;i++) h += "<th>["+i+"]</th>";
     h += "</tr>";
     [["nomi",st.nomi],["medie",st.medie],["assenze",st.assenze]].forEach(function(r){
       h += '<tr><th class="rowname">'+r[0]+"</th>";
       for(var i=0;i<n;i++){
-        if(i >= r[1].length){ h += '<td class="ghost">IndexError</td>'; continue; }
-        var v = r[1][i], moved = false;
-        if(r[0]==="medie" && st.sorted) moved = TRUE[st.nomi[i]] && TRUE[st.nomi[i]][0] !== v;
-        if(r[0]==="nomi" && i===3) moved = true;
-        h += "<td"+(moved?' class="moved"':"")+">"+(r[0]==="medie"?fmt(v):esc(String(v)))+"</td>";
+        var c = r[1][i], cls = "", txt;
+        if(r[0]==="nomi"){ txt = esc(c); if(i===3) cls = "moved"; }
+        else {
+          txt = r[0]==="medie" ? fmt(c.v) : String(c.v);
+          if(c.ph) cls = "ghost";
+          else if(r[0]==="medie" && st.sorted) cls = (TRUE[st.nomi[i]] && TRUE[st.nomi[i]][0] === c.v) ? "" : "moved";
+        }
+        h += "<td"+(cls?' class="'+cls+'"':"")+">"+txt+"</td>";
       }
       h += "</tr>";
     });
     $("plists").innerHTML = h;
     var ro = "";
     st.nomi.forEach(function(nome,i){
-      var m = st.medie[i], a = st.assenze[i], t = TRUE[nome];
-      if(m === undefined){ ro += '<div class="bad">pagella ['+i+"]: "+nome+", media ???, assenze ???  (medie["+i+"] non esiste)</div>"; return; }
-      var bad = t && (t[0]!==m || t[1]!==a);
-      ro += "<div"+(bad?' class="bad"':"")+">pagella ["+i+"]: "+nome+", media "+fmt(m)+", assenze "+a+(bad?"   (la sua media vera era "+fmt(t[0])+")":"")+"</div>";
+      var m = st.medie[i].v, a = st.assenze[i].v, t = TRUE[nome], why = "";
+      if(!t) why = "   (nessuno ha scritto i suoi dati: sono gli zeri dell'array)";
+      else if(t[0]!==m || t[1]!==a) why = "   (la sua media vera era "+fmt(t[0])+")";
+      ro += "<div"+(why?' class="bad"':"")+">pagella ["+i+"]: "+nome+", media "+fmt(m)+", assenze "+a+why+"</div>";
     });
     $("readout").innerHTML = ro;
     $("b-sort").disabled = st.sorted; $("b-append").disabled = st.appended;
   }
   $("b-sort").onclick = function(){
-    st.medie.sort(function(a,b){return a-b;}); st.sorted = true; draw();
-    $("liste-status").innerHTML = "Le medie sono in ordine. I nomi e le assenze sono rimasti dov'erano. <b>Verdi, venti assenze, adesso ha 8.0.</b> Nessun errore, nessun avviso: il programma è sbagliato e non lo sa.";
+    st.medie.sort(function(a,b){return a.v-b.v;}); st.sorted = true; draw();
+    $("liste-status").innerHTML = "Le prime <code>n</code> medie sono in ordine. Nomi e assenze sono rimasti dov'erano. " +
+      (st.appended ? "<b>Lo zero di Neri è finito in testa: adesso Rossi ha 0.0.</b>" : "<b>Verdi, venti assenze, adesso ha 8.0.</b>") +
+      " Il compilatore non ha niente da ridire: <code>ordina</code> ha fatto esattamente quello che gli avete chiesto.";
   };
   $("b-append").onclick = function(){
-    st.nomi.push("Neri"); st.appended = true; draw();
-    $("liste-status").innerHTML = "È arrivato Neri, ma solo in una lista su tre. <b>Le liste hanno lunghezze diverse</b> e Python lo scoprirà soltanto quando qualcuno chiederà <code>medie[3]</code>.";
+    st.nomi.push("Neri"); st.medie.push({v:0,ph:true}); st.assenze.push({v:0,ph:true}); st.appended = true; draw();
+    $("liste-status").innerHTML = "Neri è entrato in <code>nomi[3]</code> e <code>n</code> è diventato 4, ma nessuno ha scritto <code>medie[3]</code> e <code>assenze[3]</code>. <b>Lì c'erano degli zeri, e Neri se li ritrova come media e assenze.</b> Nessun errore: l'array è lungo <code>MAX</code>, la cella esiste, il valore è sbagliato.";
   };
   $("b-reset").onclick = function(){ reset(); draw(); $("liste-status").textContent = "Per ora è tutto allineato."; };
   reset(); draw();
