@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dove vivono gli oggetti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* ------------------------------------------------------------------
+   Token: chiaro = "fluo chiaro" (verde neon + ciano elettrico),
+          scuro  = neon su quasi-nero (ciano, magenta, giallo).
+   Il colore ha un significato fisso in tutta la pagina:
+     --sa  = ciò che l'oggetto SA  (stato, variabili d'istanza)
+     --fa  = ciò che l'oggetto FA  (metodi)
+     --hot = attenzione: qui qualcosa si rompe
+------------------------------------------------------------------- */
+:root{
+  --bg:#F2F4F6; --surface:#FFFFFF; --surface-2:#E8ECF0;
+  --ink:#0F1218; --ink-2:#3B4350; --ink-3:#69717E; --rule:#D3D8DF;
+  --sa:#00748F; --sa-fill:#1FE4FF; --sa-soft:rgba(31,228,255,.18);
+  --fa:#0A7A30; --fa-fill:#3DFF1A; --fa-soft:rgba(61,255,26,.20);
+  --hot:#B00058; --hot-fill:#FF2E93; --hot-soft:rgba(255,46,147,.12);
+  --on-fill:#0B0A12;
+  --code-bg:#11131A; --code-ink:#E9ECF5; --code-dim:#8A91A6;
+  --f-head:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --f-body:"Manrope", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --measure:66ch; --wide:min(1060px,94vw);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C0A12; --surface:#15121E; --surface-2:#1E1A2B;
+    --ink:#F3F0FA; --ink-2:#BBB5CB; --ink-3:#8A839E; --rule:#2D2842;
+    --sa:#2EE6FF; --sa-fill:#2EE6FF; --sa-soft:rgba(46,230,255,.13);
+    --fa:#FF5ABD; --fa-fill:#FF3DAE; --fa-soft:rgba(255,61,174,.15);
+    --hot:#FFE14A; --hot-fill:#FFE14A; --hot-soft:rgba(255,225,74,.12);
+    --code-bg:#07060B;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C0A12; --surface:#15121E; --surface-2:#1E1A2B;
+  --ink:#F3F0FA; --ink-2:#BBB5CB; --ink-3:#8A839E; --rule:#2D2842;
+  --sa:#2EE6FF; --sa-fill:#2EE6FF; --sa-soft:rgba(46,230,255,.13);
+  --fa:#FF5ABD; --fa-fill:#FF3DAE; --fa-soft:rgba(255,61,174,.15);
+  --hot:#FFE14A; --hot-fill:#FFE14A; --hot-soft:rgba(255,225,74,.12);
+  --code-bg:#07060B;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);
+  font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.page{max-width:var(--wide);margin:0 auto;padding:0 clamp(16px,4vw,32px) 96px}
+h1,h2,h3{font-family:var(--f-head);margin:0;line-height:1.15;text-wrap:balance}
+p{margin:0}
+strong{font-weight:700}
+code,.mono{font-family:var(--f-head);font-size:.9em}
+p code,li code,td code{background:var(--surface-2);padding:.08em .34em;border-radius:4px}
+.prose{max-width:var(--measure);display:flex;flex-direction:column;gap:16px}
+.sa{color:var(--sa);font-weight:700}
+.fa{color:var(--fa);font-weight:700}
+.hot{color:var(--hot);font-weight:700}
+:focus-visible{outline:3px solid var(--sa-fill);outline-offset:2px;border-radius:4px}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(36px,7vw,76px) 0 clamp(20px,4vw,36px)}
+.hero h1{font-size:clamp(34px,6vw,60px);font-weight:800;letter-spacing:-.03em}
+.hero .lede{font-size:clamp(18px,2.1vw,20px);color:var(--ink-2);max-width:60ch;margin-top:18px}
+.stmt{display:flex;flex-wrap:wrap;gap:10px 18px;margin:clamp(24px,4vw,40px) 0 0;align-items:flex-start}
+.stmt-part{display:flex;flex-direction:column;gap:8px}
+.stmt-code{font-family:var(--f-head);font-weight:700;font-size:clamp(24px,4.6vw,46px);letter-spacing:-.02em;white-space:nowrap;line-height:1.1}
+.stmt-note{border-top:4px solid currentColor;padding-top:8px;font-size:14.5px;line-height:1.35;max-width:24ch;color:var(--ink-2)}
+.stmt-note b{font-family:var(--f-head);color:var(--ink)}
+.p1 .stmt-code,.p1 .stmt-note{color:var(--sa)} .p1 .stmt-note span{color:var(--ink-2)}
+.p2 .stmt-code,.p2 .stmt-note{color:var(--fa)} .p2 .stmt-note span{color:var(--ink-2)}
+.p3 .stmt-code,.p3 .stmt-note{color:var(--ink)} .p3 .stmt-note span{color:var(--ink-2)}
+.hero-meta{margin-top:28px;font-size:15px;color:var(--ink-3);max-width:70ch}
+
+/* ---------- sezioni ---------- */
+.sec{padding:clamp(36px,6vw,64px) 0 0}
+.sec-head{display:flex;gap:16px;align-items:baseline;margin-bottom:20px}
+.num{font-family:var(--f-head);font-weight:800;font-size:clamp(26px,3.4vw,34px);color:var(--ink-3);min-width:1.4ch}
+h2{font-size:clamp(24px,3.4vw,33px);font-weight:700;letter-spacing:-.02em}
+h3{font-size:18px;font-weight:700;margin-bottom:6px}
+.note{border-left:4px solid var(--hot-fill);background:var(--hot-soft);padding:14px 18px;border-radius:0 8px 8px 0;max-width:var(--measure)}
+.note.calm{border-left-color:var(--sa-fill);background:var(--sa-soft)}
+
+/* ---------- codice ---------- */
+pre{margin:0;background:var(--code-bg);color:var(--code-ink);font-family:var(--f-head);font-size:14px;line-height:1.6;
+  padding:16px 18px;border-radius:10px;overflow-x:auto;tab-size:4}
+pre code{font-size:inherit}
+.file{font-family:var(--f-head);font-size:13px;color:var(--ink-3);margin:0 0 6px 4px}
+.t-c{color:var(--code-dim);font-style:italic}
+.t-s{color:#FFE14A}
+.t-k{color:#2EE6FF}
+.t-n{color:#FF8AD0}
+.codes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px;margin-top:22px}
+.codes>div{min-width:0}
+
+/* ---------- lab (blocchi interattivi) ---------- */
+.lab{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:clamp(16px,2.6vw,26px);margin-top:24px}
+.lab-title{font-family:var(--f-head);font-weight:700;font-size:15px;margin-bottom:4px}
+.lab-help{color:var(--ink-3);font-size:15px;margin-bottom:16px;max-width:70ch}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+button{font-family:var(--f-head);font-size:14px;font-weight:500;color:var(--ink);background:var(--surface-2);
+  border:1px solid var(--rule);border-radius:8px;padding:9px 14px;cursor:pointer;line-height:1.2}
+button:hover{border-color:var(--ink-3)}
+button.primary{background:var(--sa-fill);color:var(--on-fill);border-color:transparent;font-weight:700}
+button.danger{background:var(--hot-fill);color:var(--on-fill);border-color:transparent;font-weight:700}
+button:disabled{opacity:.4;cursor:not-allowed}
+.status{margin-top:16px;min-height:3.2em;font-size:15.5px;color:var(--ink-2);max-width:74ch}
+.status b{color:var(--hot)}
+.scroll{overflow-x:auto}
+
+/* array paralleli */
+.plists{border-collapse:separate;border-spacing:6px;font-family:var(--f-head);font-size:15px}
+.plists th{font-weight:500;color:var(--ink-3);font-size:13px;text-align:center;padding:0 4px}
+.plists th.rowname{text-align:right;padding-right:10px;color:var(--ink);font-size:15px;font-weight:700}
+.plists td{background:var(--surface-2);border:1.5px solid var(--rule);border-radius:8px;padding:9px 14px;text-align:center;min-width:92px;transition:background .25s,border-color .25s}
+.plists td.moved{background:var(--hot-soft);border-color:var(--hot-fill);color:var(--hot);font-weight:700}
+.plists td.ghost{border-style:dashed;color:var(--hot);background:transparent;font-size:13px}
+.readout{margin-top:14px;display:grid;gap:6px;font-family:var(--f-head);font-size:14px}
+.readout div{padding:6px 10px;border-radius:6px;background:var(--surface-2)}
+.readout div.bad{background:var(--hot-soft);color:var(--hot)}
+
+/* sa / fa */
+.sorter{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:24px;align-items:start}
+@media (max-width:760px){.sorter{grid-template-columns:1fr}}
+.pool{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border-radius:999px;padding:8px 14px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.uml{border:2px solid var(--ink);border-radius:10px;overflow:hidden;background:var(--surface)}
+.uml-name{font-family:var(--f-head);font-weight:800;text-align:center;padding:10px;border-bottom:2px solid var(--ink);font-size:17px}
+.box{display:block;width:100%;text-align:left;border:0;border-radius:0;background:transparent;padding:12px 14px;min-height:92px;font-family:var(--f-body)}
+.box+.box{border-top:2px solid var(--ink)}
+.box:hover{background:var(--surface-2)}
+.box-label{font-family:var(--f-head);font-weight:800;font-size:15px;display:block;margin-bottom:6px}
+.box.k-sa .box-label{color:var(--sa)} .box.k-fa .box-label{color:var(--fa)} .box.k-no .box-label{color:var(--ink-3)}
+.box ul{margin:0;padding:0;list-style:none;font-family:var(--f-head);font-size:14.5px;line-height:1.7}
+.box.k-sa{background:linear-gradient(var(--sa-soft),var(--sa-soft))}
+.box.k-fa{background:linear-gradient(var(--fa-soft),var(--fa-soft))}
+.outside{margin-top:12px;border:2px dashed var(--rule);border-radius:10px;overflow:hidden}
+.box.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media (prefers-reduced-motion:reduce){.box.shake{animation:none}.plists td{transition:none}}
+
+/* rubrica */
+.rubrica{display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:800px){.rubrica{grid-template-columns:1fr}}
+.phone{border:3px solid var(--ink);border-radius:30px;padding:14px 12px 18px;background:var(--surface-2);max-width:340px}
+.phone-notch{width:70px;height:6px;border-radius:3px;background:var(--ink);margin:0 auto 12px;opacity:.7}
+.zone{border-radius:14px;padding:12px;background:var(--surface)}
+.zone+.zone{margin-top:10px}
+.zone-tag{font-family:var(--f-head);font-size:12.5px;font-weight:700;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px;white-space:nowrap}
+.zone.z-class{border:2px solid var(--fa-fill)} .zone.z-class .zone-tag{color:var(--fa)}
+.zone.z-objs{border:2px solid var(--sa-fill)} .zone.z-objs .zone-tag{color:var(--sa)}
+.field{display:block;margin-bottom:8px}
+.field span{display:block;font-size:12.5px;color:var(--ink-3);font-family:var(--f-head)}
+.field input{width:100%;font:inherit;font-size:16px;color:var(--ink);background:transparent;border:0;border-bottom:1.5px solid var(--rule);padding:4px 0;border-radius:0}
+.field input:focus{outline:none;border-bottom-color:var(--sa-fill)}
+.contact{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--rule)}
+.contact:first-of-type{border-top:0}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--sa-fill);color:var(--on-fill);display:grid;place-items:center;font-family:var(--f-head);font-weight:800;flex:none}
+.contact-main{flex:1;min-width:0;line-height:1.25}
+.contact-main b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.contact-main small{color:var(--ink-3);font-family:var(--f-head);font-size:12.5px}
+.contact button{padding:6px 10px;font-size:13px}
+.empty{color:var(--ink-3);font-size:14.5px;padding:6px 0}
+.console{background:var(--code-bg);color:#3DFF1A;font-family:var(--f-head);font-size:13.5px;border-radius:10px;padding:12px 16px;margin-top:12px;min-height:46px;white-space:pre-wrap}
+.console.err{color:#FF6FA8}
+.counter{font-family:var(--f-head);font-size:15px;margin-bottom:10px}
+.counter b{font-size:22px}
+
+
+/* stepper stack/heap */
+.stepper{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:24px;align-items:start}
+@media (max-width:860px){.stepper{grid-template-columns:1fr}}
+.lines{background:var(--code-bg);border-radius:10px;padding:12px 0;font-family:var(--f-head);font-size:14px;line-height:1.5;overflow-x:auto}
+.line{display:block;padding:3px 16px;color:var(--code-dim);white-space:pre;border-left:4px solid transparent}
+.line.done{color:var(--code-ink)}
+.line.now{color:#0B0A12;background:#FFE14A;border-left-color:#FF3DAE;font-weight:700}
+.mem{min-width:540px;width:100%;height:auto;display:block}
+.mem .panel{fill:var(--surface-2);stroke:var(--rule)}
+.mem .ptitle{font-family:var(--f-head);font-size:13px;fill:var(--ink-3)}
+.mem .remote{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.mem .rname{font-family:var(--f-head);font-size:20px;font-weight:800;fill:var(--ink)}
+.mem .rstate{font-family:var(--f-head);font-size:11.5px;fill:var(--ink-3)}
+.mem .led{fill:var(--rule)} .mem .led.on{fill:var(--sa-fill)}
+.mem .obj{fill:var(--sa-soft);stroke:var(--sa);stroke-width:2}
+.mem .otitle{font-family:var(--f-head);font-size:13px;font-weight:800;fill:var(--sa)}
+.mem .ofield{font-family:var(--f-head);font-size:14px;fill:var(--ink)}
+.mem .ofield.chg{fill:var(--hot);font-weight:800}
+.mem .wire{fill:none;stroke:var(--sa);stroke-width:2.5}
+.mem .head{fill:var(--sa)}
+.mem .dead .obj{stroke-dasharray:6 5;fill:transparent;stroke:var(--ink-3)}
+.mem .dead .otitle,.mem .dead .ofield{fill:var(--ink-3)}
+.mem .gc{font-family:var(--f-head);font-size:12.5px;fill:var(--hot);font-weight:700}
+.mem [hidden]{display:none}
+.caption{margin-top:14px;font-size:16px;min-height:5.2em;max-width:72ch}
+.stepno{font-family:var(--f-head);font-size:13px;color:var(--ink-3)}
+
+/* chiusura */
+ol.take{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:10px;max-width:var(--measure)}
+ol.take li::marker{font-family:var(--f-head);font-weight:800;color:var(--ink-3)}
+.ex{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:18px;margin-top:8px}
+.ex>div{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px 20px;min-width:0}
+.ex p+p,.ex p+pre,.ex pre+p{margin-top:10px}
+details{margin-top:12px}
+summary{cursor:pointer;font-family:var(--f-head);font-size:14px;color:var(--sa);font-weight:700}
+details>*:not(summary){margin-top:10px}
+footer{margin-top:40px;color:var(--ink-3);font-size:14.5px;max-width:var(--measure)}
+footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
+@media print{.btns,button{display:none}.lab,pre{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <h1>Dove vivono gli oggetti</h1>
+  <p class="lede">Cosa c'è davvero dentro una variabile di tipo oggetto, cosa succede in memoria quando si esegue una <code>new</code>, e perché <code>t = s</code> non copia lo studente.</p>
+</header>
+
+<!-- ============================ 6. RIFERIMENTI ============================ -->
+<section class="sec" id="riferimenti">
+  <div class="sec-head"><span class="num">1</span><h2>Cosa c'è davvero dentro s</h2></div>
+  <div class="prose">
+    <p>Dentro <code>int x</code> c'è il numero. Dentro <code>Studente s</code> <strong>non c'è lo studente</strong>. L'oggetto vive in una zona di memoria chiamata heap. La variabile contiene soltanto il modo per raggiungerlo: un <strong>riferimento</strong>. Eseguite il programma una riga alla volta.</p>
+  </div>
+
+  <div class="lab" id="lab-mem">
+    <div class="stepper">
+      <div>
+        <div class="lines" id="lines"></div>
+        <div class="console" id="mem-console" aria-live="polite">// output</div>
+      </div>
+      <div style="min-width:0">
+        <div class="scroll">
+        <svg class="mem" viewBox="0 0 640 320" role="img" aria-labelledby="mem-t">
+          <title id="mem-t">Stack con le variabili s e t, heap con l'oggetto Studente</title>
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0L10 5L0 10z"/></marker>
+          </defs>
+          <rect class="panel" x="6" y="6" width="232" height="308" rx="12"/>
+          <text class="ptitle" x="20" y="30">stack: le variabili di main</text>
+          <rect class="panel" x="262" y="6" width="372" height="308" rx="12"/>
+          <text class="ptitle" x="276" y="30">heap: dove vivono gli oggetti</text>
+
+          <g id="r-s" hidden>
+            <rect class="remote" x="28" y="56" width="178" height="74" rx="14"/>
+            <text class="rname" x="46" y="90">s</text>
+            <circle class="led" id="led-s" cx="188" cy="74" r="5"/>
+            <text class="rstate" id="st-s" x="46" y="116">non inizializzata</text>
+          </g>
+          <g id="r-t" hidden>
+            <rect class="remote" x="28" y="196" width="178" height="74" rx="14"/>
+            <text class="rname" x="46" y="230">t</text>
+            <circle class="led" id="led-t" cx="188" cy="214" r="5"/>
+            <text class="rstate" id="st-t" x="46" y="256">non inizializzata</text>
+          </g>
+
+          <g id="obj" hidden>
+            <rect class="obj" x="400" y="84" width="212" height="150" rx="16"/>
+            <text class="otitle" x="418" y="112">oggetto Studente</text>
+            <text class="ofield" id="o-nome" x="418" y="146">nome = null</text>
+            <text class="ofield" id="o-media" x="418" y="174">media = 0.0</text>
+            <text class="ofield" id="o-ass" x="418" y="202">assenze = 0</text>
+            <text class="gc" id="gc" x="400" y="262" hidden>irraggiungibile: lo prende il garbage collector</text>
+          </g>
+
+          <path class="wire" id="w-s" d="M206 93 C 300 93, 310 140, 398 140" marker-end="url(#ah)" hidden/>
+          <path class="wire" id="w-t" d="M206 233 C 300 233, 310 186, 398 186" marker-end="url(#ah)" hidden/>
+        </svg>
+        </div>
+        <p class="stepno" id="stepno">Passo 0 di 10</p>
+        <p class="caption" id="caption"></p>
+        <div class="btns">
+          <button id="b-prev">Indietro</button>
+          <button class="primary" id="b-next">Avanti</button>
+          <button id="b-restart">Ricomincia</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="casa">
+  <div class="sec-head"><span class="num">2</span><h2>Da portare a casa</h2></div>
+  <ol class="take">
+    <li>La variabile non contiene l'oggetto: contiene un riferimento. <code>t = s</code> copia il riferimento, non lo studente.</li>
+    <li>Gli oggetti nascono con <code>new</code> nello heap e muoiono quando nessuno li può più raggiungere.</li>
+  </ol>
+
+  <h3 style="margin-top:36px">Esercizio</h3>
+  <div class="ex">
+    <div>
+      <p><strong>Prevedi l'output</strong>, senza eseguire. Poi disegna stack e heap alla fine del programma.</p>
+<pre data-lang="java"><code>Studente a = new Studente();
+Studente b = new Studente();
+a.nome = "Rossi";
+b.nome = "Verdi";
+b = a;
+b.nome = "Neri";
+System.out.println(a.nome);</code></pre>
+      <details><summary>Controlla</summary><p>Stampa <code>Neri</code>. Dopo <code>b = a</code> le due variabili si riferiscono allo stesso oggetto. Gli oggetti creati sono due, ma quello di Verdi non è più raggiungibile da nessuno.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="ai">Questa pagina è stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilità didattica e scientifica è integralmente sua. L'indicazione è fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+/* ---------- evidenziazione minima del codice ---------- */
+var RE = {
+  java:/(\/\/.*$)|("(?:[^"\\\n]|\\.)*")|\b(class|public|static|void|int|double|boolean|String|new|null|return|private)\b|\b(\d+(?:\.\d+)?)\b/gm,
+  c:/(\/\/.*$)|("(?:[^"\\\n]|\\.)*")|\b(define|char|float|int|void|return|printf|strcpy)\b|\b(\d+(?:\.\d+)?)\b/gm,
+  ps:/(#.*$)|("(?:[^"\\\n]|\\.)*")|\b(javac|javap|java|Get-ChildItem)\b|(\d+(?:\.\d+)?)(?!\w)/gm
+};
+function hl(src, lang){
+  var re = new RegExp(RE[lang].source, "gm"), out = "", last = 0, m;
+  while((m = re.exec(src))){
+    out += esc(src.slice(last, m.index));
+    var c = m[1] ? "c" : m[2] ? "s" : m[3] ? "k" : "n";
+    out += '<span class="t-' + c + '">' + esc(m[0]) + "</span>";
+    last = re.lastIndex;
+    if(m[0] === "") re.lastIndex++;
+  }
+  return out + esc(src.slice(last));
+}
+document.querySelectorAll("pre[data-lang]").forEach(function(pre){
+  if(pre.id === "live") return;
+  var code = pre.querySelector("code");
+  code.innerHTML = hl(code.textContent, pre.dataset.lang);
+});
+
+/* ---------- 6. stack / heap ---------- */
+(function(){
+  var LINES = [
+    "Studente s;",
+    "s = new Studente();",
+    's.nome = "Rossi";  s.media = 6.5;',
+    "Studente t = s;",
+    "t.media = 4.0;",
+    "System.out.println(s.media);",
+    "s = null;",
+    "t = null;",
+    "t.presentati();"
+  ];
+  /* s,t: 0 assente, 1 non collegato, 2 collegato, 3 null.  o: 0 assente, 1 vivo, 2 irraggiungibile */
+  var STEPS = [
+    {l:-1,s:0,t:0,o:0, cap:"Premi Avanti per eseguire il programma una riga alla volta."},
+    {l:0,s:1,t:0,o:0, cap:"Dichiaro una variabile di tipo Studente. Può riferirsi solo a oggetti Studente, ma per ora non si riferisce a niente. Nessun oggetto esiste."},
+    {l:1,s:1,t:0,o:1, cap:"Prima si esegue il lato destro: <code>new Studente()</code> costruisce l'oggetto nello heap. I campi partono dai valori di default: <code>null</code>, <code>0.0</code>, <code>0</code>."},
+    {l:1,s:2,t:0,o:1, cap:"Poi l'assegnazione copia in <code>s</code> il riferimento: da ora <code>s</code> raggiunge quell'oggetto. Dentro <code>s</code> non c'è lo studente: c'è il modo per arrivarci."},
+    {l:2,s:2,t:0,o:1, nome:"Rossi", media:"6.5", chg:["nome","media"], cap:"Il punto segue il riferimento. <code>s.media = 6.5</code> significa: vai all'oggetto a cui si riferisce <code>s</code> e cambia la sua media."},
+    {l:3,s:2,t:2,o:1, nome:"Rossi", media:"6.5", cap:"Attenzione: nessuna <code>new</code>, quindi nessun oggetto nuovo. Ho copiato il riferimento, non lo studente. Due variabili, un solo oggetto."},
+    {l:4,s:2,t:2,o:1, nome:"Rossi", media:"4.0", chg:["media"], cap:"Cambio la media passando da <code>t</code>."},
+    {l:5,s:2,t:2,o:1, nome:"Rossi", media:"4.0", out:"4.0", cap:"Stampa 4.0, non 6.5. <code>s</code> e <code>t</code> si riferiscono allo stesso oggetto: quello che cambio da uno lo vedo dall'altro. È l'errore più frequente del primo mese di Java."},
+    {l:6,s:3,t:2,o:1, nome:"Rossi", media:"4.0", cap:"<code>s</code> non si riferisce più a niente. L'oggetto però è ancora raggiungibile da <code>t</code>, quindi resta vivo."},
+    {l:7,s:3,t:3,o:2, nome:"Rossi", media:"4.0", cap:"Nessuna variabile si riferisce più all'oggetto. Nessuno potrà mai più usarlo: il garbage collector della JVM si riprenderà quella memoria. Non l'avete distrutto voi: l'avete abbandonato."},
+    {l:8,s:3,t:3,o:2, nome:"Rossi", media:"4.0", err:'Exception in thread "main" java.lang.NullPointerException', cap:"Uso il punto su una variabile che vale <code>null</code>. <code>NullPointerException</code> non è un errore misterioso: vuol dire «questa variabile in questo momento non si riferisce a nessun oggetto»."}
+  ];
+  var i = 0, lines = $("lines");
+  LINES.forEach(function(t,n){ var s = document.createElement("span"); s.className = "line"; s.textContent = (n+1) + "  " + t; lines.appendChild(s); });
+  var STATE = ["", "non inizializzata", "→ oggetto", "null"];
+  /* negli elementi SVG la proprietà .hidden non esiste: si lavora sull'attributo */
+  function show(id, on){ var el = $(id); if(on) el.removeAttribute("hidden"); else el.setAttribute("hidden",""); }
+  function remote(id, v){
+    show("r-"+id, v !== 0);
+    $("st-"+id).textContent = STATE[v];
+    $("led-"+id).setAttribute("class", "led" + (v === 2 ? " on" : ""));
+    show("w-"+id, v === 2);
+  }
+  function draw(){
+    var st = STEPS[i];
+    lines.querySelectorAll(".line").forEach(function(el,n){ el.className = "line" + (n === st.l ? " now" : n < st.l ? " done" : ""); });
+    remote("s", st.s); remote("t", st.t);
+    show("obj", st.o !== 0);
+    $("obj").setAttribute("class", st.o === 2 ? "dead" : "");
+    show("gc", st.o === 2);
+    var chg = st.chg || [];
+    $("o-nome").textContent = "nome = " + (st.nome ? '"'+st.nome+'"' : "null");
+    $("o-nome").setAttribute("class", "ofield" + (chg.indexOf("nome") >= 0 ? " chg" : ""));
+    $("o-media").textContent = "media = " + (st.media || "0.0");
+    $("o-media").setAttribute("class", "ofield" + (chg.indexOf("media") >= 0 ? " chg" : ""));
+    var con = $("mem-console"), out = "";
+    for(var k = 0; k <= i; k++) if(STEPS[k].out) out = STEPS[k].out;
+    con.className = "console" + (st.err ? " err" : "");
+    con.textContent = st.err ? out + "\n" + st.err : (out || "// output");
+    $("caption").innerHTML = st.cap;
+    $("stepno").textContent = "Passo " + i + " di " + (STEPS.length - 1);
+    $("b-prev").disabled = i === 0; $("b-next").disabled = i === STEPS.length - 1;
+  }
+  $("b-next").onclick = function(){ if(i < STEPS.length - 1){ i++; draw(); } };
+  $("b-prev").onclick = function(){ if(i > 0){ i--; draw(); } };
+  $("b-restart").onclick = function(){ i = 0; draw(); };
+  draw();
+})();
+})();
+</script>
+</body>
+</html>
