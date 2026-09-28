@@ -9,6 +9,10 @@ public class MessageProtocolWriter {
         this.writer = writer;
     }
 
+    public void welcome(){
+        writer.sendMessage("Benvenuto");
+    }
+
     public void add(int n1, int n2, int result){
         writer.sendMessage(n1+"+"+n2+"="+result);
     }

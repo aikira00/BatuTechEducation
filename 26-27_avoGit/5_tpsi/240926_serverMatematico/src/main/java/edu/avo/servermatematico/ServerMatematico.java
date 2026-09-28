@@ -20,6 +20,7 @@ public class ServerMatematico {
         MessageProtocolReader protocolReader = new MessageProtocolReader(app, "quit");
         BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
         MessageReader reader = new MessageReader(in, "quit", protocolReader);
+        writerProtocol.welcome();
         reader.start();
     }
 }

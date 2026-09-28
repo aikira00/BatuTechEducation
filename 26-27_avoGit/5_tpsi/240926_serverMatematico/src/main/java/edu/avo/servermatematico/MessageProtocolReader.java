@@ -24,6 +24,10 @@ public class MessageProtocolReader implements MessageConsumer{
             else{
                 if(array.length == 3) {
                     //ok ho i 3 pezzi
+                    // TODO lezione: BUG da far notare in classe. I due parseInt sono FUORI dal try:
+                    // con "tre 4 ADD" la NumberFormatException non viene catturata, il thread di lettura
+                    // muore e il client non riceve risposta. L'automa prevede [I] N non intero / [O] PFFF...,
+                    // il codice no. Lasciato apposta: farlo trovare confrontando codice e automa.
                     int n1 = Integer.parseInt(array[0]);
                     int n2 = Integer.parseInt(array[1]);
 
