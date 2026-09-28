@@ -1,15 +1,16 @@
 # Recensione — l'aggancio per `this`
 
-Si riparte dalla soluzione dell'esercitazione *Tre recensioni, una classe* (`BatuEdu/INFO_4/esercitazioni/01_UnaClasseMoltiOggetti_sol.md`). Quattro passi, un package per passo. Ogni package ha la sua classe `Recensione` e il suo `RecensioneTestDrive`: si eseguono uno dopo l'altro e si confronta l'output.
+Si riparte dalla soluzione dell'esercitazione *Tre recensioni, una classe* (`BatuEdu/INFO_4/esercitazioni/01_UnaClasseMoltiOggetti_sol.md`). Cinque passi, un package per passo. Ogni package ha la sua classe `Recensione` e il suo `RecensioneTestDrive`: si eseguono uno dopo l'altro e si confronta l'output.
 
 | Passo | Package | Cosa si vede |
 |---|---|---|
-| 1 | `edu.avo.nomiDiversi` | La soluzione dell'esercitazione: `setStelle(int s)`. Funziona, ma dalla firma non si capisce cosa sia `s`. |
-| 2 | `edu.avo.ombra` | Parametri con nomi chiari: `setStelle(int stelle)` e `stelle = stelle`. **Compila senza errori e senza avvisi**, ma l'oggetto non cambia mai: tutte e tre le recensioni stampano `null ha dato 0 stelle a null`. |
-| 3 | `edu.avo.conThis` | `this.stelle = stelle`. Stesso `main` dei passi 1 e 2, stesso output del passo 1. |
-| 4 | `edu.avo.chiEThis` | Chi è `this`? `piuGenerosaDi(Recensione altra)` confronta **due** recensioni: `r2.piuGenerosaDi(r4)` e `r4.piuGenerosaDi(r2)` eseguono lo stesso codice, ma `this` è un oggetto diverso. |
+| 1 | `avo.nomiDiversi` | La soluzione dell'esercitazione: `setStelle(int s)`. Funziona, ma dalla firma non si capisce cosa sia `s`. |
+| 2 | `avo.ombra` | Parametri con nomi chiari: `setStelle(int stelle)` e `stelle = stelle`. **Compila senza errori e senza avvisi**, ma l'oggetto non cambia mai: tutte e tre le recensioni stampano `null ha dato 0 stelle a null`. |
+| 3 | `avo.conThis` | `this.stelle = stelle`. Stesso `main` dei passi 1 e 2, stesso output del passo 1. |
+| 4 | `avo.chiEThis` | Chi è `this`? `piuGenerosaDi(Recensione altra)` confronta **due** recensioni: `r2.piuGenerosaDi(r4)` e `r4.piuGenerosaDi(r2)` eseguono lo stesso codice, ma `this` è un oggetto diverso. |
+| 5 | `avo.conCostruttore` | La soluzione delle slide *this, toString, costruttori, overloading* (sezioni 1-3): costruttore `Recensione(locale, autore, stelle)` che per le stelle riusa `setStelle`, e `toString()` con `@Override`. `System.out.println(r2)` stampa `samir.k ha dato 4 stelle a Trattoria da Gino`. |
 
-Codice compilato ed eseguito con `javac --release 17 -Xlint:all` il 25/09/2026: nessun avviso nemmeno al passo 2. IntelliJ invece sottolinea `stelle = stelle` in giallo (*variable is assigned to itself*): vale la pena farlo notare, leggere gli avvisi dell'IDE.
+Codice compilato ed eseguito con `javac --release 17 -Xlint:all` il 25/09/2026 (passi 1-4) e il 26/09/2026 (passo 5). Nei passi 1-4 nessun avviso, nemmeno al passo 2; al passo 5 uno solo, spiegato più sotto. IntelliJ invece sottolinea `stelle = stelle` in giallo (*variable is assigned to itself*): vale la pena farlo notare, leggere gli avvisi dell'IDE.
 
 ## Passo 2: perché è l'errore giusto da far vedere
 
@@ -33,6 +34,15 @@ Attenzione a una sorpresa: `altra.stelle` è `private`, eppure si legge. `privat
 4. Al passo 4, con `r2.piuGenerosaDi(r4)`, chi è `this` e chi è `altra`? E con `r4.piuGenerosaDi(r2)`?
 5. Al passo 4, `altra.stelle` è `private`. Perché si può leggere?
 
-## Il gancio che resta aperto
+## Passo 5: il costruttore, come nelle slide
 
-I passi 1 e 3 stampano ancora `marta_07 ha dato 0 stelle`: il setter ha rifiutato lo 0, ma lo 0 c'era già, perché è il valore di default. Il setter non garantisce che la recensione nasca valida: serve il **costruttore**.
+Il `main` usa gli stessi dati delle slide: `samir.k` alla Trattoria da Gino con 4 stelle, `giulia.b` alla Gelateria Aurora con 5.
+
+- **Una riga sola**: `new Recensione("Trattoria da Gino", "samir.k", 4)` e l'oggetto nasce già con i suoi dati.
+- **`setStelle(stelle)` nel costruttore**: il controllo sta in un posto solo. Se domani le stelle vanno da 1 a 10, si cambia solo il setter.
+- **Il costruttore di default è sparito**: la riga `new Recensione()` nel `main` è commentata. Si toglie il commento e `javac` dà l'errore della slide 21 (*required: String,String,int, found: no arguments*), poi si rimette il commento.
+- **`println(r2)` usa `toString()`**: prima del passo 5 stampava qualcosa come `avo.chiEThis.Recensione@1b6d3586`.
+
+**Il limite, da tenere nelle note e non nelle slide**: `new Recensione("Pizzeria Vesuvio", "marta_07", 0)` stampa «Rifiutato», ma la recensione **nasce lo stesso**, con 0 stelle. Il costruttore non può rifiutarsi di creare l'oggetto: per quello servono le **eccezioni**. Nel `main` c'è apposta, in fondo, se la domanda viene fuori.
+
+**Un avviso da non aprire in classe**: con `javac -Xlint:all` (JDK 21 o successivo) la chiamata a `setStelle` nel costruttore dà *possible 'this' escape before subclass is fully initialized*. Senza `-Xlint` non compare. Riguarda le sottoclassi, che fanno parte dell'ereditarietà: per adesso chiamare il setter dal costruttore va bene così.

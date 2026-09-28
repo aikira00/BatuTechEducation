@@ -2,7 +2,7 @@ package edu.avo;
 
 // PASSO 1 — tutto aperto: chiunque può scrivere qualunque cosa nelle variabili
 public class Cane {
-    String nome;
+     String nome;
     String razza;
     String taglia;
     int eta;

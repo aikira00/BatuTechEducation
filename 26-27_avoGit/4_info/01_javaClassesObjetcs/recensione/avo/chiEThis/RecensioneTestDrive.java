@@ -3,14 +3,14 @@ package avo.chiEThis;
 public class RecensioneTestDrive {
     public static void main(String[] args) {
         Recensione r2 = new Recensione();
-        r2.setLocale("Kebab Express");
+        r2.setLocale("Trattoria da Gino");
         r2.setAutore("samir.k");
         r2.setStelle(4);
 
         Recensione r4 = new Recensione();
-        r4.setLocale("Kebab Express");
-        r4.setAutore("giulia.r");
-        r4.setStelle(2);
+        r4.setLocale("Gelateria Aurora");
+        r4.setAutore("giulia.b");
+        r4.setStelle(5);
 
         r2.pubblica();
         r4.pubblica();

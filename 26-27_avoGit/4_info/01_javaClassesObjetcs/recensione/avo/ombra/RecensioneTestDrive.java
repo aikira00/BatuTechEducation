@@ -8,12 +8,12 @@ public class RecensioneTestDrive {
         r1.setStelle(0);
 
         Recensione r2 = new Recensione();
-        r2.setLocale("Kebab Express");
+        r2.setLocale("Trattoria da Gino");
         r2.setAutore("samir.k");
         r2.setStelle(4);
 
         Recensione r3 = new Recensione();
-        r3.setLocale("Bar della Stazione");
+        r3.setLocale("Bar Sport");
         r3.setAutore("anonimo");
         r3.setStelle(11);
 
