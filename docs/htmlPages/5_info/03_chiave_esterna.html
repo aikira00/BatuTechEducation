@@ -146,7 +146,7 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
   <div class="sec-head"><span class="num">01</span><h2>Le due tabelle, e il filo che le lega</h2></div>
   <div class="stack">
     <div class="col">
-      <p>Lo schema E-R della lezione scorsa &mdash; <b>Giocatore</b>, <b>Contratto</b>, <b>Squadra</b> &mdash; tradotto in tabelle diventa questo. L'associazione <code>CONTRATTO</code> non &egrave; diventata una tabella: &egrave; diventata <b>una colonna</b>, <code>nome_squadra</code>, dentro Giocatore. E si &egrave; portata dietro il suo attributo, <code>ingaggio</code>.</p>
+      <p>Lo schema E-R della lezione scorsa &mdash; <b>GIOCATORE</b>, <b>CONTRATTO</b>, <b>SQUADRA</b> &mdash; tradotto in tabelle diventa questo. L'associazione <code>CONTRATTO</code> non &egrave; diventata una tabella: &egrave; diventata <b>una colonna</b>, <code>nome_squadra</code>, dentro GIOCATORE. E si &egrave; portata dietro il suo attributo, <code>ingaggio</code>.</p>
       <p><b>Clicca un giocatore</b> per vedere dove punta.</p>
     </div>
 
@@ -201,7 +201,7 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
   <div class="sec-head"><span class="num">02</span><h2>Perch&eacute; la colonna sta di qua e non di l&agrave;</h2></div>
   <div class="stack">
     <div class="col">
-      <p>Domanda che arriva sempre: perch&eacute; <code>nome_squadra</code> sta dentro Giocatore, e non c'&egrave; invece una colonna <code>Giocatori</code> dentro Squadra? La risposta non &egrave; una regola da imparare. &Egrave; una sola frase:</p>
+      <p>Domanda che arriva sempre: perch&eacute; <code>nome_squadra</code> sta dentro GIOCATORE, e non c'&egrave; invece una colonna <code>giocatori</code> dentro SQUADRA? La risposta non &egrave; una regola da imparare. &Egrave; una sola frase:</p>
     </div>
 
     <div class="pull">Un campo contiene un valore solo.</div>
@@ -211,12 +211,12 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
         <li>Un giocatore ha <b>una</b> squadra &rarr; ci sta in un campo. <b>Se la scrive in casa propria.</b></li>
         <li>Una squadra ha <b>venticinque</b> giocatori &rarr; non ci stanno in un campo. <b>Non scrive niente.</b></li>
       </ul>
-      <p>Ecco perch&eacute; la chiave esterna finisce sempre dalla parte del <code>(1,1)</code>: &egrave; l'unico lato che ha una cosa sola da ricordare. Se provassi a mettere i giocatori dentro Squadra avresti due sole strade, entrambe brutte: un campo con dentro una lista, oppure la riga della Juventus ripetuta venticinque volte. Sono esattamente i guai degli archivi su file da cui eravamo partiti.</p>
+      <p>Ecco perch&eacute; la chiave esterna finisce sempre dalla parte del <code>(1,1)</code>: &egrave; l'unico lato che ha una cosa sola da ricordare. Se provassi a mettere i giocatori dentro SQUADRA avresti due sole strade, entrambe brutte: un campo con dentro una lista, oppure la riga della Juventus ripetuta venticinque volte. Sono esattamente i guai degli archivi su file da cui eravamo partiti.</p>
     </div>
 
     <div class="note warn">
       <span class="eyebrow">Se qualcuno &egrave; sveglio</span>
-      <p>Qui la chiave primaria di Giocatore &egrave; la <b>coppia</b> Cognome + Data di nascita: ci vogliono tutti e due i valori per identificare una riga. Prima o poi qualcuno chieder&agrave; &laquo;e se due si chiamano uguale e sono nati lo stesso giorno?&raquo;. Ha ragione: &egrave; il motivo per cui nella realt&agrave; si usa un codice inventato apposta.</p>
+      <p>Qui la chiave primaria di GIOCATORE &egrave; la <b>coppia</b> <code>cognome</code> + <code>data_nascita</code>: ci vogliono tutti e due i valori per identificare una riga. Prima o poi qualcuno chieder&agrave; &laquo;e se due si chiamano uguale e sono nati lo stesso giorno?&raquo;. Ha ragione: &egrave; il motivo per cui nella realt&agrave; si usa un codice inventato apposta.</p>
     </div>
   </div>
 </section>
@@ -298,11 +298,11 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
   <div class="sec-head"><span class="num">05</span><h2>E se la cardinalit&agrave; fosse (0,N)?</h2></div>
   <div class="stack">
     <div class="col">
-      <p>Nello schema E-R avevamo scritto <code>(1,1)</code> dal lato Giocatore: <em>ogni giocatore ha un contratto</em>. Ma &egrave; una <b>nostra decisione</b>, non una legge di natura: nel calcio vero esistono gli <b>svincolati</b>. Cambiamo la cardinalit&agrave; minima e guardiamo che cosa succede alla tabella.</p>
+      <p>Nello schema E-R avevamo scritto <code>(1,1)</code> dal lato GIOCATORE: <em>ogni giocatore ha un contratto</em>. Ma &egrave; una <b>nostra decisione</b>, non una legge di natura: nel calcio vero esistono gli <b>svincolati</b>. Cambiamo la cardinalit&agrave; minima e guardiamo che cosa succede alla tabella.</p>
     </div>
 
     <div class="panel">
-      <div class="switch" role="group" aria-label="Cardinalit&agrave; minima lato Giocatore">
+      <div class="switch" role="group" aria-label="Cardinalit&agrave; minima lato GIOCATORE">
         <button id="b11" class="sel">(1,1) &mdash; sempre sotto contratto</button>
         <button id="b01">(0,1) &mdash; pu&ograve; essere svincolato</button>
       </div>
@@ -339,9 +339,9 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
 
     <div class="panel">
       <div class="tries">
-        <button class="try" data-team="Juventus"><span class="lbl">DELETE</span><span>DELETE FROM Squadra WHERE Nome = <b>'Juventus'</b></span></button>
-        <button class="try" data-team="Inter"><span class="lbl">DELETE</span><span>DELETE FROM Squadra WHERE Nome = <b>'Inter'</b></span></button>
-        <button class="try" data-team="Genoa"><span class="lbl">DELETE</span><span>DELETE FROM Squadra WHERE Nome = <b>'Genoa'</b></span></button>
+        <button class="try" data-team="Juventus"><span class="lbl">DELETE</span><span>DELETE FROM SQUADRA WHERE nome = <b>'Juventus'</b></span></button>
+        <button class="try" data-team="Inter"><span class="lbl">DELETE</span><span>DELETE FROM SQUADRA WHERE nome = <b>'Inter'</b></span></button>
+        <button class="try" data-team="Genoa"><span class="lbl">DELETE</span><span>DELETE FROM SQUADRA WHERE nome = <b>'Genoa'</b></span></button>
       </div>
       <div class="term" id="term6"></div>
     </div>
@@ -390,7 +390,7 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
       else s.classList.add('ghost');
     });
     leg1.innerHTML = 'Il valore <b>' + ref + '</b> nella colonna FK di <b>' + cognome +
-                     '</b> &egrave; la chiave primaria di quella riga di Squadra. Il filo regge.';
+                     '</b> &egrave; la chiave primaria di quella riga di SQUADRA. Il filo regge.';
   }
   righeG.forEach(function(r){
     r.addEventListener('click', function(){ accendi(r); });
@@ -411,12 +411,12 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
     ok: {
       tipo: 'good',
       testo: 'Query OK, 1 row affected',
-      perche: '<b>Passa.</b> Il valore <code>\'Torino\'</code> esiste fra le chiavi primarie di Squadra: la riga punta a qualcosa di reale.'
+      perche: '<b>Passa.</b> Il valore <code>\'Torino\'</code> esiste fra le chiavi primarie di SQUADRA: la riga punta a qualcosa di reale.'
     },
     fk: {
       tipo: 'err',
-      testo: "ERROR 1452 (23000): Cannot add or update a child row:\na foreign key constraint fails (`calcio`.`Giocatore`,\nCONSTRAINT `fk_squadra` FOREIGN KEY (`nome_squadra`)\nREFERENCES `Squadra` (`Nome`))",
-      perche: '<b>Integrit&agrave; referenziale.</b> Il Milan non c\'&egrave; in Squadra. Se il database accettasse questa riga, alla domanda &laquo;in che squadra gioca Blu?&raquo; non ci sarebbe risposta: il valore indicherebbe il vuoto.'
+      testo: "ERROR 1452 (23000): Cannot add or update a child row:\na foreign key constraint fails (`calcio`.`GIOCATORE`,\nCONSTRAINT `fk_squadra` FOREIGN KEY (`nome_squadra`)\nREFERENCES `SQUADRA` (`nome`))",
+      perche: '<b>Integrit&agrave; referenziale.</b> Il Milan non c\'&egrave; in SQUADRA. Se il database accettasse questa riga, alla domanda &laquo;in che squadra gioca Blu?&raquo; non ci sarebbe risposta: il valore indicherebbe il vuoto.'
     },
     null: {
       tipo: 'err',
@@ -479,10 +479,10 @@ footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font
       b.classList.add('done');
       if (n === 0){
         mostra(term6, 'good', 'Query OK, 1 row affected',
-          '<b>Cancellata.</b> Il Genoa non ha giocatori: nessuna riga di Giocatore rimane a puntare nel vuoto, quindi la promessa non viene tradita e il DBMS non ha motivo di opporsi.');
+          '<b>Cancellata.</b> Il Genoa non ha giocatori: nessuna riga di GIOCATORE rimane a puntare nel vuoto, quindi la promessa non viene tradita e il DBMS non ha motivo di opporsi.');
       } else {
         mostra(term6, 'err',
-          "ERROR 1451 (23000): Cannot delete or update a parent row:\na foreign key constraint fails (`calcio`.`Giocatore`,\nCONSTRAINT `fk_squadra` FOREIGN KEY (`nome_squadra`)\nREFERENCES `Squadra` (`Nome`))",
+          "ERROR 1451 (23000): Cannot delete or update a parent row:\na foreign key constraint fails (`calcio`.`GIOCATORE`,\nCONSTRAINT `fk_squadra` FOREIGN KEY (`nome_squadra`)\nREFERENCES `SQUADRA` (`nome`))",
           '<b>Bloccata.</b> ' + (n === 1 ? 'C\'&egrave; ' : 'Ci sono ') + '<b>' + n + '</b> giocator' + (n === 1 ? 'e' : 'i') +
           ' (' + chi[t] + ') con <code>nome_squadra = \'' + t + '\'</code>. Cancellando la squadra ' + (n === 1 ? 'quella riga rimarrebbe orfana' : 'quelle righe rimarrebbero orfane') +
           ': punterebbero a una squadra che non esiste pi&ugrave;. &Egrave; lo stesso identico problema della riga &laquo;Milan&raquo;, prodotto per&ograve; da una cancellazione invece che da un inserimento.');

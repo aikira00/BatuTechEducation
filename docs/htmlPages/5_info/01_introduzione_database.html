@@ -430,7 +430,7 @@ footer ul{margin:10px 0 0;padding-left:1.1em;display:flex;flex-direction:column;
         <p>Un <strong>dato</strong> è un fatto grezzo: <code>3A</code>, <code>7.5</code>, <code>Rossi</code>. Diventa <strong>informazione</strong> solo quando è interpretato in un contesto: «lo studente Rossi della 3A ha media 7,5». Il compito di una base di dati è conservare i dati in modo che il contesto non vada perduto.</p>
         <p style="margin-top:14px">C'è poi una seconda distinzione che accompagnerà tutto il corso. Una base di dati ha sempre <strong>due facce</strong>:</p>
         <ul class="clean" style="margin-top:10px">
-          <li><b>Aspetto intensionale — lo schema.</b> La <em>struttura</em>: quali tabelle esistono, quali campi hanno, di che tipo sono, quali vincoli devono rispettare. Si definisce una volta e cambia raramente: «esiste una tabella <code>STUDENTI</code> con matricola, cognome, nome, classe».</li>
+          <li><b>Aspetto intensionale — lo schema.</b> La <em>struttura</em>: quali tabelle esistono, quali campi hanno, di che tipo sono, quali vincoli devono rispettare. Si definisce una volta e cambia raramente: «esiste una tabella <code>STUDENTE</code> con matricola, cognome, nome, classe».</li>
           <li><b>Aspetto estensionale — l'istanza.</b> I <em>valori</em> effettivamente contenuti in un dato momento: le righe vere e proprie. Cambia in continuazione, a ogni iscrizione, ogni voto, ogni trasferimento.</li>
         </ul>
         <p style="margin-top:12px">Detto altrimenti: <strong>l'intensione è il modulo prestampato, l'estensione sono i moduli compilati</strong>. Nella scheda perforata di Hollerith l'intensione è la disposizione delle zone sul cartoncino (uguale per tutti), l'estensione sono i fori di quella singola persona.</p>
@@ -954,7 +954,7 @@ fread(&amp;stu, <b>32</b>, 1, fs);
           <line x1="664" y1="168" x2="664" y2="200" class="dg-line" stroke-width="1.4"/>
           <rect x="568" y="200" width="192" height="52" rx="4" class="dg-fill dg-stroke" stroke-width="1"/>
           <text x="664" y="222" class="dg-t" text-anchor="middle">Base di dati</text>
-          <text x="664" y="240" class="dg-s" text-anchor="middle">STUDENTI &#183; CLASSI &#183; PRESTITI</text>
+          <text x="664" y="240" class="dg-s" text-anchor="middle">STUDENTE &#183; CLASSE &#183; PRESTITO</text>
           <text x="480" y="278" class="dg-s">Nessuna applicazione sa dove finiscono i byte.</text>
           <text x="480" y="296" class="dg-s">Un solo dato, un solo posto, una sola verità.</text>
         </svg>
@@ -1007,7 +1007,7 @@ fread(&amp;stu, <b>32</b>, 1, fs);
       <details>
         <summary>Transazioni: le proprietà ACID in trenta secondi</summary>
         <div class="details-body">
-          <p>Esempio classico: iscrivere uno studente significa <b>inserirlo in STUDENTI</b> e <b>aumentare di uno il contatore posti occupati della classe</b>. Se il sistema si spegne fra le due operazioni, la base di dati resta sbagliata. Una transazione impedisce che accada.</p>
+          <p>Esempio classico: iscrivere uno studente significa <b>inserirlo in STUDENTE</b> e <b>aumentare di uno il contatore posti occupati della classe</b>. Se il sistema si spegne fra le due operazioni, la base di dati resta sbagliata. Una transazione impedisce che accada.</p>
           <ul class="clean">
             <li><b>A</b>tomicità — o tutte le operazioni della transazione, o nessuna.</li>
             <li><b>C</b>oerenza — al termine tutti i vincoli sono ancora rispettati.</li>
@@ -1027,17 +1027,17 @@ fread(&amp;stu, <b>32</b>, 1, fs);
           <span class="tag">DDL &#183; Data Definition Language</span>
           <h4>Definisce la struttura</h4>
           <p>Crea e modifica lo <b>schema</b>: tabelle, colonne, tipi, chiavi, vincoli. Lo si usa <em>poche volte</em>, quando si costruisce o si evolve la base di dati. Agisce sull'<b>intensione</b>.</p>
-<pre style="font-size:12.5px;margin-top:10px"><span class="k">CREATE TABLE</span> studenti (...);
-<span class="k">ALTER TABLE</span> studenti <span class="k">ADD</span> email VARCHAR(60);
+<pre style="font-size:12.5px;margin-top:10px"><span class="k">CREATE TABLE</span> STUDENTE (...);
+<span class="k">ALTER TABLE</span> STUDENTE <span class="k">ADD</span> email VARCHAR(60);
 <span class="k">DROP TABLE</span> vecchia_tabella;</pre>
         </div>
         <div class="mini good">
           <span class="tag">DML &#183; Data Manipulation Language</span>
           <h4>Lavora sui dati</h4>
           <p>Inserisce, modifica, cancella e soprattutto <b>interroga</b> i valori. È il linguaggio del lavoro quotidiano, quello che finisce dentro le applicazioni. Agisce sull'<b>estensione</b>.</p>
-<pre style="font-size:12.5px;margin-top:10px"><span class="k">INSERT INTO</span> studenti <span class="k">VALUES</span> (...);
-<span class="k">UPDATE</span> studenti <span class="k">SET</span> classe='4A' ...;
-<span class="k">SELECT</span> cognome <span class="k">FROM</span> studenti <span class="k">WHERE</span> ...;</pre>
+<pre style="font-size:12.5px;margin-top:10px"><span class="k">INSERT INTO</span> STUDENTE <span class="k">VALUES</span> (...);
+<span class="k">UPDATE</span> STUDENTE <span class="k">SET</span> classe='4A' ...;
+<span class="k">SELECT</span> cognome <span class="k">FROM</span> STUDENTE <span class="k">WHERE</span> ...;</pre>
         </div>
       </div>
 
@@ -1192,7 +1192,7 @@ fread(&amp;stu, <b>32</b>, 1, fs);
         <div class="viewpane" id="view-1" role="tabpanel" aria-labelledby="tab-1">
           <div class="tablewrap">
             <table>
-              <caption>STUDENTI &mdash; tutto in un posto solo</caption>
+              <caption>STUDENTE &mdash; tutto in un posto solo</caption>
               <thead>
                 <tr><th class="mono">matricola</th><th class="mono">cognome</th><th class="mono">nome</th><th class="mono">classe</th><th class="mono">aula</th><th class="mono">coordinatore</th></tr>
               </thead>
@@ -1235,7 +1235,7 @@ fread(&amp;stu, <b>32</b>, 1, fs);
           <div class="joingrid">
             <div class="tablewrap">
               <table id="tab-studenti">
-                <caption>STUDENTI &mdash; solo ciò che riguarda lo studente</caption>
+                <caption>STUDENTE &mdash; solo ciò che riguarda lo studente</caption>
                 <thead>
                   <tr><th class="mono">matricola <span class="badge badge-pk">PK</span></th><th class="mono">cognome</th><th class="mono">nome</th><th class="mono">id_classe <span class="badge badge-fk">FK</span></th></tr>
                 </thead>
@@ -1250,7 +1250,7 @@ fread(&amp;stu, <b>32</b>, 1, fs);
             </div>
             <div class="tablewrap">
               <table id="tab-classi">
-                <caption>CLASSI &mdash; ogni classe scritta una volta sola</caption>
+                <caption>CLASSE &mdash; ogni classe scritta una volta sola</caption>
                 <thead>
                   <tr><th class="mono">id_classe <span class="badge badge-pk">PK</span></th><th class="mono">sezione</th><th class="mono">anno</th><th class="mono">aula</th><th class="mono">coordinatore</th></tr>
                 </thead>
@@ -1262,19 +1262,19 @@ fread(&amp;stu, <b>32</b>, 1, fs);
               </table>
             </div>
           </div>
-          <p class="hint">Clicca (o seleziona con Tab e premi Invio) una riga della tabella STUDENTI.</p>
+          <p class="hint">Clicca (o seleziona con Tab e premi Invio) una riga della tabella STUDENTE.</p>
           <p id="joinmsg" role="status" aria-live="polite">Il collegamento non è un puntatore: è un valore uguale in due tabelle.</p>
 
           <div class="cards" style="margin-top:16px">
             <div class="mini good">
               <span class="tag">Chiave primaria</span>
               <h4>Identifica una riga</h4>
-              <p><code>matricola</code> in STUDENTI, <code>id_classe</code> in CLASSI: un valore unico, mai vuoto, che distingue una riga da tutte le altre.</p>
+              <p><code>matricola</code> in STUDENTE, <code>id_classe</code> in CLASSE: un valore unico, mai vuoto, che distingue una riga da tutte le altre.</p>
             </div>
             <div class="mini good">
               <span class="tag">Chiave esterna</span>
               <h4>Collega due tabelle</h4>
-              <p><code>id_classe</code> in STUDENTI deve corrispondere a una chiave primaria esistente in CLASSI. Il sistema rifiuta l'inserimento se la classe non c'è.</p>
+              <p><code>id_classe</code> in STUDENTE deve corrispondere a una chiave primaria esistente in CLASSE. Il sistema rifiuta l'inserimento se la classe non c'è.</p>
             </div>
             <div class="mini good">
               <span class="tag">Effetto</span>
@@ -1323,8 +1323,8 @@ END-PERFORM</pre>
             <h4>Dico <em>che cosa</em> voglio</h4>
 <pre style="font-size:12.5px;margin-top:10px"><span class="c">-- SQL</span>
 <span class="k">SELECT</span> S.cognome
-<span class="k">FROM</span> studenti S
-<span class="k">JOIN</span> classi C <span class="k">ON</span> S.id_classe = C.id_classe
+<span class="k">FROM</span> STUDENTE S
+<span class="k">JOIN</span> CLASSE C <span class="k">ON</span> S.id_classe = C.id_classe
 <span class="k">WHERE</span> C.sezione = 'A' <span class="k">AND</span> C.anno = 3;</pre>
             <p style="margin-top:10px">Quattro righe al posto di dieci, ma non &#232; questo il punto: qui <b>non c'&#232; scritto come</b> trovare i dati. Se ne occupa il DBMS, che sceglie da solo se usare un indice o scorrere la tabella &#8212; e pu&#242; cambiare idea domani, senza che nessuno riscriva nulla.</p>
           </div>
@@ -1412,7 +1412,7 @@ END-PERFORM</pre>
           <em class="q">Come diventano tabelle?</em>
           <dl>
             <dt>Strumento</dt><dd>Schema relazionale + regole di traduzione + normalizzazione. Useremo la notazione a tabelle e, in parallelo, il formalismo <b>UML</b> (diagramma delle classi), che ritroverete in ingegneria del software e nella progettazione delle applicazioni.</dd>
-            <dt>Nel nostro caso</dt><dd><b>STUDENTI</b>(<span class="pk">matricola</span>, cognome, nome, <span class="fk">id_classe</span>) e <b>CLASSI</b>(<span class="pk">id_classe</span>, sezione, anno, aula, coordinatore).</dd>
+            <dt>Nel nostro caso</dt><dd><b>STUDENTE</b>(<span class="pk">matricola</span>, cognome, nome, <span class="fk">id_classe</span>) e <b>CLASSE</b>(<span class="pk">id_classe</span>, sezione, anno, aula, coordinatore).</dd>
             <dt>Regola d'oro</dt><dd>Un'associazione «uno a molti» si traduce mettendo la chiave esterna dalla parte del «molti».</dd>
             <dt>Qui NON si decide</dt><dd>Quale DBMS userai. Lo schema logico è lo stesso su MySQL, PostgreSQL o SQLite.</dd>
           </dl>
@@ -1459,16 +1459,16 @@ END-PERFORM</pre>
               <span class="eyebrow">Regola per non sbagliare mai</span>
               <p>Con la notazione <code>(min,max)</code> &#8212; quella che useremo &#8212; <b>si guarda l'entit&#224; vicino al numero</b>, non quella lontana. La domanda da farsi &#232; sempre: &laquo;<em>un singolo</em> studente, in quante classi sta?&raquo; e &laquo;<em>una singola</em> classe, quanti studenti ha?&raquo;. La risposta va scritta accanto all'entit&#224; di cui si sta parlando.</p>
             </div>
-            <p>Un modo veloce per verificare: la chiave esterna finisce <b>sempre dalla parte del <code>(1,1)</code></b>. Infatti <code>id_classe</code> sta dentro STUDENTI, non il contrario &#8212; e non potrebbe essere altrimenti, perch&#233; in una casella non si possono scrivere trenta matricole.</p>
+            <p>Un modo veloce per verificare: la chiave esterna finisce <b>sempre dalla parte del <code>(1,1)</code></b>. Infatti <code>id_classe</code> sta dentro STUDENTE, non il contrario &#8212; e non potrebbe essere altrimenti, perch&#233; in una casella non si possono scrivere trenta matricole.</p>
           </div>
         </details>
 <pre><span class="c">-- Livello logico: lo schema, indipendente dal prodotto</span>
-STUDENTI (<b>matricola</b>, cognome, nome, <span class="k">id_classe</span>)
-CLASSI   (<b>id_classe</b>, sezione, anno, aula, coordinatore)
+STUDENTE (<b>matricola</b>, cognome, nome, <span class="k">id_classe</span>)
+CLASSE   (<b>id_classe</b>, sezione, anno, aula, coordinatore)
          <span class="c">grassetto = chiave primaria, colorato = chiave esterna</span>
 
 <span class="c">-- Livello fisico: qui si sceglie il DBMS e si scende nei dettagli</span>
-<span class="k">CREATE TABLE</span> classi (
+<span class="k">CREATE TABLE</span> CLASSE (
     id_classe    INTEGER      <span class="k">PRIMARY KEY</span>,
     sezione      CHAR(1)      <span class="k">NOT NULL</span>,
     anno         SMALLINT     <span class="k">NOT NULL CHECK</span> (anno <span class="k">BETWEEN</span> 1 <span class="k">AND</span> 5),
@@ -1476,15 +1476,15 @@ CLASSI   (<b>id_classe</b>, sezione, anno, aula, coordinatore)
     coordinatore VARCHAR(60)
 );
 
-<span class="k">CREATE TABLE</span> studenti (
+<span class="k">CREATE TABLE</span> STUDENTE (
     matricola  INTEGER     <span class="k">PRIMARY KEY</span>,
     cognome    VARCHAR(40) <span class="k">NOT NULL</span>,
     nome       VARCHAR(40) <span class="k">NOT NULL</span>,
     id_classe  INTEGER     <span class="k">NOT NULL</span>,
-    <span class="k">FOREIGN KEY</span> (id_classe) <span class="k">REFERENCES</span> classi(id_classe)
+    <span class="k">FOREIGN KEY</span> (id_classe) <span class="k">REFERENCES</span> CLASSE(id_classe)
 );
 
-<span class="k">CREATE INDEX</span> idx_studenti_classe <span class="k">ON</span> studenti(id_classe);</pre>
+<span class="k">CREATE INDEX</span> idx_studente_classe <span class="k">ON</span> STUDENTE(id_classe);</pre>
       </div>
 
       <div class="note">
@@ -1608,7 +1608,7 @@ CLASSI   (<b>id_classe</b>, sezione, anno, aula, coordinatore)
       <div class="panel stack-s">
         <span class="eyebrow">Esercizi</span>
         <ol class="clean">
-          <li><b>Trova le anomalie.</b> Una società sportiva tiene una sola tabella: <code>ISCRITTI(tessera, cognome, nome, corso, giorno, ora, istruttore, telefono_istruttore)</code>. Elenca almeno tre problemi e proponi la suddivisione in due tabelle indicando chiavi primarie e chiave esterna.</li>
+          <li><b>Trova le anomalie.</b> Una società sportiva tiene una sola tabella: <code>ISCRITTO(tessera, cognome, nome, corso, giorno, ora, istruttore, telefono_istruttore)</code>. Elenca almeno tre problemi e proponi la suddivisione in due tabelle indicando chiavi primarie e chiave esterna.</li>
           <li><b>Dal testo allo schema.</b> «Ogni libro della biblioteca ha un codice, un titolo e un autore. Ogni prestito riguarda un libro e uno studente, con data di inizio e data di restituzione.» Disegna il modello concettuale e traducilo in tabelle.</li>
           <li><b>Cosa si rompe.</b> Nel file binario a record fissi del punto 04 il campo <code>classe</code> passa da 6 a 10 byte. Descrivi passo per passo che cosa smette di funzionare e perché, poi spiega cosa succederebbe nella stessa situazione con un DBMS.</li>
           <li><b>Discussione.</b> Il registro elettronico deve mostrare ai genitori le assenze del proprio figlio e nient'altro. Perché questo requisito è più facile da soddisfare con un DBMS che con un file condiviso?</li>
@@ -1703,7 +1703,7 @@ CLASSI   (<b>id_classe</b>, sezione, anno, aula, coordinatore)
     if (cls && msg) {
       var cc = cls.getElementsByTagName('td');
       msg.innerHTML = cells[1].textContent + ' ' + cells[2].textContent +
-        ' ha <b>id_classe = ' + id + '</b>: il DBMS cerca quel valore nella chiave primaria di CLASSI e trova la ' +
+        ' ha <b>id_classe = ' + id + '</b>: il DBMS cerca quel valore nella chiave primaria di CLASSE e trova la ' +
         cc[2].textContent + cc[1].textContent + ', aula ' + cc[3].textContent + ', coordinatore ' + cc[4].textContent;
     }
   }
