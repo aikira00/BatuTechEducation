@@ -2,7 +2,6 @@ class Sveglia {
     int ora;
     int minuti;
     String etichetta;
-    boolean ripeti;
 
     void suona() {
         System.out.println("DRIIIN!");
