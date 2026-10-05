@@ -41,8 +41,8 @@ CREATE TABLE LIBRO (
   id_editore   INT UNSIGNED NOT NULL,
   id_categoria INT UNSIGNED NOT NULL,
   PRIMARY KEY (isbn),
-  CHECK (anno >= 1450),
-  CHECK (prezzo >= 0),
+  CONSTRAINT `chk_anno` CHECK (`anno` BETWEEN 1450 AND 2026),
+  CONSTRAINT `chk_prezzo` CHECK (`prezzo` >= 0),
   FOREIGN KEY (id_autore)    REFERENCES AUTORE(id_autore),
   FOREIGN KEY (id_editore)   REFERENCES EDITORE(id_editore),
   FOREIGN KEY (id_categoria) REFERENCES CATEGORIA(id_categoria)
