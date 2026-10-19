@@ -1,33 +1,35 @@
 package conDate;
 
-// "Dal diagramma al codice: lo studente" (esercitazione 12): una classe che ha due attributi di tipo Data.
-// Le date si copiano nel costruttore: lo studente non cambia se qualcuno modifica la Data usata per crearlo.
-// Nessun setter: nome, cognome e date si fissano alla nascita dell'oggetto.
+// "Dal diagramma al codice: lo studente" (esercitazione 12): una classe con due attributi di tipo Data.
+// Le date le crea lo studente stesso, nel costruttore e in iscrivi: composizione. Il main non ha mai
+// un riferimento alle date interne, tranne quello che fa uscire il getter (domanda 2).
+// Nessun setter: nome, cognome e nascita si fissano alla nascita dell'oggetto; l'iscrizione cambia solo con iscrivi.
 public class Studente {
     private String nome;
     private String cognome;
     private Data dataDiNascita;
     private Data dataIscrizione;
 
-    public Studente(String nome, String cognome, Data dataDiNascita, Data dataIscrizione) {
+    public Studente(String nome, String cognome, int giorno, int mese, int anno) {
         this.nome = nome;
         this.cognome = cognome;
-
-        if (dataDiNascita.controlloData()) {
-            this.dataDiNascita = new Data(dataDiNascita.getGiorno(), dataDiNascita.getMese(), dataDiNascita.getAnno());
-        } else {
+        this.dataDiNascita = new Data(giorno, mese, anno);
+        if (!dataDiNascita.controlloData()) {
             System.out.println(nome + " " + cognome + ": data di nascita " + dataDiNascita + " non valida, metto 01/01/2000");
             this.dataDiNascita = new Data(1, 1, 2000);
         }
+        this.dataIscrizione = new Data(1, 9, 2026);   // iscritto a quest'anno, finché non si dice altro
+    }
 
-        if (!dataIscrizione.controlloData()) {
-            System.out.println(nome + " " + cognome + ": data di iscrizione " + dataIscrizione + " non valida, metto 01/09/2026");
-            this.dataIscrizione = new Data(1, 9, 2026);
-        } else if (etaAl(dataIscrizione) < 0) {
-            System.out.println(nome + " " + cognome + ": iscrizione " + dataIscrizione + " prima della nascita, metto 01/09/2026");
-            this.dataIscrizione = new Data(1, 9, 2026);
+    // Non è un setter: ha le regole, e se la data non va bene lascia quella che c'era
+    public void iscrivi(int giorno, int mese, int anno) {
+        Data nuova = new Data(giorno, mese, anno);
+        if (!nuova.controlloData()) {
+            System.out.println(nome + " " + cognome + ": data di iscrizione " + nuova + " non valida, resto al " + dataIscrizione);
+        } else if (etaAl(nuova) < 0) {
+            System.out.println(nome + " " + cognome + ": iscrizione " + nuova + " prima della nascita, resto al " + dataIscrizione);
         } else {
-            this.dataIscrizione = new Data(dataIscrizione.getGiorno(), dataIscrizione.getMese(), dataIscrizione.getAnno());
+            dataIscrizione = nuova;
         }
     }
 
