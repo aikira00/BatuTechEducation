@@ -26,5 +26,9 @@ public class StudenteTestDrive {
 
         System.out.println(s2.getDataDiNascita().controlloData());
         System.out.println(s3.etaAllIscrizione());
+
+        System.out.println(s1.getDataIscrizione());
+        System.out.println(s2.getDataIscrizione());
+        System.out.println(s1.getDataIscrizione().equals(s2.getDataIscrizione()));
     }
 }
