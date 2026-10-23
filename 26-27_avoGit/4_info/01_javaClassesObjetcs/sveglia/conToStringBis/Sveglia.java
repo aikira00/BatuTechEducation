@@ -61,9 +61,7 @@ public class Sveglia {
         System.out.println("DRIIIN!");
     }
 
-    public void posticipa() {
-        posticipa(5);                 // senza parametri: i classici 5 minuti
-    }
+
 
     public void posticipa(int minuti) {
         if (minuti <= 0) {
@@ -73,6 +71,10 @@ public class Sveglia {
         int totale = ora * 60 + this.minuti + minuti;
         this.ora = (totale / 60) % 24;
         this.minuti = totale % 60;
+    }
+
+    public void posticipa() {
+        posticipa(5);                 // senza parametri: i classici 5 minuti
     }
 
     @Override
