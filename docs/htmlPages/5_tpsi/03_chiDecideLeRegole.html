@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Chi decide le regole della rete</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: una colonna di lettura (66ch) dentro una pagina larga 1080px; sezioni numerate come nelle pagine 01 e 02 di 5 TPSI. */
+:root{
+  --bg:#EEF0F4; --surface:#FFFFFF; --surface-2:#F5F7FA;
+  --ink:#131A24; --ink-2:#3D4A5C; --ink-3:#6B7887;
+  --rule:#D3D9E2; --rule-strong:#B6C0CD;
+  --navy:#16324F; --navy-soft:rgba(22,50,79,.08);
+  --accent:#C81E4E; --accent-soft:rgba(200,30,78,.10); --accent-line:rgba(200,30,78,.35);
+  --ok:#0F6B5F; --ok-soft:rgba(15,107,95,.10);
+  --warn:#8A5A12; --warn-soft:rgba(138,90,18,.10);
+  --shadow:0 1px 2px rgba(19,26,36,.06), 0 8px 24px -12px rgba(19,26,36,.18);
+  --f-display:"IBM Plex Serif",Georgia,serif;
+  --f-body:"IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --measure:66ch; --wide:1080px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
+  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
+  --rule:#2A3644; --rule-strong:#3B4A5C;
+  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
+  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
+  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
+  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
+  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
+  --rule:#2A3644; --rule-strong:#3B4A5C;
+  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
+  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
+  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
+  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 96px}
+.page{max-width:var(--wide);margin:0 auto;padding-inline:clamp(0px,2vw,16px)}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:clamp(26px,3.6vw,34px);font-weight:600;color:var(--navy)}
+h3{font-size:clamp(19px,2.2vw,22px);font-weight:600;margin-bottom:.2em;color:var(--navy)}
+p{margin:0}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lede{font-size:clamp(18px,2.1vw,20px);color:var(--ink-2);line-height:1.55}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.col{display:flex;flex-direction:column;gap:18px;max-width:var(--measure);min-width:0}
+.hero{padding:clamp(40px,7vw,72px) 0 clamp(20px,4vw,34px)}
+.hero h1{font-size:clamp(34px,5.6vw,58px);font-weight:700;letter-spacing:-.025em;margin:.28em 0 .34em;color:var(--navy)}
+.hero h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+section{padding:clamp(34px,5vw,56px) 0;border-top:1px solid var(--rule)}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline;margin-bottom:24px}
+.num{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--accent);border:1px solid var(--accent-line);border-radius:3px;padding:2px 7px}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:clamp(18px,3vw,26px);box-shadow:var(--shadow);min-width:0}
+.stack{display:flex;flex-direction:column;gap:clamp(18px,3vw,28px)}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:16px 20px;border-radius:0 5px 5px 0;max-width:var(--measure)}
+.note.ok{border-left-color:var(--ok);background:var(--ok-soft)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.note.navy{border-left-color:var(--navy);background:var(--navy-soft)}
+.note .eyebrow{display:block;margin-bottom:6px;color:var(--ink-2)}
+.pull{font-family:var(--f-display);font-size:clamp(20px,2.6vw,25px);line-height:1.4;font-style:italic;color:var(--navy);max-width:32ch;border-top:2px solid var(--navy);border-bottom:1px solid var(--rule);padding:18px 0;margin:4px 0}
+.pull small{display:block;font-family:var(--f-mono);font-style:normal;font-size:12px;letter-spacing:.08em;color:var(--ink-3);margin-top:8px}
+ul.clean,ol.clean{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:9px;color:var(--ink-2)}
+ul.clean li::marker,ol.clean li::marker{color:var(--accent)}
+ul.clean b,ol.clean b{color:var(--ink)}
+code{font-family:var(--f-mono);font-size:.92em;background:var(--surface-2);border:1px solid var(--rule);border-radius:3px;padding:1px 5px}
+/* --- indice --- */
+.toc{display:flex;flex-wrap:wrap;gap:8px;padding:18px 0 4px;border-top:1px solid var(--rule)}
+.toc a{display:flex;align-items:baseline;gap:7px;font-size:14px;text-decoration:none;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:7px 13px}
+.toc a:hover{border-color:var(--accent-line);color:var(--ink)}
+.toc a span{font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:var(--accent)}
+/* --- etichette degli enti --- */
+.ente{display:inline-block;font-family:var(--f-mono);font-size:12px;font-weight:600;letter-spacing:.06em;padding:2px 8px;border-radius:3px;border:1px solid;white-space:nowrap}
+.ente.ieee{color:var(--navy);border-color:var(--navy);background:var(--navy-soft)}
+.ente.ietf{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+.ente.iana{color:var(--ok);border-color:var(--ok);background:var(--ok-soft)}
+.ente.icann{color:var(--warn);border-color:var(--warn);background:var(--warn-soft)}
+.ente.isoc{color:var(--ink-2);border-color:var(--rule-strong);background:var(--surface-2)}
+/* --- tre ruoli --- */
+.ruoli{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:800px){.ruoli{grid-template-columns:1fr}}
+.ruolo{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:18px 20px 16px;box-shadow:var(--shadow);border-top:4px solid var(--rule-strong);min-width:0}
+.ruolo.ieee{border-top-color:var(--navy)}
+.ruolo.ietf{border-top-color:var(--accent)}
+.ruolo.iana{border-top-color:var(--ok)}
+.ruolo .sigla{font-family:var(--f-mono);font-size:22px;font-weight:600;letter-spacing:.04em;color:var(--ink)}
+.ruolo .nome{font-size:13.5px;color:var(--ink-3);margin-bottom:10px;line-height:1.35}
+.ruolo .cosa{font-family:var(--f-display);font-style:italic;font-size:19px;color:var(--navy);margin-bottom:6px}
+.ruolo p.t{font-size:15px;color:var(--ink-2)}
+/* --- livelli --- */
+.livwrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+.livelli{display:grid;grid-template-columns:auto minmax(180px,1fr) auto auto;min-width:560px;font-size:14.5px}
+.livelli>div{padding:11px 14px;border-bottom:1px solid var(--rule)}
+.livelli .liv{font-family:var(--f-mono);font-size:13px;color:var(--ink-2);white-space:nowrap}
+.livelli .liv b{color:var(--ink);font-weight:600}
+.livelli .es{color:var(--ink-2)}
+.livelli .chi{white-space:nowrap}
+.livelli .iana-col{grid-column:4;grid-row:1 / span 5;border-left:1px solid var(--rule);background:var(--ok-soft);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;text-align:center;font-size:13px;color:var(--ink-2);max-width:150px;border-bottom:none}
+.livelli>div:nth-last-child(1),.livelli>div:nth-last-child(2),.livelli>div:nth-last-child(3){border-bottom:none}
+/* --- tabelle --- */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+caption{text-align:left;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);padding:12px 14px 10px}
+th,td{padding:8px 14px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{font-family:var(--f-mono);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);border-bottom:1px solid var(--rule-strong);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+td.mono{font-family:var(--f-mono);white-space:nowrap}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+table.soldi{min-width:760px}
+table.soldi td{font-size:14px;line-height:1.5}
+.due{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.due{grid-template-columns:1fr}}
+/* --- percorso RFC --- */
+ol.passi{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;counter-reset:p}
+@media (max-width:900px){ol.passi{grid-template-columns:1fr}}
+ol.passi li{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:12px 14px;font-size:14px;color:var(--ink-2);counter-increment:p;min-width:0}
+ol.passi li::before{content:counter(p);display:block;font-family:var(--f-mono);font-size:12px;font-weight:600;color:var(--accent);margin-bottom:4px}
+ol.passi li b{display:block;color:var(--ink);font-size:15px;margin-bottom:3px}
+/* --- diagramma dei soldi --- */
+figure{margin:0}
+figure.soldi{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px 10px 6px;box-shadow:var(--shadow);overflow-x:auto}
+figure.soldi svg{width:100%;min-width:620px;height:auto;display:block;color:var(--ink-2)}
+figcaption{font-size:14px;color:var(--ink-3);padding:10px 8px 6px;line-height:1.5}
+.box rect{fill:var(--surface-2);stroke:var(--rule-strong);stroke-width:1.4}
+.box.forte rect{stroke:var(--ink-2)}
+.box text{fill:var(--ink);font-family:var(--f-body);font-size:13px;font-weight:600}
+.box text.sub{fill:var(--ink-3);font-weight:400;font-size:11px}
+.fl{stroke:currentColor;stroke-width:1.5;fill:none}
+.fl.acc{stroke:var(--accent);stroke-width:2}
+.lab{fill:var(--ink-2);font-family:var(--f-mono);font-size:11px}
+.lab.acc{fill:var(--accent)}
+.esito{fill:var(--ok);font-family:var(--f-mono);font-size:11px;font-weight:600}
+/* --- quiz --- */
+.quiz{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:clamp(18px,3vw,28px);box-shadow:var(--shadow)}
+.qtesto{font-size:clamp(17px,2vw,21px);color:var(--ink);line-height:1.45;margin-bottom:18px}
+.qtesto b{color:var(--navy)}
+.scelte{display:flex;gap:10px;flex-wrap:wrap}
+.scelte button{font-family:var(--f-mono);font-size:15px;font-weight:600;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:6px;padding:11px 22px;cursor:pointer;transition:.15s}
+.scelte button:hover:not(:disabled){border-color:var(--navy);color:var(--ink)}
+.scelte button.giusta{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.scelte button.sbagliata{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.scelte button:disabled{cursor:default}
+.feedback{margin-top:16px;font-size:15.5px;color:var(--ink-2);line-height:1.5;display:none}
+.feedback.show{display:block}
+.feedback b{color:var(--ink)}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--f-mono);font-size:13px;color:var(--ink-3);gap:12px;flex-wrap:wrap}
+.qnav button{font-family:var(--f-mono);font-size:14px;background:var(--navy);color:var(--bg);border:none;border-radius:6px;padding:9px 20px;cursor:pointer}
+.qnav button:disabled{opacity:.35;cursor:default}
+/* --- fonti --- */
+ul.fonti{margin:0;padding-left:1.2em;font-size:14px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+ul.fonti li::marker{color:var(--ink-3)}
+ul.fonti a{overflow-wrap:anywhere}
+footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font-size:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <span class="eyebrow">5 TPSI &middot; Reti e protocolli &middot; 03</span>
+  <h1>Chi decide <em>le regole</em> della rete</h1>
+  <p class="lede">Nessuno possiede Internet. Eppure un PC a Roma e un server a Tokyo si capiscono, e una scheda di rete Intel parla con un router Huawei. Qualcuno le regole le ha scritte: tre sigle per gli standard, due per chi sta loro dietro, e una domanda che arriva sempre. Sono aziende? E chi le paga?</p>
+</header>
+
+<nav class="toc" aria-label="Indice">
+  <a href="#s1"><span>01</span>Tre ruoli</a>
+  <a href="#s2"><span>02</span>IEEE</a>
+  <a href="#s3"><span>03</span>IETF</a>
+  <a href="#s4"><span>04</span>IANA</a>
+  <a href="#s5"><span>05</span>ICANN e ISOC</a>
+  <a href="#s6"><span>06</span>Chi paga</a>
+  <a href="#s7"><span>07</span>Chi decide? (quiz)</a>
+  <a href="#fonti"><span>&rarr;</span>Fonti</a>
+</nav>
+
+<section id="s1">
+  <div class="sec-head"><span class="num">01</span><h2>Tre sigle, tre ruoli</h2></div>
+  <div class="stack">
+    <div class="ruoli">
+      <div class="ruolo ieee">
+        <div class="sigla">IEEE</div>
+        <div class="nome">Institute of Electrical and Electronics Engineers</div>
+        <div class="cosa">Il tubo</div>
+        <p class="t">Standardizza i livelli bassi, fisico e collegamento dati: Ethernet, Wi-Fi, indirizzi MAC.</p>
+      </div>
+      <div class="ruolo ietf">
+        <div class="sigla">IETF</div>
+        <div class="nome">Internet Engineering Task Force</div>
+        <div class="cosa">Il linguaggio</div>
+        <p class="t">Standardizza i protocolli di rete, trasporto e applicazione: IP, TCP, DNS, HTTP.</p>
+      </div>
+      <div class="ruolo iana">
+        <div class="sigla">IANA</div>
+        <div class="nome">Internet Assigned Numbers Authority</div>
+        <div class="cosa">L&rsquo;anagrafe</div>
+        <p class="t">Tiene i registri: indirizzi IP, porte, numeri AS, radice del DNS. Non scrive protocolli.</p>
+      </div>
+    </div>
+
+    <div class="livwrap">
+      <div class="livelli">
+        <div class="liv"><b>7&ndash;5</b> Applicazione</div><div class="es">HTTP, DNS, TLS, SMTP</div><div class="chi"><span class="ente ietf">IETF</span></div>
+        <div class="iana-col"><span class="ente iana">IANA</span>trasversale: assegna indirizzi, porte, nomi e numeri di protocollo</div>
+        <div class="liv"><b>4</b> Trasporto</div><div class="es">TCP, UDP, QUIC</div><div class="chi"><span class="ente ietf">IETF</span></div>
+        <div class="liv"><b>3</b> Rete</div><div class="es">IP, ICMP, BGP, OSPF</div><div class="chi"><span class="ente ietf">IETF</span></div>
+        <div class="liv"><b>2</b> Collegamento dati</div><div class="es">Ethernet, Wi-Fi, MAC, VLAN</div><div class="chi"><span class="ente ieee">IEEE</span></div>
+        <div class="liv"><b>1</b> Fisico</div><div class="es">cavi, segnali radio, connettori</div><div class="chi"><span class="ente ieee">IEEE</span></div>
+      </div>
+    </div>
+
+    <div class="note navy">
+      <span class="eyebrow">Dove sta la sicurezza?</span>
+      <p>Dipende dal livello. TLS, che cifra HTTPS, &egrave; dell&rsquo;IETF. 802.1X, che decide chi pu&ograve; attaccarsi a una presa di rete o a un Wi-Fi aziendale, &egrave; dell&rsquo;IEEE.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s2">
+  <div class="sec-head"><span class="num">02</span><h2>IEEE: chi costruisce il tubo</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>Associazione professionale internazionale di ingegneri. Nasce negli Stati Uniti nel 1963 dalla fusione di due societ&agrave; pi&ugrave; vecchie (la prima del 1884), ha la sede a New York e gli uffici operativi nel New Jersey. Conta oltre 486.000 soci in dieci regioni del mondo.</p>
+      <p>Gli standard li scrivono volontari di universit&agrave; e aziende, riuniti in gruppi di lavoro; lo staff cura l&rsquo;amministrazione. Il comitato che ci interessa &egrave; l&rsquo;<b>802</b>, che dal 1980 definisce le reti locali.</p>
+    </div>
+    <div class="due">
+      <div class="tablewrap">
+        <table>
+          <caption>La famiglia 802</caption>
+          <thead><tr><th>Standard</th><th>Cosa definisce</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">802.3</td><td>Ethernet</td></tr>
+            <tr><td class="mono">802.11</td><td>Wi-Fi (802.11ax &egrave; il Wi-Fi 6)</td></tr>
+            <tr><td class="mono">802.1Q</td><td>VLAN</td></tr>
+            <tr><td class="mono">802.1X</td><td>Autenticazione di accesso alla rete</td></tr>
+            <tr><td class="mono">802.15</td><td>Bluetooth, Zigbee (reti personali)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note navy">
+        <span class="eyebrow">Gli OUI, cio&egrave; i MAC address</span>
+        <p>La IEEE Registration Authority assegna gli <b>OUI</b>: i primi 24 bit di un MAC address dicono chi ha fabbricato la scheda. Un produttore compra il suo blocco una volta per tutte (3.585&nbsp;$). Prova: prendi i primi tre byte del MAC del tuo PC e cercali in un lookup OUI.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="sec-head"><span class="num">03</span><h2>IETF: chi scrive il linguaggio</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>Non &egrave; un&rsquo;associazione: non ha iscritti, non ha tessere, non si vota. Chiunque pu&ograve; entrare nella mailing list di un gruppo di lavoro e partecipare ai tre meeting l&rsquo;anno, circa 1.200 persone, anche da remoto. Chi partecipa lavora spesso per Google, Cisco, Apple, Huawei o Cloudflare, ma interviene a titolo personale. &Egrave; nata nel 1986 con 21 ricercatori pagati dal governo americano; dal 1993 vive dentro la Internet Society.</p>
+      <p class="pull">rough consensus and running code<small>il motto dell&rsquo;IETF, Dave Clark, 1992</small></p>
+      <p>Consenso largo, giudicato dal presidente del gruppo e non contato con i voti. E codice che funziona gi&agrave;: prima di diventare standard, un protocollo deve avere pi&ugrave; implementazioni indipendenti che si parlano.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <caption>I documenti si chiamano RFC, Request for Comments: gratuiti e pubblici</caption>
+        <thead><tr><th>Protocollo</th><th>Documento</th><th>Anno</th></tr></thead>
+        <tbody>
+          <tr><td>IPv4</td><td class="mono">RFC 791</td><td class="num">1981</td></tr>
+          <tr><td>IPv6</td><td class="mono">RFC 8200</td><td class="num">2017</td></tr>
+          <tr><td>TCP</td><td class="mono">RFC 9293</td><td class="num">2022</td></tr>
+          <tr><td>QUIC</td><td class="mono">RFC 9000</td><td class="num">2021</td></tr>
+          <tr><td>HTTP/3</td><td class="mono">RFC 9114</td><td class="num">2022</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>Chi approva un RFC? L&rsquo;IETF stessa</h3>
+      <p style="color:var(--ink-2);max-width:var(--measure);margin:6px 0 14px">Nessun ente esterno conferma un RFC. Il percorso &egrave; tutto interno:</p>
+      <ol class="passi">
+        <li><b>Internet-Draft</b>la bozza: la propone chiunque</li>
+        <li><b>Working Group</b>discussione sulla mailing list fino al consenso</li>
+        <li><b>Last Call</b>obiezioni di tutta la comunit&agrave;</li>
+        <li><b>IESG</b>approvazione formale dei responsabili d&rsquo;area</li>
+        <li><b>RFC Editor</b>revisione e numero definitivo</li>
+      </ol>
+    </div>
+    <div class="note">
+      <span class="eyebrow">Un RFC non cambia pi&ugrave;</span>
+      <p>Dopo la pubblicazione le correzioni escono come nuovo RFC: per questo TCP, nato come RFC 793 nel 1981, oggi si legge nell&rsquo;RFC 9293. HTTP/3 &egrave; l&rsquo;RFC 9114 del giugno 2022, scritto dal gruppo HTTP insieme al gruppo QUIC, che ha definito il trasporto.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s4">
+  <div class="sec-head"><span class="num">04</span><h2>IANA: l&rsquo;anagrafe di Internet</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>Non scrive protocolli: tiene i registri che rendono univoci numeri e nomi in tutto il mondo. &Egrave; una <b>funzione</b>, non un ente: la svolge <b>PTI</b> (Public Technical Identifiers), societ&agrave; senza scopo di lucro affiliata di ICANN, con 19 dipendenti. I registri sono pubblici e gratuiti.</p>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <caption>Che cosa registra</caption>
+        <thead><tr><th>Famiglia</th><th>Che cosa</th><th>Esempio</th></tr></thead>
+        <tbody>
+          <tr><td>Numeri</td><td>Blocchi di indirizzi IP ai cinque registri regionali (RIR); numeri dei sistemi autonomi (AS) per il routing BGP</td><td>Per l&rsquo;Europa il RIR &egrave; RIPE NCC, ad Amsterdam</td></tr>
+          <tr><td>Nomi</td><td>La zona radice del DNS e i domini di primo livello; <code>.arpa</code> e <code>.int</code></td><td><code>example.com</code> &egrave; riservato da IANA per gli esempi</td></tr>
+          <tr><td>Parametri dei protocolli</td><td>Oltre 2.800 registri: porte TCP e UDP, numeri di protocollo IP, codici di stato HTTP, tipi MIME</td><td>porta 443 = HTTPS; protocollo 6 = TCP, 17 = UDP; <code>404</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="due">
+      <div class="note ok">
+        <span class="eyebrow">Le porte, come nel laboratorio</span>
+        <p><b>Well-known</b> 0&ndash;1023, <b>registrate</b> 1024&ndash;49151, <b>dinamiche</b> 49152&ndash;65535. Il server EWMP del laboratorio ascolta sulla 65001: una porta dinamica, che nessuno registra. La 443 di HTTPS invece sta nel registro di IANA.</p>
+      </div>
+      <div class="note ok">
+        <span class="eyebrow">Una storia breve</span>
+        <p>Dal 1972 al 1998 l&rsquo;anagrafe la tiene una persona, Jon Postel, all&rsquo;universit&agrave; USC, con fondi del governo americano. Dal 1999 passa a ICANN, ma con un contratto del governo USA. Dal 1&deg; ottobre 2016 il contratto non c&rsquo;&egrave; pi&ugrave;: la funzione risponde alla comunit&agrave; internazionale tramite PTI.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s5">
+  <div class="sec-head"><span class="num">05</span><h2>Dietro le sigle: ICANN e ISOC</h2></div>
+  <div class="stack">
+    <p class="lede" style="max-width:var(--measure)">Due nomi che non scrivono standard, ma tengono in piedi gli altri: ICANN sta dietro a IANA, ISOC sta dietro all&rsquo;IETF.</p>
+    <div class="due">
+      <div class="panel">
+        <span class="ente icann">ICANN</span>
+        <h3 style="margin-top:10px">Internet Corporation for Assigned Names and Numbers</h3>
+        <p style="color:var(--ink-2);font-size:15.5px">Ente senza scopo di lucro di diritto californiano, a Los Angeles, dal 1998. Coordina nomi e numeri: firma i contratti con i registri dei domini di primo livello (<code>.com</code>, <code>.org</code>, <code>.pizza</code>), accredita i circa 2.400 <b>registrar</b> che vendono i domini, decide quando aprire nuovi TLD e paga PTI per la funzione IANA. Non vende domini. Non gestisce i domini nazionali: <code>.it</code> &egrave; del Registro .it, al CNR di Pisa.</p>
+      </div>
+      <div class="panel">
+        <span class="ente isoc">ISOC</span>
+        <h3 style="margin-top:10px">Internet Society</h3>
+        <p style="color:var(--ink-2);font-size:15.5px">Associazione senza scopo di lucro fondata nel 1992 da Vint Cerf e Bob Kahn, i padri di TCP/IP. Sede a Reston (Virginia) e Ginevra, capitoli locali in tutto il mondo. &Egrave; la casa legale e finanziaria dell&rsquo;IETF (dal 2018 attraverso la IETF Administration LLC) e la proprietaria di <b>PIR</b>, Public Interest Registry, il registro che gestisce <code>.org</code>.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Registro, registrar e PIR</h3>
+      <div class="col" style="margin-top:8px">
+        <p style="color:var(--ink-2);font-size:15.5px">Ogni dominio di primo livello ha un solo <b>registro</b> (in inglese <i>registry</i>): l&rsquo;ente che tiene la banca dati di tutti i domini sotto quel suffisso, fa girare i suoi server DNS e vende i domini all&rsquo;ingrosso. I <b>registrar</b> sono i negozi al dettaglio: tu compri da un registrar, il registrar compra dal registro, e tutti e due versano una quota a ICANN.</p>
+      </div>
+      <div class="tablewrap" style="margin-top:14px">
+        <table>
+          <thead><tr><th>Suffisso</th><th>Registro (uno solo)</th><th>Registrar (tanti)</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">.it</td><td>Registro .it, al CNR di Pisa</td><td>Aruba, Register.it, GoDaddy&hellip;</td></tr>
+            <tr><td class="mono">.com</td><td>Verisign</td><td>Aruba, GoDaddy, Namecheap&hellip;</td></tr>
+            <tr><td class="mono">.org</td><td><b>PIR</b>, Public Interest Registry</td><td>Aruba, GoDaddy, Namecheap&hellip;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="color:var(--ink-2);font-size:15.5px;margin-top:14px;max-width:var(--measure)">PIR nasce nel 2002: ISOC vince la gara di ICANN per gestire <code>.org</code>, fino ad allora di Verisign, e crea PIR apposta. &Egrave; un ente senza scopo di lucro, ma incassa circa 106 milioni di dollari l&rsquo;anno dagli 11 milioni di domini <code>.org</code>, e l&rsquo;avanzo lo gira a ISOC. Da l&igrave; arrivano i soldi dell&rsquo;IETF.</p>
+    </div>
+
+    <figure class="soldi">
+      <svg viewBox="0 0 900 280" role="img" aria-label="Chi paga chi: i soldi di un dominio .org vanno dal registrar a PIR, da PIR a ISOC e da ISOC all'IETF; registrar e registri pagano ICANN, e ICANN paga PTI, cioè IANA.">
+        <defs>
+          <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="currentColor"/></marker>
+          <marker id="arrA" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" style="fill:var(--accent)"/></marker>
+        </defs>
+        <!-- riga alta -->
+        <g class="box"><rect x="10" y="40" width="160" height="50" rx="4"/><text x="90" y="61" text-anchor="middle">Tu</text><text x="90" y="78" text-anchor="middle" class="sub">compri un dominio .org</text></g>
+        <g class="box"><rect x="240" y="40" width="120" height="50" rx="4"/><text x="300" y="61" text-anchor="middle">Registrar</text><text x="300" y="78" text-anchor="middle" class="sub">vende i domini</text></g>
+        <g class="box"><rect x="430" y="40" width="160" height="50" rx="4"/><text x="510" y="61" text-anchor="middle">PIR</text><text x="510" y="78" text-anchor="middle" class="sub">registro di .org</text></g>
+        <g class="box"><rect x="660" y="40" width="80" height="50" rx="4"/><text x="700" y="70" text-anchor="middle">ISOC</text></g>
+        <g class="box forte"><rect x="800" y="40" width="60" height="50" rx="4"/><text x="830" y="70" text-anchor="middle">IETF</text></g>
+        <line class="fl" x1="170" y1="65" x2="238" y2="65" marker-end="url(#arr)"/><text class="lab" x="204" y="56" text-anchor="middle">&#8776; 10 &#8364;</text>
+        <line class="fl" x1="360" y1="65" x2="428" y2="65" marker-end="url(#arr)"/><text class="lab" x="394" y="56" text-anchor="middle">ingrosso</text>
+        <line class="fl acc" x1="590" y1="65" x2="658" y2="65" marker-end="url(#arrA)"/><text class="lab acc" x="624" y="56" text-anchor="middle">contributo</text>
+        <line class="fl acc" x1="740" y1="65" x2="798" y2="65" marker-end="url(#arrA)"/><text class="lab acc" x="769" y="56" text-anchor="middle">8,3 M$</text>
+        <text class="esito" x="830" y="112" text-anchor="middle">scrive gli RFC</text>
+        <text class="esito" x="830" y="127" text-anchor="middle">gratis</text>
+        <text class="lab" x="700" y="112" text-anchor="middle">89% delle</text>
+        <text class="lab" x="700" y="127" text-anchor="middle">entrate di ISOC</text>
+        <!-- riga bassa -->
+        <g class="box"><rect x="360" y="200" width="120" height="50" rx="4"/><text x="420" y="230" text-anchor="middle">ICANN</text></g>
+        <g class="box forte"><rect x="560" y="200" width="160" height="50" rx="4"/><text x="640" y="221" text-anchor="middle">PTI</text><text x="640" y="238" text-anchor="middle" class="sub">svolge la funzione IANA</text></g>
+        <line class="fl" x1="300" y1="90" x2="388" y2="198" marker-end="url(#arr)"/>
+        <text class="lab" x="330" y="140" text-anchor="end">0,20 $ a dominio-anno</text><text class="lab" x="330" y="155" text-anchor="end">+ 4.000 $ l&rsquo;anno</text>
+        <line class="fl" x1="510" y1="90" x2="452" y2="198" marker-end="url(#arr)"/>
+        <text class="lab" x="500" y="147" text-anchor="start">0,25 $ a dominio-anno</text>
+        <line class="fl" x1="480" y1="225" x2="558" y2="225" marker-end="url(#arr)"/><text class="lab" x="519" y="216" text-anchor="middle">&#8776; 11 M$</text>
+        <text class="esito" x="640" y="272" text-anchor="middle">tiene i registri: gratis</text>
+        <text class="lab" x="420" y="272" text-anchor="middle">98% dai domini</text>
+      </svg>
+      <figcaption>Chi paga chi, seguendo un dominio <code>.org</code>. Gli RFC che leggi gratis e i registri di IANA che consulti gratis li paga, in buona parte, chi compra domini. Cifre: ICANN FY2026-27, IETF 2025, ISOC 2024.</figcaption>
+    </figure>
+
+    <div class="note warn">
+      <span class="eyebrow">Sono tutte americane?</span>
+      <p>Le sedi legali in gran parte s&igrave;: IEEE, ICANN e ISOC sono enti statunitensi, e l&rsquo;IETF ha la sua veste legale dentro ISOC. Governance e partecipanti sono internazionali, e dal 2016 nessuna dipende dal governo USA. Altri enti pesano sulle reti: ITU e ISO a Ginevra, ETSI in Francia e 3GPP per le reti mobili, W3C per HTML e CSS.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s6">
+  <div class="sec-head"><span class="num">06</span><h2>Sono aziende? E chi le paga?</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>Nessuna delle cinque &egrave; un&rsquo;azienda: sono tutte enti <b>senza scopo di lucro</b>. Senza scopo di lucro non vuol dire senza soldi: IEEE incassa pi&ugrave; di 600 milioni di dollari l&rsquo;anno. Vuol dire che non ci sono azionisti: l&rsquo;avanzo non si distribuisce a nessuno e resta nell&rsquo;ente.</p>
+      <p>Colpisce chi ci lavora: gli standard li scrivono dipendenti di aziende concorrenti, Intel e Qualcomm, Cisco e Huawei, Google e Apple. Senza accordi comuni i loro prodotti non si parlerebbero e il mercato si ridurrebbe per tutti.</p>
+    </div>
+    <div class="tablewrap">
+      <table class="soldi">
+        <caption>Natura, persone, soldi</caption>
+        <thead><tr><th>Ente</th><th>Che cos&rsquo;&egrave;</th><th>Chi ci lavora</th><th>Da dove arrivano i soldi</th><th>Entrate l&rsquo;anno</th></tr></thead>
+        <tbody>
+          <tr><td><span class="ente ieee">IEEE</span></td><td>Associazione professionale, no-profit USA</td><td>Volontari nei gruppi di lavoro; staff per l&rsquo;amministrazione</td><td>Conferenze (circa 38%) e riviste (36%), comprate soprattutto dalle biblioteche universitarie; quote dei soci (14%); vendita degli standard (7%) e degli OUI. Gli standard 802 diventano gratuiti sei mesi dopo la pubblicazione.</td><td class="num">&#8776; 640 M$ (2024)</td></tr>
+          <tr><td><span class="ente ietf">IETF</span></td><td>Comunit&agrave; aperta; la veste legale &egrave; la IETF LLC, dentro ISOC</td><td>Volontari pagati dai loro datori di lavoro; staff minimo</td><td>Contributo di ISOC (7,3 M$, pi&ugrave; 1 M$ a un fondo), iscrizioni ai meeting (4,5 M$: da 875 a 1.200 $ a testa), sponsor e donazioni. Gli RFC sono gratuiti.</td><td class="num">&#8776; 13,6 M$ (2025)</td></tr>
+          <tr><td><span class="ente iana">IANA</span></td><td>Funzione svolta da PTI, affiliata no-profit di ICANN</td><td>19 dipendenti</td><td>Fattura ogni trimestre a ICANN, che la finanzia per intero. I registri sono gratuiti per tutti.</td><td class="num">&#8776; 11 M$ (2024-25)</td></tr>
+          <tr><td><span class="ente icann">ICANN</span></td><td>Ente no-profit californiano</td><td>Staff; comunit&agrave; di volontari nei comitati</td><td>Tariffe sui domini: 0,25 $ per dominio-anno dai registri, 0,20 $ dai registrar pi&ugrave; 4.000 $ l&rsquo;anno di accreditamento; 227.000 $ per chiedere un nuovo TLD (round 2026). Il 98% viene dai domini.</td><td class="num">&#8776; 165 M$ (2026-27)</td></tr>
+          <tr><td><span class="ente isoc">ISOC</span></td><td>Associazione no-profit USA, con capitoli nel mondo</td><td>Staff; capitoli di volontari</td><td>Quasi tutto (89%) da contributi, in pratica da PIR, che incassa 106 M$ l&rsquo;anno dagli 11 milioni di domini <code>.org</code>.</td><td class="num">&#8776; 48 M$ (2024)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <span class="eyebrow">Quanto vale .org</span>
+      <p>Nel 2019 ISOC prov&ograve; a vendere PIR a un fondo di investimento, Ethos Capital, per 1,135 miliardi di dollari. ICANN blocc&ograve; la vendita nell&rsquo;aprile 2020: <code>.org</code> resta a un registro senza scopo di lucro.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s7">
+  <div class="sec-head"><span class="num">07</span><h2>Chi decide?</h2></div>
+  <div class="stack">
+    <p style="color:var(--ink-2);max-width:var(--measure)">Dieci cose della rete. Per ognuna, chi la decide o la registra?</p>
+    <div class="quiz" id="quiz">
+      <div class="qtesto" id="q-testo"></div>
+      <div class="scelte" id="q-scelte"></div>
+      <div class="feedback" id="q-feedback"></div>
+      <div class="qnav"><span id="q-stato"></span><button type="button" id="q-avanti" disabled>Avanti</button></div>
+    </div>
+  </div>
+</section>
+
+<section id="fonti">
+  <div class="sec-head"><span class="num">&rarr;</span><h2>Fonti</h2></div>
+  <ul class="fonti">
+    <li><a href="https://www.rfc-editor.org/">RFC Editor</a>, tutti gli RFC; <a href="https://www.ietf.org/blog/ietf-administration-llc-2025-budget/">IETF Administration LLC, bilancio 2025</a></li>
+    <li><a href="https://www.iana.org/about">IANA, chi siamo</a>; <a href="https://www.iana.org/assignments/service-names-port-numbers/">registro delle porte</a>; <a href="https://www.icann.org/en/system/files/files/pti-fy25-op-budget-2024-en.pdf">PTI, piano e bilancio FY25</a></li>
+    <li><a href="https://www.icann.org/en/announcements/details/icann-accredited-registrars-approve-registrar-level-fees-for-fiscal-year-2026-21-07-2025-en">ICANN, tariffe dei registrar FY2026</a>; <a href="https://btw.media/en/icanns-budget-dependence-on-domain-names">analisi del bilancio ICANN FY27</a></li>
+    <li><a href="https://standards.ieee.org/">IEEE Standards Association</a>; <a href="https://spectrum.ieee.org/the-institute/ieee-member-news/ieee-presidents-column-ieee-is-also-a-business">IEEE Spectrum, &laquo;IEEE is also a business&raquo;</a> (ripartizione delle entrate); <a href="https://en.wikipedia.org/wiki/Institute_of_Electrical_and_Electronics_Engineers">IEEE su Wikipedia</a> (entrate 2024)</li>
+    <li><a href="https://projects.propublica.org/nonprofits/organizations/541650477">Internet Society, bilancio 2024 (modulo 990)</a>; <a href="https://en.wikipedia.org/wiki/Internet_Society">Internet Society su Wikipedia</a> (PIR, vendita a Ethos Capital)</li>
+  </ul>
+</section>
+
+<footer>
+  <span class="eyebrow">Nota sulla realizzazione</span>
+  <p style="margin-top:8px">Questa pagina &egrave; stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilit&agrave; didattica e scientifica &egrave; integralmente sua. L'indicazione &egrave; fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var ENTI = ['IEEE','IETF','IANA','ICANN'];
+  var D = [
+    {q:'La porta <b>443</b> &egrave; quella di HTTPS.', r:'IANA', f:'Sta nel registro delle porte di IANA (well-known, 0&ndash;1023). Il protocollo HTTPS lo definisce l&rsquo;IETF, ma il numero lo registra IANA.'},
+    {q:'Il formato della <b>trama Ethernet</b>: preambolo, MAC di destinazione, MAC sorgente, tipo, dati, CRC.', r:'IEEE', f:'&Egrave; lo standard 802.3: livello 2, collegamento dati.'},
+    {q:'<b>HTTP/3</b>, l&rsquo;ultima versione del protocollo del web.', r:'IETF', f:'RFC 9114, giugno 2022, scritto dal gruppo di lavoro HTTP dell&rsquo;IETF.'},
+    {q:'I primi 24 bit di un <b>MAC address</b>, che dicono il produttore della scheda.', r:'IEEE', f:'&Egrave; l&rsquo;OUI, assegnato dalla IEEE Registration Authority.'},
+    {q:'Il blocco di <b>indirizzi IP</b> che RIPE NCC distribuisce in Europa.', r:'IANA', f:'IANA assegna i blocchi ai cinque registri regionali; RIPE NCC li ridistribuisce a provider e aziende.'},
+    {q:'Chi pu&ograve; <b>vendere domini</b> <code>.com</code>: l&rsquo;accreditamento dei registrar.', r:'ICANN', f:'ICANN accredita i registrar (circa 2.400) e incassa 4.000 $ l&rsquo;anno da ciascuno.'},
+    {q:'<b>Wi-Fi 6</b>, cio&egrave; 802.11ax.', r:'IEEE', f:'Tutta la famiglia 802.11 &egrave; dell&rsquo;IEEE: livelli 1 e 2.'},
+    {q:'<b>QUIC</b>, il trasporto su cui corre HTTP/3.', r:'IETF', f:'RFC 9000, maggio 2021: livello di trasporto, quindi IETF.'},
+    {q:'Il nuovo dominio di primo livello <b><code>.pizza</code></b>.', r:'ICANN', f:'ICANN decide quando aprire nuovi TLD e firma il contratto con il registro che lo gestisce. Nel round 2026 chiederne uno costa 227.000 $.'},
+    {q:'Nell&rsquo;header IP, <b>protocollo 6</b> vuol dire TCP e <b>17</b> vuol dire UDP.', r:'IANA', f:'&Egrave; il registro dei numeri di protocollo, uno dei 2.800 registri di IANA.'}
+  ];
+  var i = 0, giuste = 0;
+  var T = document.getElementById('q-testo'), S = document.getElementById('q-scelte'),
+      F = document.getElementById('q-feedback'), ST = document.getElementById('q-stato'),
+      AV = document.getElementById('q-avanti');
+  function mostra(){
+    var d = D[i];
+    T.innerHTML = d.q; S.innerHTML = ''; F.className = 'feedback'; F.innerHTML = ''; AV.disabled = true;
+    ST.textContent = (i+1) + ' / ' + D.length + ' · giuste: ' + giuste;
+    ENTI.forEach(function(e){
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = e;
+      b.addEventListener('click', function(){ rispondi(e, b); });
+      S.appendChild(b);
+    });
+  }
+  function rispondi(e, b){
+    var d = D[i], ok = (e === d.r);
+    Array.prototype.forEach.call(S.children, function(x){
+      x.disabled = true;
+      if (x.textContent === d.r) x.className = 'giusta';
+    });
+    if (!ok) b.className = 'sbagliata'; else giuste++;
+    F.innerHTML = (ok ? '<b>Giusto.</b> ' : '<b>No: &egrave; ' + d.r + '.</b> ') + d.f;
+    F.className = 'feedback show';
+    ST.textContent = (i+1) + ' / ' + D.length + ' · giuste: ' + giuste;
+    AV.disabled = false;
+    AV.textContent = (i === D.length-1) ? 'Ricomincia' : 'Avanti';
+  }
+  AV.addEventListener('click', function(){
+    if (i === D.length-1){ i = 0; giuste = 0; } else { i++; }
+    mostra();
+  });
+  mostra();
+})();
+</script>
+</body>
+</html>
