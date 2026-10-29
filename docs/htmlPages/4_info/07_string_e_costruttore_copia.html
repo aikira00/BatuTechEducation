@@ -97,16 +97,17 @@ button:disabled{opacity:.4;cursor:not-allowed}
 .mode{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;align-items:center}
 .mode .lbl{font-family:var(--f-head);font-size:13px;color:var(--ink-3)}
 .mode button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.ctors{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px;margin-top:14px}
+.ctors{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:14px;margin-top:14px}
 .ctors>div{min-width:0}
 .ctors pre{border:2px solid transparent;opacity:.55;transition:opacity .2s;font-size:13px}
 .ctors pre.on{border-color:var(--sa-fill);opacity:1}
+.ctors pre.fixed{opacity:1}
 
 /* stepper stack/heap */
 .stepper{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:24px;align-items:start}
 @media (max-width:860px){.stepper{grid-template-columns:1fr}}
 .lines{background:var(--code-bg);border-radius:10px;padding:12px 0;font-family:var(--f-head);font-size:14px;line-height:1.5;overflow-x:auto}
-.line{display:block;padding:3px 16px;color:var(--code-dim);white-space:pre;border-left:4px solid transparent}
+.line{display:block;padding:3px 16px 3px calc(16px + 3ch);text-indent:-3ch;color:var(--code-dim);white-space:pre-wrap;border-left:4px solid transparent}
 .line.done{color:var(--code-ink)}
 .line.now{color:#0B0A12;background:#FFE14A;border-left-color:#FF3DAE;font-weight:700}
 .mem{min-width:540px;width:100%;height:auto;display:block}
@@ -244,13 +245,14 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
 <section class="sec" id="copia">
   <div class="sec-head"><span class="num">2</span><h2>Costruttore copia: shallow e deep</h2></div>
   <div class="prose">
-    <p>Lo <code>Studente</code> dell'esercitazione 12 ha dentro una <code>Data</code>. Il costruttore copia copia le variabili d'istanza una per una: ma <code>dataDiNascita</code> è un riferimento. Copiare il riferimento (<strong>shallow copy</strong>) o copiare anche la Data (<strong>deep copy</strong>)? Scegliete una versione, poi eseguite il main. Potete cambiare versione in qualunque passo.</p>
+    <p>La segreteria ha sbagliato la scheda di Anna: cognome <code>"Rosssi"</code> e anno 2008. Prima di correggerla ne tiene una copia, <code>backup</code>, per tornare indietro se la correzione è sbagliata: è il tasto Annulla. Funziona solo se <code>backup</code> resta com'era qualunque cosa succeda a <code>s</code>: due oggetti che partono uguali e poi vivono ognuno per conto suo.</p>
+    <p>Nella sveglia del sabato la copia serviva a partire da una sveglia già fatta; qui serve a non perdere com'era. Lo <code>Studente</code> è quello dell'esercitazione 12: il costruttore copia copia le variabili d'istanza una per una, ma <code>cognome</code> e <code>dataDiNascita</code> sono riferimenti. Scegliete shallow o deep, poi eseguite il main: alla riga 3 si corregge la String, alla riga 4 la Data. Potete cambiare versione in qualunque passo.</p>
   </div>
 
   <div class="lab" id="lab-copy">
     <div class="mode" role="group" aria-label="Versione del costruttore copia">
       <span class="lbl">costruttore copia:</span>
-      <button id="c-shallow" aria-pressed="true">shallow · copio la freccia</button>
+      <button id="c-shallow" aria-pressed="true">shallow · copio le frecce</button>
       <button id="c-deep" aria-pressed="false">deep · copio anche la Data</button>
     </div>
     <div class="ctors">
@@ -270,68 +272,82 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
     this.dataDiNascita = new Data(altro.dataDiNascita);
 }</code></pre>
       </div>
+      <div>
+        <p class="file">Studente.java · il metodo usato alla riga 3 del main</p>
+<pre data-lang="java" class="fixed"><code>public void correggiCognome(String cognome) {
+    this.cognome = cognome;
+}</code></pre>
+      </div>
     </div>
 
     <div class="stepper" style="margin-top:18px">
       <div>
-        <p class="file">main</p>
+        <p class="file">main · la scheda e il suo backup</p>
         <div class="lines" id="c-lines"></div>
         <div class="console" id="c-console" aria-live="polite">// output</div>
       </div>
       <div style="min-width:0">
         <div class="scroll">
-        <svg class="mem" viewBox="0 0 640 352" role="img" aria-labelledby="c-t">
-          <title id="c-t">Stack con s1 e s2, heap con due Studente, la String Anna e una o due Data</title>
+        <svg class="mem" viewBox="0 0 640 380" role="img" aria-labelledby="c-t">
+          <title id="c-t">Stack con s e backup, heap con due Studente, le String del cognome nello string pool e una o due Data</title>
           <defs>
             <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0L10 5L0 10z"/></marker>
+            <marker id="ah2h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--hot)"/></marker>
           </defs>
-          <rect class="panel" x="6" y="6" width="180" height="340" rx="12"/>
+          <rect class="panel" x="6" y="6" width="180" height="368" rx="12"/>
           <text class="ptitle" x="20" y="30">stack</text>
-          <rect class="panel" x="206" y="6" width="428" height="340" rx="12"/>
+          <rect class="panel" x="206" y="6" width="428" height="368" rx="12"/>
           <text class="ptitle" x="220" y="30">heap</text>
+          <rect class="pool" x="436" y="40" width="188" height="140" rx="10"/>
+          <text class="pooltitle" x="448" y="58">string pool</text>
 
-          <g id="c-r-s1" hidden><rect class="remote" x="26" y="74" width="130" height="44" rx="12"/><text class="rname" x="44" y="103">s1</text></g>
-          <g id="c-r-s2" hidden><rect class="remote" x="26" y="224" width="130" height="44" rx="12"/><text class="rname" x="44" y="253">s2</text></g>
+          <g id="c-r-s" hidden><rect class="remote" x="26" y="74" width="130" height="44" rx="12"/><text class="rname" x="44" y="103">s</text></g>
+          <g id="c-r-b" hidden><rect class="remote" x="26" y="240" width="130" height="44" rx="12"/><text class="rname" x="44" y="269">backup</text></g>
 
           <g id="c-o-s1" hidden>
             <rect class="obj" x="228" y="50" width="176" height="92" rx="14"/>
             <text class="otitle" x="242" y="72">oggetto Studente</text>
-            <text class="ofield" x="242" y="98">nome =</text><circle class="dot" cx="388" cy="94" r="4"/>
+            <text class="ofield" x="242" y="98">cognome =</text><circle class="dot" cx="388" cy="94" r="4"/>
             <text class="ofield" x="242" y="124">dataDiNascita =</text><circle class="dot" cx="388" cy="120" r="4"/>
           </g>
           <g id="c-o-s2" hidden>
-            <rect class="obj" x="228" y="200" width="176" height="92" rx="14"/>
-            <text class="otitle" x="242" y="222">oggetto Studente</text>
-            <text class="ofield" x="242" y="248">nome =</text><circle class="dot" cx="388" cy="244" r="4"/>
-            <text class="ofield" x="242" y="274">dataDiNascita =</text><circle class="dot" cx="388" cy="270" r="4"/>
+            <rect class="obj" x="228" y="216" width="176" height="92" rx="14"/>
+            <text class="otitle" x="242" y="238">oggetto Studente</text>
+            <text class="ofield" x="242" y="264">cognome =</text><circle class="dot" cx="388" cy="260" r="4"/>
+            <text class="ofield" x="242" y="290">dataDiNascita =</text><circle class="dot" cx="388" cy="286" r="4"/>
           </g>
 
-          <g id="c-o-str" class="str" hidden>
-            <rect class="obj" x="450" y="36" width="166" height="52" rx="12"/>
-            <text class="otitle" x="464" y="56">oggetto String</text>
-            <text class="ofield" x="464" y="76">"Anna"</text>
-            <text class="why" x="450" y="104">condivisa: immutabile</text>
+          <g id="c-o-old" class="str" hidden>
+            <rect class="obj" x="452" y="66" width="158" height="46" rx="12"/>
+            <text class="otitle" x="466" y="84">oggetto String</text>
+            <text class="ofield" x="466" y="103">"Rosssi"</text>
+          </g>
+          <g id="c-o-new" class="str" hidden>
+            <rect class="obj" x="452" y="124" width="158" height="46" rx="12"/>
+            <text class="otitle" x="466" y="142">oggetto String</text>
+            <text class="ofield" x="466" y="161">"Rossi"</text>
           </g>
           <g id="c-o-d1" hidden>
-            <rect class="obj" x="450" y="128" width="166" height="56" rx="12"/>
-            <text class="otitle" x="464" y="148">oggetto Data</text>
-            <text class="ofield" id="c-d1-val" x="464" y="170">3 / 5 / 2009</text>
+            <rect class="obj" x="452" y="198" width="158" height="52" rx="12"/>
+            <text class="otitle" x="466" y="218">oggetto Data</text>
+            <text class="ofield" id="c-d1-val" x="466" y="240">3 / 5 / 2008</text>
           </g>
           <g id="c-o-d2" hidden>
-            <rect class="obj" x="450" y="250" width="166" height="56" rx="12"/>
-            <text class="otitle" x="464" y="270">oggetto Data</text>
-            <text class="ofield" id="c-d2-val" x="464" y="292">3 / 5 / 2009</text>
-            <text class="why" x="450" y="326">una Data nuova, di s2</text>
+            <rect class="obj" x="452" y="300" width="158" height="52" rx="12"/>
+            <text class="otitle" x="466" y="320">oggetto Data</text>
+            <text class="ofield" id="c-d2-val" x="466" y="342">3 / 5 / 2008</text>
+            <text class="why" x="452" y="368">nuova, solo di backup</text>
           </g>
-          <text class="tag" id="c-shared" x="450" y="206" hidden>una Data per tutti e due</text>
+          <text class="tag" id="c-shared" x="452" y="272" hidden>una Data per tutti e due</text>
 
-          <path class="wire" id="c-w-s1" d="M156 96 C 190 96, 196 96, 226 96" marker-end="url(#ah2)" hidden/>
-          <path class="wire" id="c-w-s2" d="M156 246 C 190 246, 196 246, 226 246" marker-end="url(#ah2)" hidden/>
-          <path class="wire" id="c-w-n1" d="M392 94 C 420 94, 420 62, 448 62" marker-end="url(#ah2)" hidden/>
-          <path class="wire" id="c-w-n2" d="M392 244 C 430 244, 420 62, 448 62" marker-end="url(#ah2)" hidden/>
-          <path class="wire" id="c-w-d1" d="M392 120 C 420 120, 420 156, 448 156" marker-end="url(#ah2)" hidden/>
-          <path class="wire" id="c-w-d2s" d="M392 270 C 430 270, 420 156, 448 156" marker-end="url(#ah2)" hidden/>
-          <path class="wire" id="c-w-d2d" d="M392 270 C 420 270, 420 278, 448 278" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-s" d="M156 96 C 190 96, 196 96, 226 96" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-b" d="M156 262 C 190 262, 196 262, 226 262" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-c1a" d="M392 94 C 420 94, 424 89, 450 89" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-c1b" d="M392 94 C 424 94, 420 147, 450 147" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-c2" d="M392 260 C 430 260, 416 100, 450 100" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-d1" d="M392 120 C 424 120, 420 222, 450 222" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-d2s" d="M392 286 C 428 286, 420 232, 450 232" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-d2d" d="M392 286 C 420 286, 424 326, 450 326" marker-end="url(#ah2)" hidden/>
         </svg>
         </div>
         <p class="stepno" id="c-stepno"></p>
@@ -345,7 +361,7 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
     </div>
   </div>
 
-  <div class="note calm" style="margin-top:22px"><strong>Perché la String si può condividere e la Data no.</strong> Nessuno può cambiare <code>"Anna"</code>: i metodi di String ne restituiscono una nuova. Una <code>Data</code> invece ha <code>setAnno</code>: chi ha il riferimento la cambia per tutti. Per questo <code>new Data(altro.dataDiNascita)</code> serve, e <code>new String(altro.nome)</code> no.</div>
+  <div class="note calm" style="margin-top:22px"><strong>Perché la String si può condividere e la Data no.</strong> Alla riga 3 la String non è cambiata: <code>correggiCognome</code> ha spostato una freccia. Alla riga 4 la Data sì: <code>setAnno</code> ha scritto dentro l'oggetto. Un oggetto immutabile si può condividere, uno che ha dei setter va copiato: per questo <code>new Data(altro.dataDiNascita)</code> serve, e <code>new String(altro.cognome)</code> no.</div>
 </section>
 
 <!-- ============================ 3. CASA ============================ -->
@@ -355,7 +371,7 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
     <li>I letterali del codice stanno nello string pool, uno per testo. Tutte le altre String (<code>new</code>, metodi, tastiera, file) sono oggetti nuovi fuori dal pool.</li>
     <li><code>==</code> confronta i riferimenti: sulle String a volte dice <code>true</code>, per caso. <code>equals</code> confronta i caratteri: funziona sempre.</li>
     <li>Un metodo di String non cambia la String: ne restituisce una nuova. Se la volete, assegnatela.</li>
-    <li>Il costruttore copia copia le variabili d'istanza. Se una è un riferimento a un oggetto che può cambiare, copiate anche l'oggetto: deep copy. Le String condivise non fanno danni.</li>
+    <li>Il costruttore copia serve ad avere un secondo oggetto che parte uguale al primo e poi vive per conto suo, come un backup. Copia le variabili d'istanza: se una è un riferimento a un oggetto che può cambiare, va copiato anche quello (deep copy). Le String condivise non fanno danni.</li>
   </ol>
 
   <h3 style="margin-top:36px">Esercizi</h3>
@@ -490,44 +506,50 @@ function stepper(p, LINES, getSteps, paint){
 (function(){
   var deep = false;
   var LINES = [
-    'Studente s1 = new Studente("Anna", "Rossi", 3, 5, 2009);',
-    'Studente s2 = new Studente(s1);',
-    's2.getDataDiNascita().setAnno(1999);',
-    'System.out.println(s1);',
-    'System.out.println(s2);'
+    'Studente s = new Studente("Anna", "Rosssi", 3, 5, 2008);',
+    "Studente backup = new Studente(s);  // la scheda com'era",
+    's.correggiCognome("Rossi");',
+    's.getDataDiNascita().setAnno(2009);',
+    'System.out.println(s);',
+    'System.out.println(backup);'
   ];
   function steps(){
-    var S = [
-      {l:-1, n:0, cap:"Scegli shallow o deep qui sopra, poi premi Avanti. Il main è lo stesso nei due casi: cambia solo cosa fa <code>new Studente(s1)</code>."},
-      {l:0, n:1, cap:"Il costruttore a cinque parametri crea la Data da sé: <code>new Data(3, 5, 2009)</code>. <code>nome</code> riceve il riferimento al letterale <code>\"Anna\"</code>, che sta nel pool. (<code>cognome</code> si comporta come <code>nome</code>: non è disegnato.)"}
+    return [
+      {l:-1, n:0, cap:"Scegli shallow o deep qui sopra, poi premi Avanti. Il main è lo stesso nei due casi: cambia solo cosa fa <code>new Studente(s)</code>."},
+      {l:0, n:1, cap:"La scheda sbagliata. Il costruttore crea la Data da sé, <code>new Data(3, 5, 2008)</code>; <code>cognome</code> riceve il riferimento al letterale <code>\"Rosssi\"</code>, che sta nel pool. (<code>nome</code> si comporta come <code>cognome</code>: non è disegnato.)"},
+      deep
+        ? {l:1, n:2, hi:["b"], cap:"<strong>Deep.</strong> <code>new Data(altro.dataDiNascita)</code> crea una Data nuova con gli stessi valori: ogni scheda ha la sua. Il cognome resta condiviso: <code>\"Rosssi\"</code> è una String, nessuno la può cambiare."}
+        : {l:1, n:2, hi:["b"], cap:"<strong>Shallow.</strong> <code>backup</code> ha un oggetto Studente suo, ma il costruttore ha copiato le frecce: <code>cognome</code> e <code>dataDiNascita</code> arrivano agli stessi oggetti di <code>s</code>."},
+      {l:2, n:2, corr:true, hi:["c1b"], cap:"<code>correggiCognome</code> mette in <code>this.cognome</code> un'altra String, il letterale <code>\"Rossi\"</code>, che entra nel pool. <code>\"Rosssi\"</code> non è cambiata: si è spostata la freccia di <code>s</code>. <code>backup</code> arriva ancora a <code>\"Rosssi\"</code>, anche con la shallow copy."},
+      deep
+        ? {l:3, n:2, corr:true, y:"2009", chg:true, cap:"Dal getter arrivo alla Data di <code>s</code>, che è solo sua, e cambio l'anno. La Data di <code>backup</code> non la tocca nessuno."}
+        : {l:3, n:2, corr:true, y:"2009", chg:true, cap:"Dal getter arrivo alla Data di <code>s</code> e cambio l'anno dentro l'oggetto. Ma quella Data è anche la Data di <code>backup</code>."},
+      {l:4, n:2, corr:true, y:"2009", hi:["s"], out:"Rossi Anna, nascita 3 Maggio 2009, …", cap:"La scheda corretta: giusta in tutti e due i casi. Il problema, se c'è, è nel backup."},
+      deep
+        ? {l:5, n:2, corr:true, y:"2009", hi:["b"], out:"Rosssi Anna, nascita 3 Maggio 2008, …", cap:"Il backup è rimasto com'era, cognome e data: Annulla funziona. Due Date, una per scheda; il cognome condiviso non fa danni perché nessuno può cambiare una String."}
+        : {l:5, n:2, corr:true, y:"2009", hi:["b"], out:"Rosssi Anna, nascita 3 Maggio 2009, …", cap:"Il backup è metà vecchio e metà nuovo: il cognome com'era, l'anno già corretto. Annulla non riporterebbe indietro la data. La String condivisa non ha fatto danni, la Data condivisa sì."}
     ];
-    if(!deep){
-      S.push({l:1, n:2, cap:"<strong>Shallow.</strong> <code>this.dataDiNascita = altro.dataDiNascita</code> copia la freccia, non la Data: i due studenti condividono lo stesso oggetto Data. Anche <code>\"Anna\"</code> è condivisa, ma lei non può cambiare."});
-      S.push({l:2, n:2, y:"1999", chg:true, cap:"Dal getter arrivo alla Data di <code>s2</code> e cambio l'anno. Ma quella Data è anche la Data di <code>s1</code>."});
-      S.push({l:3, n:2, y:"1999", out:"Rossi Anna, nascita 3 Maggio 1999, …", cap:"Sorpresa: anche <code>s1</code> risulta nata nel 1999, e in quella riga <code>s1</code> non l'ho nemmeno scritta. È l'aliasing della slide 35, un livello più in basso."});
-      S.push({l:4, n:2, y:"1999", out:"Rossi Anna, nascita 3 Maggio 1999, …", cap:"<code>s2</code> stampa la stessa cosa, come previsto. Il problema è <code>s1</code>."});
-    } else {
-      S.push({l:1, n:2, cap:"<strong>Deep.</strong> <code>new Data(altro.dataDiNascita)</code> crea una Data nuova con gli stessi valori: ogni studente ha la sua. <code>\"Anna\"</code> resta condivisa: è immutabile, nessun rischio."});
-      S.push({l:2, n:2, y:"1999", chg:true, cap:"Dal getter arrivo alla Data di <code>s2</code>, che è un oggetto suo. La Data di <code>s1</code> non la tocca nessuno."});
-      S.push({l:3, n:2, y:"1999", out:"Rossi Anna, nascita 3 Maggio 2009, …", cap:"<code>s1</code> è rimasta com'era: nata nel 2009."});
-      S.push({l:4, n:2, y:"1999", out:"Rossi Anna, nascita 3 Maggio 1999, …", cap:"<code>s2</code> è del 1999: la modifica è arrivata solo a lei. Due studenti, due Date."});
-    }
-    return S;
   }
+  var WIRES = ["s","b","c1a","c1b","c2","d1","d2s","d2d"];
   var draw = stepper("c", LINES, steps, function(st){
-    var has1 = st.n >= 1, has2 = st.n >= 2;
-    show("c-r-s1", has1); show("c-w-s1", has1); show("c-o-s1", has1); show("c-o-str", has1); show("c-o-d1", has1); show("c-w-n1", has1); show("c-w-d1", has1);
-    show("c-r-s2", has2); show("c-w-s2", has2); show("c-o-s2", has2); show("c-w-n2", has2);
-    show("c-w-d2s", has2 && !deep); show("c-shared", has2 && !deep);
-    show("c-o-d2", has2 && deep); show("c-w-d2d", has2 && deep);
-    var y = st.y || "2009", chg = !!st.chg;
-    if(deep){
-      $("c-d1-val").textContent = "3 / 5 / 2009"; setClass("c-d1-val", "ofield");
-      $("c-d2-val").textContent = "3 / 5 / " + y; setClass("c-d2-val", "ofield" + (chg ? " chg" : ""));
-    } else {
-      $("c-d1-val").textContent = "3 / 5 / " + y; setClass("c-d1-val", "ofield" + (chg ? " chg" : ""));
-      $("c-d2-val").textContent = "3 / 5 / 2009"; setClass("c-d2-val", "ofield");
-    }
+    var has1 = st.n >= 1, has2 = st.n >= 2, corr = !!st.corr, hi = st.hi || [];
+    var on = {s:has1, b:has2, c1a:has1 && !corr, c1b:corr, c2:has2, d1:has1, d2s:has2 && !deep, d2d:has2 && deep};
+    WIRES.forEach(function(w){
+      var h = hi.indexOf(w) >= 0;
+      show("c-w-" + w, on[w]);
+      setClass("c-w-" + w, "wire" + (h ? " hi" : ""));
+      $("c-w-" + w).setAttribute("marker-end", h ? "url(#ah2h)" : "url(#ah2)");
+    });
+    show("c-r-s", has1); setClass("c-r-s", hi.indexOf("s") >= 0 ? "hi" : "");
+    show("c-r-b", has2); setClass("c-r-b", hi.indexOf("b") >= 0 ? "hi" : "");
+    show("c-o-s1", has1); show("c-o-old", has1); show("c-o-d1", has1);
+    show("c-o-s2", has2);
+    show("c-o-new", corr); setClass("c-o-new", "str" + (hi.indexOf("c1b") >= 0 ? " hi" : ""));
+    show("c-shared", has2 && !deep);
+    show("c-o-d2", has2 && deep);
+    $("c-d1-val").textContent = "3 / 5 / " + (st.y || "2008");
+    setClass("c-d1-val", "ofield" + (st.chg ? " chg" : ""));
+    $("c-d2-val").textContent = "3 / 5 / 2008"; setClass("c-d2-val", "ofield");
   });
   function setMode(d){
     deep = d;
