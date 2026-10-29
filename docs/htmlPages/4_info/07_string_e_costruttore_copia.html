@@ -125,6 +125,11 @@ button:disabled{opacity:.4;cursor:not-allowed}
 .mem .str .obj{fill:var(--fa-soft);stroke:var(--fa)}
 .mem .str .otitle{fill:var(--fa)}
 .mem .dot{fill:var(--ink)}
+.mem .cell{fill:var(--surface);stroke:var(--sa);stroke-width:1}
+.mem .cell.chg{fill:var(--hot-soft);stroke:var(--hot);stroke-width:2}
+.mem .cval{font-family:var(--f-head);font-size:12px;fill:var(--ink);text-anchor:middle}
+.mem .cval.chg{fill:var(--hot);font-weight:800}
+.mem .day{font-family:var(--f-head);font-size:9px;fill:var(--ink-3);text-anchor:middle}
 .mem .wire{fill:none;stroke:var(--sa);stroke-width:2.5}
 .mem .head{fill:var(--sa)}
 .mem .hi .obj{stroke:var(--hot);stroke-width:3}
@@ -154,8 +159,8 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
 <div class="page">
 
 <header class="hero">
-  <h1>Una String non cambia, una Data sì</h1>
-  <p class="lede">Dove finiscono le String scritte nel codice e quelle che arrivano da tastiera, perché <code>==</code> a volte funziona per caso, e cosa deve fare un costruttore copia quando dentro l'oggetto c'è un altro oggetto.</p>
+  <h1>Una String non cambia, un array sì</h1>
+  <p class="lede">Dove finiscono le String scritte nel codice e quelle che arrivano da tastiera, perché <code>==</code> a volte funziona per caso, e cosa deve fare un costruttore copia quando dentro l'oggetto c'è un array.</p>
 </header>
 
 <!-- ============================ 1. STRING POOL ============================ -->
@@ -246,109 +251,120 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
 <section class="sec" id="copia">
   <div class="sec-head"><span class="num">2</span><h2>Costruttore copia: shallow e deep</h2></div>
   <div class="prose">
-    <p>La segreteria ha sbagliato la scheda di Anna: cognome <code>"Rosssi"</code> e anno 2008. Prima di correggerla ne tiene una copia, <code>backup</code>, per tornare indietro se la correzione è sbagliata: è il tasto Annulla. Funziona solo se <code>backup</code> resta com'era qualunque cosa succeda a <code>s</code>: due oggetti che partono uguali e poi vivono ognuno per conto suo. Per controllarlo, il main stampa <code>backup</code> prima e dopo le correzioni: le due righe devono uscire identiche.</p>
-    <p>Nella sveglia del sabato la copia serviva a partire da una sveglia già fatta; qui serve a non perdere com'era. Lo <code>Studente</code> è quello dell'esercitazione 12: il costruttore copia copia le variabili d'istanza una per una, ma <code>cognome</code> e <code>dataDiNascita</code> sono riferimenti. Scegliete shallow o deep, poi eseguite il main: alla riga 4 si corregge la String, alla riga 5 la Data. Potete cambiare versione in qualunque passo.</p>
+    <p>Il salvadanaio di Anna dell'esercitazione 09, nella versione con lo storico. <code>monete</code> è il totale, <code>settimana</code> è un array con le monete versate giorno per giorno, da lunedì (0) a domenica (6). <code>versa</code> aggiorna tutti e due insieme: finché è così, la somma della settimana è uguale a <code>monete</code>.</p>
+    <p>Il main fa una prova: <code>c</code> è una copia di <code>a</code>, e il mercoledì si versa una moneta solo nella copia. <code>a</code> non dovrebbe accorgersene. Scegliete shallow o deep ed eseguite il main una riga alla volta: dopo la riga 4 guardate il totale e l'array di <code>a</code>. Potete cambiare versione in qualunque passo.</p>
   </div>
 
   <div class="lab" id="lab-copy">
     <div class="mode" role="group" aria-label="Versione del costruttore copia">
       <span class="lbl">costruttore copia:</span>
-      <button id="c-shallow" aria-pressed="true">shallow · copio le frecce</button>
-      <button id="c-deep" aria-pressed="false">deep · copio anche la Data</button>
+      <button id="c-shallow" aria-pressed="true">shallow · copio la freccia</button>
+      <button id="c-deep" aria-pressed="false">deep · copio anche l'array</button>
     </div>
     <div class="ctors">
       <div>
-        <p class="file">Studente.java · shallow</p>
-<pre data-lang="java" id="c-pre-shallow"><code>public Studente(Studente altro) {
-    this.nome = altro.nome;
-    this.cognome = altro.cognome;
-    this.dataDiNascita = altro.dataDiNascita;
+        <p class="file">Salvadanaio.java · shallow</p>
+<pre data-lang="java" id="c-pre-shallow"><code>public Salvadanaio(Salvadanaio altro) {
+    this.proprietario = altro.proprietario;
+    this.monete = altro.monete;
+    this.settimana = altro.settimana;
 }</code></pre>
       </div>
       <div>
-        <p class="file">Studente.java · deep</p>
-<pre data-lang="java" id="c-pre-deep"><code>public Studente(Studente altro) {
-    this.nome = altro.nome;
-    this.cognome = altro.cognome;
-    this.dataDiNascita = new Data(altro.dataDiNascita);
+        <p class="file">Salvadanaio.java · deep</p>
+<pre data-lang="java" id="c-pre-deep"><code>public Salvadanaio(Salvadanaio altro) {
+    this.proprietario = altro.proprietario;
+    this.monete = altro.monete;
+    this.settimana = new int[7];
+    for (int i = 0; i < 7; i++) {
+        this.settimana[i] = altro.settimana[i];
+    }
 }</code></pre>
       </div>
       <div>
-        <p class="file">Studente.java · il metodo usato alla riga 4 del main</p>
-<pre data-lang="java" class="fixed"><code>public void correggiCognome(String cognome) {
-    this.cognome = cognome;
+        <p class="file">Salvadanaio.java · versa aggiorna due cose</p>
+<pre data-lang="java" class="fixed"><code>public void versa(int giorno, int quante) {
+    settimana[giorno] = settimana[giorno] + quante;
+    monete = monete + quante;
 }</code></pre>
       </div>
     </div>
 
     <div class="stepper" style="margin-top:18px">
       <div>
-        <p class="file">main · la scheda e il suo backup</p>
+        <p class="file">BonusTestDrive.java · main</p>
         <div class="lines" id="c-lines"></div>
         <div class="console" id="c-console" aria-live="polite">// output</div>
       </div>
       <div style="min-width:0">
         <div class="scroll">
-        <svg class="mem" viewBox="0 0 640 380" role="img" aria-labelledby="c-t">
-          <title id="c-t">Stack con s e backup, heap con due Studente, le String del cognome nello string pool e una o due Data</title>
+        <svg class="mem" viewBox="0 0 640 390" role="img" aria-labelledby="c-t">
+          <title id="c-t">Stack con a e c, heap con due Salvadanaio, la String Anna nello string pool e uno o due array della settimana</title>
           <defs>
             <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0L10 5L0 10z"/></marker>
             <marker id="ah2h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--hot)"/></marker>
           </defs>
-          <rect class="panel" x="6" y="6" width="180" height="368" rx="12"/>
+          <rect class="panel" x="6" y="6" width="180" height="378" rx="12"/>
           <text class="ptitle" x="20" y="30">stack</text>
-          <rect class="panel" x="206" y="6" width="428" height="368" rx="12"/>
+          <rect class="panel" x="206" y="6" width="428" height="378" rx="12"/>
           <text class="ptitle" x="220" y="30">heap</text>
-          <rect class="pool" x="436" y="40" width="188" height="140" rx="10"/>
-          <text class="pooltitle" x="448" y="58">string pool</text>
+          <rect class="pool" x="440" y="40" width="188" height="84" rx="10"/>
+          <text class="pooltitle" x="452" y="58">string pool</text>
 
-          <g id="c-r-s" hidden><rect class="remote" x="26" y="74" width="130" height="44" rx="12"/><text class="rname" x="44" y="103">s</text></g>
-          <g id="c-r-b" hidden><rect class="remote" x="26" y="240" width="130" height="44" rx="12"/><text class="rname" x="44" y="269">backup</text></g>
+          <g id="c-r-a" hidden><rect class="remote" x="26" y="74" width="130" height="44" rx="12"/><text class="rname" x="44" y="103">a</text></g>
+          <g id="c-r-c" hidden><rect class="remote" x="26" y="256" width="130" height="44" rx="12"/><text class="rname" x="44" y="285">c</text></g>
 
-          <g id="c-o-s1" hidden>
-            <rect class="obj" x="228" y="50" width="176" height="92" rx="14"/>
-            <text class="otitle" x="242" y="72">oggetto Studente</text>
-            <text class="ofield" x="242" y="98">cognome =</text><circle class="dot" cx="388" cy="94" r="4"/>
-            <text class="ofield" x="242" y="124">dataDiNascita =</text><circle class="dot" cx="388" cy="120" r="4"/>
+          <g id="c-o-a" hidden>
+            <rect class="obj" x="228" y="46" width="190" height="110" rx="14"/>
+            <text class="otitle" x="242" y="66">oggetto Salvadanaio</text>
+            <text class="ofield" x="242" y="90">proprietario =</text><circle class="dot" cx="402" cy="86" r="4"/>
+            <text class="ofield" id="c-am" x="242" y="114">monete = 0</text>
+            <text class="ofield" x="242" y="138">settimana =</text><circle class="dot" cx="402" cy="134" r="4"/>
           </g>
-          <g id="c-o-s2" hidden>
-            <rect class="obj" x="228" y="216" width="176" height="92" rx="14"/>
-            <text class="otitle" x="242" y="238">oggetto Studente</text>
-            <text class="ofield" x="242" y="264">cognome =</text><circle class="dot" cx="388" cy="260" r="4"/>
-            <text class="ofield" x="242" y="290">dataDiNascita =</text><circle class="dot" cx="388" cy="286" r="4"/>
+          <g id="c-o-c" hidden>
+            <rect class="obj" x="228" y="226" width="190" height="110" rx="14"/>
+            <text class="otitle" x="242" y="246">oggetto Salvadanaio</text>
+            <text class="ofield" x="242" y="270">proprietario =</text><circle class="dot" cx="402" cy="266" r="4"/>
+            <text class="ofield" id="c-cm" x="242" y="294">monete = 0</text>
+            <text class="ofield" x="242" y="318">settimana =</text><circle class="dot" cx="402" cy="314" r="4"/>
           </g>
 
-          <g id="c-o-old" class="str" hidden>
-            <rect class="obj" x="452" y="66" width="158" height="46" rx="12"/>
-            <text class="otitle" x="466" y="84">oggetto String</text>
-            <text class="ofield" x="466" y="103">"Rosssi"</text>
+          <g id="c-o-str" class="str" hidden>
+            <rect class="obj" x="456" y="66" width="156" height="46" rx="12"/>
+            <text class="otitle" x="470" y="84">oggetto String</text>
+            <text class="ofield" x="470" y="103">"Anna"</text>
           </g>
-          <g id="c-o-new" class="str" hidden>
-            <rect class="obj" x="452" y="124" width="158" height="46" rx="12"/>
-            <text class="otitle" x="466" y="142">oggetto String</text>
-            <text class="ofield" x="466" y="161">"Rossi"</text>
+          <g id="c-o-A" hidden>
+            <rect class="obj" x="440" y="140" width="188" height="70" rx="12"/>
+            <text class="otitle" id="c-A-t" x="452" y="158">int[7]</text>
+            <rect class="cell" id="c-A-r0" x="452" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v0" x="463" y="182">0</text><text class="day" x="463" y="202">L</text>
+            <rect class="cell" id="c-A-r1" x="476" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v1" x="487" y="182">0</text><text class="day" x="487" y="202">M</text>
+            <rect class="cell" id="c-A-r2" x="500" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v2" x="511" y="182">0</text><text class="day" x="511" y="202">M</text>
+            <rect class="cell" id="c-A-r3" x="524" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v3" x="535" y="182">0</text><text class="day" x="535" y="202">G</text>
+            <rect class="cell" id="c-A-r4" x="548" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v4" x="559" y="182">0</text><text class="day" x="559" y="202">V</text>
+            <rect class="cell" id="c-A-r5" x="572" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v5" x="583" y="182">0</text><text class="day" x="583" y="202">S</text>
+            <rect class="cell" id="c-A-r6" x="596" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v6" x="607" y="182">0</text><text class="day" x="607" y="202">D</text>
           </g>
-          <g id="c-o-d1" hidden>
-            <rect class="obj" x="452" y="198" width="158" height="52" rx="12"/>
-            <text class="otitle" x="466" y="218">oggetto Data</text>
-            <text class="ofield" id="c-d1-val" x="466" y="240">3 / 5 / 2008</text>
+          <g id="c-o-C" hidden>
+            <rect class="obj" x="440" y="296" width="188" height="70" rx="12"/>
+            <text class="otitle" id="c-C-t" x="452" y="314">int[7]</text>
+            <rect class="cell" id="c-C-r0" x="452" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v0" x="463" y="338">0</text><text class="day" x="463" y="358">L</text>
+            <rect class="cell" id="c-C-r1" x="476" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v1" x="487" y="338">0</text><text class="day" x="487" y="358">M</text>
+            <rect class="cell" id="c-C-r2" x="500" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v2" x="511" y="338">0</text><text class="day" x="511" y="358">M</text>
+            <rect class="cell" id="c-C-r3" x="524" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v3" x="535" y="338">0</text><text class="day" x="535" y="358">G</text>
+            <rect class="cell" id="c-C-r4" x="548" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v4" x="559" y="338">0</text><text class="day" x="559" y="358">V</text>
+            <rect class="cell" id="c-C-r5" x="572" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v5" x="583" y="338">0</text><text class="day" x="583" y="358">S</text>
+            <rect class="cell" id="c-C-r6" x="596" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v6" x="607" y="338">0</text><text class="day" x="607" y="358">D</text>
           </g>
-          <g id="c-o-d2" hidden>
-            <rect class="obj" x="452" y="300" width="158" height="52" rx="12"/>
-            <text class="otitle" x="466" y="320">oggetto Data</text>
-            <text class="ofield" id="c-d2-val" x="466" y="342">3 / 5 / 2008</text>
-            <text class="why" x="452" y="368">nuova, solo di backup</text>
-          </g>
-          <text class="tag" id="c-shared" x="452" y="272" hidden>una Data per tutti e due</text>
+          <text class="tag" id="c-mis" x="228" y="180" hidden>a: storico 11, monete 10</text>
 
-          <path class="wire" id="c-w-s" d="M156 96 C 190 96, 196 96, 226 96" marker-end="url(#ah2)" hidden/>
-          <path class="wire" id="c-w-b" d="M156 262 C 190 262, 196 262, 226 262" marker-end="url(#ah2)" hidden/>
-          <path class="wire" id="c-w-c1a" d="M392 94 C 420 94, 424 89, 450 89" marker-end="url(#ah2)" hidden/>
-          <path class="wire" id="c-w-c1b" d="M392 94 C 424 94, 420 147, 450 147" marker-end="url(#ah2)" hidden/>
-          <path class="wire" id="c-w-c2" d="M392 260 C 430 260, 416 100, 450 100" marker-end="url(#ah2)" hidden/>
-          <path class="wire" id="c-w-d1" d="M392 120 C 424 120, 420 222, 450 222" marker-end="url(#ah2)" hidden/>
-          <path class="wire" id="c-w-d2s" d="M392 286 C 428 286, 420 232, 450 232" marker-end="url(#ah2)" hidden/>
-          <path class="wire" id="c-w-d2d" d="M392 286 C 420 286, 424 326, 450 326" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-a" d="M156 96 C 190 96, 196 96, 226 96" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-c" d="M156 278 C 190 278, 196 278, 226 278" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-pa" d="M406 86 C 430 86, 430 84, 454 84" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-pc" d="M406 266 C 436 266, 426 98, 454 98" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-sa" d="M406 134 C 424 134, 420 176, 438 176" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-scs" d="M406 314 C 432 314, 416 196, 438 196" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-scd" d="M406 314 C 422 314, 422 332, 438 332" marker-end="url(#ah2)" hidden/>
         </svg>
         </div>
         <p class="stepno" id="c-stepno"></p>
@@ -362,7 +378,7 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
     </div>
   </div>
 
-  <div class="note calm" style="margin-top:22px"><strong>Perché la String si può condividere e la Data no.</strong> Alla riga 4 la String non è cambiata: <code>correggiCognome</code> ha spostato una freccia. Alla riga 5 la Data sì: <code>setAnno</code> ha scritto dentro l'oggetto. Un oggetto immutabile si può condividere, uno che ha dei setter va copiato: per questo <code>new Data(altro.dataDiNascita)</code> serve, e <code>new String(altro.cognome)</code> no.</div>
+  <div class="note calm" style="margin-top:22px"><strong>Un int si copia, un array si condivide.</strong> <code>this.monete = altro.monete</code> copia il valore: i due totali sono indipendenti. <code>this.settimana = altro.settimana</code> copia la freccia: lo storico è uno solo, e la moneta che <code>c</code> versa finisce anche nell'array di <code>a</code>, che però non aggiorna il suo totale. <code>proprietario</code> è condiviso in tutte e due le versioni, ma è una String: nessuno la può cambiare, e la condivisione non fa danni.</div>
 </section>
 
 <!-- ============================ 3. CASA ============================ -->
@@ -372,7 +388,7 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
     <li>I letterali del codice stanno nello string pool, uno per testo. Tutte le altre String (<code>new</code>, metodi, tastiera, file) sono oggetti nuovi fuori dal pool.</li>
     <li><code>==</code> confronta i riferimenti: sulle String a volte dice <code>true</code>, per caso. <code>equals</code> confronta i caratteri: funziona sempre.</li>
     <li>Un metodo di String non cambia la String: ne restituisce una nuova. Se la volete, assegnatela.</li>
-    <li>Il costruttore copia serve ad avere un secondo oggetto che parte uguale al primo e poi vive per conto suo, come un backup. Copia le variabili d'istanza: se una è un riferimento a un oggetto che può cambiare, va copiato anche quello (deep copy). Le String condivise non fanno danni.</li>
+    <li>Il costruttore copia crea un secondo oggetto che parte uguale al primo e poi vive per conto suo. Un <code>int</code> si copia col suo valore. Un array, o un oggetto che può cambiare, se si copia la freccia resta condiviso: va copiato anche lui (deep copy). Le String condivise non fanno danni.</li>
   </ol>
 
   <h3 style="margin-top:36px">Esercizi</h3>
@@ -391,7 +407,7 @@ System.out.println(c);</code></pre>
       <details><summary>Controlla</summary><p><code>false</code>, <code>true</code>, <code>true</code>, <code>fufi!</code>, <code>fufi</code>. Nel pool c'è un solo <code>"fufi"</code>; <code>b</code> e <code>c</code> arrivano allo stesso oggetto creato da <code>new</code>. <code>a + "!"</code> costruisce una String nuova e <code>a</code> la riceve: le altre due variabili non se ne accorgono.</p></details>
     </div>
     <div>
-      <p><strong>Scrivete il costruttore copia</strong> di <code>Studente</code> in versione deep, compresa <code>dataIscrizione</code>. Serve un costruttore copia anche in <code>Data</code>: scrivetelo come <code>Sveglia(Sveglia altra)</code>.</p>
+      <p><strong>Stesso problema, con un oggetto al posto dell'array.</strong> Scrivete il costruttore copia di <code>Studente</code> (esercitazione 12) in versione deep, compresa <code>dataIscrizione</code>. Serve un costruttore copia anche in <code>Data</code>: scrivetelo come <code>Sveglia(Sveglia altra)</code>.</p>
       <details><summary>Controlla</summary>
 <pre data-lang="java"><code>public Data(Data altra) {
     this(altra.giorno, altra.mese, altra.anno);
@@ -507,51 +523,61 @@ function stepper(p, LINES, getSteps, paint){
 (function(){
   var deep = false;
   var LINES = [
-    'Studente s = new Studente("Anna", "Rosssi", 3, 5, 2008);',
-    "Studente backup = new Studente(s);  // la scheda com'era",
-    'System.out.println(backup);         // prima delle correzioni',
-    's.correggiCognome("Rossi");',
-    's.getDataDiNascita().setAnno(2009);',
-    'System.out.println(backup);         // dopo: deve essere uguale'
+    'Salvadanaio a = new Salvadanaio("Anna");',
+    'a.versa(0, 10);  // lunedì',
+    'Salvadanaio c = new Salvadanaio(a);',
+    'c.versa(2, 1);   // mercoledì, solo nella copia',
+    'System.out.println("a: " + a.getMonete() + " monete, mercoledì " + a.getVersatoIl(2));',
+    'System.out.println("c: " + c.getMonete() + " monete, mercoledì " + c.getVersatoIl(2));'
   ];
-  var PRIMA = "Rosssi Anna, nascita 3 Maggio 2008, …";
+  var Z = [0,0,0,0,0,0,0], L10 = [10,0,0,0,0,0,0], M1 = [10,0,1,0,0,0,0];
   function steps(){
-    return [
-      {l:-1, n:0, cap:"Scegli shallow o deep qui sopra, poi premi Avanti. Il main è lo stesso nei due casi: cambia solo cosa fa <code>new Studente(s)</code>."},
-      {l:0, n:1, cap:"La scheda sbagliata. Il costruttore crea la Data da sé, <code>new Data(3, 5, 2008)</code>; <code>cognome</code> riceve il riferimento al letterale <code>\"Rosssi\"</code>, che sta nel pool. (<code>nome</code> si comporta come <code>cognome</code>: non è disegnato.)"},
-      deep
-        ? {l:1, n:2, hi:["b"], cap:"<strong>Deep.</strong> <code>new Data(altro.dataDiNascita)</code> crea una Data nuova con gli stessi valori: ogni scheda ha la sua. Il cognome resta condiviso: <code>\"Rosssi\"</code> è una String, nessuno la può cambiare."}
-        : {l:1, n:2, hi:["b"], cap:"<strong>Shallow.</strong> <code>backup</code> ha un oggetto Studente suo, ma il costruttore ha copiato le frecce: <code>cognome</code> e <code>dataDiNascita</code> arrivano agli stessi oggetti di <code>s</code>."},
-      {l:2, n:2, hi:["b"], out:PRIMA, cap:"La prima stampa del backup: la scheda com'era. Dopo le correzioni deve uscire identica, carattere per carattere: è tutto il senso di un backup."},
-      {l:3, n:2, corr:true, hi:["c1b"], cap:"<code>correggiCognome</code> mette in <code>this.cognome</code> un'altra String, il letterale <code>\"Rossi\"</code>, che entra nel pool. <code>\"Rosssi\"</code> non è cambiata: si è spostata la freccia di <code>s</code>. <code>backup</code> arriva ancora a <code>\"Rosssi\"</code>, anche con la shallow copy."},
-      deep
-        ? {l:4, n:2, corr:true, y:"2009", chg:true, cap:"Dal getter arrivo alla Data di <code>s</code>, che è solo sua, e cambio l'anno. La Data di <code>backup</code> non la tocca nessuno."}
-        : {l:4, n:2, corr:true, y:"2009", chg:true, cap:"Dal getter arrivo alla Data di <code>s</code> e cambio l'anno dentro l'oggetto. Ma quella Data è anche la Data di <code>backup</code>."},
-      deep
-        ? {l:5, n:2, corr:true, y:"2009", hi:["b"], out:PRIMA, cap:"Le due stampe sono identiche: il backup è rimasto com'era e Annulla funziona. Il cognome è condiviso ma non fa danni, la Data è una per scheda."}
-        : {l:5, n:2, corr:true, y:"2009", chg:true, hi:["b","d2s"], out:"Rosssi Anna, nascita 3 Maggio <b>2009</b>, …", cap:"Le due stampe dovevano essere identiche e non lo sono: cambia solo l'anno. Il cognome del backup è giusto, la correzione della String non l'ha toccato. L'anno no: il backup è diventato del 2009 perché la sua Data è quella di <code>s</code>. Il guaio è la Data condivisa, non la String."}
+    var S = [
+      {l:-1, n:0, cap:"Scegli shallow o deep qui sopra, poi premi Avanti. Il main è lo stesso nei due casi: cambia solo cosa fa <code>new Salvadanaio(a)</code>."},
+      {l:0, n:1, am:0, A:Z, cap:"<code>monete</code> parte da 0 e il costruttore crea l'array dei sette giorni, tutto a zero. <code>proprietario</code> riceve il riferimento al letterale <code>\"Anna\"</code>, che sta nel pool."},
+      {l:1, n:1, am:10, A:L10, hot:["am","A0"], cap:"<code>versa</code> aggiorna due cose insieme: la cella del lunedì e il totale. Lo storico fa 10, <code>monete</code> è 10: sono d'accordo."}
     ];
+    if(!deep){
+      S.push({l:2, n:2, am:10, cm:10, A:L10, hi:["c"], cap:"<strong>Shallow.</strong> <code>monete</code> è un <code>int</code>: <code>this.monete = altro.monete</code> copia il valore, 10. <code>settimana</code> è un riferimento: <code>this.settimana = altro.settimana</code> copia la freccia. Due salvadanai, un solo array."});
+      S.push({l:3, n:2, am:10, cm:11, A:M1, mis:true, hot:["cm","A2"], hi:["scs"], cap:"<code>versa</code> lavora su <code>c</code>: il totale di <code>c</code> diventa 11 e la cella del mercoledì diventa 1. Ma quella cella è nell'array condiviso: lo storico di <code>a</code> ha appena ricevuto una moneta, e il totale di <code>a</code> è rimasto 10."});
+      S.push({l:4, n:2, am:10, cm:11, A:M1, mis:true, hot:["am","A2"], hi:["a"], out:"a: 10 monete, mercoledì <b>1</b>", cap:"Non torna: <code>a</code> dice di avere 10 monete, ma il suo storico dice che mercoledì ne ha ricevuta una. Quella moneta l'ha versata solo <code>c</code>. Dentro <code>a</code> il totale e l'array non sono più d'accordo."});
+      S.push({l:5, n:2, am:10, cm:11, A:M1, mis:true, hi:["c"], out:"c: 11 monete, mercoledì 1", cap:"<code>c</code> invece torna: 11 monete, una il mercoledì. Il guaio è in <code>a</code>: l'array condiviso ha rotto l'accordo fra <code>monete</code> e <code>settimana</code>, che <code>versa</code> manteneva."});
+    } else {
+      S.push({l:2, n:2, am:10, cm:10, A:L10, C:L10, hi:["c"], cap:"<strong>Deep.</strong> <code>monete</code> si copia per valore, come prima. Per lo storico, <code>new int[7]</code> crea un array nuovo e il <code>for</code> ci copia i valori, cella per cella: ogni salvadanaio ha il suo."});
+      S.push({l:3, n:2, am:10, cm:11, A:L10, C:M1, hot:["cm","C2"], cap:"<code>versa</code> lavora su <code>c</code>: il totale di <code>c</code> diventa 11 e la moneta del mercoledì va nell'array di <code>c</code>. Quello di <code>a</code> non lo tocca nessuno."});
+      S.push({l:4, n:2, am:10, cm:11, A:L10, C:M1, hi:["a"], out:"a: 10 monete, mercoledì 0", cap:"<code>a</code> è rimasto com'era: 10 monete, niente il mercoledì. Totale e storico d'accordo."});
+      S.push({l:5, n:2, am:10, cm:11, A:L10, C:M1, hi:["c"], out:"c: 11 monete, mercoledì 1", cap:"Anche <code>c</code> torna: 11 monete, una il mercoledì. Due salvadanai, due storici, ognuno per conto suo."});
+    }
+    return S;
   }
-  var WIRES = ["s","b","c1a","c1b","c2","d1","d2s","d2d"];
+  function fillArray(key, vals, hot){
+    for(var k = 0; k < 7; k++){
+      var h = hot.indexOf(key + k) >= 0;
+      $("c-" + key + "-v" + k).textContent = vals ? vals[k] : 0;
+      setClass("c-" + key + "-v" + k, "cval" + (h ? " chg" : ""));
+      setClass("c-" + key + "-r" + k, "cell" + (h ? " chg" : ""));
+    }
+  }
+  var WIRES = ["a","c","pa","pc","sa","scs","scd"];
   var draw = stepper("c", LINES, steps, function(st){
-    var has1 = st.n >= 1, has2 = st.n >= 2, corr = !!st.corr, hi = st.hi || [];
-    var on = {s:has1, b:has2, c1a:has1 && !corr, c1b:corr, c2:has2, d1:has1, d2s:has2 && !deep, d2d:has2 && deep};
+    var has1 = st.n >= 1, has2 = st.n >= 2, hi = st.hi || [], hot = st.hot || [];
+    var on = {a:has1, c:has2, pa:has1, pc:has2, sa:has1, scs:has2 && !deep, scd:has2 && deep};
     WIRES.forEach(function(w){
       var h = hi.indexOf(w) >= 0;
       show("c-w-" + w, on[w]);
       setClass("c-w-" + w, "wire" + (h ? " hi" : ""));
       $("c-w-" + w).setAttribute("marker-end", h ? "url(#ah2h)" : "url(#ah2)");
     });
-    show("c-r-s", has1); setClass("c-r-s", hi.indexOf("s") >= 0 ? "hi" : "");
-    show("c-r-b", has2); setClass("c-r-b", hi.indexOf("b") >= 0 ? "hi" : "");
-    show("c-o-s1", has1); show("c-o-old", has1); show("c-o-d1", has1);
-    show("c-o-s2", has2);
-    show("c-o-new", corr); setClass("c-o-new", "str" + (hi.indexOf("c1b") >= 0 ? " hi" : ""));
-    show("c-shared", has2 && !deep);
-    show("c-o-d2", has2 && deep);
-    $("c-d1-val").textContent = "3 / 5 / " + (st.y || "2008");
-    setClass("c-d1-val", "ofield" + (st.chg ? " chg" : ""));
-    $("c-d2-val").textContent = "3 / 5 / 2008"; setClass("c-d2-val", "ofield");
+    show("c-r-a", has1); setClass("c-r-a", hi.indexOf("a") >= 0 ? "hi" : "");
+    show("c-r-c", has2); setClass("c-r-c", hi.indexOf("c") >= 0 ? "hi" : "");
+    show("c-o-a", has1); show("c-o-str", has1); show("c-o-A", has1);
+    show("c-o-c", has2); show("c-o-C", has2 && deep);
+    $("c-am").textContent = "monete = " + (st.am || 0); setClass("c-am", "ofield" + (hot.indexOf("am") >= 0 ? " chg" : ""));
+    $("c-cm").textContent = "monete = " + (st.cm || 0); setClass("c-cm", "ofield" + (hot.indexOf("cm") >= 0 ? " chg" : ""));
+    $("c-A-t").textContent = has2 && !deep ? "int[7] · di a e di c" : "int[7] · di a";
+    $("c-C-t").textContent = "int[7] · solo di c";
+    fillArray("A", st.A, hot); fillArray("C", st.C, hot);
+    show("c-mis", !!st.mis);
   });
   function setMode(d){
     deep = d;
