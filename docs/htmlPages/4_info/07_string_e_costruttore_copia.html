@@ -91,6 +91,7 @@ button:hover{border-color:var(--ink-3)}
 button.primary{background:var(--sa-fill);color:var(--on-fill);border-color:transparent;font-weight:700}
 button:disabled{opacity:.4;cursor:not-allowed}
 .scroll{overflow-x:auto}
+.console b{color:#FF6FA8;font-weight:800}
 .console{background:var(--code-bg);color:#3DFF1A;font-family:var(--f-head);font-size:13.5px;border-radius:10px;padding:12px 16px;margin-top:12px;min-height:46px;white-space:pre-wrap}
 
 /* interruttore shallow / deep */
@@ -245,8 +246,8 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
 <section class="sec" id="copia">
   <div class="sec-head"><span class="num">2</span><h2>Costruttore copia: shallow e deep</h2></div>
   <div class="prose">
-    <p>La segreteria ha sbagliato la scheda di Anna: cognome <code>"Rosssi"</code> e anno 2008. Prima di correggerla ne tiene una copia, <code>backup</code>, per tornare indietro se la correzione è sbagliata: è il tasto Annulla. Funziona solo se <code>backup</code> resta com'era qualunque cosa succeda a <code>s</code>: due oggetti che partono uguali e poi vivono ognuno per conto suo.</p>
-    <p>Nella sveglia del sabato la copia serviva a partire da una sveglia già fatta; qui serve a non perdere com'era. Lo <code>Studente</code> è quello dell'esercitazione 12: il costruttore copia copia le variabili d'istanza una per una, ma <code>cognome</code> e <code>dataDiNascita</code> sono riferimenti. Scegliete shallow o deep, poi eseguite il main: alla riga 3 si corregge la String, alla riga 4 la Data. Potete cambiare versione in qualunque passo.</p>
+    <p>La segreteria ha sbagliato la scheda di Anna: cognome <code>"Rosssi"</code> e anno 2008. Prima di correggerla ne tiene una copia, <code>backup</code>, per tornare indietro se la correzione è sbagliata: è il tasto Annulla. Funziona solo se <code>backup</code> resta com'era qualunque cosa succeda a <code>s</code>: due oggetti che partono uguali e poi vivono ognuno per conto suo. Per controllarlo, il main stampa <code>backup</code> prima e dopo le correzioni: le due righe devono uscire identiche.</p>
+    <p>Nella sveglia del sabato la copia serviva a partire da una sveglia già fatta; qui serve a non perdere com'era. Lo <code>Studente</code> è quello dell'esercitazione 12: il costruttore copia copia le variabili d'istanza una per una, ma <code>cognome</code> e <code>dataDiNascita</code> sono riferimenti. Scegliete shallow o deep, poi eseguite il main: alla riga 4 si corregge la String, alla riga 5 la Data. Potete cambiare versione in qualunque passo.</p>
   </div>
 
   <div class="lab" id="lab-copy">
@@ -273,7 +274,7 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
 }</code></pre>
       </div>
       <div>
-        <p class="file">Studente.java · il metodo usato alla riga 3 del main</p>
+        <p class="file">Studente.java · il metodo usato alla riga 4 del main</p>
 <pre data-lang="java" class="fixed"><code>public void correggiCognome(String cognome) {
     this.cognome = cognome;
 }</code></pre>
@@ -361,7 +362,7 @@ footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
     </div>
   </div>
 
-  <div class="note calm" style="margin-top:22px"><strong>Perché la String si può condividere e la Data no.</strong> Alla riga 3 la String non è cambiata: <code>correggiCognome</code> ha spostato una freccia. Alla riga 4 la Data sì: <code>setAnno</code> ha scritto dentro l'oggetto. Un oggetto immutabile si può condividere, uno che ha dei setter va copiato: per questo <code>new Data(altro.dataDiNascita)</code> serve, e <code>new String(altro.cognome)</code> no.</div>
+  <div class="note calm" style="margin-top:22px"><strong>Perché la String si può condividere e la Data no.</strong> Alla riga 4 la String non è cambiata: <code>correggiCognome</code> ha spostato una freccia. Alla riga 5 la Data sì: <code>setAnno</code> ha scritto dentro l'oggetto. Un oggetto immutabile si può condividere, uno che ha dei setter va copiato: per questo <code>new Data(altro.dataDiNascita)</code> serve, e <code>new String(altro.cognome)</code> no.</div>
 </section>
 
 <!-- ============================ 3. CASA ============================ -->
@@ -450,7 +451,7 @@ function stepper(p, LINES, getSteps, paint){
     lines.querySelectorAll(".line").forEach(function(el, n){ el.className = "line" + (n === st.l ? " now" : n < st.l ? " done" : ""); });
     var out = [];
     for(var k = 0; k <= i; k++) if(STEPS[k].out) out.push(STEPS[k].out);
-    $(p + "-console").textContent = out.length ? out.join("\n") : "// output";
+    $(p + "-console").innerHTML = out.length ? out.join("\n") : "// output";
     $(p + "-caption").innerHTML = st.cap;
     $(p + "-stepno").textContent = "Passo " + i + " di " + (STEPS.length - 1);
     $(p + "-prev").disabled = i === 0; $(p + "-next").disabled = i === STEPS.length - 1;
@@ -508,11 +509,12 @@ function stepper(p, LINES, getSteps, paint){
   var LINES = [
     'Studente s = new Studente("Anna", "Rosssi", 3, 5, 2008);',
     "Studente backup = new Studente(s);  // la scheda com'era",
+    'System.out.println(backup);         // prima delle correzioni',
     's.correggiCognome("Rossi");',
     's.getDataDiNascita().setAnno(2009);',
-    'System.out.println(s);',
-    'System.out.println(backup);'
+    'System.out.println(backup);         // dopo: deve essere uguale'
   ];
+  var PRIMA = "Rosssi Anna, nascita 3 Maggio 2008, …";
   function steps(){
     return [
       {l:-1, n:0, cap:"Scegli shallow o deep qui sopra, poi premi Avanti. Il main è lo stesso nei due casi: cambia solo cosa fa <code>new Studente(s)</code>."},
@@ -520,14 +522,14 @@ function stepper(p, LINES, getSteps, paint){
       deep
         ? {l:1, n:2, hi:["b"], cap:"<strong>Deep.</strong> <code>new Data(altro.dataDiNascita)</code> crea una Data nuova con gli stessi valori: ogni scheda ha la sua. Il cognome resta condiviso: <code>\"Rosssi\"</code> è una String, nessuno la può cambiare."}
         : {l:1, n:2, hi:["b"], cap:"<strong>Shallow.</strong> <code>backup</code> ha un oggetto Studente suo, ma il costruttore ha copiato le frecce: <code>cognome</code> e <code>dataDiNascita</code> arrivano agli stessi oggetti di <code>s</code>."},
-      {l:2, n:2, corr:true, hi:["c1b"], cap:"<code>correggiCognome</code> mette in <code>this.cognome</code> un'altra String, il letterale <code>\"Rossi\"</code>, che entra nel pool. <code>\"Rosssi\"</code> non è cambiata: si è spostata la freccia di <code>s</code>. <code>backup</code> arriva ancora a <code>\"Rosssi\"</code>, anche con la shallow copy."},
+      {l:2, n:2, hi:["b"], out:PRIMA, cap:"La prima stampa del backup: la scheda com'era. Dopo le correzioni deve uscire identica, carattere per carattere: è tutto il senso di un backup."},
+      {l:3, n:2, corr:true, hi:["c1b"], cap:"<code>correggiCognome</code> mette in <code>this.cognome</code> un'altra String, il letterale <code>\"Rossi\"</code>, che entra nel pool. <code>\"Rosssi\"</code> non è cambiata: si è spostata la freccia di <code>s</code>. <code>backup</code> arriva ancora a <code>\"Rosssi\"</code>, anche con la shallow copy."},
       deep
-        ? {l:3, n:2, corr:true, y:"2009", chg:true, cap:"Dal getter arrivo alla Data di <code>s</code>, che è solo sua, e cambio l'anno. La Data di <code>backup</code> non la tocca nessuno."}
-        : {l:3, n:2, corr:true, y:"2009", chg:true, cap:"Dal getter arrivo alla Data di <code>s</code> e cambio l'anno dentro l'oggetto. Ma quella Data è anche la Data di <code>backup</code>."},
-      {l:4, n:2, corr:true, y:"2009", hi:["s"], out:"Rossi Anna, nascita 3 Maggio 2009, …", cap:"La scheda corretta: giusta in tutti e due i casi. Il problema, se c'è, è nel backup."},
+        ? {l:4, n:2, corr:true, y:"2009", chg:true, cap:"Dal getter arrivo alla Data di <code>s</code>, che è solo sua, e cambio l'anno. La Data di <code>backup</code> non la tocca nessuno."}
+        : {l:4, n:2, corr:true, y:"2009", chg:true, cap:"Dal getter arrivo alla Data di <code>s</code> e cambio l'anno dentro l'oggetto. Ma quella Data è anche la Data di <code>backup</code>."},
       deep
-        ? {l:5, n:2, corr:true, y:"2009", hi:["b"], out:"Rosssi Anna, nascita 3 Maggio 2008, …", cap:"Il backup è rimasto com'era, cognome e data: Annulla funziona. Due Date, una per scheda; il cognome condiviso non fa danni perché nessuno può cambiare una String."}
-        : {l:5, n:2, corr:true, y:"2009", hi:["b"], out:"Rosssi Anna, nascita 3 Maggio 2009, …", cap:"Il backup è metà vecchio e metà nuovo: il cognome com'era, l'anno già corretto. Annulla non riporterebbe indietro la data. La String condivisa non ha fatto danni, la Data condivisa sì."}
+        ? {l:5, n:2, corr:true, y:"2009", hi:["b"], out:PRIMA, cap:"Le due stampe sono identiche: il backup è rimasto com'era e Annulla funziona. Il cognome è condiviso ma non fa danni, la Data è una per scheda."}
+        : {l:5, n:2, corr:true, y:"2009", chg:true, hi:["b","d2s"], out:"Rosssi Anna, nascita 3 Maggio <b>2009</b>, …", cap:"Le due stampe dovevano essere identiche e non lo sono: cambia solo l'anno. Il cognome del backup è giusto, la correzione della String non l'ha toccato. L'anno no: il backup è diventato del 2009 perché la sua Data è quella di <code>s</code>. Il guaio è la Data condivisa, non la String."}
     ];
   }
   var WIRES = ["s","b","c1a","c1b","c2","d1","d2s","d2d"];
