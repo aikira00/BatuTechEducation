@@ -8,4 +8,22 @@ Il codice di *Dal diagramma al codice: la televisione, parte 2* (`BatuEdu/INFO_4
 
 Il package si chiama `mainInterattivoTv`, e non `mainInterattivo`, per non scontrarsi con quello della Sveglia se le due cartelle stanno nello stesso modulo IntelliJ. In IntelliJ la cartella `televisione` va segnata come cartella sorgente (*Mark Directory as → Sources Root*).
 
-Codice compilato ed eseguito con `javac --release 17` il 01/10/2026.
+Codice compilato ed eseguito con `javac --release 17` il 01/10/2026. `Televisione` rivista l'08/10/2026: `alzaVolume()` chiama `alzaVolume(1)`, e il tetto a 100 si controlla prima di sommare. Ricompilata, stesso output.
+
+## Versione PEI: i file di partenza
+
+In `pei/` ci sono `Televisione.java` e `TelevisioneTestDrive.java` della scheda PEI (`BatuEdu/INFO_4/esercitazioni/PEI/06_DaUMLaCodice_Televisione_PEI.md`). Sono uguali al codice della scheda: si danno allo studente così come sono.
+
+- Lo scheletro compila subito e stampa le prime due righe.
+- I metodi da scrivere sono segnati `// PASSO 3`, `// PASSO 4`, `// PASSO 5`.
+- Nel `main`, i commenti `// passo 3`, `// passo 4`, `// passo 5` dicono dove incollare le righe di ogni passo.
+
+Sono **senza package**, apposta, come quelli di `files.zip`: lo studente li mette nel suo progetto senza creare cartelle. Se in IntelliJ `televisione` è segnata come cartella sorgente, `pei` va esclusa (*Mark Directory as → Excluded*), come `daCorreggere` della Sveglia. Dal terminale:
+
+```
+cd pei
+javac *.java
+java TelevisioneTestDrive
+```
+
+Compilati ed eseguiti con `javac --release 17` l'08/10/2026.

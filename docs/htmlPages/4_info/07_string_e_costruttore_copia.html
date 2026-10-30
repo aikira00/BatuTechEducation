@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>String nel pool e costruttore copia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* ------------------------------------------------------------------
+   Stessi token della pagina 06 (Dove vivono gli oggetti).
+     --sa  = oggetti e riferimenti (ciano)
+     --fa  = String (verde)
+     --hot = attenzione: qui qualcosa cambia o si rompe
+------------------------------------------------------------------- */
+:root{
+  --bg:#F2F4F6; --surface:#FFFFFF; --surface-2:#E8ECF0;
+  --ink:#0F1218; --ink-2:#3B4350; --ink-3:#69717E; --rule:#D3D8DF;
+  --sa:#00748F; --sa-fill:#1FE4FF; --sa-soft:rgba(31,228,255,.18);
+  --fa:#0A7A30; --fa-fill:#3DFF1A; --fa-soft:rgba(61,255,26,.20);
+  --hot:#B00058; --hot-fill:#FF2E93; --hot-soft:rgba(255,46,147,.12);
+  --on-fill:#0B0A12;
+  --code-bg:#11131A; --code-ink:#E9ECF5; --code-dim:#8A91A6;
+  --f-head:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --f-body:"Manrope", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --measure:66ch; --wide:min(1060px,94vw);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C0A12; --surface:#15121E; --surface-2:#1E1A2B;
+    --ink:#F3F0FA; --ink-2:#BBB5CB; --ink-3:#8A839E; --rule:#2D2842;
+    --sa:#2EE6FF; --sa-fill:#2EE6FF; --sa-soft:rgba(46,230,255,.13);
+    --fa:#FF5ABD; --fa-fill:#FF3DAE; --fa-soft:rgba(255,61,174,.15);
+    --hot:#FFE14A; --hot-fill:#FFE14A; --hot-soft:rgba(255,225,74,.12);
+    --code-bg:#07060B;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C0A12; --surface:#15121E; --surface-2:#1E1A2B;
+  --ink:#F3F0FA; --ink-2:#BBB5CB; --ink-3:#8A839E; --rule:#2D2842;
+  --sa:#2EE6FF; --sa-fill:#2EE6FF; --sa-soft:rgba(46,230,255,.13);
+  --fa:#FF5ABD; --fa-fill:#FF3DAE; --fa-soft:rgba(255,61,174,.15);
+  --hot:#FFE14A; --hot-fill:#FFE14A; --hot-soft:rgba(255,225,74,.12);
+  --code-bg:#07060B;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);
+  font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.page{max-width:var(--wide);margin:0 auto;padding:0 clamp(16px,4vw,32px) 96px}
+h1,h2,h3{font-family:var(--f-head);margin:0;line-height:1.15;text-wrap:balance}
+p{margin:0}
+strong{font-weight:700}
+code,.mono{font-family:var(--f-head);font-size:.9em}
+p code,li code,td code{background:var(--surface-2);padding:.08em .34em;border-radius:4px}
+.prose{max-width:var(--measure);display:flex;flex-direction:column;gap:16px}
+:focus-visible{outline:3px solid var(--sa-fill);outline-offset:2px;border-radius:4px}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(36px,7vw,76px) 0 clamp(20px,4vw,36px)}
+.hero h1{font-size:clamp(34px,6vw,60px);font-weight:800;letter-spacing:-.03em}
+.hero .lede{font-size:clamp(18px,2.1vw,20px);color:var(--ink-2);max-width:60ch;margin-top:18px}
+
+/* ---------- sezioni ---------- */
+.sec{padding:clamp(36px,6vw,64px) 0 0}
+.sec-head{display:flex;gap:16px;align-items:baseline;margin-bottom:20px}
+.num{font-family:var(--f-head);font-weight:800;font-size:clamp(26px,3.4vw,34px);color:var(--ink-3);min-width:1.4ch}
+h2{font-size:clamp(24px,3.4vw,33px);font-weight:700;letter-spacing:-.02em}
+h3{font-size:18px;font-weight:700;margin-bottom:6px}
+.note{border-left:4px solid var(--hot-fill);background:var(--hot-soft);padding:14px 18px;border-radius:0 8px 8px 0;max-width:var(--measure)}
+.note.calm{border-left-color:var(--sa-fill);background:var(--sa-soft)}
+
+/* ---------- codice ---------- */
+pre{margin:0;background:var(--code-bg);color:var(--code-ink);font-family:var(--f-head);font-size:14px;line-height:1.6;
+  padding:16px 18px;border-radius:10px;overflow-x:auto;tab-size:4}
+pre code{font-size:inherit}
+.file{font-family:var(--f-head);font-size:13px;color:var(--ink-3);margin:0 0 6px 4px}
+.t-c{color:var(--code-dim);font-style:italic}
+.t-s{color:#FFE14A}
+.t-k{color:#2EE6FF}
+.t-n{color:#FF8AD0}
+
+/* ---------- lab ---------- */
+.lab{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:clamp(16px,2.6vw,26px);margin-top:24px}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+button{font-family:var(--f-head);font-size:14px;font-weight:500;color:var(--ink);background:var(--surface-2);
+  border:1px solid var(--rule);border-radius:8px;padding:9px 14px;cursor:pointer;line-height:1.2}
+button:hover{border-color:var(--ink-3)}
+button.primary{background:var(--sa-fill);color:var(--on-fill);border-color:transparent;font-weight:700}
+button:disabled{opacity:.4;cursor:not-allowed}
+.scroll{overflow-x:auto}
+.console b{color:#FF6FA8;font-weight:800}
+.console{background:var(--code-bg);color:#3DFF1A;font-family:var(--f-head);font-size:13.5px;border-radius:10px;padding:12px 16px;margin-top:12px;min-height:46px;white-space:pre-wrap}
+
+/* interruttore shallow / deep */
+.mode{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;align-items:center}
+.mode .lbl{font-family:var(--f-head);font-size:13px;color:var(--ink-3)}
+.mode button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.ctors{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:14px;margin-top:14px}
+.ctors>div{min-width:0}
+.ctors pre{border:2px solid transparent;opacity:.55;transition:opacity .2s;font-size:13px}
+.ctors pre.on{border-color:var(--sa-fill);opacity:1}
+.ctors pre.fixed{opacity:1}
+
+/* stepper stack/heap */
+.stepper{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:24px;align-items:start}
+@media (max-width:860px){.stepper{grid-template-columns:1fr}}
+.lines{background:var(--code-bg);border-radius:10px;padding:12px 0;font-family:var(--f-head);font-size:14px;line-height:1.5;overflow-x:auto}
+.line{display:block;padding:3px 16px 3px calc(16px + 3ch);text-indent:-3ch;color:var(--code-dim);white-space:pre-wrap;border-left:4px solid transparent}
+.line.done{color:var(--code-ink)}
+.line.now{color:#0B0A12;background:#FFE14A;border-left-color:#FF3DAE;font-weight:700}
+.mem{min-width:540px;width:100%;height:auto;display:block}
+.mem .panel{fill:var(--surface-2);stroke:var(--rule)}
+.mem .ptitle{font-family:var(--f-head);font-size:13px;fill:var(--ink-3)}
+.mem .pool{fill:transparent;stroke:var(--ink-3);stroke-width:1.5;stroke-dasharray:7 5}
+.mem .pooltitle{font-family:var(--f-head);font-size:12px;font-weight:700;fill:var(--ink-3)}
+.mem .remote{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.mem .rname{font-family:var(--f-head);font-size:18px;font-weight:800;fill:var(--ink)}
+.mem .obj{fill:var(--sa-soft);stroke:var(--sa);stroke-width:2}
+.mem .otitle{font-family:var(--f-head);font-size:12.5px;font-weight:800;fill:var(--sa)}
+.mem .ofield{font-family:var(--f-head);font-size:13.5px;fill:var(--ink)}
+.mem .ofield.chg{fill:var(--hot);font-weight:800}
+.mem .str .obj{fill:var(--fa-soft);stroke:var(--fa)}
+.mem .str .otitle{fill:var(--fa)}
+.mem .dot{fill:var(--ink)}
+.mem .cell{fill:var(--surface);stroke:var(--sa);stroke-width:1}
+.mem .cell.chg{fill:var(--hot-soft);stroke:var(--hot);stroke-width:2}
+.mem .cval{font-family:var(--f-head);font-size:12px;fill:var(--ink);text-anchor:middle}
+.mem .cval.chg{fill:var(--hot);font-weight:800}
+.mem .day{font-family:var(--f-head);font-size:9px;fill:var(--ink-3);text-anchor:middle}
+.mem .wire{fill:none;stroke:var(--sa);stroke-width:2.5}
+.mem .head{fill:var(--sa)}
+.mem .hi .obj{stroke:var(--hot);stroke-width:3}
+.mem .hi .remote{stroke:var(--hot);stroke-width:3}
+.mem .wire.hi{stroke:var(--hot)}
+.mem .why{font-family:var(--f-head);font-size:11px;fill:var(--ink-3)}
+.mem .tag{font-family:var(--f-head);font-size:11px;fill:var(--hot);font-weight:700}
+.mem [hidden]{display:none}
+.caption{margin-top:14px;font-size:16px;min-height:5.2em;max-width:72ch}
+.stepno{font-family:var(--f-head);font-size:13px;color:var(--ink-3)}
+
+/* chiusura */
+ol.take{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:10px;max-width:var(--measure)}
+ol.take li::marker{font-family:var(--f-head);font-weight:800;color:var(--ink-3)}
+.ex{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:18px;margin-top:8px}
+.ex>div{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:18px 20px;min-width:0}
+.ex p+p,.ex p+pre,.ex pre+p{margin-top:10px}
+details{margin-top:12px}
+summary{cursor:pointer;font-family:var(--f-head);font-size:14px;color:var(--sa);font-weight:700}
+details>*:not(summary){margin-top:10px}
+footer{margin-top:40px;color:var(--ink-3);font-size:14.5px;max-width:var(--measure)}
+footer .ai{margin-top:14px;font-size:12.5px;line-height:1.5}
+@media print{.btns,button{display:none}.lab,pre{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <h1>Una String non cambia, un array sì</h1>
+  <p class="lede">Dove finiscono le String scritte nel codice e quelle che arrivano da tastiera, perché <code>==</code> a volte funziona per caso, e cosa deve fare un costruttore copia quando dentro l'oggetto c'è un array.</p>
+</header>
+
+<!-- ============================ 1. STRING POOL ============================ -->
+<section class="sec" id="pool">
+  <div class="sec-head"><span class="num">1</span><h2>Dove finiscono le String</h2></div>
+  <div class="prose">
+    <p>Una String è un oggetto, quindi vive nell'heap. Ma dentro l'heap c'è un recinto riservato: lo <strong>string pool</strong>, dove la JVM tiene i letterali scritti nel codice. Stesso letterale, un oggetto solo. Tutto il resto, <code>new</code>, <code>toUpperCase</code>, tastiera, file, nasce fuori dal recinto. Eseguite il programma una riga alla volta.</p>
+  </div>
+
+  <div class="lab" id="lab-pool">
+    <div class="stepper">
+      <div>
+        <div class="lines" id="p-lines"></div>
+        <div class="console" id="p-console" aria-live="polite">// output</div>
+      </div>
+      <div style="min-width:0">
+        <div class="scroll">
+        <svg class="mem" viewBox="0 0 640 352" role="img" aria-labelledby="p-t">
+          <title id="p-t">Stack con cinque variabili String, heap con lo string pool e gli oggetti String</title>
+          <defs>
+            <marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0L10 5L0 10z"/></marker>
+            <marker id="ah1h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--hot)"/></marker>
+          </defs>
+          <rect class="panel" x="6" y="6" width="222" height="340" rx="12"/>
+          <text class="ptitle" x="20" y="30">stack: le variabili di main</text>
+          <rect class="panel" x="250" y="6" width="384" height="340" rx="12"/>
+          <text class="ptitle" x="264" y="30">heap: dove vivono gli oggetti</text>
+          <rect class="pool" x="264" y="44" width="358" height="90" rx="10"/>
+          <text class="pooltitle" x="276" y="62">string pool · i letterali del codice</text>
+
+          <g id="p-r-t1" hidden><rect class="remote" x="26" y="60" width="150" height="44" rx="12"/><text class="rname" x="44" y="89">t1</text></g>
+          <g id="p-r-t2" hidden><rect class="remote" x="26" y="112" width="150" height="44" rx="12"/><text class="rname" x="44" y="141">t2</text></g>
+          <g id="p-r-t3" hidden><rect class="remote" x="26" y="164" width="150" height="44" rx="12"/><text class="rname" x="44" y="193">t3</text></g>
+          <g id="p-r-t4" hidden><rect class="remote" x="26" y="216" width="150" height="44" rx="12"/><text class="rname" x="44" y="245">t4</text></g>
+          <g id="p-r-t5" hidden><rect class="remote" x="26" y="268" width="150" height="44" rx="12"/><text class="rname" x="44" y="297">t5</text></g>
+
+          <g id="p-o-pool" class="str" hidden>
+            <rect class="obj" x="300" y="70" width="170" height="52" rx="12"/>
+            <text class="otitle" x="314" y="90">oggetto String</text>
+            <text class="ofield" x="314" y="110">"piccola"</text>
+            <text class="why" x="484" y="92">letterale: nel pool.</text>
+            <text class="why" x="484" y="108">se c'è, lo riusa</text>
+          </g>
+          <g id="p-o-new" class="str" hidden>
+            <rect class="obj" x="300" y="150" width="170" height="52" rx="12"/>
+            <text class="otitle" x="314" y="170">oggetto String</text>
+            <text class="ofield" x="314" y="190">"piccola"</text>
+            <text class="why" x="484" y="172">new: oggetto nuovo,</text>
+            <text class="why" x="484" y="188">fuori dal pool</text>
+          </g>
+          <g id="p-o-up" class="str" hidden>
+            <rect class="obj" x="300" y="214" width="170" height="52" rx="12"/>
+            <text class="otitle" x="314" y="234">oggetto String</text>
+            <text class="ofield" x="314" y="254">"PICCOLA"</text>
+            <text class="why" x="484" y="236">toUpperCase: String</text>
+            <text class="why" x="484" y="252">nuova; t1 non cambia</text>
+          </g>
+          <g id="p-o-kb" class="str" hidden>
+            <rect class="obj" x="300" y="278" width="170" height="52" rx="12"/>
+            <text class="otitle" x="314" y="298">oggetto String</text>
+            <text class="ofield" x="314" y="318">"piccola"</text>
+            <text class="why" x="484" y="300">da tastiera: oggetto</text>
+            <text class="why" x="484" y="316">nuovo, stesso testo</text>
+          </g>
+
+          <path class="wire" id="p-w-t1" d="M176 82 C 230 82, 250 88, 298 88" marker-end="url(#ah1)" hidden/>
+          <path class="wire" id="p-w-t2" d="M176 134 C 230 134, 250 104, 298 104" marker-end="url(#ah1)" hidden/>
+          <path class="wire" id="p-w-t3" d="M176 186 C 230 186, 250 176, 298 176" marker-end="url(#ah1)" hidden/>
+          <path class="wire" id="p-w-t4" d="M176 238 C 230 238, 250 240, 298 240" marker-end="url(#ah1)" hidden/>
+          <path class="wire" id="p-w-t5" d="M176 290 C 230 290, 250 304, 298 304" marker-end="url(#ah1)" hidden/>
+        </svg>
+        </div>
+        <p class="stepno" id="p-stepno"></p>
+        <p class="caption" id="p-caption"></p>
+        <div class="btns">
+          <button id="p-prev">Indietro</button>
+          <button class="primary" id="p-next">Avanti</button>
+          <button id="p-restart">Ricomincia</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:22px"><strong>Il trappolone.</strong> <code>t1 == t2</code> dà <code>true</code> per merito del pool, non perché <code>==</code> confronti il testo. Con una String letta da tastiera lo stesso confronto dà <code>false</code>. Per il testo, sempre <code>equals</code>.</div>
+</section>
+
+<!-- ============================ 2. COSTRUTTORE COPIA ============================ -->
+<section class="sec" id="copia">
+  <div class="sec-head"><span class="num">2</span><h2>Costruttore copia: shallow e deep</h2></div>
+  <div class="prose">
+    <p>Il salvadanaio di Anna dell'esercitazione 09, nella versione con lo storico. <code>monete</code> è il totale, <code>settimana</code> è un array con le monete versate giorno per giorno, da lunedì (0) a domenica (6). <code>versa</code> aggiorna tutti e due insieme: finché è così, la somma della settimana è uguale a <code>monete</code>.</p>
+    <p>Il main fa una prova: <code>c</code> è una copia di <code>a</code>, e il mercoledì si versa una moneta solo nella copia. <code>a</code> non dovrebbe accorgersene. Scegliete shallow o deep ed eseguite il main una riga alla volta: dopo la riga 4 guardate il totale e l'array di <code>a</code>. Potete cambiare versione in qualunque passo.</p>
+  </div>
+
+  <div class="lab" id="lab-copy">
+    <div class="mode" role="group" aria-label="Versione del costruttore copia">
+      <span class="lbl">costruttore copia:</span>
+      <button id="c-shallow" aria-pressed="true">shallow · copio la freccia</button>
+      <button id="c-deep" aria-pressed="false">deep · copio anche l'array</button>
+    </div>
+    <div class="ctors">
+      <div>
+        <p class="file">Salvadanaio.java · shallow</p>
+<pre data-lang="java" id="c-pre-shallow"><code>public Salvadanaio(Salvadanaio altro) {
+    this.proprietario = altro.proprietario;
+    this.monete = altro.monete;
+    this.settimana = altro.settimana;
+}</code></pre>
+      </div>
+      <div>
+        <p class="file">Salvadanaio.java · deep</p>
+<pre data-lang="java" id="c-pre-deep"><code>public Salvadanaio(Salvadanaio altro) {
+    this.proprietario = altro.proprietario;
+    this.monete = altro.monete;
+    this.settimana = new int[7];
+    for (int i = 0; i < 7; i++) {
+        this.settimana[i] = altro.settimana[i];
+    }
+}</code></pre>
+      </div>
+      <div>
+        <p class="file">Salvadanaio.java · versa aggiorna due cose</p>
+<pre data-lang="java" class="fixed"><code>public void versa(int giorno, int quante) {
+    settimana[giorno] = settimana[giorno] + quante;
+    monete = monete + quante;
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="stepper" style="margin-top:18px">
+      <div>
+        <p class="file">BonusTestDrive.java · main</p>
+        <div class="lines" id="c-lines"></div>
+        <div class="console" id="c-console" aria-live="polite">// output</div>
+      </div>
+      <div style="min-width:0">
+        <div class="scroll">
+        <svg class="mem" viewBox="0 0 640 390" role="img" aria-labelledby="c-t">
+          <title id="c-t">Stack con a e c, heap con due Salvadanaio, la String Anna nello string pool e uno o due array della settimana</title>
+          <defs>
+            <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0L10 5L0 10z"/></marker>
+            <marker id="ah2h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--hot)"/></marker>
+          </defs>
+          <rect class="panel" x="6" y="6" width="180" height="378" rx="12"/>
+          <text class="ptitle" x="20" y="30">stack</text>
+          <rect class="panel" x="206" y="6" width="428" height="378" rx="12"/>
+          <text class="ptitle" x="220" y="30">heap</text>
+          <rect class="pool" x="440" y="40" width="188" height="84" rx="10"/>
+          <text class="pooltitle" x="452" y="58">string pool</text>
+
+          <g id="c-r-a" hidden><rect class="remote" x="26" y="74" width="130" height="44" rx="12"/><text class="rname" x="44" y="103">a</text></g>
+          <g id="c-r-c" hidden><rect class="remote" x="26" y="256" width="130" height="44" rx="12"/><text class="rname" x="44" y="285">c</text></g>
+
+          <g id="c-o-a" hidden>
+            <rect class="obj" x="228" y="46" width="190" height="110" rx="14"/>
+            <text class="otitle" x="242" y="66">oggetto Salvadanaio</text>
+            <text class="ofield" x="242" y="90">proprietario =</text><circle class="dot" cx="402" cy="86" r="4"/>
+            <text class="ofield" id="c-am" x="242" y="114">monete = 0</text>
+            <text class="ofield" x="242" y="138">settimana =</text><circle class="dot" cx="402" cy="134" r="4"/>
+          </g>
+          <g id="c-o-c" hidden>
+            <rect class="obj" x="228" y="226" width="190" height="110" rx="14"/>
+            <text class="otitle" x="242" y="246">oggetto Salvadanaio</text>
+            <text class="ofield" x="242" y="270">proprietario =</text><circle class="dot" cx="402" cy="266" r="4"/>
+            <text class="ofield" id="c-cm" x="242" y="294">monete = 0</text>
+            <text class="ofield" x="242" y="318">settimana =</text><circle class="dot" cx="402" cy="314" r="4"/>
+          </g>
+
+          <g id="c-o-str" class="str" hidden>
+            <rect class="obj" x="456" y="66" width="156" height="46" rx="12"/>
+            <text class="otitle" x="470" y="84">oggetto String</text>
+            <text class="ofield" x="470" y="103">"Anna"</text>
+          </g>
+          <g id="c-o-A" hidden>
+            <rect class="obj" x="440" y="140" width="188" height="70" rx="12"/>
+            <text class="otitle" id="c-A-t" x="452" y="158">int[7]</text>
+            <rect class="cell" id="c-A-r0" x="452" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v0" x="463" y="182">0</text><text class="day" x="463" y="202">L</text>
+            <rect class="cell" id="c-A-r1" x="476" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v1" x="487" y="182">0</text><text class="day" x="487" y="202">M</text>
+            <rect class="cell" id="c-A-r2" x="500" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v2" x="511" y="182">0</text><text class="day" x="511" y="202">M</text>
+            <rect class="cell" id="c-A-r3" x="524" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v3" x="535" y="182">0</text><text class="day" x="535" y="202">G</text>
+            <rect class="cell" id="c-A-r4" x="548" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v4" x="559" y="182">0</text><text class="day" x="559" y="202">V</text>
+            <rect class="cell" id="c-A-r5" x="572" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v5" x="583" y="182">0</text><text class="day" x="583" y="202">S</text>
+            <rect class="cell" id="c-A-r6" x="596" y="166" width="22" height="22" rx="3"/><text class="cval" id="c-A-v6" x="607" y="182">0</text><text class="day" x="607" y="202">D</text>
+          </g>
+          <g id="c-o-C" hidden>
+            <rect class="obj" x="440" y="296" width="188" height="70" rx="12"/>
+            <text class="otitle" id="c-C-t" x="452" y="314">int[7]</text>
+            <rect class="cell" id="c-C-r0" x="452" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v0" x="463" y="338">0</text><text class="day" x="463" y="358">L</text>
+            <rect class="cell" id="c-C-r1" x="476" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v1" x="487" y="338">0</text><text class="day" x="487" y="358">M</text>
+            <rect class="cell" id="c-C-r2" x="500" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v2" x="511" y="338">0</text><text class="day" x="511" y="358">M</text>
+            <rect class="cell" id="c-C-r3" x="524" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v3" x="535" y="338">0</text><text class="day" x="535" y="358">G</text>
+            <rect class="cell" id="c-C-r4" x="548" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v4" x="559" y="338">0</text><text class="day" x="559" y="358">V</text>
+            <rect class="cell" id="c-C-r5" x="572" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v5" x="583" y="338">0</text><text class="day" x="583" y="358">S</text>
+            <rect class="cell" id="c-C-r6" x="596" y="322" width="22" height="22" rx="3"/><text class="cval" id="c-C-v6" x="607" y="338">0</text><text class="day" x="607" y="358">D</text>
+          </g>
+          <text class="tag" id="c-mis" x="228" y="180" hidden>a: storico 11, monete 10</text>
+
+          <path class="wire" id="c-w-a" d="M156 96 C 190 96, 196 96, 226 96" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-c" d="M156 278 C 190 278, 196 278, 226 278" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-pa" d="M406 86 C 430 86, 430 84, 454 84" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-pc" d="M406 266 C 436 266, 426 98, 454 98" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-sa" d="M406 134 C 424 134, 420 176, 438 176" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-scs" d="M406 314 C 432 314, 416 196, 438 196" marker-end="url(#ah2)" hidden/>
+          <path class="wire" id="c-w-scd" d="M406 314 C 422 314, 422 332, 438 332" marker-end="url(#ah2)" hidden/>
+        </svg>
+        </div>
+        <p class="stepno" id="c-stepno"></p>
+        <p class="caption" id="c-caption"></p>
+        <div class="btns">
+          <button id="c-prev">Indietro</button>
+          <button class="primary" id="c-next">Avanti</button>
+          <button id="c-restart">Ricomincia</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note calm" style="margin-top:22px"><strong>Un int si copia, un array si condivide.</strong> <code>this.monete = altro.monete</code> copia il valore: i due totali sono indipendenti. <code>this.settimana = altro.settimana</code> copia la freccia: lo storico è uno solo, e la moneta che <code>c</code> versa finisce anche nell'array di <code>a</code>, che però non aggiorna il suo totale. <code>proprietario</code> è condiviso in tutte e due le versioni, ma è una String: nessuno la può cambiare, e la condivisione non fa danni.</div>
+</section>
+
+<!-- ============================ 3. CASA ============================ -->
+<section class="sec" id="casa">
+  <div class="sec-head"><span class="num">3</span><h2>Da portare a casa</h2></div>
+  <ol class="take">
+    <li>I letterali del codice stanno nello string pool, uno per testo. Tutte le altre String (<code>new</code>, metodi, tastiera, file) sono oggetti nuovi fuori dal pool.</li>
+    <li><code>==</code> confronta i riferimenti: sulle String a volte dice <code>true</code>, per caso. <code>equals</code> confronta i caratteri: funziona sempre.</li>
+    <li>Un metodo di String non cambia la String: ne restituisce una nuova. Se la volete, assegnatela.</li>
+    <li>Il costruttore copia crea un secondo oggetto che parte uguale al primo e poi vive per conto suo. Un <code>int</code> si copia col suo valore. Un array, o un oggetto che può cambiare, se si copia la freccia resta condiviso: va copiato anche lui (deep copy). Le String condivise non fanno danni.</li>
+  </ol>
+
+  <h3 style="margin-top:36px">Esercizi</h3>
+  <div class="ex">
+    <div>
+      <p><strong>Prevedi l'output</strong>, senza eseguire. Poi disegna stack e heap, con il pool.</p>
+<pre data-lang="java"><code>String a = "fufi";
+String b = new String("fufi");
+String c = b;
+System.out.println(a == b);
+System.out.println(b == c);
+System.out.println(a.equals(c));
+a = a + "!";
+System.out.println(a);
+System.out.println(c);</code></pre>
+      <details><summary>Controlla</summary><p><code>false</code>, <code>true</code>, <code>true</code>, <code>fufi!</code>, <code>fufi</code>. Nel pool c'è un solo <code>"fufi"</code>; <code>b</code> e <code>c</code> arrivano allo stesso oggetto creato da <code>new</code>. <code>a + "!"</code> costruisce una String nuova e <code>a</code> la riceve: le altre due variabili non se ne accorgono.</p></details>
+    </div>
+    <div>
+      <p><strong>Stesso problema, con un oggetto al posto dell'array.</strong> Scrivete il costruttore copia di <code>Studente</code> (esercitazione 12) in versione deep, compresa <code>dataIscrizione</code>. Serve un costruttore copia anche in <code>Data</code>: scrivetelo come <code>Sveglia(Sveglia altra)</code>.</p>
+      <details><summary>Controlla</summary>
+<pre data-lang="java"><code>public Data(Data altra) {
+    this(altra.giorno, altra.mese, altra.anno);
+}
+
+public Studente(Studente altro) {
+    this.nome = altro.nome;
+    this.cognome = altro.cognome;
+    this.dataDiNascita = new Data(altro.dataDiNascita);
+    this.dataIscrizione = new Data(altro.dataIscrizione);
+}</code></pre>
+      <p>Il getter <code>getDataDiNascita()</code> ha lo stesso buco: restituisce il riferimento alla Data interna. Con <code>return new Data(dataDiNascita);</code> chi la riceve modifica una copia.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="ai">Questa pagina è stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilità didattica e scientifica è integralmente sua. L'indicazione è fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+/* ---------- evidenziazione minima del codice ---------- */
+var RE = /(\/\/.*$)|("(?:[^"\\\n]|\\.)*")|\b(class|public|static|void|int|double|boolean|String|new|null|return|private|this)\b|\b(\d+(?:\.\d+)?)\b/gm;
+function hl(src){
+  var re = new RegExp(RE.source, "gm"), out = "", last = 0, m;
+  while((m = re.exec(src))){
+    out += esc(src.slice(last, m.index));
+    var c = m[1] ? "c" : m[2] ? "s" : m[3] ? "k" : "n";
+    out += '<span class="t-' + c + '">' + esc(m[0]) + "</span>";
+    last = re.lastIndex;
+    if(m[0] === "") re.lastIndex++;
+  }
+  return out + esc(src.slice(last));
+}
+document.querySelectorAll("pre[data-lang]").forEach(function(pre){
+  var code = pre.querySelector("code");
+  code.innerHTML = hl(code.textContent);
+});
+
+/* negli elementi SVG la proprietà .hidden non esiste: si lavora sull'attributo */
+function show(id, on){ var el = $(id); if(on) el.removeAttribute("hidden"); else el.setAttribute("hidden",""); }
+function setClass(id, cls){ $(id).setAttribute("class", cls); }
+
+/* stepper generico: lines = righe di codice, steps = stati, paint(step) disegna */
+function stepper(p, LINES, getSteps, paint){
+  var i = 0, lines = $(p + "-lines");
+  LINES.forEach(function(t, n){ var s = document.createElement("span"); s.className = "line"; s.textContent = (n + 1) + "  " + t; lines.appendChild(s); });
+  function draw(){
+    var STEPS = getSteps(), st = STEPS[i];
+    lines.querySelectorAll(".line").forEach(function(el, n){ el.className = "line" + (n === st.l ? " now" : n < st.l ? " done" : ""); });
+    var out = [];
+    for(var k = 0; k <= i; k++) if(STEPS[k].out) out.push(STEPS[k].out);
+    $(p + "-console").innerHTML = out.length ? out.join("\n") : "// output";
+    $(p + "-caption").innerHTML = st.cap;
+    $(p + "-stepno").textContent = "Passo " + i + " di " + (STEPS.length - 1);
+    $(p + "-prev").disabled = i === 0; $(p + "-next").disabled = i === STEPS.length - 1;
+    paint(st);
+  }
+  $(p + "-next").onclick = function(){ if(i < getSteps().length - 1){ i++; draw(); } };
+  $(p + "-prev").onclick = function(){ if(i > 0){ i--; draw(); } };
+  $(p + "-restart").onclick = function(){ i = 0; draw(); };
+  draw();
+  return draw;
+}
+
+/* ---------- 1. string pool ---------- */
+(function(){
+  var LINES = [
+    'String t1 = "piccola";',
+    'String t2 = "piccola";',
+    'String t3 = new String("piccola");',
+    'String t4 = t1.toUpperCase();',
+    'String t5 = tastiera.nextLine();  // scrivo: piccola',
+    'System.out.println(t1 == t2);',
+    'System.out.println(t1 == t3);',
+    'System.out.println(t1 == t5);',
+    'System.out.println(t1.equals(t5));'
+  ];
+  /* v: variabili esistenti (1..5), o: oggetti esistenti, hi: cosa evidenziare */
+  var STEPS = [
+    {l:-1, v:0, o:[], cap:"Premi Avanti per eseguire il programma una riga alla volta."},
+    {l:0, v:1, o:["pool"], cap:"Un letterale scritto nel codice finisce nello <strong>string pool</strong>, il recinto dell'heap riservato ai letterali. La JVM lo crea la prima volta che lo incontra e <code>t1</code> riceve il riferimento."},
+    {l:1, v:2, o:["pool"], cap:"Stesso letterale: la JVM cerca <code>\"piccola\"</code> nel pool, lo trova e lo riusa. Nessun oggetto nuovo: due frecce, un oggetto. Può permetterselo perché una String non cambia mai."},
+    {l:2, v:3, o:["pool","new"], cap:"<code>new</code> crea sempre un oggetto nuovo, fuori dal pool. <code>new String(…)</code> è un costruttore copia, come <code>new Sveglia(feriale)</code>: riceve il letterale e ne fa una copia con gli stessi caratteri."},
+    {l:3, v:4, o:["pool","new","up"], cap:"<code>toUpperCase</code> non tocca la String di <code>t1</code>: ne costruisce una nuova, maiuscola, fuori dal pool. <code>t1</code> arriva ancora a <code>\"piccola\"</code>. Se non assegnassi il risultato, andrebbe perso."},
+    {l:4, v:5, o:["pool","new","up","kb"], cap:"L'utente scrive <em>piccola</em>. Una String che nasce mentre il programma gira, da tastiera, da file o da un <code>+</code>, è un oggetto nuovo fuori dal pool, anche se il testo è identico."},
+    {l:5, v:5, o:["pool","new","up","kb"], hi:["t1","t2"], out:"true", cap:"<code>==</code> confronta i riferimenti: <code>t1</code> e <code>t2</code> arrivano allo stesso oggetto. <code>true</code>, ma per merito del pool."},
+    {l:6, v:5, o:["pool","new","up","kb"], hi:["t1","t3"], out:"false", cap:"Due oggetti diversi, anche se dentro hanno lo stesso testo. <code>==</code> dice <code>false</code>."},
+    {l:7, v:5, o:["pool","new","up","kb"], hi:["t1","t5"], out:"false", cap:"La String da tastiera è un altro oggetto: <code>false</code>. Ecco il trappolone: <code>==</code> sulle String a volte funziona, come alla riga 6, per caso."},
+    {l:8, v:5, o:["pool","new","up","kb"], hi:["t1","t5"], out:"true", cap:"<code>equals</code> confronta i caratteri, ovunque stiano gli oggetti. Per il testo, sempre <code>equals</code>."}
+  ];
+  var VARS = ["t1","t2","t3","t4","t5"], OBJS = ["pool","new","up","kb"];
+  stepper("p", LINES, function(){ return STEPS; }, function(st){
+    var hi = st.hi || [];
+    VARS.forEach(function(v, n){
+      var on = n < st.v, h = hi.indexOf(v) >= 0;
+      show("p-r-" + v, on); setClass("p-r-" + v, h ? "hi" : "");
+      show("p-w-" + v, on); setClass("p-w-" + v, "wire" + (h ? " hi" : ""));
+      $("p-w-" + v).setAttribute("marker-end", h ? "url(#ah1h)" : "url(#ah1)");
+    });
+    OBJS.forEach(function(o){ show("p-o-" + o, st.o.indexOf(o) >= 0); });
+  });
+})();
+
+/* ---------- 2. costruttore copia ---------- */
+(function(){
+  var deep = false;
+  var LINES = [
+    'Salvadanaio a = new Salvadanaio("Anna");',
+    'a.versa(0, 10);  // lunedì',
+    'Salvadanaio c = new Salvadanaio(a);',
+    'c.versa(2, 1);   // mercoledì, solo nella copia',
+    'System.out.println("a: " + a.getMonete() + " monete, mercoledì " + a.getVersatoIl(2));',
+    'System.out.println("c: " + c.getMonete() + " monete, mercoledì " + c.getVersatoIl(2));'
+  ];
+  var Z = [0,0,0,0,0,0,0], L10 = [10,0,0,0,0,0,0], M1 = [10,0,1,0,0,0,0];
+  function steps(){
+    var S = [
+      {l:-1, n:0, cap:"Scegli shallow o deep qui sopra, poi premi Avanti. Il main è lo stesso nei due casi: cambia solo cosa fa <code>new Salvadanaio(a)</code>."},
+      {l:0, n:1, am:0, A:Z, cap:"<code>monete</code> parte da 0 e il costruttore crea l'array dei sette giorni, tutto a zero. <code>proprietario</code> riceve il riferimento al letterale <code>\"Anna\"</code>, che sta nel pool."},
+      {l:1, n:1, am:10, A:L10, hot:["am","A0"], cap:"<code>versa</code> aggiorna due cose insieme: la cella del lunedì e il totale. Lo storico fa 10, <code>monete</code> è 10: sono d'accordo."}
+    ];
+    if(!deep){
+      S.push({l:2, n:2, am:10, cm:10, A:L10, hi:["c"], cap:"<strong>Shallow.</strong> <code>monete</code> è un <code>int</code>: <code>this.monete = altro.monete</code> copia il valore, 10. <code>settimana</code> è un riferimento: <code>this.settimana = altro.settimana</code> copia la freccia. Due salvadanai, un solo array."});
+      S.push({l:3, n:2, am:10, cm:11, A:M1, mis:true, hot:["cm","A2"], hi:["scs"], cap:"<code>versa</code> lavora su <code>c</code>: il totale di <code>c</code> diventa 11 e la cella del mercoledì diventa 1. Ma quella cella è nell'array condiviso: lo storico di <code>a</code> ha appena ricevuto una moneta, e il totale di <code>a</code> è rimasto 10."});
+      S.push({l:4, n:2, am:10, cm:11, A:M1, mis:true, hot:["am","A2"], hi:["a"], out:"a: 10 monete, mercoledì <b>1</b>", cap:"Non torna: <code>a</code> dice di avere 10 monete, ma il suo storico dice che mercoledì ne ha ricevuta una. Quella moneta l'ha versata solo <code>c</code>. Dentro <code>a</code> il totale e l'array non sono più d'accordo."});
+      S.push({l:5, n:2, am:10, cm:11, A:M1, mis:true, hi:["c"], out:"c: 11 monete, mercoledì 1", cap:"<code>c</code> invece torna: 11 monete, una il mercoledì. Il guaio è in <code>a</code>: l'array condiviso ha rotto l'accordo fra <code>monete</code> e <code>settimana</code>, che <code>versa</code> manteneva."});
+    } else {
+      S.push({l:2, n:2, am:10, cm:10, A:L10, C:L10, hi:["c"], cap:"<strong>Deep.</strong> <code>monete</code> si copia per valore, come prima. Per lo storico, <code>new int[7]</code> crea un array nuovo e il <code>for</code> ci copia i valori, cella per cella: ogni salvadanaio ha il suo."});
+      S.push({l:3, n:2, am:10, cm:11, A:L10, C:M1, hot:["cm","C2"], cap:"<code>versa</code> lavora su <code>c</code>: il totale di <code>c</code> diventa 11 e la moneta del mercoledì va nell'array di <code>c</code>. Quello di <code>a</code> non lo tocca nessuno."});
+      S.push({l:4, n:2, am:10, cm:11, A:L10, C:M1, hi:["a"], out:"a: 10 monete, mercoledì 0", cap:"<code>a</code> è rimasto com'era: 10 monete, niente il mercoledì. Totale e storico d'accordo."});
+      S.push({l:5, n:2, am:10, cm:11, A:L10, C:M1, hi:["c"], out:"c: 11 monete, mercoledì 1", cap:"Anche <code>c</code> torna: 11 monete, una il mercoledì. Due salvadanai, due storici, ognuno per conto suo."});
+    }
+    return S;
+  }
+  function fillArray(key, vals, hot){
+    for(var k = 0; k < 7; k++){
+      var h = hot.indexOf(key + k) >= 0;
+      $("c-" + key + "-v" + k).textContent = vals ? vals[k] : 0;
+      setClass("c-" + key + "-v" + k, "cval" + (h ? " chg" : ""));
+      setClass("c-" + key + "-r" + k, "cell" + (h ? " chg" : ""));
+    }
+  }
+  var WIRES = ["a","c","pa","pc","sa","scs","scd"];
+  var draw = stepper("c", LINES, steps, function(st){
+    var has1 = st.n >= 1, has2 = st.n >= 2, hi = st.hi || [], hot = st.hot || [];
+    var on = {a:has1, c:has2, pa:has1, pc:has2, sa:has1, scs:has2 && !deep, scd:has2 && deep};
+    WIRES.forEach(function(w){
+      var h = hi.indexOf(w) >= 0;
+      show("c-w-" + w, on[w]);
+      setClass("c-w-" + w, "wire" + (h ? " hi" : ""));
+      $("c-w-" + w).setAttribute("marker-end", h ? "url(#ah2h)" : "url(#ah2)");
+    });
+    show("c-r-a", has1); setClass("c-r-a", hi.indexOf("a") >= 0 ? "hi" : "");
+    show("c-r-c", has2); setClass("c-r-c", hi.indexOf("c") >= 0 ? "hi" : "");
+    show("c-o-a", has1); show("c-o-str", has1); show("c-o-A", has1);
+    show("c-o-c", has2); show("c-o-C", has2 && deep);
+    $("c-am").textContent = "monete = " + (st.am || 0); setClass("c-am", "ofield" + (hot.indexOf("am") >= 0 ? " chg" : ""));
+    $("c-cm").textContent = "monete = " + (st.cm || 0); setClass("c-cm", "ofield" + (hot.indexOf("cm") >= 0 ? " chg" : ""));
+    $("c-A-t").textContent = has2 && !deep ? "int[7] · di a e di c" : "int[7] · di a";
+    $("c-C-t").textContent = "int[7] · solo di c";
+    fillArray("A", st.A, hot); fillArray("C", st.C, hot);
+    show("c-mis", !!st.mis);
+  });
+  function setMode(d){
+    deep = d;
+    $("c-shallow").setAttribute("aria-pressed", String(!d));
+    $("c-deep").setAttribute("aria-pressed", String(d));
+    $("c-pre-shallow").className = d ? "" : "on";
+    $("c-pre-deep").className = d ? "on" : "";
+    draw();
+  }
+  $("c-shallow").onclick = function(){ setMode(false); };
+  $("c-deep").onclick = function(){ setMode(true); };
+  setMode(false);
+})();
+})();
+</script>
+</body>
+</html>

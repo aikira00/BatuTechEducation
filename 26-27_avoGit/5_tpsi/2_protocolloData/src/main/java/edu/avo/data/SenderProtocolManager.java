@@ -1,6 +1,9 @@
 package edu.avo.data;
 
 import edu.avo.tcpiolibrary.MessageWriter;
+
+import java.time.LocalDate;
+
 public class SenderProtocolManager {
     private MessageWriter writer;
 
@@ -15,23 +18,25 @@ public class SenderProtocolManager {
         this.writer = writer;
     }
 
-    public void daysToKnow(String date, int daysNumber){
-        writer.sendMessage(DAYS_TO_KNOW + "#" + date + "#" + daysNumber);
+    public void daysToKnow(LocalDate date, int daysNumber){
+        String d = date.toString();
+        writer.sendMessage(DAYS_TO_KNOW + "#" + d + "#" + daysNumber);
     }
 
-    public void daysBetween(String firstDate, String secondDate, int daysNumber){
+    //TO DO sistemare parametri il sender deve prendere risultati da Application e poi trasforma lui in stringa
+    public void daysBetween(LocalDate firstDate, LocalDate secondDate, int daysNumber){
         writer.sendMessage(DAYS_BETWEEN + "#" + firstDate + "#" + secondDate + "#" + daysNumber);
     }
 
-    public void subDays(String firstDate, String secondDate, int daysNumber){
+    public void subDays(LocalDate firstDate, LocalDate secondDate, int daysNumber){
         writer.sendMessage(SUB_DAYS + "#" + firstDate + "#" + daysNumber + "#" + secondDate);
     }
 
-    public void addDays(String firstDate, String secondDate, int daysNumber){
+    public void addDays(LocalDate firstDate, LocalDate secondDate, int daysNumber){
         writer.sendMessage(ADD_DAYS + "#" + firstDate + "#" + daysNumber + "#" + secondDate);
     }
 
-    public void dayOfWeek(String date, String dateName){
+    public void dayOfWeek(LocalDate date, LocalDate dateName){
         writer.sendMessage(ADD_DAYS + "#" + firstDate + "#" + daysNumber + "#" + secondDate);
     }
 

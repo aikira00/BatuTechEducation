@@ -65,17 +65,17 @@ public class Televisione {
     }
 
     public void alzaVolume() {
-        if (accesa) {
-            muto = false;
-            if (volume < 100) {
-                volume = volume + 1;
-            }
-        }
+        alzaVolume(1);
     }
 
     public void alzaVolume(int passi) {
-        for (int i = 0; i < passi; i++) {
-            alzaVolume();
+        if (accesa && passi > 0) {
+            muto = false;
+            if (passi >= 100 - volume) {
+                volume = 100;
+            } else {
+                volume = volume + passi;
+            }
         }
     }
 

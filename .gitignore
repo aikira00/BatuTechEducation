@@ -13,3 +13,6 @@ node_modules/
 .obsidian/workspace.json
 *.class
 *.s
+
+# consegne e correzioni con i nomi degli studenti: restano locali
+consegneStudenti/
