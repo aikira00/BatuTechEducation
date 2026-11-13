@@ -104,6 +104,8 @@ th.n,td.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-
 th.sep,td.sep{border-left:2px solid var(--line)}
 tr.chg td{background:var(--yellow-soft)}
 tr.tot td{font-weight:600;border-top:2px solid var(--fg)}
+table.ore{min-width:680px}
+td.n .w{color:var(--muted);font-size:.85em}
 .note{font-size:.9rem;color:var(--muted);margin-top:10px}
 /* orari di classe */
 table.tt{min-width:640px;font-size:.8rem;table-layout:fixed}
@@ -244,40 +246,40 @@ footer p{max-width:none}
         <div><b>Più laboratorio</b>5 ore a settimana con due docenti già nel biennio, 8 o 9 nel triennio.</div>
       </div>
 
-      <h4>Biennio: ore a settimana, prima e dopo la riforma</h4>
-      <div class="scroll"><table>
+      <h4>Biennio: ore all'anno (tra parentesi a settimana), prima e dopo la riforma</h4>
+      <div class="scroll"><table class="ore">
         <thead><tr><th>Materia</th><th class="n sep">Vecchio 1ª</th><th class="n">2ª</th><th class="n sep">Nuovo 1ª</th><th class="n">2ª</th></tr></thead>
         <tbody>
-          <tr><td>Lingua e letteratura italiana</td><td class="n sep">4</td><td class="n">4</td><td class="n sep">4</td><td class="n">4</td></tr>
-          <tr><td>Lingua inglese</td><td class="n sep">3</td><td class="n">3</td><td class="n sep">3</td><td class="n">3</td></tr>
-          <tr><td>Matematica</td><td class="n sep">4</td><td class="n">4</td><td class="n sep">4</td><td class="n">4</td></tr>
-          <tr><td>Storia, geografia, diritto, motorie, religione</td><td class="n sep">8</td><td class="n">7</td><td class="n sep">8</td><td class="n">7</td></tr>
-          <tr class="chg"><td>Scienze: integrate (Terra e biologia, fisica, chimica) → sperimentali</td><td class="n sep">8</td><td class="n">8</td><td class="n sep">4</td><td class="n">5</td></tr>
-          <tr class="chg"><td>Informatica: tecnologie informatiche e scienze e tecnologie applicate → informatica e reti</td><td class="n sep">3</td><td class="n">3</td><td class="n sep">4</td><td class="n">4</td></tr>
-          <tr><td>Tecnologie e tecniche di rappresentazione grafica</td><td class="n sep">3</td><td class="n">3</td><td class="n sep">3</td><td class="n">3</td></tr>
-          <tr class="chg"><td>Quota a disposizione della scuola</td><td class="n sep">–</td><td class="n">–</td><td class="n sep">2</td><td class="n">2</td></tr>
-          <tr class="tot"><td>Totale ore settimanali</td><td class="n sep">33</td><td class="n">32</td><td class="n sep">32</td><td class="n">32</td></tr>
-          <tr class="chg"><td>di cui in laboratorio con due docenti</td><td class="n sep" colspan="2">8 in due anni</td><td class="n sep">5</td><td class="n">5</td></tr>
+          <tr><td>Lingua e letteratura italiana</td><td class="n sep">132 <span class="w">(4)</span></td><td class="n">132 <span class="w">(4)</span></td><td class="n sep">132 <span class="w">(4)</span></td><td class="n">132 <span class="w">(4)</span></td></tr>
+          <tr><td>Lingua inglese</td><td class="n sep">99 <span class="w">(3)</span></td><td class="n">99 <span class="w">(3)</span></td><td class="n sep">99 <span class="w">(3)</span></td><td class="n">99 <span class="w">(3)</span></td></tr>
+          <tr><td>Matematica</td><td class="n sep">132 <span class="w">(4)</span></td><td class="n">132 <span class="w">(4)</span></td><td class="n sep">132 <span class="w">(4)</span></td><td class="n">132 <span class="w">(4)</span></td></tr>
+          <tr><td>Storia, geografia, diritto, motorie, religione</td><td class="n sep">264 <span class="w">(8)</span></td><td class="n">231 <span class="w">(7)</span></td><td class="n sep">264 <span class="w">(8)</span></td><td class="n">231 <span class="w">(7)</span></td></tr>
+          <tr class="chg"><td>Scienze: integrate (Terra e biologia, fisica, chimica) → sperimentali</td><td class="n sep">264 <span class="w">(8)</span></td><td class="n">264 <span class="w">(8)</span></td><td class="n sep">132 <span class="w">(4)</span></td><td class="n">165 <span class="w">(5)</span></td></tr>
+          <tr class="chg"><td>Informatica: tecnologie informatiche e scienze e tecnologie applicate → informatica e reti</td><td class="n sep">99 <span class="w">(3)</span></td><td class="n">99 <span class="w">(3)</span></td><td class="n sep">132 <span class="w">(4)</span></td><td class="n">132 <span class="w">(4)</span></td></tr>
+          <tr><td>Tecnologie e tecniche di rappresentazione grafica</td><td class="n sep">99 <span class="w">(3)</span></td><td class="n">99 <span class="w">(3)</span></td><td class="n sep">99 <span class="w">(3)</span></td><td class="n">99 <span class="w">(3)</span></td></tr>
+          <tr class="chg"><td>Quota a disposizione della scuola</td><td class="n sep">–</td><td class="n">–</td><td class="n sep">66 <span class="w">(2)</span></td><td class="n">66 <span class="w">(2)</span></td></tr>
+          <tr class="tot"><td>Totale ore</td><td class="n sep">1089 <span class="w">(33)</span></td><td class="n">1056 <span class="w">(32)</span></td><td class="n sep">1056 <span class="w">(32)</span></td><td class="n">1056 <span class="w">(32)</span></td></tr>
+          <tr class="chg"><td>di cui in laboratorio con due docenti</td><td class="n sep" colspan="2">264 in due anni <span class="w">(8)</span></td><td class="n sep">165 <span class="w">(5)</span></td><td class="n">165 <span class="w">(5)</span></td></tr>
         </tbody>
       </table></div>
 
-      <h4>Triennio: ore a settimana, prima e dopo la riforma</h4>
-      <div class="scroll"><table>
+      <h4>Triennio: ore all'anno (tra parentesi a settimana), prima e dopo la riforma</h4>
+      <div class="scroll"><table class="ore">
         <thead><tr><th>Materia</th><th class="n sep">Vecchio 3ª</th><th class="n">4ª</th><th class="n">5ª</th><th class="n sep">Nuovo 3ª</th><th class="n">4ª</th><th class="n">5ª</th></tr></thead>
         <tbody>
-          <tr class="chg"><td>Italiano, inglese, storia, motorie, religione</td><td class="n sep">12</td><td class="n">12</td><td class="n">12</td><td class="n sep">12</td><td class="n">12</td><td class="n">11</td></tr>
-          <tr><td>Matematica e complementi</td><td class="n sep">4</td><td class="n">4</td><td class="n">3</td><td class="n sep">4</td><td class="n">4</td><td class="n">3</td></tr>
-          <tr class="chg"><td>Informatica</td><td class="n sep">6</td><td class="n">6</td><td class="n">6</td><td class="n sep">6</td><td class="n">6</td><td class="n">5</td></tr>
-          <tr class="chg"><td>Sistemi e reti</td><td class="n sep">4</td><td class="n">4</td><td class="n">4</td><td class="n sep">3</td><td class="n">3</td><td class="n">2</td></tr>
-          <tr class="chg"><td>Tecnologie e progettazione di sistemi (TPSIT)</td><td class="n sep">3</td><td class="n">3</td><td class="n">4</td><td class="n sep">2</td><td class="n">2</td><td class="n">2</td></tr>
-          <tr class="chg"><td>Telecomunicazioni</td><td class="n sep">3</td><td class="n">3</td><td class="n">–</td><td class="n sep">2</td><td class="n">2</td><td class="n">–</td></tr>
-          <tr class="chg"><td>Gestione progetto e organizzazione d'impresa</td><td class="n sep">–</td><td class="n">–</td><td class="n">3</td><td class="n sep">–</td><td class="n">–</td><td class="n">–</td></tr>
-          <tr class="chg"><td>Quota a disposizione della scuola</td><td class="n sep">–</td><td class="n">–</td><td class="n">–</td><td class="n sep">3</td><td class="n">3</td><td class="n">7</td></tr>
-          <tr class="tot"><td>Totale ore settimanali</td><td class="n sep">32</td><td class="n">32</td><td class="n">32</td><td class="n sep">32</td><td class="n">32</td><td class="n">30</td></tr>
-          <tr class="chg"><td>di cui in laboratorio con due docenti</td><td class="n sep">8</td><td class="n">8</td><td class="n">8</td><td class="n sep">8</td><td class="n">9</td><td class="n">9</td></tr>
+          <tr class="chg"><td>Italiano, inglese, storia, motorie, religione</td><td class="n sep">396 <span class="w">(12)</span></td><td class="n">396 <span class="w">(12)</span></td><td class="n">396 <span class="w">(12)</span></td><td class="n sep">396 <span class="w">(12)</span></td><td class="n">396 <span class="w">(12)</span></td><td class="n">363 <span class="w">(11)</span></td></tr>
+          <tr><td>Matematica e complementi</td><td class="n sep">132 <span class="w">(4)</span></td><td class="n">132 <span class="w">(4)</span></td><td class="n">99 <span class="w">(3)</span></td><td class="n sep">132 <span class="w">(4)</span></td><td class="n">132 <span class="w">(4)</span></td><td class="n">99 <span class="w">(3)</span></td></tr>
+          <tr class="chg"><td>Informatica</td><td class="n sep">198 <span class="w">(6)</span></td><td class="n">198 <span class="w">(6)</span></td><td class="n">198 <span class="w">(6)</span></td><td class="n sep">198 <span class="w">(6)</span></td><td class="n">198 <span class="w">(6)</span></td><td class="n">165 <span class="w">(5)</span></td></tr>
+          <tr class="chg"><td>Sistemi e reti</td><td class="n sep">132 <span class="w">(4)</span></td><td class="n">132 <span class="w">(4)</span></td><td class="n">132 <span class="w">(4)</span></td><td class="n sep">99 <span class="w">(3)</span></td><td class="n">99 <span class="w">(3)</span></td><td class="n">66 <span class="w">(2)</span></td></tr>
+          <tr class="chg"><td>Tecnologie e progettazione di sistemi (TPSIT)</td><td class="n sep">99 <span class="w">(3)</span></td><td class="n">99 <span class="w">(3)</span></td><td class="n">132 <span class="w">(4)</span></td><td class="n sep">66 <span class="w">(2)</span></td><td class="n">66 <span class="w">(2)</span></td><td class="n">66 <span class="w">(2)</span></td></tr>
+          <tr class="chg"><td>Telecomunicazioni</td><td class="n sep">99 <span class="w">(3)</span></td><td class="n">99 <span class="w">(3)</span></td><td class="n">–</td><td class="n sep">66 <span class="w">(2)</span></td><td class="n">66 <span class="w">(2)</span></td><td class="n">–</td></tr>
+          <tr class="chg"><td>Gestione progetto e organizzazione d'impresa</td><td class="n sep">–</td><td class="n">–</td><td class="n">99 <span class="w">(3)</span></td><td class="n sep">–</td><td class="n">–</td><td class="n">–</td></tr>
+          <tr class="chg"><td>Quota a disposizione della scuola</td><td class="n sep">–</td><td class="n">–</td><td class="n">–</td><td class="n sep">99 <span class="w">(3)</span></td><td class="n">99 <span class="w">(3)</span></td><td class="n">231 <span class="w">(7)</span></td></tr>
+          <tr class="tot"><td>Totale ore</td><td class="n sep">1056 <span class="w">(32)</span></td><td class="n">1056 <span class="w">(32)</span></td><td class="n">1056 <span class="w">(32)</span></td><td class="n sep">1056 <span class="w">(32)</span></td><td class="n">1056 <span class="w">(32)</span></td><td class="n">990 <span class="w">(30)</span></td></tr>
+          <tr class="chg"><td>di cui in laboratorio con due docenti</td><td class="n sep">264 <span class="w">(8)</span></td><td class="n">264 <span class="w">(8)</span></td><td class="n">264 <span class="w">(8)</span></td><td class="n sep">264 <span class="w">(8)</span></td><td class="n">297 <span class="w">(9)</span></td><td class="n">297 <span class="w">(9)</span></td></tr>
         </tbody>
       </table></div>
-      <p class="note">Vecchio ordinamento: DPR 88/2010. Nuovo: DM 29/2026, allegati B e C-8; le righe evidenziate sono quelle che cambiano. In quinta l'italiano passa da 4 a 3 ore e la gestione di progetto rientra nelle ore assegnate dalla scuola. Sul DM 29/2026 è in corso un ricorso al TAR: fa fede il sito dell'istituto.</p>
+      <p class="note">Ore all'anno su 33 settimane di lezione. Vecchio ordinamento: DPR 88/2010. Nuovo: DM 29/2026, allegati B e C-8; le righe evidenziate sono quelle che cambiano. In quinta l'italiano passa da 132 a 99 ore e la gestione di progetto rientra nelle ore assegnate dalla scuola. Il TAR del Lazio ha confermato la riforma.</p>
     </div>
   </details>
   <details>
