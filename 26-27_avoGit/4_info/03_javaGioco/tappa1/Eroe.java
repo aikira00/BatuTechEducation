@@ -3,9 +3,10 @@ package tappa1;
 public class Eroe {
     private String nome;
     private int vita;
-    private int forza;
+    private Arma arma;
+    private Pozione pozione;
 
-    public Eroe(String nome, int vita, int forza) {
+    public Eroe(String nome, int vita, Arma arma) {
         this.nome = nome;
         if (vita > 0) {
             this.vita = vita;
@@ -13,16 +14,12 @@ public class Eroe {
             System.out.println("Vita non valida, uso 20");
             this.vita = 20;
         }
-        if (forza >= 0) {
-            this.forza = forza;
-        } else {
-            System.out.println("Forza non valida, uso 1");
-            this.forza = 1;
-        }
+        this.arma = arma;                // la riceve: c'era già
+        this.pozione = new Pozione(6);   // la crea: è sua
     }
 
-    public Eroe(String nome) {
-        this(nome, 20, 1);
+    public Eroe(String nome, Arma arma) {
+        this(nome, 20, arma);
     }
 
     public String getNome() {
@@ -45,13 +42,23 @@ public class Eroe {
     }
 
     public void attacca(Mostro m, Dado d) {
-        int danno = d.tira() + forza;
-        System.out.println(nome + " colpisce " + m.getNome() + ": " + danno + " danni");
+        int danno = arma.colpo(d);
+        System.out.println(nome + " colpisce " + m.getNome() + " con " + arma + ": " + danno + " danni");
         m.subisci(danno);
+    }
+
+    public void cura() {
+        int punti = pozione.bevi();
+        if (punti > 0) {
+            vita = vita + punti;
+            System.out.println(nome + " beve la pozione: +" + punti);
+        } else {
+            System.out.println(nome + " ha già bevuto la pozione");
+        }
     }
 
     @Override
     public String toString() {
-        return nome + " (vita " + vita + ")";
+        return nome + " (vita " + vita + ") con " + arma;
     }
 }

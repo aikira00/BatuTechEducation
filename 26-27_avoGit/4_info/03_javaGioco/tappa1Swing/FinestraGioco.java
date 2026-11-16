@@ -13,6 +13,7 @@ import javax.swing.JTextArea;
 public class FinestraGioco extends JFrame implements Vista, ActionListener {
     private JTextArea messaggi;
     private JButton attacca;
+    private JButton cura;
     private JButton fuggi;
     private PannelloVita barre;
     private Partita partita;
@@ -24,8 +25,10 @@ public class FinestraGioco extends JFrame implements Vista, ActionListener {
         messaggi.setEditable(false);
         messaggi.setLineWrap(true);
         attacca = new JButton("Attacca");
+        cura = new JButton("Cura");
         fuggi = new JButton("Fuggi");
         attacca.addActionListener(this);
+        cura.addActionListener(this);
         fuggi.addActionListener(this);
 
         partita = new Partita(this);
@@ -33,6 +36,7 @@ public class FinestraGioco extends JFrame implements Vista, ActionListener {
 
         JPanel pulsanti = new JPanel();
         pulsanti.add(attacca);
+        pulsanti.add(cura);
         pulsanti.add(fuggi);
 
         add(barre, BorderLayout.NORTH);
@@ -54,12 +58,15 @@ public class FinestraGioco extends JFrame implements Vista, ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == attacca) {
             partita.attacca();
+        } else if (e.getSource() == cura) {
+            partita.cura();
         } else {
             partita.fuggi();
         }
         barre.repaint();
         if (partita.isFinita()) {
             attacca.setEnabled(false);
+            cura.setEnabled(false);
             fuggi.setEnabled(false);
         }
     }

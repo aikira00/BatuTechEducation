@@ -11,7 +11,8 @@ public class Partita {
     public Partita(Vista vista) {
         this.vista = vista;
         this.dado = new Dado(6);
-        this.eroe = new Eroe("Anna", vista);
+        Arma pugnale = new Arma("il pugnale", 1, vista);
+        this.eroe = new Eroe("Anna", pugnale, vista);
         this.mostri = new Mostro[2];
         this.mostri[0] = new Mostro("Grunt", "goblin", 8, vista);
         this.mostri[1] = new Mostro("Ossetto", "scheletro", 12, vista);
@@ -34,6 +35,15 @@ public class Partita {
         } else {
             prossimoMostro();
         }
+        annunciaTurno();
+    }
+
+    public void cura() {
+        if (isFinita()) {
+            return;
+        }
+        eroe.cura();
+        mostri[corrente].attacca(eroe, dado);   // curarsi costa il turno
         annunciaTurno();
     }
 

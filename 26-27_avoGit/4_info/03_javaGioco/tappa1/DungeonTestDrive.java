@@ -6,7 +6,8 @@ public class DungeonTestDrive {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         Dado dado = new Dado(6);
-        Eroe eroe = new Eroe("Anna");
+        Arma pugnale = new Arma("il pugnale", 1);
+        Eroe eroe = new Eroe("Anna", pugnale);
 
         Mostro[] mostri = new Mostro[2];
         mostri[0] = new Mostro("Grunt", "goblin", 8);
@@ -19,7 +20,7 @@ public class DungeonTestDrive {
 
             while (eroe.isVivo() && m.isVivo() && !fuggita) {
                 System.out.println(eroe + " contro " + m);
-                System.out.print("a = attacca, f = fuggi: ");
+                System.out.print("a = attacca, c = cura, f = fuggi: ");
                 String scelta = in.next();
 
                 if (scelta.equals("a")) {
@@ -27,6 +28,9 @@ public class DungeonTestDrive {
                     if (m.isVivo()) {
                         m.attacca(eroe, dado);
                     }
+                } else if (scelta.equals("c")) {
+                    eroe.cura();
+                    m.attacca(eroe, dado);   // curarsi costa il turno
                 } else {
                     System.out.println(eroe.getNome() + " scappa");
                     fuggita = true;
