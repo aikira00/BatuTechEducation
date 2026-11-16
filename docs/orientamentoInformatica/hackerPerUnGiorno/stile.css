@@ -1,0 +1,355 @@
+/* Hacker per un giorno: foglio a quadretti, penna blu e rossa */
+
+:root {
+  --carta: #fdfcf6;
+  --quadretto: #dbe7f1;
+  --linea: #8fb0cf;
+  --inchiostro: #1d3a8a;
+  --rosso: #c0392b;
+  --matita: #7a7a7a;
+  --evidenziatore: #fff3a0;
+  --testo: #222;
+  --tenue: #5d6670;
+  --bordo: #cfd6dd;
+  --mono: "Courier New", Courier, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  padding: 16px 16px 32px;
+  color: var(--testo);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  background-color: var(--carta);
+  background-image:
+    linear-gradient(var(--quadretto) 1px, transparent 1px),
+    linear-gradient(90deg, var(--quadretto) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+header, .schede, main, .nota-ia {
+  max-width: 620px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ---------- intestazione ---------- */
+
+.occhiello {
+  margin: 0;
+  font-size: .8rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--tenue);
+}
+
+h1 {
+  margin: .2rem 0 .4rem;
+  font-size: 2rem;
+  line-height: 1.15;
+  color: var(--inchiostro);
+}
+
+.sotto { margin: 0 0 1rem; color: var(--tenue); }
+
+h2 { margin: .2rem 0 .6rem; font-size: 1.35rem; color: var(--inchiostro); }
+
+h3 { margin: 1.4rem 0 .6rem; font-size: 1.05rem; }
+
+/* ---------- schede ---------- */
+
+.schede {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.schede button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 2px;
+  font: inherit;
+  font-size: .78rem;
+  color: var(--inchiostro);
+  background: #fff;
+  border: 2px solid var(--inchiostro);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.schede button b { font-size: 1rem; }
+
+.schede button.fatto {
+  background: var(--evidenziatore);
+}
+
+.schede button.fatto b::after { content: " ✓"; }
+
+.schede button[aria-selected="true"] {
+  color: #fff;
+  background: var(--inchiostro);
+}
+
+/* ---------- foglio ---------- */
+
+.foglio {
+  padding: 16px;
+  background: #fff;
+  border: 1px solid var(--bordo);
+}
+
+.foglio > p { margin: 0 0 .8rem; }
+
+.concetto {
+  font-size: .8rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--tenue);
+}
+
+.concetto span {
+  color: var(--testo);
+  background: linear-gradient(transparent 55%, var(--evidenziatore) 55%);
+}
+
+.etichetta {
+  display: block;
+  margin: .6rem 0 .25rem;
+  font-size: .85rem;
+  font-weight: bold;
+  color: var(--tenue);
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  color: var(--inchiostro);
+  background: #fff;
+  border: 2px solid var(--linea);
+  border-radius: 2px;
+}
+
+input[type="text"]:focus { outline: none; border-color: var(--inchiostro); }
+
+.suggerimento { font-size: .88rem; color: var(--tenue); }
+
+.lettura {
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--inchiostro);
+}
+
+/* ---------- bottoni ---------- */
+
+.azioni {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: .6rem 0 .8rem;
+}
+
+.bottone {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: .95rem;
+  color: var(--inchiostro);
+  text-decoration: none;
+  background: #fff;
+  border: 2px solid var(--inchiostro);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.bottone.pieno {
+  color: #fff;
+  background: var(--inchiostro);
+}
+
+/* ---------- vittoria: riquadro evidenziato ---------- */
+
+.vinto {
+  margin-top: 1rem;
+  padding: 12px 14px;
+  background: var(--evidenziatore);
+  border-left: 4px solid var(--inchiostro);
+}
+
+.vinto p { margin: 0 0 .6rem; }
+
+/* ---------- 1 binario ---------- */
+
+.righe-nome { margin: .6rem 0 0; }
+
+.riga-nome {
+  display: grid;
+  grid-template-columns: 1.6rem 2.6rem 1fr;
+  gap: 8px;
+  padding: 3px 0;
+  font-family: var(--mono);
+  border-bottom: 1px dashed var(--quadretto);
+}
+
+.riga-nome b { color: var(--inchiostro); }
+.riga-nome span { color: var(--tenue); text-align: right; }
+.riga-nome code { font-family: var(--mono); letter-spacing: .12em; }
+
+.bersaglio {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: .8rem;
+}
+
+.bersaglio p { margin: 0; }
+
+.lettera {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 2.4rem;
+  font-weight: bold;
+  color: var(--rosso);
+  border: 2px solid var(--rosso);
+}
+
+.bit {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+}
+
+.bit div { text-align: center; }
+
+.bit button {
+  width: 100%;
+  aspect-ratio: 1;
+  max-height: 52px;
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--matita);
+  background: #fff;
+  border: 2px solid var(--linea);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.bit button[aria-pressed="true"] {
+  color: #fff;
+  background: var(--inchiostro);
+  border-color: var(--inchiostro);
+}
+
+.bit span {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--mono);
+  font-size: .78rem;
+  color: var(--tenue);
+}
+
+/* ---------- 2 cesare ---------- */
+
+.cifrato {
+  min-height: 2.6rem;
+  margin: 0 0 .4rem;
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  letter-spacing: .08em;
+  word-break: break-word;
+  color: var(--rosso);
+  border: 1px dashed var(--linea);
+}
+
+.cifrato.chiaro { color: var(--inchiostro); }
+
+.chiave {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: .6rem;
+}
+
+.chiave .etichetta { margin: 0; }
+
+.chiave b {
+  min-width: 2ch;
+  font-family: var(--mono);
+  font-size: 1.4rem;
+  text-align: center;
+  color: var(--inchiostro);
+}
+
+.quadrato {
+  width: 40px;
+  height: 40px;
+  font-size: 1.3rem;
+  color: var(--inchiostro);
+  background: #fff;
+  border: 2px solid var(--inchiostro);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+input[type="range"] {
+  width: 100%;
+  margin: .6rem 0 .2rem;
+  accent-color: var(--inchiostro);
+}
+
+.regola { font-size: .88rem; color: var(--tenue); }
+
+/* ---------- 3 password ---------- */
+
+.misura {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin: .8rem 0 .4rem;
+}
+
+.misura i {
+  height: 10px;
+  background: #fff;
+  border: 1px solid var(--linea);
+}
+
+.misura i.on { background: var(--rosso); border-color: var(--rosso); }
+.misura.forte i.on { background: var(--inchiostro); border-color: var(--inchiostro); }
+
+.tempo {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--inchiostro);
+}
+
+@media (max-width: 420px) {
+  h1 { font-size: 1.7rem; }
+}
+
+/* ---------- nota finale ---------- */
+
+.nota-ia {
+  margin-top: 1.6rem;
+  font-size: .75rem;
+  line-height: 1.4;
+  color: var(--tenue);
+}

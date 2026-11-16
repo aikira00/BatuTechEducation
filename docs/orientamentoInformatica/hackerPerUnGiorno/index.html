@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hacker per un giorno</title>
+<link rel="stylesheet" href="stile.css">
+</head>
+<body>
+<header>
+  <p class="occhiello">Open Day · Informatica all'Avogadro</p>
+  <h1>Hacker per un giorno</h1>
+  <p class="sotto">Tre sfide, pochi minuti, nessuna esperienza richiesta.</p>
+</header>
+
+<nav class="schede" id="schede" role="tablist" aria-label="Sfide">
+  <button type="button" role="tab" data-scheda="bin" aria-selected="true"><b>1</b>Binario</button>
+  <button type="button" role="tab" data-scheda="ces" aria-selected="false"><b>2</b>Cesare</button>
+  <button type="button" role="tab" data-scheda="pwd" aria-selected="false"><b>3</b>Password</button>
+</nav>
+
+<main>
+  <!-- Sfida 1: codifica binaria -->
+  <section class="foglio" id="p-bin" role="tabpanel">
+    <p class="concetto">Sfida 1 · <span>codifica binaria</span></p>
+    <h2>Parla come un computer</h2>
+    <p>I computer capiscono solo 0 e 1. Ogni lettera è un numero, scritto con 8 interruttori: i <b>bit</b>. Scrivi il tuo nome e guardalo trasformarsi.</p>
+    <label for="nome" class="etichetta">Il tuo nome</label>
+    <input type="text" id="nome" maxlength="10" autocomplete="off" placeholder="es. Sofia">
+    <div class="righe-nome" id="righeNome" aria-live="polite"></div>
+
+    <h3>Ora tocca a te: costruisci questa lettera</h3>
+    <div class="bersaglio">
+      <span class="lettera" id="lettera">K</span>
+      <p>Per il computer la <b id="letteraTesto">K</b> è il numero <b id="numeroLettera">75</b>. Accendi i bit giusti: ognuno vale il numero scritto sotto, e la somma dei bit accesi deve fare <span id="numeroLettera2">75</span>.</p>
+    </div>
+    <div class="bit" id="bit"></div>
+    <p class="lettura" id="letturaBit"></p>
+    <div class="azioni">
+      <button type="button" class="bottone" id="nuovaLettera">Nuova lettera</button>
+      <button type="button" class="bottone" id="aiutino">Aiutino</button>
+    </div>
+    <p class="suggerimento" id="testoAiutino" hidden></p>
+    <div class="vinto" id="v-bin" hidden>
+      <p><b>Esatto: hai scritto una lettera in binario.</b></p>
+      <p><b>A scuola:</b> la codifica dell'informazione si studia in terza, in TPSIT.</p>
+      <button type="button" class="bottone pieno" data-vai="ces">Sfida 2: Cesare →</button>
+    </div>
+  </section>
+
+  <!-- Sfida 2: cifrario di Cesare -->
+  <section class="foglio" id="p-ces" role="tabpanel" hidden>
+    <p class="concetto">Sfida 2 · <span>crittografia</span></p>
+    <h2>Messaggio segreto</h2>
+    <p>Giulio Cesare nascondeva i messaggi spostando ogni lettera di qualche posto nell'alfabeto. Questo messaggio è cifrato: cambia la chiave finché diventa leggibile.</p>
+    <p class="etichetta">Messaggio cifrato</p>
+    <p class="cifrato" id="cifrato"></p>
+    <div class="chiave">
+      <span class="etichetta">Chiave</span>
+      <button type="button" class="quadrato" id="chiaveMeno" aria-label="Chiave meno uno">−</button>
+      <b id="chiaveValore">0</b>
+      <button type="button" class="quadrato" id="chiavePiu" aria-label="Chiave più uno">+</button>
+    </div>
+    <input type="range" id="chiave" min="0" max="25" value="0" aria-label="Chiave">
+    <p class="regola" id="regola"></p>
+    <p class="etichetta">Messaggio decifrato</p>
+    <p class="cifrato chiaro" id="chiaro"></p>
+    <div class="azioni">
+      <button type="button" class="bottone" id="altroMessaggio">Altro messaggio</button>
+    </div>
+    <div class="vinto" id="v-ces" hidden>
+      <p><b>Decifrato.</b> Un computer proverebbe tutte le 25 chiavi in un attimo: per questo oggi si usano cifrari molto più robusti.</p>
+      <p><b>A scuola:</b> le tecniche crittografiche si studiano in quinta, in Sistemi e reti.</p>
+      <button type="button" class="bottone pieno" data-vai="pwd">Sfida 3: Password →</button>
+    </div>
+  </section>
+
+  <!-- Sfida 3: robustezza di una password -->
+  <section class="foglio" id="p-pwd" role="tabpanel" hidden>
+    <p class="concetto">Sfida 3 · <span>sicurezza</span></p>
+    <h2>Quanto ci mette un hacker?</h2>
+    <p>Un computer potente prova circa 10 miliardi di password al secondo. Scrivi una password di prova e scopri in quanto tempo la indovinerebbe.</p>
+    <label for="pw" class="etichetta">Password di prova</label>
+    <input type="text" id="pw" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="prova: ciao123">
+    <p class="suggerimento">Non scrivere una password vera, nemmeno qui: la pagina non invia niente, ma è una buona abitudine.</p>
+    <div class="misura" id="misura"><i></i><i></i><i></i><i></i></div>
+    <p class="tempo" id="tempo">Scrivi qualcosa…</p>
+    <p class="suggerimento" id="notaPw"></p>
+    <div class="vinto" id="v-pwd" hidden>
+      <p><b>Password solida.</b> Un trucco: quattro parole a caso, come «tazza lampione verde nuvola», sono lunghe e facili da ricordare.</p>
+      <p><b>A scuola:</b> sicurezza informatica in Sistemi e reti, nei corsi della Cisco Networking Academy e con CyberChallenge.IT.</p>
+      <a class="bottone pieno" href="../">Tutto sull'indirizzo Informatica →</a>
+    </div>
+  </section>
+</main>
+
+<p class="nota-ia">Questa pagina è stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilità didattica e scientifica è integralmente sua. L'indicazione è fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
+
+<script src="gioco.js"></script>
+</body>
+</html>
