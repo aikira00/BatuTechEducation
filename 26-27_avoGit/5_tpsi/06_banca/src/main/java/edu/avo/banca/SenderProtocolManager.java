@@ -11,10 +11,13 @@ public class SenderProtocolManager {
     private static final String SEP = "°";
 
     private MessageWriter sender;
+    //usare StringBuilder, inizializzare in costruttore? meglio uno per metodo?
 
     public SenderProtocolManager(MessageWriter sender) {
         this.sender = sender;
     }
+
+    //Bellucci: meglio due metodi uno per login ok e uno per login not ok
 
     // EsitoLogin°true°<token>  oppure  EsitoLogin°false
     public void sendOutcomeLogin(boolean outcome, int token) {
@@ -104,7 +107,7 @@ public class SenderProtocolManager {
 
     // °Versamento|Prelievo°<importo>°<data> per ogni movimento
     private String movimenti(List<Movimento> list) {
-        String message = "";
+        String message = ""; //String builder?
         for (Movimento m : list) {
             message += SEP + (m.isVersamento() ? "Versamento" : "Prelievo") + SEP + format(m.getImporto()) + SEP + m.getData();
         }
