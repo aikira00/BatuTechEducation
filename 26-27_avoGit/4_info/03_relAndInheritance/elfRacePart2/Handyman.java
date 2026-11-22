@@ -7,7 +7,11 @@ public class Handyman extends Elf {
 
     @Override
     public void work(Gift g) {
-        g.advance();
+        if (g.getState().equals("in attesa")) {
+            g.readLetter();
+        } else {
+            g.advance();
+        }
         System.out.println(getName() + " fa quello che serve: il regalo " + g.getNumber()
                 + " ora è " + g.getState());
     }

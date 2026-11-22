@@ -5,21 +5,20 @@ public class Team {
     private Elf[] elves;
     private int count;
     private Gift[] gifts;
+    private int giftCount;
     private int turns;
 
-    public Team(String name, int giftCount) {
+    public Team(String name, int numberOfGifts) {
         this.name = name;
         this.elves = new Elf[4];          // al massimo 4 elfi
         this.count = 0;
-        if (giftCount > 0) {
-            this.gifts = new Gift[giftCount];
+        if (numberOfGifts > 0) {
+            this.gifts = new Gift[numberOfGifts];
         } else {
-            System.out.println(name + ": numero di regali non valido, ne preparo 1");
+            System.out.println(name + ": numero di regali non valido, ne aspetto 1");
             this.gifts = new Gift[1];
         }
-        for (int i = 0; i < gifts.length; i++) {
-            gifts[i] = new Gift(i + 1);   // i regali li crea la squadra
-        }
+        this.giftCount = 0;               // i regali arrivano con le letterine
         this.turns = 0;
     }
 
@@ -36,9 +35,19 @@ public class Team {
         }
     }
 
-    // il primo regalo non ancora pronto; null se sono tutti pronti
+    public void prepare(Letter l) {
+        if (giftCount == gifts.length) {
+            System.out.println(name + ": non aspetto altri regali, una letterina resta fuori");
+        } else {
+            // il regalo lo crea la squadra, e gli dà il numero: 1, 2, 3, …
+            gifts[giftCount] = new Gift(giftCount + 1, l);
+            giftCount++;
+        }
+    }
+
+    // il primo regalo non ancora pronto; null se non ce ne sono
     private Gift nextGift() {
-        for (int i = 0; i < gifts.length; i++) {
+        for (int i = 0; i < giftCount; i++) {
             if (!gifts[i].isReady()) {
                 return gifts[i];
             }
@@ -47,12 +56,12 @@ public class Team {
     }
 
     public boolean isFinished() {
-        return nextGift() == null;
+        return readyCount() == gifts.length;   // tutti quelli che aspettava
     }
 
     public int readyCount() {
         int ready = 0;
-        for (int i = 0; i < gifts.length; i++) {
+        for (int i = 0; i < giftCount; i++) {
             if (gifts[i].isReady()) {
                 ready++;
             }

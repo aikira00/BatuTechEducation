@@ -39,6 +39,16 @@ public class ChristmasRace {
         candyCanes.add(bisco);
         candyCanes.add(scintilla);
 
+        // le letterine: a ogni squadra le sue, una per regalo; i desideri a giro
+        String[] wishes = {"un trenino", "una bambola", "un pallone"};
+        for (int i = 0; i < gifts; i++) {
+            String wish = wishes[i % wishes.length];
+            snowflakes.prepare(new Letter(wish));
+            baubles.prepare(new Letter(wish));
+            stockings.prepare(new Letter(wish));
+            candyCanes.prepare(new Letter(wish));   // passo 4
+        }
+
         // 4. la fabbrica e la gara
         Workshop workshop = new Workshop();
         workshop.add(snowflakes);

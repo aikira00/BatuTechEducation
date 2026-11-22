@@ -7,9 +7,10 @@ public class Postman extends Elf {
 
     @Override
     public void work(Gift g) {
-        if (g.getState().equals("da leggere")) {
-            g.advance();
-            System.out.println(getName() + " legge la letterina del regalo " + g.getNumber());
+        if (g.getState().equals("in attesa")) {
+            String text = g.readLetter();
+            System.out.println(getName() + " legge la letterina del regalo " + g.getNumber()
+                    + ": " + text);
         } else {
             System.out.println(getName() + ": non tocca a me");
         }

@@ -16,9 +16,10 @@ public class Elf {
     public void work(Gift g) {
         switch (job) {
             case "postino":
-                if (g.getState().equals("da leggere")) {
-                    g.advance();
-                    System.out.println(name + " legge la letterina del regalo " + g.getNumber());
+                if (g.getState().equals("in attesa")) {
+                    String text = g.readLetter();
+                    System.out.println(name + " legge la letterina del regalo " + g.getNumber()
+                            + ": " + text);
                 } else {
                     System.out.println(name + ": non tocca a me");
                 }
@@ -40,7 +41,11 @@ public class Elf {
                 }
                 break;
             case "tuttofare":      // passo 4
-                g.advance();
+                if (g.getState().equals("in attesa")) {
+                    g.readLetter();
+                } else {
+                    g.advance();
+                }
                 System.out.println(name + " fa quello che serve: il regalo " + g.getNumber()
                         + " ora è " + g.getState());
                 break;
