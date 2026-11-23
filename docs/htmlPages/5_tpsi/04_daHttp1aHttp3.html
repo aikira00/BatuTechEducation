@@ -2,148 +2,217 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<title>Da HTTP/1.1 a HTTP/3</title>
+<title>Da HTTP/1.0 a HTTP/3</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
-/* Layout: una colonna di lettura (66ch) dentro una pagina larga 1080px; sezioni numerate come nelle pagine 01, 02 e 03 di 5 TPSI. */
+/* Layout: una colonna di lettura (66ch) dentro una pagina larga 1080px; sezioni numerate come nelle pagine 01, 02 e 03 di 5 TPSI.
+   Tema unico: nero con accenti fluo. Nelle figure il colore ha sempre lo stesso significato:
+   ciano = apertura TCP, giallo = TLS, verde = QUIC, magenta = messaggi HTTP, arancio = attesa. */
 :root{
-  --bg:#EEF0F4; --surface:#FFFFFF; --surface-2:#F5F7FA;
-  --ink:#131A24; --ink-2:#3D4A5C; --ink-3:#6B7887;
-  --rule:#D3D9E2; --rule-strong:#B6C0CD;
-  --navy:#16324F; --navy-soft:rgba(22,50,79,.08);
-  --accent:#C81E4E; --accent-soft:rgba(200,30,78,.10); --accent-line:rgba(200,30,78,.35);
-  --ok:#0F6B5F; --ok-soft:rgba(15,107,95,.10);
-  --warn:#8A5A12; --warn-soft:rgba(138,90,18,.10);
-  --shadow:0 1px 2px rgba(19,26,36,.06), 0 8px 24px -12px rgba(19,26,36,.18);
-  --f-display:"IBM Plex Serif",Georgia,serif;
+  color-scheme:dark;
+  --bg:#050508; --surface:#0C0D14; --surface-2:#13151F;
+  --ink-hi:#FFFFFF; --ink:#E9EDF5; --ink-2:#B7BFCE; --ink-3:#8089A0;
+  --rule:#222637; --rule-strong:#3A4058; --grid:rgba(255,255,255,.04);
+  --cy:#00E5FF; --cy-s:rgba(0,229,255,.14);
+  --mg:#FF2BD6; --mg-s:rgba(255,43,214,.16);
+  --gr:#39FF14; --gr-s:rgba(57,255,20,.13);
+  --yl:#FFF01F; --yl-s:rgba(255,240,31,.13);
+  --or:#FF7A1A; --or-s:rgba(255,122,26,.18);
+  --on-neon:#050508;
+  --a:var(--cy); --as:var(--cy-s);
+  --f-display:"Space Grotesk","IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
   --f-body:"IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
   --measure:66ch; --wide:1080px;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
-  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
-  --rule:#2A3644; --rule-strong:#3B4A5C;
-  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
-  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
-  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
-  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
-  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
-  color-scheme:dark;
-}}
-:root[data-theme="dark"]{
-  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
-  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
-  --rule:#2A3644; --rule-strong:#3B4A5C;
-  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
-  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
-  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
-  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
-  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
-  color-scheme:dark;
-}
+.a-cy{--a:var(--cy);--as:var(--cy-s)} .a-mg{--a:var(--mg);--as:var(--mg-s)} .a-gr{--a:var(--gr);--as:var(--gr-s)}
+.a-yl{--a:var(--yl);--as:var(--yl-s)} .a-or{--a:var(--or);--as:var(--or-s)}
+.k-tcp,.o1,.s-css{--c:var(--cy);--cs:var(--cy-s)}
+.k-http,.o2,.s-js{--c:var(--mg);--cs:var(--mg-s)}
+.k-quic,.o3,.s-img{--c:var(--gr);--cs:var(--gr-s)}
+.k-tls,.o4{--c:var(--yl);--cs:var(--yl-s)}
+.k-or{--c:var(--or);--cs:var(--or-s)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 96px}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(520px 340px at 6% -4%, var(--mg-s), transparent 70%),
+    radial-gradient(640px 380px at 97% 0%, var(--cy-s), transparent 70%),
+    linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 46px,
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/46px 100%;
+  -webkit-mask-image:linear-gradient(to bottom, var(--bg), transparent 75%);mask-image:linear-gradient(to bottom, var(--bg), transparent 75%)}
 .page{max-width:var(--wide);margin:0 auto;padding-inline:clamp(0px,2vw,16px)}
-h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
-h2{font-size:clamp(26px,3.6vw,34px);font-weight:600;color:var(--navy)}
-h3{font-size:clamp(19px,2.2vw,22px);font-weight:600;color:var(--navy)}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.12;color:var(--ink-hi)}
+h2{font-size:clamp(26px,3.8vw,36px);font-weight:700;letter-spacing:-.02em}
+h3{font-size:clamp(19px,2.2vw,22px);font-weight:700;letter-spacing:-.01em}
 p{margin:0}
-a{color:var(--accent)}
-a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+a{color:var(--cy)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--yl);outline-offset:3px}
 .lede{font-size:clamp(18px,2.1vw,20px);color:var(--ink-2);line-height:1.55}
 .eyebrow{font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
 .col{display:flex;flex-direction:column;gap:18px;max-width:var(--measure);min-width:0}
-.hero{padding:clamp(40px,7vw,72px) 0 clamp(20px,4vw,34px)}
-.hero h1{font-size:clamp(34px,5.6vw,58px);font-weight:700;letter-spacing:-.025em;margin:.28em 0 .34em;color:var(--navy)}
-.hero h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+.col b,.blocco>p b,ul.clean b{color:var(--a);font-weight:600}
+/* --- apertura --- */
+.hero{padding:clamp(40px,7vw,76px) 0 clamp(20px,4vw,30px)}
+.hero .eyebrow::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gr);box-shadow:0 0 12px var(--gr);margin-right:10px;animation:pulsa 1.8s ease-in-out infinite}
+.hero h1{font-size:clamp(40px,7.4vw,82px);font-weight:700;letter-spacing:-.035em;margin:.22em 0 .3em}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--cy),var(--gr) 35%,var(--yl) 62%,var(--mg));background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:scorri 7s linear infinite alternate}
 .hero .lede{max-width:var(--measure)}
-section{padding:clamp(34px,5vw,56px) 0;border-top:1px solid var(--rule)}
-.sec-head{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline;margin-bottom:24px}
-.num{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--accent);border:1px solid var(--accent-line);border-radius:3px;padding:2px 7px}
-.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:clamp(18px,3vw,26px);box-shadow:var(--shadow);min-width:0}
+.hero .sub{margin-top:14px}
+.hero .sub b{color:var(--ink-hi)}
+@keyframes scorri{to{background-position:100% 0}}
+@keyframes pulsa{50%{opacity:.35}}
+@keyframes pop{from{transform:scale(.55);opacity:0}to{transform:none;opacity:1}}
+.linea{list-style:none;margin:30px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:820px){.linea{grid-template-columns:1fr 1fr}}
+.linea a{display:flex;flex-direction:column;gap:2px;height:100%;text-decoration:none;color:var(--ink-2);font-size:13.5px;line-height:1.4;background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--c);border-radius:10px;padding:12px 14px;transition:transform .18s, box-shadow .18s, border-color .18s}
+.linea a:hover{border-color:var(--c);box-shadow:0 0 26px -8px var(--c);transform:translateY(-2px)}
+.linea .anno{font-family:var(--f-mono);font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--c)}
+.linea b{font-family:var(--f-display);font-size:21px;color:var(--ink-hi)}
+/* --- indice --- */
+.toc{display:flex;flex-wrap:wrap;gap:8px;padding:22px 0 6px}
+.toc a{display:flex;align-items:baseline;gap:7px;font-size:14px;text-decoration:none;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:999px;padding:7px 14px;transition:border-color .18s, color .18s}
+.toc a:hover{border-color:var(--a);color:var(--ink-hi)}
+.toc a span{font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:var(--a)}
+/* --- sezioni --- */
+section{position:relative;padding:clamp(34px,5vw,56px) 0;border-top:1px solid var(--rule)}
+section::before{content:"";position:absolute;top:-2px;left:0;width:76px;height:3px;border-radius:2px;background:var(--a);box-shadow:0 0 16px var(--a)}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:baseline;margin-bottom:24px}
+.sec-head .num{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--on-neon);background:var(--a);border-radius:5px;padding:3px 8px;box-shadow:0 0 18px -3px var(--a)}
+.panel{position:relative;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:clamp(16px,3vw,26px);min-width:0}
+.fig{display:flex;flex-direction:column;gap:16px;border-color:var(--rule-strong);box-shadow:0 22px 60px -38px var(--a)}
+.fig::before{content:"";position:absolute;left:20px;right:20px;top:-1px;height:2px;background:linear-gradient(90deg,transparent,var(--a),transparent)}
 .stack{display:flex;flex-direction:column;gap:clamp(18px,3vw,28px)}
 .blocco{display:flex;flex-direction:column;gap:14px;min-width:0}
 .blocco>p{max-width:var(--measure)}
 .sub{color:var(--ink-2);font-size:15.5px;max-width:var(--measure)}
-.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:16px 20px;border-radius:0 5px 5px 0;max-width:var(--measure)}
-.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
-.note.navy{border-left-color:var(--navy);background:var(--navy-soft)}
-.note .eyebrow{display:block;margin-bottom:6px;color:var(--ink-2)}
+.fig h3+.sub{margin-top:6px}
+.note{border-left:3px solid var(--a);background:var(--as);padding:16px 20px;border-radius:0 8px 8px 0;max-width:var(--measure)}
+.note .eyebrow{display:block;margin-bottom:6px;color:var(--a)}
+.note b{color:var(--ink-hi)}
 ul.clean{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:9px;color:var(--ink-2);max-width:var(--measure)}
-ul.clean li::marker{color:var(--accent)}
-ul.clean b{color:var(--ink)}
-code{font-family:var(--f-mono);font-size:.92em;background:var(--surface-2);border:1px solid var(--rule);border-radius:3px;padding:1px 5px}
+ul.clean li::marker{color:var(--a)}
+code{font-family:var(--f-mono);font-size:.92em;color:var(--cy);background:var(--surface-2);border:1px solid var(--rule);border-radius:4px;padding:1px 5px}
 .due{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:760px){.due{grid-template-columns:1fr}}
 .due>.note{max-width:none}
-/* --- indice --- */
-.toc{display:flex;flex-wrap:wrap;gap:8px;padding:18px 0 4px;border-top:1px solid var(--rule)}
-.toc a{display:flex;align-items:baseline;gap:7px;font-size:14px;text-decoration:none;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:7px 13px}
-.toc a:hover{border-color:var(--accent-line);color:var(--ink)}
-.toc a span{font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:var(--accent)}
-/* --- messaggi e byte --- */
-pre{margin:0;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px 18px;overflow-x:auto;font-family:var(--f-mono);font-size:14px;line-height:1.6;color:var(--ink);box-shadow:var(--shadow)}
+pre{margin:0;background:var(--surface);border:1px solid var(--rule-strong);border-radius:10px;padding:16px 18px;overflow-x:auto;font-family:var(--f-mono);font-size:14px;line-height:1.6;color:var(--ink)}
 pre .c{color:var(--ink-3)}
-pre .k{color:var(--navy);font-weight:600}
-pre .b{color:var(--accent)}
+pre .k{color:var(--mg);font-weight:600}
+pre .b{color:var(--gr)}
+/* --- comandi delle figure --- */
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font-family:var(--f-mono);font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;line-height:1;color:var(--a);background:transparent;border:1.5px solid var(--a);border-radius:999px;padding:11px 16px;cursor:pointer;transition:box-shadow .18s}
+.btn.pri{background:var(--a);color:var(--on-neon);box-shadow:0 0 20px -5px var(--a);min-width:104px}
+.btn:hover{box-shadow:0 0 0 3px var(--as),0 0 20px -3px var(--a)}
+.btn:disabled,.btn:disabled:hover{opacity:.35;cursor:not-allowed;box-shadow:none;border-style:dashed}
+.count{font-family:var(--f-mono);font-size:12px;color:var(--ink-3);margin-left:auto}
+.now{font-family:var(--f-mono);font-size:14px;line-height:1.5;color:var(--ink-hi);background:var(--surface-2);border-left:3px solid var(--a);padding:10px 14px;border-radius:0 8px 8px 0;min-height:calc(3em + 20px)}
+.off{visibility:hidden}
+.legenda{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--ink-2)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.sw.vuoto{background:var(--cs);border:1.5px solid var(--c)}
+.sw.coda{background:repeating-linear-gradient(135deg,var(--cs) 0 3px,transparent 3px 6px);border:1px dashed var(--c)}
+.lane{background:var(--surface-2);border:1px solid var(--rule);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.lane .eyebrow,.fig>.eyebrow{color:var(--ink-2)}
+/* --- diagrammi a scala (SVG) --- */
+.lad{display:block;width:100%;height:auto;max-width:470px;margin-inline:auto}
+.lad text{font-family:var(--f-mono);font-size:11px;fill:var(--ink-3)}
+.lad .who{font-size:12px;font-weight:600;fill:var(--ink-hi)}
+.lad .life{stroke:var(--rule-strong);stroke-width:1.5}
+.lad .tick{stroke:var(--rule);stroke-dasharray:3 4}
+.lad .ar{stroke:var(--c);stroke-width:2.2;stroke-linecap:round}
+.lad .ar.k-tcp{marker-end:url(#ah-tcp)} .lad .ar.k-tls{marker-end:url(#ah-tls)}
+.lad .ar.k-quic{marker-end:url(#ah-quic)} .lad .ar.k-http{marker-end:url(#ah-http)}
+.lad .lb{fill:var(--c);font-weight:600}
+.lad .nt{fill:var(--c);font-size:10px;font-weight:600}
+.ah{fill:var(--c)}
+/* --- grafici nel tempo: una colonna = un'unità di tempo --- */
+.scelte{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
+.seg{display:inline-flex;border:1.5px solid var(--a);border-radius:999px;overflow:hidden}
+.seg button{font-family:var(--f-mono);font-size:12.5px;font-weight:600;letter-spacing:.04em;line-height:1;color:var(--a);background:transparent;border:0;padding:11px 15px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--a);color:var(--on-neon)}
+.seg button:focus-visible{outline-offset:-4px;outline-color:var(--ink-hi)}
+.cursore{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:15px;color:var(--ink-2)}
+.cursore b{font-family:var(--f-mono);color:var(--a);font-size:17px}
+.cursore input{accent-color:var(--a);width:160px}
+.gantt{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px 8px;--cols:22;--rows:6;--rh:24px}
+.grows{display:grid;grid-template-rows:repeat(var(--rows),var(--rh));row-gap:4px;font-family:var(--f-mono);font-size:11px;line-height:var(--rh);color:var(--ink-2);text-align:right}
+.grows .spenta{opacity:.3}
+/* righe con il nome dell'oggetto sotto la sigla */
+.gantt.nomi{grid-template-columns:70px minmax(0,1fr);--rh:36px}
+.gantt.nomi .grows span{display:flex;flex-direction:column;justify-content:center;line-height:1.25;font-weight:600;color:var(--ink-hi)}
+.grows small{font-size:10px;font-weight:400;color:var(--ink-2)}
+.garea{position:relative;overflow:hidden;border-right:1px solid var(--rule);background:linear-gradient(90deg,var(--rule) 1px,transparent 1px) 0 0/calc(100% / var(--cols)) 100%}
+.ggrid{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));grid-template-rows:repeat(var(--rows),var(--rh));row-gap:4px}
+.bx{min-width:0;overflow:hidden;margin-inline:1px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:10.5px;font-weight:600;line-height:1;white-space:nowrap;color:var(--on-neon);background:var(--c)}
+@media (max-width:520px){.bx{font-size:8.5px;letter-spacing:-.06em;margin-inline:.5px}}
+.bx.vuoto{background:var(--cs);border:1.5px solid var(--c)}
+.bx.coda{background:repeating-linear-gradient(135deg,var(--cs) 0 5px,transparent 5px 10px);border:1px dashed var(--c);color:var(--c)}
+.curtain{position:absolute;top:0;bottom:0;right:0;left:0;background:var(--surface);border-left:2px solid var(--yl);box-shadow:0 0 16px 1px var(--yl);pointer-events:none}
+.curtain[hidden]{display:none}
+.gaxis{position:relative;height:16px;font-family:var(--f-mono);font-size:10.5px;color:var(--ink-3)}
+.gaxis span{position:absolute;top:0;transform:translateX(-50%)}
+.asse{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:right;margin-top:-8px}
+.esito{font-size:15px;color:var(--ink-2)}
+.esito b{font-family:var(--f-mono);color:var(--a)}
+/* --- frame in fila e alternati --- */
+.muxrow{display:flex;flex-direction:column;gap:8px}
+.mux{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:3px}
+.mux .c{aspect-ratio:1 / 1.3;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:11px;font-weight:600;color:var(--on-neon);background:var(--c);border:1px solid var(--c)}
+.mux .c.todo{background:transparent;border-style:dashed;color:var(--c);opacity:.4}
+.pop{animation:pop .28s ease-out}
 /* --- pacchetti: il colore dice lo stream, l'etichetta dice lo stato --- */
-.s-css{--c:var(--navy);--cs:var(--navy-soft)}
-.s-js{--c:var(--accent);--cs:var(--accent-soft)}
-.s-img{--c:var(--ok);--cs:var(--ok-soft)}
 .fila{display:flex;flex-wrap:wrap;gap:8px}
-.pkt{font-family:var(--f-mono);font-size:13px;font-weight:600;width:76px;padding:7px 0 6px;border-radius:4px;border:1.5px solid var(--c);background:var(--cs);color:var(--ink);text-align:center;line-height:1.3}
+/* consegnato = pieno; semitrasparenti solo i pulsanti della fila #wire */
+.pkt{font-family:var(--f-mono);font-size:13px;font-weight:600;width:76px;padding:7px 0 6px;border-radius:6px;border:1.5px solid var(--c);background:var(--c);color:var(--on-neon);text-align:center;line-height:1.3}
 .pkt .n{display:block}
-.pkt small{display:block;font-weight:400;font-size:10.5px;color:var(--ink-2)}
-button.pkt{cursor:pointer}
-button.pkt:hover{box-shadow:0 0 0 3px var(--cs)}
+.pkt small{display:block;font-weight:500;font-size:10.5px;color:inherit}
+button.pkt{cursor:pointer;background:var(--cs);color:var(--ink-hi)}
+button.pkt small{font-weight:400;color:var(--ink-2)}
+button.pkt:hover{box-shadow:0 0 0 3px var(--cs),0 0 18px -2px var(--c)}
+button.pkt[aria-disabled="true"]{cursor:not-allowed;opacity:.45}
+button.pkt[aria-disabled="true"]:hover{box-shadow:none}
 .pkt.lost{border-style:dashed;background:transparent;color:var(--ink-3)}
 .pkt.lost .n{text-decoration:line-through}
 .pkt.wait{border-style:dashed;background:transparent;color:var(--ink-2)}
-.pkt.lost small,.pkt.wait small{color:var(--ink-3)}
-.panel>.fila{margin-top:14px}
-.panel>.sub{margin-top:12px}
-/* --- simulazione --- */
-.sim{display:flex;flex-direction:column;gap:18px}
-.legenda{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--ink-2)}
-.sw{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--cs);border:1.5px solid var(--c)}
-.arrivo{background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
-.arrivo .eyebrow{color:var(--ink-2)}
-.verdetto{font-size:14.5px;color:var(--ink-2);line-height:1.5}
-.verdetto b{color:var(--ink)}
+.pkt.todo{border-style:dotted;background:transparent;color:var(--ink-hi);opacity:.32}
+.pkt.todo small{font-weight:400;color:var(--ink-2)}
+.pkt.retx{box-shadow:0 0 16px -2px var(--c)}
+.pkt.lost small,.pkt.wait small{font-weight:400;color:var(--or)}
+.verdetto{font-size:14.5px;color:var(--ink-2);line-height:1.5;min-height:3em}
+.verdetto b{color:var(--ink-hi)}
 /* --- frame HTTP/2 --- */
-.framewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface);padding:14px;box-shadow:var(--shadow)}
+.framewrap{overflow-x:auto;border:1px solid var(--rule-strong);border-radius:10px;background:var(--surface);padding:14px}
 .frame,.payload{min-width:600px;font-family:var(--f-mono);font-size:13px}
 .frame{display:flex}
-.frame>div{padding:9px 8px;border:1px solid var(--rule-strong);border-left-width:0;background:var(--navy-soft);min-width:0}
+.frame>div{padding:9px 8px;border:1px solid var(--a);border-left-width:0;background:var(--as);min-width:0}
 .frame>div:first-child{border-left-width:1px}
-.frame b,.payload b{display:block;font-weight:600;color:var(--ink)}
+.frame b,.payload b{display:block;font-weight:600;color:var(--ink-hi)}
 .frame small,.payload small{font-size:11.5px;color:var(--ink-2)}
 .payload{padding:9px 8px;border:1px solid var(--rule-strong);border-top-width:0;background:var(--surface-2)}
 /* --- tabelle --- */
-.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+.tablewrap{overflow-x:auto;border:1px solid var(--rule-strong);border-radius:10px;background:var(--surface)}
 table{border-collapse:collapse;width:100%;font-size:14.5px}
 caption{text-align:left;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);padding:12px 14px 10px}
 th,td{padding:8px 14px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:top}
-thead th{font-family:var(--f-mono);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);border-bottom:1px solid var(--rule-strong);white-space:nowrap}
-tbody th{font-weight:600;color:var(--ink)}
+thead th{font-family:var(--f-mono);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--a);background:var(--surface-2);border-bottom:1px solid var(--rule-strong);white-space:nowrap}
+tbody th{font-weight:600;color:var(--ink-hi)}
+tbody td{color:var(--ink-2)}
 tbody tr:last-child td,tbody tr:last-child th{border-bottom:none}
-td.mono{font-family:var(--f-mono);white-space:nowrap}
-td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.mono{font-family:var(--f-mono);white-space:nowrap;color:var(--ink)}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink)}
+td b{font-family:var(--f-mono);color:var(--a)}
 table.largo{min-width:520px}
 table.confronto{min-width:680px}
 /* --- handshake: un blocco = un round trip --- */
-.g-tcp{--c:var(--navy);--cs:var(--navy-soft)}
-.g-tls{--c:var(--accent);--cs:var(--accent-soft)}
-.g-quic{--c:var(--ok);--cs:var(--ok-soft)}
 .rtt{display:flex;flex-direction:column;gap:12px}
 .rtt .riga{display:grid;grid-template-columns:150px 1fr auto;gap:12px;align-items:center;font-size:15px}
 .rtt .giri{display:flex;gap:4px}
-.rtt .giri span{font-family:var(--f-mono);font-size:12px;font-weight:600;width:88px;padding:6px 0;text-align:center;border-radius:3px;border:1.5px solid var(--c);background:var(--cs)}
+.rtt .giri span{font-family:var(--f-mono);font-size:12px;font-weight:600;width:88px;padding:6px 0;text-align:center;border-radius:5px;border:1.5px solid var(--c);background:var(--cs);color:var(--ink-hi)}
 .rtt .tot{font-family:var(--f-mono);font-size:13px;color:var(--ink-2);white-space:nowrap}
 @media (max-width:600px){
   .rtt .riga{grid-template-columns:1fr auto;gap:6px 12px}
@@ -154,38 +223,55 @@ table.confronto{min-width:680px}
 .tre{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 @media (max-width:800px){.tre{grid-template-columns:1fr}}
 .pila{display:flex;flex-direction:column;gap:6px;margin-top:14px}
-.strato{font-family:var(--f-mono);font-size:14px;font-weight:600;padding:9px 12px;border-radius:4px;border:1px solid var(--rule-strong);background:var(--surface-2);color:var(--ink)}
+.strato{font-family:var(--f-mono);font-size:14px;font-weight:600;padding:9px 12px;border-radius:6px;border:1px solid var(--rule-strong);background:var(--surface-2);color:var(--ink-hi)}
 .strato small{display:block;font-family:var(--f-body);font-weight:400;font-size:13px;color:var(--ink-2)}
-.strato.hl{border-color:var(--navy);background:var(--navy-soft)}
-.strato.nuovo{border-color:var(--accent);background:var(--accent-soft)}
+.strato.hl{border-color:var(--mg);background:var(--mg-s)}
+.strato.nuovo{border-color:var(--gr);background:var(--gr-s);box-shadow:0 0 22px -8px var(--gr)}
 /* --- fonti --- */
 ul.fonti{margin:0;padding-left:1.2em;font-size:14px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
 ul.fonti li::marker{color:var(--ink-3)}
 ul.fonti a{overflow-wrap:anywhere}
 footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font-size:14px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <marker id="ah-tcp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path class="ah k-tcp" d="M0 0L10 5L0 10z"/></marker>
+  <marker id="ah-tls" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path class="ah k-tls" d="M0 0L10 5L0 10z"/></marker>
+  <marker id="ah-quic" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path class="ah k-quic" d="M0 0L10 5L0 10z"/></marker>
+  <marker id="ah-http" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path class="ah k-http" d="M0 0L10 5L0 10z"/></marker>
+</defs></svg>
 <div class="page">
 
 <header class="hero">
   <span class="eyebrow">5 TPSI &middot; Reti e protocolli &middot; 04</span>
-  <h1>Da HTTP/1.1 a <em>HTTP/3</em></h1>
+  <h1>Da HTTP/1.0 a <em>HTTP/3</em></h1>
   <p class="lede">La semantica di HTTP è la stessa in tutte le versioni: metodi, header, codici di stato e URL sono quelli di HTTP/1.1, che è del 1997. Quello che cambia a ogni versione è il modo in cui i messaggi viaggiano sulla rete. Ogni versione risolve un blocco della precedente e ne scopre uno più in basso.</p>
+  <p class="sub">Le figure con i pulsanti si muovono: <b>Avvia</b> le fa scorrere, <b>Passo</b> avanza di un evento, <b>Mostra tutto</b> le completa.</p>
+  <ol class="linea" aria-label="Le versioni di HTTP">
+    <li class="k-or"><a href="#s2"><span class="anno">1996</span><b>HTTP/1.0</b><span>una connessione TCP per ogni oggetto</span></a></li>
+    <li class="k-tcp"><a href="#s2"><span class="anno">1997</span><b>HTTP/1.1</b><span>connessione persistente, risposte in fila</span></a></li>
+    <li class="k-http"><a href="#s5"><span class="anno">2015</span><b>HTTP/2</b><span>stream intrecciati su una connessione TCP</span></a></li>
+    <li class="k-quic"><a href="#s7"><span class="anno">2022</span><b>HTTP/3</b><span>stream dentro il trasporto: QUIC su UDP</span></a></li>
+  </ol>
 </header>
 
 <nav class="toc" aria-label="Indice">
-  <a href="#s1"><span>01</span>HTTP/1.1</a>
-  <a href="#s2"><span>02</span>HTTP/2</a>
-  <a href="#s3"><span>03</span>Il problema che resta</a>
-  <a href="#s4"><span>04</span>QUIC</a>
-  <a href="#s5"><span>05</span>I livelli</a>
-  <a href="#s6"><span>06</span>Riepilogo</a>
+  <a href="#s1"><span>01</span>HTTP/1.x</a>
+  <a href="#s2"><span>02</span>Persistenti o no</a>
+  <a href="#s3"><span>03</span>Parallele</a>
+  <a href="#s4"><span>04</span>HOL in HTTP/1.1</a>
+  <a href="#s5"><span>05</span>HTTP/2</a>
+  <a href="#s6"><span>06</span>HOL su TCP</a>
+  <a href="#s7"><span>07</span>QUIC</a>
+  <a href="#s8"><span>08</span>I livelli</a>
+  <a href="#s9"><span>09</span>Riepilogo</a>
   <a href="#fonti"><span>&rarr;</span>Fonti</a>
 </nav>
 
-<section id="s1">
-  <div class="sec-head"><span class="num">01</span><h2>HTTP/1.1: testo ASCII, una richiesta alla volta</h2></div>
+<section id="s1" class="a-cy">
+  <div class="sec-head"><span class="num">01</span><h2>HTTP/1.x: testo ASCII, una richiesta alla volta</h2></div>
   <div class="stack">
     <div class="col">
       <p>Il messaggio è testo leggibile. Sul filo viaggiano comunque byte, ma sono i codici ASCII dei caratteri: la parola <code>GET</code> occupa tre byte.</p>
@@ -198,47 +284,213 @@ Accept: text/html<span class="c">\r\n</span>
 <span class="c">byte sul filo:</span>  <span class="b">47 45 54 20 2F 6F 72 61 72 69 6F ...</span>
 <span class="c">carattere:       G  E  T sp  /  o  r  a  r  i  o      (sp = spazio)</span></pre>
     <div class="col">
-      <p>HTTP/1.0 apriva una connessione TCP per ogni file e la chiudeva subito dopo. HTTP/1.1 la tiene aperta (<b>connessione persistente</b>, o keep-alive) e la riusa per i file successivi: si risparmia l'handshake, ma i file passano comunque uno dopo l'altro.</p>
-      <p>Su una connessione TCP passa una sola richiesta per volta: la risposta successiva parte solo quando la precedente è finita. Se la prima risorsa è lenta, le altre aspettano in coda. È il <b>head-of-line blocking a livello applicativo</b>.</p>
-    </div>
-    <div class="panel">
-      <h3>Una connessione, tre risorse</h3>
-      <div class="fila">
-        <span class="pkt s-css"><span class="n">CSS</span><small>risposta 1</small></span>
-        <span class="pkt s-css"><span class="n">CSS</span><small>risposta 1</small></span>
-        <span class="pkt s-css"><span class="n">CSS</span><small>risposta 1</small></span>
-        <span class="pkt s-js"><span class="n">JS</span><small>risposta 2</small></span>
-        <span class="pkt s-js"><span class="n">JS</span><small>risposta 2</small></span>
-        <span class="pkt s-img"><span class="n">IMG</span><small>risposta 3</small></span>
-      </div>
-      <p class="sub">Le risposte sono in fila. L'immagine non può partire prima che CSS e JS siano completi.</p>
-    </div>
-    <div class="col">
-      <p>Il rimedio dei browser: aprire fino a 6 connessioni TCP parallele per ogni host. Funziona, ma ogni connessione costa un handshake TCP e uno TLS, e gli header testuali vengono rispediti identici a ogni richiesta.</p>
+      <p>Una pagina è fatta di più oggetti: il file HTML, poi immagini, fogli di stile, script. Per ciascuno il browser manda una richiesta e aspetta la risposta. Il tempo si misura in <b>RTT</b> (round-trip time): l'andata e ritorno di un messaggio fra client e server. Nelle figure si conta solo quello, trascurando il tempo di trasmissione dei file.</p>
+      <p>Le versioni di HTTP si distinguono da quanti RTT servono per avere la pagina completa, e da che cosa succede quando qualcosa va storto.</p>
     </div>
   </div>
 </section>
 
-<section id="s2">
-  <div class="sec-head"><span class="num">02</span><h2>HTTP/2: frame binari e stream multiplexati</h2></div>
+<section id="s2" class="a-yl">
+  <div class="sec-head"><span class="num">02</span><h2>Connessioni non persistenti e persistenti</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>HTTP/1.0 apriva una connessione TCP per ogni file e la chiudeva subito dopo: è la <b>connessione non persistente</b>. Ogni oggetto costa 2 RTT: uno per aprire la connessione, uno per richiesta e risposta.</p>
+      <p>HTTP/1.1 la tiene aperta (<b>connessione persistente</b>, o keep-alive) e la riusa per i file successivi: l'apertura si paga una volta sola, poi ogni oggetto costa 1 RTT.</p>
+    </div>
+
+    <div class="blocco">
+      <h3>Due oggetti dallo stesso server</h3>
+      <p class="sub">Un riquadro per scenario, ciascuno con i suoi comandi. La scala dei tempi è la stessa: il tempo scorre verso il basso.</p>
+      <div class="due">
+        <div class="panel fig" id="lad-np">
+          <span class="eyebrow">Non persistente &middot; HTTP/1.0</span>
+          <div class="ctl">
+            <button type="button" class="btn pri" data-act="play">Avvia</button>
+            <button type="button" class="btn" data-act="step">Passo</button>
+            <button type="button" class="btn" data-act="all">Mostra tutto</button>
+            <span class="count"></span>
+          </div>
+          <svg class="lad" id="lad-a" role="img" aria-label="Connessione non persistente: apertura TCP, richiesta e oggetto 1, chiusura; poi di nuovo apertura, richiesta e oggetto 2. In tutto 4 RTT."></svg>
+          <p class="now" aria-live="polite"></p>
+        </div>
+        <div class="panel fig" id="lad-p">
+          <span class="eyebrow">Persistente &middot; HTTP/1.1</span>
+          <div class="ctl">
+            <button type="button" class="btn pri" data-act="play">Avvia</button>
+            <button type="button" class="btn" data-act="step">Passo</button>
+            <button type="button" class="btn" data-act="all">Mostra tutto</button>
+            <span class="count"></span>
+          </div>
+          <svg class="lad" id="lad-b" role="img" aria-label="Connessione persistente: una sola apertura TCP, poi richiesta e oggetto 1, richiesta e oggetto 2. In tutto 3 RTT."></svg>
+          <p class="now" aria-live="polite"></p>
+        </div>
+      </div>
+      <div class="legenda">
+        <span class="k-tcp"><span class="sw"></span>apertura TCP</span>
+        <span class="k-http"><span class="sw"></span>messaggi HTTP</span>
+      </div>
+      <p class="sub">Nei diagrammi l'handshake TCP conta 1 RTT: il terzo messaggio, l'<code>ACK</code> del client, viaggia insieme alla prima <code>GET</code> (piggybacking). I pacchetti di chiusura (<code>FIN</code>/<code>ACK</code>) sono omessi per leggibilità.</p>
+    </div>
+
+    <div class="col">
+      <p>Con una pagina fatta di un file HTML e 10 immagini, una dopo l'altra: 11 connessioni e <b>22 RTT</b> con le non persistenti, 1 connessione e <b>12 RTT</b> con quella persistente.</p>
+    </div>
+    <div class="note">
+      <span class="eyebrow">Attenzione ai termini</span>
+      <p>Persistente è la connessione TCP: è una scelta sul trasporto. HTTP resta <b>stateless</b>: il server non ricorda nulla delle richieste precedenti, anche se arrivano sulla stessa connessione.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s3" class="a-mg">
+  <div class="sec-head"><span class="num">03</span><h2>Connessioni parallele: i due casi</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>Il rimedio dei browser alla fila: aprire più connessioni TCP verso lo stesso host, fino a 6, e scaricare un oggetto su ciascuna. Si può fare in due modi.</p>
+      <ul class="clean">
+        <li><b>Non persistenti.</b> Ogni oggetto apre la sua connessione e la chiude appena è arrivato: è il comportamento di HTTP/1.0.</li>
+        <li><b>Persistenti.</b> Le connessioni restano aperte e si riusano. In HTTP/1.0 il client lo deve chiedere con l'header <code>Connection: keep-alive</code>, un'estensione aggiunta in seguito. In HTTP/1.1 è il comportamento predefinito: per chiudere si manda <code>Connection: close</code>.</li>
+      </ul>
+    </div>
+
+    <div class="panel fig" id="par">
+      <div>
+        <h3>HTML + 10 immagini: quanto ci vuole</h3>
+        <p class="sub">Ogni riga è una connessione aperta nello stesso momento, ogni colonna vale 1 RTT. Scegli il tipo di connessione e quante tenerne in parallelo.</p>
+      </div>
+      <div class="scelte">
+        <div class="seg" role="group" aria-label="Tipo di connessione">
+          <button type="button" data-mode="np" aria-pressed="true">Non persistenti</button>
+          <button type="button" data-mode="p" aria-pressed="false">Persistenti</button>
+        </div>
+        <label class="cursore" for="par-n">Connessioni parallele: <b id="par-c">6</b>
+          <input type="range" id="par-n" min="1" max="6" step="1" value="6">
+        </label>
+      </div>
+      <p class="sub" id="par-desc"></p>
+      <div class="ctl">
+        <button type="button" class="btn pri" data-act="play">Avvia</button>
+        <button type="button" class="btn" data-act="step">Passo</button>
+        <button type="button" class="btn" data-act="all">Mostra tutto</button>
+        <span class="count"></span>
+      </div>
+      <div class="gantt">
+        <div class="grows" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+        <div class="garea"><div class="ggrid" id="par-grid"></div><div class="curtain" hidden></div></div>
+        <div></div>
+        <div class="gaxis" id="par-axis" aria-hidden="true"></div>
+      </div>
+      <p class="asse">tempo in RTT</p>
+      <div class="legenda">
+        <span class="k-tcp"><span class="sw vuoto"></span>apertura TCP (1 RTT)</span>
+        <span class="k-http"><span class="sw"></span>richiesta e oggetto (1 RTT): H = file HTML, 1-10 = immagini</span>
+      </div>
+      <p class="now" aria-live="polite"></p>
+      <p class="esito" id="par-stat"></p>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <caption>HTML + 10 immagini dallo stesso server</caption>
+        <thead><tr><th></th><th>Non persistenti</th><th>Persistenti</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">1 connessione per volta</th><td><b>22 RTT</b>, 11 aperture TCP</td><td><b>12 RTT</b>, 1 apertura TCP</td></tr>
+          <tr><th scope="row">6 connessioni parallele</th><td><b>6 RTT</b>, 11 aperture TCP</td><td><b>5 RTT</b>, 6 aperture TCP</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col">
+      <p>Funziona, ma ogni connessione costa un handshake TCP e uno TLS, occupa memoria su client e server, e gli header testuali vengono rispediti identici a ogni richiesta. E su ciascuna connessione gli oggetti passano comunque uno alla volta.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s4" class="a-or">
+  <div class="sec-head"><span class="num">04</span><h2>Il blocco in testa alla fila: HOL in HTTP/1.1</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>Su una connessione TCP le risposte passano una per volta: la successiva parte solo quando la precedente è finita. Se la prima risorsa è lenta, le altre aspettano in coda. È il <b>head-of-line blocking a livello applicativo</b>: chi è in testa alla fila blocca tutti quelli dietro.</p>
+      <p>Cambia anche il modo di leggere il grafico. Nelle sezioni precedenti si contavano solo gli RTT; qui l'asse orizzontale è il <b>tempo di trasmissione dei byte sul canale</b>, proporzionale alla dimensione del file: più l'oggetto è grande, più a lungo occupa la connessione.</p>
+    </div>
+
+    <div class="note">
+      <span class="eyebrow">E il pipelining?</span>
+      <p>HTTP/1.1 permette di mandare più richieste di seguito sulla stessa connessione, senza aspettare le risposte: è il <b>pipelining</b>, il caso della figura qui sotto. Il server però deve rispondere nell'ordine esatto in cui le richieste sono arrivate, quindi il blocco a livello applicativo resta.</p>
+    </div>
+
+    <div class="panel fig" id="hol">
+      <div>
+        <h3>Una connessione, quattro oggetti: O1 è grande</h3>
+        <p class="sub">O1 è un video, O2 un file JavaScript, O3 un file CSS, O4 un'immagine. Il client li ha chiesti tutti e quattro: il server li ha pronti, ma li spedisce nell'ordine delle richieste.</p>
+      </div>
+      <div class="ctl">
+        <button type="button" class="btn pri" data-act="play">Avvia</button>
+        <button type="button" class="btn" data-act="step">Passo</button>
+        <button type="button" class="btn" data-act="all">Mostra tutto</button>
+        <span class="count"></span>
+      </div>
+      <div class="gantt nomi" style="--cols:16;--rows:4">
+        <div class="grows" aria-hidden="true"><span>O1<small>video</small></span><span>O2<small>file JS</small></span><span>O3<small>file CSS</small></span><span>O4<small>immagine</small></span></div>
+        <div class="garea"><div class="ggrid" id="hol-grid"></div><div class="curtain" hidden></div></div>
+      </div>
+      <p class="asse">tempo &rarr;</p>
+      <div class="legenda">
+        <span class="k-or"><span class="sw coda"></span>pronto sul server, fermo in coda</span>
+        <span class="o1"><span class="sw"></span>in trasmissione</span>
+      </div>
+      <p class="now" aria-live="polite"></p>
+    </div>
+
+    <div class="col">
+      <p>Le connessioni parallele attenuano il problema, perché la fila si divide in 6, ma non lo eliminano: su ogni connessione resta una fila.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s5" class="a-cy">
+  <div class="sec-head"><span class="num">05</span><h2>HTTP/2: frame binari e stream multiplexati</h2></div>
   <div class="stack">
     <div class="col">
       <p>HTTP/2 tiene una sola connessione TCP e la divide in <b>stream</b>: ogni coppia richiesta/risposta ha il suo ID. I messaggi sono spezzati in <b>frame</b> binari, e frame di stream diversi si alternano sulla stessa connessione: è il <b>multiplexing</b>. Più file viaggiano insieme, non più uno dopo l'altro, e il browser non ha più bisogno di aprire connessioni parallele.</p>
+      <p>A chiedere i file è sempre il browser: legge l'HTML, scopre che servono CSS, JavaScript e immagini e li richiede tutti subito, uno stream per richiesta, senza aspettare le risposte. Il server risponde a tutte insieme, alternando i frame. Lo standard prevede anche il <b>server push</b> (il server manda un file prima che gli venga chiesto, annunciandolo con un frame <code>PUSH_PROMISE</code>), ma i browser principali lo hanno disattivato: in pratica non si usa.</p>
     </div>
-    <div class="panel">
-      <h3>Una connessione, tre stream intrecciati</h3>
-      <div class="fila">
-        <span class="pkt s-css"><span class="n">CSS</span><small>stream 1</small></span>
-        <span class="pkt s-js"><span class="n">JS</span><small>stream 3</small></span>
-        <span class="pkt s-img"><span class="n">IMG</span><small>stream 5</small></span>
-        <span class="pkt s-css"><span class="n">CSS</span><small>stream 1</small></span>
-        <span class="pkt s-js"><span class="n">JS</span><small>stream 3</small></span>
-        <span class="pkt s-img"><span class="n">IMG</span><small>stream 5</small></span>
+
+    <div class="panel fig" id="mux">
+      <div>
+        <h3>Gli stessi quattro oggetti, 16 frame</h3>
+        <p class="sub">Ogni casella è un frame, il numero dice di quale oggetto: sono gli stessi di prima. O1 ne occupa 10, gli altri 2 ciascuno.</p>
       </div>
+      <div class="ctl">
+        <button type="button" class="btn pri" data-act="play">Avvia</button>
+        <button type="button" class="btn" data-act="step">Passo</button>
+        <button type="button" class="btn" data-act="all">Mostra tutto</button>
+        <span class="count"></span>
+      </div>
+      <div class="muxrow">
+        <span class="eyebrow">HTTP/1.1 &middot; risposte in fila</span>
+        <div class="mux" id="mux-a"></div>
+      </div>
+      <div class="muxrow">
+        <span class="eyebrow">HTTP/2 &middot; frame alternati</span>
+        <div class="mux" id="mux-b"></div>
+      </div>
+      <div class="legenda">
+        <span class="o1"><span class="sw"></span>1 = O1, video</span>
+        <span class="o2"><span class="sw"></span>2 = O2, file JS</span>
+        <span class="o3"><span class="sw"></span>3 = O3, file CSS</span>
+        <span class="o4"><span class="sw"></span>4 = O4, immagine</span>
+      </div>
+      <p class="now" aria-live="polite"></p>
+    </div>
+
+    <div class="col">
+      <p>Il blocco per risposta lenta sparisce: i tre oggetti piccoli sono completi dopo 8 frame, senza aspettare quello grande.</p>
     </div>
 
     <div class="blocco">
       <h3>Il frame: 9 byte di intestazione, poi il payload</h3>
+      <p>Un messaggio HTTP non diventa un solo frame. Gli header vanno in un frame <b>HEADERS</b>; il body, se c'è, in uno o più frame <b>DATA</b>. La prima riga di HTTP/1.1 (<code>GET /orario.html HTTP/1.1</code> oppure <code>HTTP/1.1 200 OK</code>) non esiste più: diventa header come <code>:method</code>, <code>:path</code> e <code>:status</code>. Ogni frame ha la sua intestazione di 9 byte.</p>
       <div class="framewrap">
         <div class="frame">
           <div style="flex:24 1 0"><b>Length</b><small>24 bit</small></div>
@@ -248,7 +500,7 @@ Accept: text/html<span class="c">\r\n</span>
         </div>
         <div class="payload"><b>Payload</b><small>header compressi (frame HEADERS) oppure byte del body (frame DATA)</small></div>
       </div>
-      <p>Lo <b>Stream ID</b> dice a quale coppia richiesta/risposta appartiene il frame: chi riceve mette insieme i frame con lo stesso ID e ricompone ogni messaggio.</p>
+      <p>Il campo <b>Type</b> dice di che frame si tratta (HEADERS, DATA e altri di servizio). Lo <b>Stream ID</b> dice a quale coppia richiesta/risposta appartiene il frame: chi riceve mette insieme i frame con lo stesso ID e ricompone ogni messaggio.</p>
     </div>
 
     <div class="blocco">
@@ -256,17 +508,17 @@ Accept: text/html<span class="c">\r\n</span>
       <p><code>GET</code> non diventa un numero che significa GET. È l'intera coppia <code>:method: GET</code> a essere sostituita da un indice in una tabella statica di 61 voci, nota a client e server.</p>
       <div class="tablewrap">
         <table class="largo">
-          <thead><tr><th>Indice</th><th>Header</th><th>Byte sul filo</th><th>In HTTP/1.1</th></tr></thead>
+          <thead><tr><th>Indice</th><th>Header</th><th>Byte sul filo (hex)</th><th>In HTTP/1.1</th></tr></thead>
           <tbody>
-            <tr><td class="num">2</td><td class="mono">:method: GET</td><td class="mono">82</td><td>3 byte (<span style="font-family:var(--f-mono)">GET</span>)</td></tr>
-            <tr><td class="num">3</td><td class="mono">:method: POST</td><td class="mono">83</td><td>4 byte</td></tr>
-            <tr><td class="num">4</td><td class="mono">:path: /</td><td class="mono">84</td><td>1 byte</td></tr>
-            <tr><td class="num">7</td><td class="mono">:scheme: https</td><td class="mono">87</td><td>implicito</td></tr>
-            <tr><td class="num">8</td><td class="mono">:status: 200</td><td class="mono">88</td><td>15 byte (<span style="font-family:var(--f-mono)">HTTP/1.1 200 OK</span>)</td></tr>
+            <tr><td class="num">2</td><td class="mono">:method: GET</td><td class="mono">0x82</td><td>3 byte (<span style="font-family:var(--f-mono)">GET</span>)</td></tr>
+            <tr><td class="num">3</td><td class="mono">:method: POST</td><td class="mono">0x83</td><td>4 byte</td></tr>
+            <tr><td class="num">4</td><td class="mono">:path: /</td><td class="mono">0x84</td><td>1 byte</td></tr>
+            <tr><td class="num">7</td><td class="mono">:scheme: https</td><td class="mono">0x87</td><td>implicito</td></tr>
+            <tr><td class="num">8</td><td class="mono">:status: 200</td><td class="mono">0x88</td><td>15 byte (<span style="font-family:var(--f-mono)">HTTP/1.1 200 OK</span>)</td></tr>
           </tbody>
         </table>
       </div>
-      <p>Il byte <code>82</code> in binario è <code>1000 0010</code>: il primo bit a 1 dice «header indicizzato», gli altri sette sono l'indice 2. Gli header che non sono in tabella, come <code>:path: /orario.html</code>, partono come stringa letterale ed entrano in una <b>tabella dinamica</b>: dalla richiesta successiva basta un indice anche per loro.</p>
+      <p>Il byte <code>0x82</code> (esadecimale) in binario è <code>1000 0010</code>: il primo bit a 1 dice «header indicizzato», gli altri sette sono l'indice 2. Gli header che non sono in tabella, come <code>:path: /orario.html</code>, partono come stringa letterale ed entrano in una <b>tabella dinamica</b>: dalla richiesta successiva basta un indice anche per loro.</p>
     </div>
 
     <div class="blocco">
@@ -283,7 +535,7 @@ Accept: text/html<span class="c">\r\n</span>
           </tbody>
         </table>
       </div>
-      <div class="note warn">
+      <div class="note a-yl">
         <span class="eyebrow">Due avvertenze</span>
         <p>Con <code>Content-Encoding: gzip</code> o <code>br</code> nei frame DATA viaggiano i byte compressi, quindi la <code>g</code> torna a essere <code>67</code> solo dopo la decompressione nel browser. E HTTP/2 in pratica gira sempre su TLS: in Wireshark si vede tutto cifrato.</p>
       </div>
@@ -291,38 +543,47 @@ Accept: text/html<span class="c">\r\n</span>
   </div>
 </section>
 
-<section id="s3">
-  <div class="sec-head"><span class="num">03</span><h2>Il problema che resta: TCP non sa che esistono gli stream</h2></div>
+<section id="s6" class="a-or">
+  <div class="sec-head"><span class="num">06</span><h2>Il problema che resta: TCP non sa che esistono gli stream</h2></div>
   <div class="stack">
     <div class="col">
+      <p>TCP è affidabile perché numera i byte e chiede conferma. Chi riceve risponde con un <code>ACK</code> che dice «ho ricevuto tutto fino a qui»; quello che non viene confermato entro un certo tempo viene ritrasmesso. Il mittente però non aspetta la conferma di un segmento prima di spedire il successivo: ne manda diversi di seguito, entro una finestra. Conferme e ritrasmissioni garantiscono la <b>consegna</b>; i numeri di sequenza garantiscono l'<b>ordine</b>, perché chi riceve passa all'applicazione solo byte in fila, senza buchi.</p>
       <p>TCP garantisce un unico flusso di byte in ordine e li numera con una sola sequenza per tutta la connessione: lo stream ID sta dentro i dati, dove TCP non guarda. Se un segmento si perde, TCP ritrasmette solo quello, ma nel frattempo <b>non consegna all'applicazione nulla di ciò che viene dopo</b>, anche se è già arrivato. Gli stream di HTTP/2 vivono sopra TCP, quindi la perdita di un pacchetto di uno stream li ferma tutti. È lo stesso head-of-line blocking di prima, sceso al livello di trasporto.</p>
     </div>
 
-    <div class="panel sim">
+    <div class="panel fig" id="sim">
       <div>
         <h3>Prova: scegli il pacchetto che si perde</h3>
-        <p class="sub" style="margin-top:6px">Nove pacchetti in viaggio, tre stream. Fai clic su un pacchetto per perderlo e confronta cosa riesce a consegnare subito ciascun trasporto.</p>
+        <p class="sub">Nove pacchetti in viaggio, tre stream. Fai clic su un pacchetto per perderlo (l'ultimo non si può scegliere: dopo non arriva nulla che possa restare fermo), poi premi Avvia: i pacchetti arrivano uno alla volta e ciascun trasporto consegna quello che può. «Ritrasmetti il perso» si attiva quando la perdita è avvenuta.</p>
       </div>
       <div class="fila" id="wire" role="group" aria-label="Pacchetti in viaggio"></div>
+      <div class="ctl">
+        <button type="button" class="btn pri" data-act="play">Avvia</button>
+        <button type="button" class="btn" data-act="step">Passo</button>
+        <button type="button" class="btn" data-act="all">Mostra tutto</button>
+        <button type="button" class="btn" id="retx">Ritrasmetti il perso</button>
+        <span class="count"></span>
+      </div>
       <div class="legenda">
-        <span class="s-css"><span class="sw"></span>stream CSS</span>
-        <span class="s-js"><span class="sw"></span>stream JS</span>
-        <span class="s-img"><span class="sw"></span>stream IMG</span>
+        <span class="s-css"><span class="sw vuoto"></span>stream CSS</span>
+        <span class="s-js"><span class="sw vuoto"></span>stream JS</span>
+        <span class="s-img"><span class="sw vuoto"></span>stream IMG</span>
         <span>pieno = consegnato al browser</span>
         <span>tratteggiato = fermo in attesa</span>
       </div>
       <div class="due">
-        <div class="arrivo">
+        <div class="lane">
           <span class="eyebrow">HTTP/2 su TCP</span>
           <div class="fila" id="tcp"></div>
-          <p class="verdetto" id="tcpVerdict" aria-live="polite"></p>
+          <p class="verdetto" id="tcpVerdict"></p>
         </div>
-        <div class="arrivo">
+        <div class="lane">
           <span class="eyebrow">HTTP/3 su QUIC</span>
           <div class="fila" id="quic"></div>
-          <p class="verdetto" id="quicVerdict" aria-live="polite"></p>
+          <p class="verdetto" id="quicVerdict"></p>
         </div>
       </div>
+      <p class="now" aria-live="polite"></p>
     </div>
 
     <div class="col">
@@ -332,24 +593,24 @@ Accept: text/html<span class="c">\r\n</span>
   </div>
 </section>
 
-<section id="s4">
-  <div class="sec-head"><span class="num">04</span><h2>QUIC: gli stream entrano nel livello di trasporto</h2></div>
+<section id="s7" class="a-gr">
+  <div class="sec-head"><span class="num">07</span><h2>QUIC: gli stream entrano nel livello di trasporto</h2></div>
   <div class="stack">
     <ul class="clean">
       <li><b>Una sola connessione.</b> UDP non ha connessioni, spedisce datagrammi. La connessione è di QUIC e contiene tutti gli stream: non se ne apre una per file.</li>
       <li><b>Ordinamento per stream.</b> Ogni pacchetto QUIC porta frame <code>STREAM</code> con lo stream ID e la posizione dei byte in quello stream. Ogni stream ha la propria numerazione: non esiste un ordine globale della connessione.</li>
-      <li><b>Perdita isolata.</b> Un pacchetto perso ferma solo gli stream di cui trasportava i dati. Gli altri vengono consegnati subito.</li>
+      <li><b>Perdita isolata.</b> Un pacchetto perso ferma solo gli stream di cui trasportava i dati. Gli altri vengono consegnati subito: è la colonna di destra della prova qui sopra.</li>
       <li><b>Si ritrasmettono i dati, non il pacchetto.</b> I dati persi ripartono in un pacchetto nuovo, con un nuovo numero.</li>
     </ul>
 
     <div class="blocco">
       <h3>Perché sopra UDP</h3>
       <div class="due">
-        <div class="note navy">
+        <div class="note">
           <span class="eyebrow">TCP sta nel kernel</span>
           <p>Per modificarlo bisognerebbe aggiornare i sistemi operativi di tutto il mondo. QUIC vive in user space, dentro browser e server, e si aggiorna con loro.</p>
         </div>
-        <div class="note navy">
+        <div class="note">
           <span class="eyebrow">I middlebox</span>
           <p>NAT, firewall e router lasciano passare in pratica solo TCP e UDP. Un protocollo di trasporto nuovo verrebbe scartato lungo il percorso.</p>
         </div>
@@ -360,10 +621,41 @@ Accept: text/html<span class="c">\r\n</span>
     <div class="blocco">
       <h3>Handshake: quanti round trip prima della prima richiesta</h3>
       <div class="panel rtt">
-        <div class="riga"><span>TCP + TLS 1.2</span><div class="giri"><span class="g-tcp">TCP</span><span class="g-tls">TLS</span><span class="g-tls">TLS</span></div><span class="tot">3 RTT</span></div>
-        <div class="riga"><span>TCP + TLS 1.3</span><div class="giri"><span class="g-tcp">TCP</span><span class="g-tls">TLS</span></div><span class="tot">2 RTT</span></div>
-        <div class="riga"><span>QUIC</span><div class="giri"><span class="g-quic">QUIC+TLS</span></div><span class="tot">1 RTT</span></div>
+        <div class="riga"><span>TCP + TLS 1.2</span><div class="giri"><span class="k-tcp">TCP</span><span class="k-tls">TLS</span><span class="k-tls">TLS</span></div><span class="tot">3 RTT</span></div>
+        <div class="riga"><span>TCP + TLS 1.3</span><div class="giri"><span class="k-tcp">TCP</span><span class="k-tls">TLS</span></div><span class="tot">2 RTT</span></div>
+        <div class="riga"><span>QUIC</span><div class="giri"><span class="k-quic">QUIC+TLS</span></div><span class="tot">1 RTT</span></div>
         <p class="sub">Ogni blocco è 1 RTT. QUIC integra TLS 1.3 e negozia trasporto e cifratura insieme. Verso un server già visitato può inviare dati subito (0-RTT).</p>
+      </div>
+
+      <div class="panel fig" id="hs">
+        <div>
+          <h3>Dall'apertura alla prima risposta</h3>
+          <p class="sub">A sinistra TCP + TLS 1.3, a destra QUIC: stesso orologio.</p>
+        </div>
+        <div class="ctl">
+          <button type="button" class="btn pri" data-act="play">Avvia</button>
+          <button type="button" class="btn" data-act="step">Passo</button>
+          <button type="button" class="btn" data-act="all">Mostra tutto</button>
+          <span class="count"></span>
+        </div>
+        <div class="due">
+          <div class="lane">
+            <span class="eyebrow">TCP + TLS 1.3 &middot; HTTP/2</span>
+            <svg class="lad" id="hs-a" role="img" aria-label="TCP più TLS 1.3: un RTT per aprire TCP, un RTT per TLS, poi richiesta e risposta. La risposta arriva dopo 3 RTT."></svg>
+          </div>
+          <div class="lane">
+            <span class="eyebrow">QUIC &middot; HTTP/3</span>
+            <svg class="lad" id="hs-b" role="img" aria-label="QUIC: un solo RTT per aprire la connessione e la cifratura, poi richiesta e risposta. La risposta arriva dopo 2 RTT."></svg>
+          </div>
+        </div>
+        <div class="legenda">
+          <span class="k-tcp"><span class="sw"></span>apertura TCP</span>
+          <span class="k-tls"><span class="sw"></span>TLS</span>
+          <span class="k-quic"><span class="sw"></span>QUIC con TLS 1.3</span>
+          <span class="k-http"><span class="sw"></span>messaggi HTTP</span>
+        </div>
+        <p class="now" aria-live="polite"></p>
+        <p class="sub">Come nella sezione 02, l'handshake TCP conta 1 RTT: il terzo messaggio, l'<code>ACK</code> del client, viaggia insieme al messaggio successivo (piggybacking), che qui è il <code>ClientHello</code>. I pacchetti di chiusura (<code>FIN</code>/<code>ACK</code>) sono omessi per leggibilità.</p>
       </div>
     </div>
 
@@ -374,8 +666,8 @@ Accept: text/html<span class="c">\r\n</span>
   </div>
 </section>
 
-<section id="s5">
-  <div class="sec-head"><span class="num">05</span><h2>I livelli: perché QUIC è un protocollo separato da HTTP</h2></div>
+<section id="s8" class="a-mg">
+  <div class="sec-head"><span class="num">08</span><h2>I livelli: perché QUIC è un protocollo separato da HTTP</h2></div>
   <div class="stack">
     <div class="tre">
       <div class="panel">
@@ -427,12 +719,13 @@ Accept: text/html<span class="c">\r\n</span>
         </table>
       </div>
       <p>Per questo è servita una versione nuova di HTTP: sopra QUIC, la parte di HTTP/2 che gestisce gli stream sarebbe un doppione. Cambia anche la compressione degli header, da HPACK a QPACK: HPACK presupponeva che gli header arrivassero tutti in ordine, cosa che QUIC non garantisce più.</p>
+      <p>C'è dell'altro: su TCP è HTTP/2 a occuparsi, a livello applicativo, anche del controllo di flusso dei singoli stream (frame <code>WINDOW_UPDATE</code>) e della loro chiusura (frame <code>RST_STREAM</code>). In HTTP/3 questi meccanismi sono delegati a QUIC.</p>
     </div>
   </div>
 </section>
 
-<section id="s6">
-  <div class="sec-head"><span class="num">06</span><h2>Le tre versioni a confronto</h2></div>
+<section id="s9" class="a-yl">
+  <div class="sec-head"><span class="num">09</span><h2>Le tre versioni a confronto</h2></div>
   <div class="tablewrap">
     <table class="confronto">
       <thead><tr><th></th><th>HTTP/1.1</th><th>HTTP/2</th><th>HTTP/3</th></tr></thead>
@@ -451,11 +744,12 @@ Accept: text/html<span class="c">\r\n</span>
   </div>
 </section>
 
-<section id="fonti">
+<section id="fonti" class="a-cy">
   <div class="sec-head"><span class="num">&rarr;</span><h2>Fonti</h2></div>
   <ul class="fonti">
-    <li><a href="https://www.rfc-editor.org/rfc/rfc9112.html">RFC 9112</a>, HTTP/1.1; <a href="https://www.rfc-editor.org/rfc/rfc9113.html">RFC 9113</a>, HTTP/2; <a href="https://www.rfc-editor.org/rfc/rfc7541.html">RFC 7541</a>, HPACK</li>
+    <li><a href="https://www.rfc-editor.org/rfc/rfc1945.html">RFC 1945</a>, HTTP/1.0; <a href="https://www.rfc-editor.org/rfc/rfc9112.html">RFC 9112</a>, HTTP/1.1; <a href="https://www.rfc-editor.org/rfc/rfc9113.html">RFC 9113</a>, HTTP/2; <a href="https://www.rfc-editor.org/rfc/rfc7541.html">RFC 7541</a>, HPACK</li>
     <li><a href="https://www.rfc-editor.org/rfc/rfc9000.html">RFC 9000</a>, QUIC; <a href="https://www.rfc-editor.org/rfc/rfc9114.html">RFC 9114</a>, HTTP/3; <a href="https://www.rfc-editor.org/rfc/rfc9204.html">RFC 9204</a>, QPACK</li>
+    <li>Esempi sulle connessioni ripresi dalle slide di J. F. Kurose e K. W. Ross, <i>Computer Networking: A Top-Down Approach</i>, capitolo 2</li>
   </ul>
 </section>
 
@@ -467,66 +761,470 @@ Accept: text/html<span class="c">\r\n</span>
 </div>
 
 <script>
-(function(){
-  var STREAM = ['css','js','img'];
-  var NOME = {css:'CSS', js:'JS', img:'IMG'};
-  var pacchetti = [];
-  for (var k = 0; k < 9; k++) pacchetti.push({n:k+1, s:STREAM[k % 3]});
-  var perso = 2;
+(function () {
+  var mq = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  function still() { return !!(mq && mq.matches); }
+  function $(id) { return document.getElementById(id); }
+  function each(items, fn) { for (var i = 0; i < items.length; i++) fn(items[i], i); }
+  function list(a) { if (a.length < 2) return a.join(''); return a.slice(0, -1).join(', ') + ' e ' + a[a.length - 1]; }
+  // una figura rotta non ferma le altre
+  function safe(fn) { try { fn(); } catch (e) { if (window.console) console.error(e); } }
 
-  var wire = document.getElementById('wire'),
-      tcp = document.getElementById('tcp'),
-      quic = document.getElementById('quic'),
-      tcpV = document.getElementById('tcpVerdict'),
-      quicV = document.getElementById('quicVerdict');
+  // tween(ms, fn, done): chiama fn(p) con p da 0 a 1; restituisce la funzione che lo annulla
+  function tween(ms, fn, done) {
+    var t0 = null, id = 0, dead = false;
+    function frame(t) {
+      if (dead) return;
+      if (t0 === null) t0 = t;
+      var p = (t - t0) / ms;
+      if (p >= 1) { fn(1); if (done) done(); return; }
+      fn(p < 0 ? 0 : p);
+      id = window.requestAnimationFrame(frame);
+    }
+    id = window.requestAnimationFrame(frame);
+    return function () { dead = true; window.cancelAnimationFrame(id); };
+  }
 
-  function chip(p, stato, bottone){
-    var el = document.createElement(bottone ? 'button' : 'span');
-    el.className = 'pkt s-' + p.s + (stato ? ' ' + stato : '');
-    var n = document.createElement('span');
-    n.className = 'n';
-    n.textContent = NOME[p.s] + ' ' + p.n;
-    var l = document.createElement('small');
-    l.textContent = stato === 'lost' ? 'perso' : stato === 'wait' ? 'in attesa' : bottone ? 'pacchetto' : 'consegnato';
-    el.appendChild(n); el.appendChild(l);
-    if (bottone){
-      el.type = 'button';
-      el.setAttribute('aria-pressed', stato === 'lost' ? 'true' : 'false');
-      el.setAttribute('aria-label', 'Perdi il pacchetto ' + p.n + ' dello stream ' + NOME[p.s]);
-      el.addEventListener('click', function(){
-        perso = p.n; disegna();
-        wire.children[p.n - 1].focus();
+  // player: Avvia / Passo / Mostra tutto. render(k, anim) disegna lo stato dopo k passi;
+  // a riposo k = n (figura completa). ms = attesa fra un passo e il successivo.
+  function player(root, n, render, ms) {
+    var k = n, timer = 0, playing = false;
+    var bPlay = root.querySelector('[data-act="play"]');
+    var bStep = root.querySelector('[data-act="step"]');
+    var bAll = root.querySelector('[data-act="all"]');
+    var count = root.querySelector('.count');
+    function draw(anim) {
+      render(k, !!anim && !still());
+      if (count) count.textContent = 'passo ' + k + ' di ' + n;
+      if (bPlay) bPlay.textContent = playing ? 'Pausa' : (k > 0 && k < n ? 'Riprendi' : 'Avvia');
+    }
+    function halt() { playing = false; clearTimeout(timer); }
+    function tick() {
+      if (k < n) k++;
+      if (k >= n) playing = false;
+      draw(true);
+      if (playing) timer = setTimeout(tick, ms);
+    }
+    if (bPlay) bPlay.addEventListener('click', function () {
+      if (playing) { halt(); draw(false); return; }
+      if (k >= n) k = 0;
+      playing = true;
+      draw(false);
+      timer = setTimeout(tick, k === 0 ? 450 : 80);
+    });
+    if (bStep) bStep.addEventListener('click', function () { halt(); k = k >= n ? 1 : k + 1; draw(true); });
+    if (bAll) bAll.addEventListener('click', function () { halt(); k = n; draw(false); });
+    draw(false);
+    return {
+      reset: function (m) { halt(); n = m; k = m; draw(false); },
+      rewind: function () { halt(); k = 0; draw(false); },
+      refresh: function () { draw(false); }
+    };
+  }
+
+  // scala(svg, nRtt, righe): disegna client, server e una freccia per riga (mezzo RTT ciascuna).
+  // riga = [passo, verso ('>' dal client, '<' dal server), tipo, etichetta, nota, tipo della nota]
+  var NS = 'http://www.w3.org/2000/svg';
+  function svgEl(name, attrs, text) {
+    var e = document.createElementNS(NS, name), a;
+    for (a in attrs) e.setAttribute(a, attrs[a]);
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function scala(svg, nRtt, righe) {
+    var XC = 66, XS = 318, Y0 = 46, H = 30, fine = Y0 + nRtt * 2 * H, i, y;
+    svg.setAttribute('viewBox', '0 0 340 ' + (fine + 22));
+    for (i = 0; i <= nRtt; i++) {
+      y = Y0 + i * 2 * H;
+      svg.appendChild(svgEl('line', { 'class': 'tick', x1: 44, y1: y, x2: 336, y2: y }));
+      svg.appendChild(svgEl('text', { x: 2, y: y + 4 }, i === 0 ? '0' : i + ' RTT'));
+    }
+    svg.appendChild(svgEl('line', { 'class': 'life', x1: XC, y1: 30, x2: XC, y2: fine + 10 }));
+    svg.appendChild(svgEl('line', { 'class': 'life', x1: XS, y1: 30, x2: XS, y2: fine + 10 }));
+    svg.appendChild(svgEl('text', { 'class': 'who', x: XC, y: 20, 'text-anchor': 'middle' }, 'client'));
+    svg.appendChild(svgEl('text', { 'class': 'who', x: XS, y: 20, 'text-anchor': 'middle' }, 'server'));
+    each(righe, function (r, j) {
+      var g = svgEl('g', { 'data-s': r[0] });
+      var y1 = Y0 + j * H, y2 = y1 + H, dalClient = r[1] === '>';
+      var xm = (XC + XS) / 2, ym = y1 + H / 2;
+      g.appendChild(svgEl('line', { 'class': 'ar k-' + r[2], x1: dalClient ? XC : XS, y1: y1, x2: dalClient ? XS : XC, y2: y2 }));
+      g.appendChild(svgEl('text', {
+        'class': 'lb k-' + r[2], x: xm, y: ym - 6, 'text-anchor': 'middle',
+        transform: 'rotate(' + (dalClient ? 6.8 : -6.8) + ' ' + xm + ' ' + ym + ')'
+      }, r[3]));
+      if (r[4]) each(r[4].split('|'), function (riga, m) {
+        g.appendChild(svgEl('text', { 'class': 'late nt k-' + r[5], x: 2, y: y2 + 17 + m * 12 }, riga));
+      });
+      svg.appendChild(g);
+    });
+  }
+
+  // diagramma a scala: i gruppi [data-s] compaiono al passo s, le frecce crescono dal mittente
+  function ladder(svg) {
+    var groups = svg.querySelectorAll('[data-s]');
+    var stops = [];
+    each(svg.querySelectorAll('line.ar'), function (ln) {
+      ln._a = [+ln.getAttribute('x1'), +ln.getAttribute('y1'), +ln.getAttribute('x2'), +ln.getAttribute('y2')];
+    });
+    function grow(ln, q) {
+      var a = ln._a;
+      ln.setAttribute('x2', a[0] + (a[2] - a[0]) * q);
+      ln.setAttribute('y2', a[1] + (a[3] - a[1]) * q);
+    }
+    return function (k, anim) {
+      each(stops, function (stop) { stop(); });
+      stops = [];
+      each(groups, function (g) {
+        var s = +g.getAttribute('data-s');
+        var lines = g.querySelectorAll('line.ar');
+        var late = g.querySelectorAll('.late');
+        each(lines, function (ln) { grow(ln, 1); });
+        each(late, function (el) { el.classList.remove('off'); });
+        g.classList.toggle('off', s > k);
+        if (!anim || s !== k || !lines.length) return;
+        each(late, function (el) { el.classList.add('off'); });
+        stops.push(tween(600, function (p) {
+          each(lines, function (ln) { grow(ln, p < 0.04 ? 0.04 : p); });
+        }, function () { each(late, function (el) { el.classList.remove('off'); }); }));
+      });
+    };
+  }
+
+  // tenda che scopre un grafico nel tempo: da `from` a `to`, frazioni 0..1 della larghezza
+  function curtain(el) {
+    var stop = null;
+    function put(x) { el.style.left = (x * 100) + '%'; }
+    return function (from, to, anim, ms, open) {
+      if (stop) { stop(); stop = null; }
+      if (!anim) { put(to); el.hidden = !!open; return; }
+      el.hidden = false;
+      put(from);
+      stop = tween(ms, function (p) { put(from + (to - from) * p); }, function () { el.hidden = !!open; });
+    };
+  }
+
+  // blocco di un grafico nel tempo: riga, colonna di partenza (da 0), durata in colonne
+  function blocco(grid, cls, label, row, start, span) {
+    var d = document.createElement('div');
+    d.className = 'bx ' + cls;
+    d.textContent = label;
+    d.style.gridRow = row;
+    d.style.gridColumn = (start + 1) + ' / span ' + (span || 1);
+    grid.appendChild(d);
+  }
+
+  // 02 - non persistente e persistente
+  safe(function () {
+    scala($('lad-a'), 4, [
+      [1, '>', 'tcp', 'SYN'], [2, '<', 'tcp', 'SYN + ACK', 'aperta', 'tcp'],
+      [3, '>', 'http', 'GET oggetto 1'], [4, '<', 'http', 'oggetto 1', 'chiusa', 'or'],
+      [5, '>', 'tcp', 'SYN'], [6, '<', 'tcp', 'SYN + ACK', 'aperta', 'tcp'],
+      [7, '>', 'http', 'GET oggetto 2'], [8, '<', 'http', 'oggetto 2', 'chiusa', 'or']
+    ]);
+    scala($('lad-b'), 4, [
+      [1, '>', 'tcp', 'SYN'], [2, '<', 'tcp', 'SYN + ACK', 'aperta', 'tcp'],
+      [3, '>', 'http', 'GET oggetto 1'], [4, '<', 'http', 'oggetto 1', 'resta|aperta', 'tcp'],
+      [5, '>', 'http', 'GET oggetto 2'], [6, '<', 'http', 'oggetto 2', 'finito', 'quic']
+    ]);
+    // ogni scenario ha il suo riquadro, i suoi comandi e la sua riga di stato
+    function scenario(id, svg, T) {
+      var root = $(id), now = root.querySelector('.now'), draw = ladder(svg);
+      player(root, T.length - 1, function (k, anim) { draw(k, anim); now.textContent = T[k]; }, 1000);
+    }
+    scenario('lad-np', $('lad-a'), [
+      'Si parte: nessuna connessione aperta.',
+      'Il client apre la connessione TCP: parte il SYN.',
+      'Dopo 1 RTT la connessione è aperta. Di HTTP non è ancora passato nulla.',
+      'Parte la richiesta dell\'oggetto 1.',
+      'Dopo 2 RTT l\'oggetto 1 è arrivato: la connessione si chiude.',
+      'Per l\'oggetto 2 serve una connessione nuova: un altro SYN.',
+      'Dopo 3 RTT la seconda connessione è aperta.',
+      'Solo ora parte la richiesta dell\'oggetto 2.',
+      'Oggetto 2 arrivato dopo 4 RTT: ogni oggetto costa 2 RTT.'
+    ]);
+    scenario('lad-p', $('lad-b'), [
+      'Si parte: nessuna connessione aperta.',
+      'Il client apre la connessione TCP: parte il SYN.',
+      'Dopo 1 RTT la connessione è aperta.',
+      'Parte la richiesta dell\'oggetto 1.',
+      'Dopo 2 RTT l\'oggetto 1 è arrivato: la connessione resta aperta.',
+      'Sulla stessa connessione parte subito la richiesta dell\'oggetto 2.',
+      'Oggetto 2 arrivato dopo 3 RTT: l\'apertura si paga una volta sola, poi ogni oggetto costa 1 RTT.'
+    ]);
+  });
+
+  // 03 - connessioni parallele, non persistenti o persistenti
+  safe(function () {
+    var COL = 22, IMG = 10;
+    var root = $('par'), grid = $('par-grid'), axis = $('par-axis');
+    var cover = curtain(root.querySelector('.curtain'));
+    var slider = $('par-n'), outC = $('par-c'), now = root.querySelector('.now'), stat = $('par-stat'), desc = $('par-desc');
+    var righe = root.querySelectorAll('.grows span'), modi = root.querySelectorAll('[data-mode]');
+    var mode = 'np', ends = [], total = 0, aperture = 0, p;
+    for (var t = 0; t <= COL; t += 2) {
+      var tacca = document.createElement('span');
+      tacca.textContent = t;
+      tacca.style.left = (t / COL * 100) + '%';
+      axis.appendChild(tacca);
+    }
+    function build() {
+      var c = +slider.value, n, i, best, start, free;
+      grid.innerHTML = '';
+      ends = [];
+      outC.textContent = c;
+      each(righe, function (r, j) { r.classList.toggle('spenta', j >= c); });
+      blocco(grid, 'k-tcp vuoto', '', 1, 0);
+      blocco(grid, 'k-http', 'H', 1, 1);
+      if (mode === 'np') {
+        // ogni immagine: 1 RTT di apertura + 1 RTT di richiesta e risposta, a gruppi di c
+        for (n = 0; n < IMG; n++) {
+          start = 2 + 2 * Math.floor(n / c);
+          blocco(grid, 'k-tcp vuoto', '', n % c + 1, start);
+          blocco(grid, 'k-http', n + 1, n % c + 1, start + 1);
+          ends.push(start + 2);
+        }
+        aperture = 1 + IMG;
+      } else {
+        // la prima connessione è già aperta; le altre si aprono quando arriva l'HTML
+        free = [2];
+        for (i = 1; i < c; i++) { free.push(3); blocco(grid, 'k-tcp vuoto', '', i + 1, 2); }
+        for (n = 0; n < IMG; n++) {
+          best = 0;
+          for (i = 1; i < c; i++) if (free[i] < free[best]) best = i;
+          blocco(grid, 'k-http', n + 1, best + 1, free[best]);
+          free[best]++;
+          ends.push(free[best]);
+        }
+        aperture = c;
+      }
+      total = Math.max.apply(null, ends);
+      stat.innerHTML = 'Tempo totale: <b>' + total + ' RTT</b> &middot; aperture TCP: <b>' + aperture + '</b>';
+      desc.textContent = mode === 'np'
+        ? 'Ogni immagine apre una connessione nuova (casella vuota: 1 RTT), ci passa un solo oggetto e la connessione si chiude. '
+          + (c === 1 ? 'Le immagini passano una alla volta: 2 RTT ciascuna.' : 'Le immagini partono a gruppi di ' + c + ': 2 RTT per gruppo.')
+        : c === 1 ? 'La connessione è già aperta: ha appena portato il file HTML e non si chiude. Le immagini passano tutte da lì, una per RTT.'
+        : 'La connessione 1 è già aperta: ha appena portato il file HTML e non si chiude. Il browser la usa subito per l\'immagine 1 e intanto apre '
+          + (c === 2 ? 'l\'altra connessione, pronta' : 'le altre ' + (c - 1) + ' connessioni, pronte')
+          + ' 1 RTT dopo. Per questo l\'immagine 1 arriva da sola, prima delle altre.';
+    }
+    // immagini la cui risposta finisce di arrivare al tempo k (numeri sempre consecutivi)
+    function arrivate(k) { var a = []; each(ends, function (e, n) { if (e === k) a.push(n + 1); }); return a; }
+    function gruppo(a) { return a.length === 1 ? '' + a[0] : a.length === 2 ? a[0] + ' e ' + a[1] : 'da ' + a[0] + ' a ' + a[a.length - 1]; }
+    function nomi(a) { return (a.length === 1 ? 'l\'immagine ' : 'le immagini ') + gruppo(a); }
+    function testo(k) {
+      var c = +slider.value, a = arrivate(k), q;
+      var fine = k >= total ? ' Pagina completa: ' + aperture + (aperture === 1 ? ' apertura TCP' : ' aperture TCP') + ' in tutto.' : '';
+      if (k === 0) return 'Tempo 0: il browser non ha ancora nulla.';
+      if (k === 1) return 'Dopo 1 RTT: la connessione 1 è aperta, parte la richiesta del file HTML.';
+      if (k === 2) return 'Dopo 2 RTT: arrivato il file HTML, il browser sa che servono 10 immagini. '
+        + (mode === 'np' ? 'La connessione si chiude: per le immagini se ne aprono di nuove.'
+          : c === 1 ? 'La connessione resta aperta e chiede subito l\'immagine 1.'
+          : 'La connessione 1 resta aperta e chiede subito l\'immagine 1; ' + (c === 2 ? 'l\'altra si deve ancora aprire.' : 'le altre ' + (c - 1) + ' si devono ancora aprire.'));
+      if (!a.length) {
+        q = arrivate(k + 1);
+        if (!q.length) return 'Dopo ' + k + ' RTT.' + fine;
+        return 'Dopo ' + k + ' RTT: ' + (q.length === 1
+          ? 'aperta 1 connessione nuova, parte la richiesta dell\'immagine ' + q[0] + '.'
+          : 'aperte ' + q.length + ' connessioni nuove, partono le richieste delle immagini ' + gruppo(q) + '.');
+      }
+      var arr = (a.length === 1 ? 'arrivata ' : 'arrivate ') + nomi(a);
+      if (mode === 'np') return 'Dopo ' + k + ' RTT: ' + arr + (a.length === 1 ? ', la connessione si chiude.' : ', le connessioni si chiudono.') + fine;
+      if (k === 3 && c > 1) return 'Dopo 3 RTT: ' + arr + ' sulla connessione 1, che era già aperta. Intanto ' + (c === 2 ? 'si è aperta l\'altra connessione.' : 'si sono aperte le altre ' + (c - 1) + ' connessioni.');
+      return 'Dopo ' + k + ' RTT: ' + arr + (a.length > 1 ? ', una per connessione.' : c === 1 ? ' sulla stessa connessione.' : '.') + fine;
+    }
+    function render(k, anim) {
+      cover(Math.max(0, k - 1) / COL, k / COL, anim, 400, k >= total);
+      now.textContent = testo(k);
+    }
+    build();
+    p = player(root, total, render, 480);
+    slider.addEventListener('input', function () { build(); p.reset(total); });
+    each(modi, function (b) {
+      b.addEventListener('click', function () {
+        mode = b.getAttribute('data-mode');
+        each(modi, function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+        build();
+        p.reset(total);
+      });
+    });
+  });
+
+  // 04 - head-of-line blocking in HTTP/1.1: 16 unità di tempo, un passo ne scopre 2
+  safe(function () {
+    var root = $('hol'), grid = $('hol-grid'), now = root.querySelector('.now');
+    var cover = curtain(root.querySelector('.curtain'));
+    blocco(grid, 'o1', 'O1', 1, 0, 10);
+    blocco(grid, 'k-or coda', 'in coda', 2, 0, 10); blocco(grid, 'o2', 'O2', 2, 10, 2);
+    blocco(grid, 'k-or coda', 'in coda', 3, 0, 12); blocco(grid, 'o3', 'O3', 3, 12, 2);
+    blocco(grid, 'k-or coda', 'in coda', 4, 0, 14); blocco(grid, 'o4', 'O4', 4, 14, 2);
+    function testo(k) {
+      if (k === 0) return 'Il client ha chiesto i quattro oggetti: sul server sono tutti pronti.';
+      if (k < 5) return 'Sta arrivando O1, il video. O2, O3 e O4 sono pronti, ma fermi in coda.';
+      if (k === 5) return 'O1 è arrivato per intero: solo ora parte O2.';
+      if (k === 6) return 'Arrivato O2: parte O3.';
+      if (k === 7) return 'Arrivato O3: parte O4.';
+      return 'Arrivato anche O4. I tre oggetti piccoli hanno aspettato quasi tutto il tempo dietro a O1.';
+    }
+    player(root, 8, function (k, anim) {
+      cover(Math.max(0, k - 1) / 8, k / 8, anim, 620, k >= 8);
+      now.textContent = testo(k);
+    }, 720);
+  });
+
+  // 05 - gli stessi 16 frame: in fila (HTTP/1.1) e alternati (HTTP/2)
+  safe(function () {
+    var root = $('mux'), now = root.querySelector('.now');
+    var size = [10, 2, 2, 2], resto = size.slice(), A = [], B = [], o, i;
+    for (o = 0; o < 4; o++) for (i = 0; i < size[o]; i++) A.push(o);
+    while (B.length < 16) for (o = 0; o < 4; o++) if (resto[o] > 0) { resto[o]--; B.push(o); }
+    function crea(host, seq) {
+      var celle = [];
+      each(seq, function (ogg) {
+        var c = document.createElement('span');
+        c.className = 'c o' + (ogg + 1);
+        c.textContent = ogg + 1;
+        host.appendChild(c);
+        celle.push(c);
+      });
+      return celle;
+    }
+    var ca = crea($('mux-a'), A), cb = crea($('mux-b'), B);
+    function completi(seq, k) {
+      var got = [0, 0, 0, 0], out = [], j;
+      for (j = 0; j < k; j++) got[seq[j]]++;
+      for (j = 0; j < 4; j++) if (got[j] === size[j]) out.push('O' + (j + 1));
+      return out.length ? list(out) : 'nessuno';
+    }
+    function stato(celle, k, anim) {
+      each(celle, function (c, j) {
+        c.classList.toggle('todo', j >= k);
+        c.classList.toggle('pop', anim && j === k - 1);
       });
     }
-    return el;
-  }
+    player(root, 16, function (k, anim) {
+      stato(ca, k, anim); stato(cb, k, anim);
+      now.textContent = k === 0 ? 'Nessun frame ancora trasmesso.'
+        : 'Dopo ' + k + ' frame. In fila: completi ' + completi(A, k) + '. Alternati: completi ' + completi(B, k) + '.';
+    }, 380);
+  });
 
-  function disegna(){
-    wire.innerHTML = ''; tcp.innerHTML = ''; quic.innerHTML = '';
-    var streamPerso = pacchetti[perso - 1].s;
-    var fermiTcp = 0, fermiQuic = 0, streamFermi = {};
-    pacchetti.forEach(function(p){
-      wire.appendChild(chip(p, p.n === perso ? 'lost' : '', true));
-      var t = '', q = '';
-      if (p.n === perso){ t = 'lost'; q = 'lost'; }
-      else if (p.n > perso){
-        t = 'wait'; fermiTcp++; streamFermi[p.s] = true;
-        if (p.s === streamPerso){ q = 'wait'; fermiQuic++; }
+  // 06 - un pacchetto perso: che cosa consegna TCP e che cosa consegna QUIC
+  safe(function () {
+    var STREAM = ['css', 'js', 'img'], NOME = { css: 'CSS', js: 'JS', img: 'IMG' };
+    var ETICHETTA = { lost: 'perso', wait: 'in attesa', todo: 'in viaggio', retx: 'ritrasmesso' };
+    var N = 9, pacchetti = [], perso = 2, fatto = false, p;
+    for (var i = 0; i < N; i++) pacchetti.push({ n: i + 1, s: STREAM[i % 3] });
+    var root = $('sim'), wire = $('wire'), tcp = $('tcp'), quic = $('quic');
+    var tcpV = $('tcpVerdict'), quicV = $('quicVerdict'), now = root.querySelector('.now');
+    var bRetx = $('retx');
+
+    function chip(pk, stato, bottone, pop) {
+      var el = document.createElement(bottone ? 'button' : 'span');
+      el.className = 'pkt s-' + pk.s + (stato ? ' ' + stato : '') + (pop ? ' pop' : '');
+      var n = document.createElement('span');
+      n.className = 'n';
+      n.textContent = NOME[pk.s] + ' ' + pk.n;
+      var l = document.createElement('small');
+      l.textContent = ETICHETTA[stato] || (bottone ? 'pacchetto' : 'consegnato');
+      el.appendChild(n); el.appendChild(l);
+      return el;
+    }
+    each(pacchetti, function (pk) {
+      var b = chip(pk, '', true);
+      b.type = 'button';
+      if (pk.n === N) {
+        // l'ultimo pacchetto non si può perdere: dopo non arriva nulla che possa restare fermo
+        b.setAttribute('aria-disabled', 'true');
+        b.setAttribute('aria-label', 'Pacchetto ' + pk.n + ' dello stream ' + NOME[pk.s] + ': è l\'ultimo, non si può scegliere come perso');
+      } else {
+        b.setAttribute('aria-label', 'Perdi il pacchetto ' + pk.n + ' dello stream ' + NOME[pk.s]);
       }
-      tcp.appendChild(chip(p, t, false));
-      quic.appendChild(chip(p, q, false));
+      b.addEventListener('click', function () {
+        if (pk.n === N) {
+          now.textContent = 'Il pacchetto ' + N + ' è l\'ultimo: dopo non arriva nulla che possa restare fermo. Scegline un altro.';
+          return;
+        }
+        perso = pk.n;
+        p.rewind();
+      });
+      wire.appendChild(b);
     });
-    var nStream = Object.keys(streamFermi).length;
-    tcpV.innerHTML = fermiTcp === 0
-      ? '<b>Nessun pacchetto arrivato resta fermo:</b> quello perso era l\'ultimo.'
-      : '<b>' + fermiTcp + (fermiTcp === 1 ? ' pacchetto arrivato ma fermo' : ' pacchetti arrivati ma fermi') + '</b>, '
-        + (nStream === 1 ? 'di 1 stream' : 'di ' + nStream + ' stream diversi') + '. '
-        + (fermiTcp === 1 ? 'Aspetta' : 'Aspettano') + ' la ritrasmissione del n. ' + perso + '.';
-    quicV.innerHTML = fermiQuic === 0
-      ? '<b>Nessun pacchetto arrivato resta fermo.</b> Solo lo stream ' + NOME[streamPerso] + ' attende il dato perso.'
-      : '<b>' + fermiQuic + (fermiQuic === 1 ? ' pacchetto fermo</b>, dello' : ' pacchetti fermi</b>, tutti dello') + ' stream ' + NOME[streamPerso] + '. Gli altri due stream proseguono.';
-  }
-  disegna();
+
+    function render(k, anim) {
+      if (k < N) fatto = false;               // la ritrasmissione vale solo a simulazione finita
+      bRetx.disabled = k < perso || fatto;     // serve solo dopo la perdita, e una volta sola
+      var streamPerso = pacchetti[perso - 1].s;
+      var fermiTcp = 0, fermiQuic = 0, streamFermi = {};
+      tcp.innerHTML = ''; quic.innerHTML = '';
+      each(pacchetti, function (pk, j) {
+        var b = wire.children[j], t = '', q = '';
+        b.classList.toggle('lost', pk.n === perso);
+        b.setAttribute('aria-pressed', pk.n === perso ? 'true' : 'false');
+        b.querySelector('small').textContent = pk.n === perso ? 'perso' : pk.n === N ? 'ultimo' : 'pacchetto';
+        if (pk.n > k) { t = 'todo'; q = 'todo'; }
+        else if (pk.n === perso) { t = fatto ? 'retx' : 'lost'; q = t; }
+        else if (pk.n > perso && !fatto) {
+          t = 'wait'; fermiTcp++; streamFermi[pk.s] = true;
+          if (pk.s === streamPerso) { q = 'wait'; fermiQuic++; }
+        }
+        tcp.appendChild(chip(pk, t, false, anim && pk.n === k));
+        quic.appendChild(chip(pk, q, false, anim && pk.n === k));
+      });
+      var nStream = Object.keys(streamFermi).length;
+      var arrivato = pacchetti[Math.max(k, 1) - 1], sA = NOME[arrivato.s], sP = NOME[streamPerso];
+      if (fatto) {
+        tcpV.innerHTML = '<b>Ritrasmissione arrivata:</b> ora TCP consegna in ordine anche i pacchetti che teneva fermi.';
+        quicV.innerHTML = '<b>Ritrasmissione arrivata:</b> si sblocca lo stream ' + sP + '. Gli altri due non si erano mai fermati.';
+        now.textContent = 'Il dato perso è stato ritrasmesso: la pagina è completa su tutti e due i trasporti.';
+        return;
+      }
+      if (k < perso) {
+        tcpV.innerHTML = k === 0 ? 'Niente da consegnare.' : '<b>Finora tutto consegnato:</b> i pacchetti arrivati sono in ordine.';
+        quicV.innerHTML = tcpV.innerHTML;
+      } else {
+        tcpV.innerHTML = fermiTcp === 0
+          ? '<b>Il n. ' + perso + ' non è arrivato.</b> Tutto ciò che arriverà dopo resterà fermo.'
+          : '<b>' + fermiTcp + (fermiTcp === 1 ? ' pacchetto arrivato ma fermo' : ' pacchetti arrivati ma fermi') + '</b>, '
+            + (nStream === 1 ? 'di 1 stream' : 'di ' + nStream + ' stream diversi') + '. '
+            + (fermiTcp === 1 ? 'Aspetta' : 'Aspettano') + ' la ritrasmissione del n. ' + perso + '.';
+        quicV.innerHTML = fermiQuic === 0
+          ? '<b>Nessun pacchetto arrivato resta fermo.</b> Solo lo stream ' + sP + ' attende il dato perso.'
+          : '<b>' + fermiQuic + (fermiQuic === 1 ? ' pacchetto fermo</b>, dello' : ' pacchetti fermi</b>, tutti dello') + ' stream ' + sP + '. Gli altri due stream proseguono.';
+      }
+      now.textContent = k === 0 ? 'Nove pacchetti in viaggio: nessuno è ancora arrivato.'
+        : k < perso ? 'Arrivato il pacchetto ' + k + ' (stream ' + sA + '): consegnato subito da tutti e due.'
+        : k === perso ? 'Il pacchetto ' + k + ' (stream ' + sA + ') si perde per strada.'
+        : arrivato.s === streamPerso ? 'Arrivato il pacchetto ' + k + ' (stream ' + sA + '): fermo in tutti e due, è lo stesso stream del pacchetto perso.'
+        : 'Arrivato il pacchetto ' + k + ' (stream ' + sA + '): TCP lo tiene nel buffer, QUIC lo consegna subito.';
+    }
+    p = player(root, N, render, 800);
+    bRetx.addEventListener('click', function () { fatto = true; p.reset(N); });
+  });
+
+  // 07 - handshake: TCP + TLS 1.3 e QUIC
+  safe(function () {
+    var root = $('hs'), now = root.querySelector('.now');
+    scala($('hs-a'), 3, [
+      [1, '>', 'tcp', 'SYN'], [2, '<', 'tcp', 'SYN + ACK', 'TCP|aperto', 'tcp'],
+      [3, '>', 'tls', 'ClientHello'], [4, '<', 'tls', 'ServerHello + Finished', 'cifrato', 'tls'],
+      [5, '>', 'http', 'GET'], [6, '<', 'http', 'risposta', 'finito', 'http']
+    ]);
+    scala($('hs-b'), 3, [
+      [1, '>', 'quic', 'Initial + ClientHello'], [2, '<', 'quic', 'ServerHello + Finished', 'aperto e|cifrato', 'quic'],
+      [3, '>', 'http', 'GET'], [4, '<', 'http', 'risposta', 'finito', 'quic']
+    ]);
+    var a = ladder($('hs-a')), b = ladder($('hs-b'));
+    var T = [
+      'Nessuna connessione.',
+      'TCP manda il SYN. QUIC manda subito il ClientHello: connessione e cifratura partono insieme.',
+      'Dopo 1 RTT: TCP è aperto, ma non ancora cifrato. QUIC è già pronto.',
+      'QUIC manda la richiesta GET. Su TCP comincia solo ora l\'apertura di TLS.',
+      'Dopo 2 RTT: con QUIC la risposta è arrivata. Con TCP + TLS è appena finita l\'apertura.',
+      'Su TCP + TLS solo ora parte la richiesta GET.',
+      'Risposta dopo 3 RTT con TCP + TLS 1.3, dopo 2 RTT con QUIC.'
+    ];
+    player(root, 6, function (k, anim) { a(k, anim); b(k, anim); now.textContent = T[k]; }, 1000);
+  });
 })();
 </script>
 </body>
