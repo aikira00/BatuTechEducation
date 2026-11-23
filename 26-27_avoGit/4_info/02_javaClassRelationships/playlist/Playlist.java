@@ -12,10 +12,6 @@ public class Playlist {
         this.quante = 0;                 // nasce vuota
     }
 
-    public String getNome() {
-        return nome;
-    }
-
     public void aggiungi(Canzone c) {
         if (quante == canzoni.length) {
             System.out.println(nome + ": playlist piena, " + c.getTitolo() + " resta fuori");
@@ -23,23 +19,45 @@ public class Playlist {
             System.out.println(nome + ": " + c.getTitolo() + " dura " + minSec(c.getDurata())
                     + ", restano solo " + minSec(15 * 60 - durataTotale()));
         } else {
-            canzoni[quante] = c;
+            int i = 0;
+            while (canzoni[i] != null) {          // cerca il primo posto libero
+                i++;
+            }
+            canzoni[i] = c;
             quante++;
+        }
+    }
+
+    public void togli(Canzone c) {
+        int i = 0;
+        //perché non equals?
+        while (i < canzoni.length && canzoni[i] != c) {   // cerca proprio quella canzone
+            i++;
+        }
+        if (i == canzoni.length) {
+            System.out.println(nome + ": " + c.getTitolo() + " non c'è");
+        } else {
+            canzoni[i] = null;                    // il posto resta vuoto: le altre non si muovono
+            quante--;
         }
     }
 
     public int durataTotale() {
         int totale = 0;
-        for (int i = 0; i < quante; i++) {
-            totale = totale + canzoni[i].getDurata();
+        for (int i = 0; i < canzoni.length; i++) {
+            if (canzoni[i] != null) {             // i posti vuoti si saltano
+                totale = totale + canzoni[i].getDurata();
+            }
         }
         return totale;
     }
 
     public void suona() {
         System.out.println("=== " + nome + " ===");
-        for (int i = 0; i < quante; i++) {
-            canzoni[i].suona();
+        for (int i = 0; i < canzoni.length; i++) {
+            if (canzoni[i] != null) {
+                canzoni[i].suona();
+            }
         }
     }
 

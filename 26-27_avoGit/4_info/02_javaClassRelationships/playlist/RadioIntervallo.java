@@ -31,11 +31,17 @@ public class RadioIntervallo {
         quintaA.aggiungi(ultimaFila);
         System.out.println(quintaA);
 
-        // 4. lunedì suona la 4B, martedì la 5A
+        // 4. la 5A cambia idea
+        quintaA.togli(ricreazione);
+        quintaA.togli(caffe);
+        quintaA.aggiungi(ultimaFila);
+        System.out.println(quintaA);
+
+        // 5. suonano tutte e due
         quartaB.suona();
         quintaA.suona();
 
-        // 5. gli ascolti
+        // 6. gli ascolti
         System.out.println(campanella);
         System.out.println(ultimaFila);
         System.out.println(interrogato);
