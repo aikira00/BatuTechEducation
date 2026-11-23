@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Da HTTP/1.1 a HTTP/3</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: una colonna di lettura (66ch) dentro una pagina larga 1080px; sezioni numerate come nelle pagine 01, 02 e 03 di 5 TPSI. */
+:root{
+  --bg:#EEF0F4; --surface:#FFFFFF; --surface-2:#F5F7FA;
+  --ink:#131A24; --ink-2:#3D4A5C; --ink-3:#6B7887;
+  --rule:#D3D9E2; --rule-strong:#B6C0CD;
+  --navy:#16324F; --navy-soft:rgba(22,50,79,.08);
+  --accent:#C81E4E; --accent-soft:rgba(200,30,78,.10); --accent-line:rgba(200,30,78,.35);
+  --ok:#0F6B5F; --ok-soft:rgba(15,107,95,.10);
+  --warn:#8A5A12; --warn-soft:rgba(138,90,18,.10);
+  --shadow:0 1px 2px rgba(19,26,36,.06), 0 8px 24px -12px rgba(19,26,36,.18);
+  --f-display:"IBM Plex Serif",Georgia,serif;
+  --f-body:"IBM Plex Sans",-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --measure:66ch; --wide:1080px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
+  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
+  --rule:#2A3644; --rule-strong:#3B4A5C;
+  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
+  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
+  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
+  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0E141B; --surface:#151D26; --surface-2:#1A2430;
+  --ink:#E6EBF2; --ink-2:#AEBACA; --ink-3:#7E8C9E;
+  --rule:#2A3644; --rule-strong:#3B4A5C;
+  --navy:#9FC4EC; --navy-soft:rgba(159,196,236,.10);
+  --accent:#FF7096; --accent-soft:rgba(255,112,150,.13); --accent-line:rgba(255,112,150,.40);
+  --ok:#54C3AC; --ok-soft:rgba(84,195,172,.12);
+  --warn:#E0A458; --warn-soft:rgba(224,164,88,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 96px}
+.page{max-width:var(--wide);margin:0 auto;padding-inline:clamp(0px,2vw,16px)}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:clamp(26px,3.6vw,34px);font-weight:600;color:var(--navy)}
+h3{font-size:clamp(19px,2.2vw,22px);font-weight:600;color:var(--navy)}
+p{margin:0}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lede{font-size:clamp(18px,2.1vw,20px);color:var(--ink-2);line-height:1.55}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.col{display:flex;flex-direction:column;gap:18px;max-width:var(--measure);min-width:0}
+.hero{padding:clamp(40px,7vw,72px) 0 clamp(20px,4vw,34px)}
+.hero h1{font-size:clamp(34px,5.6vw,58px);font-weight:700;letter-spacing:-.025em;margin:.28em 0 .34em;color:var(--navy)}
+.hero h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+.hero .lede{max-width:var(--measure)}
+section{padding:clamp(34px,5vw,56px) 0;border-top:1px solid var(--rule)}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:baseline;margin-bottom:24px}
+.num{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--accent);border:1px solid var(--accent-line);border-radius:3px;padding:2px 7px}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:clamp(18px,3vw,26px);box-shadow:var(--shadow);min-width:0}
+.stack{display:flex;flex-direction:column;gap:clamp(18px,3vw,28px)}
+.blocco{display:flex;flex-direction:column;gap:14px;min-width:0}
+.blocco>p{max-width:var(--measure)}
+.sub{color:var(--ink-2);font-size:15.5px;max-width:var(--measure)}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:16px 20px;border-radius:0 5px 5px 0;max-width:var(--measure)}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.note.navy{border-left-color:var(--navy);background:var(--navy-soft)}
+.note .eyebrow{display:block;margin-bottom:6px;color:var(--ink-2)}
+ul.clean{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:9px;color:var(--ink-2);max-width:var(--measure)}
+ul.clean li::marker{color:var(--accent)}
+ul.clean b{color:var(--ink)}
+code{font-family:var(--f-mono);font-size:.92em;background:var(--surface-2);border:1px solid var(--rule);border-radius:3px;padding:1px 5px}
+.due{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.due{grid-template-columns:1fr}}
+.due>.note{max-width:none}
+/* --- indice --- */
+.toc{display:flex;flex-wrap:wrap;gap:8px;padding:18px 0 4px;border-top:1px solid var(--rule)}
+.toc a{display:flex;align-items:baseline;gap:7px;font-size:14px;text-decoration:none;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:7px 13px}
+.toc a:hover{border-color:var(--accent-line);color:var(--ink)}
+.toc a span{font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:var(--accent)}
+/* --- messaggi e byte --- */
+pre{margin:0;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px 18px;overflow-x:auto;font-family:var(--f-mono);font-size:14px;line-height:1.6;color:var(--ink);box-shadow:var(--shadow)}
+pre .c{color:var(--ink-3)}
+pre .k{color:var(--navy);font-weight:600}
+pre .b{color:var(--accent)}
+/* --- pacchetti: il colore dice lo stream, l'etichetta dice lo stato --- */
+.s-css{--c:var(--navy);--cs:var(--navy-soft)}
+.s-js{--c:var(--accent);--cs:var(--accent-soft)}
+.s-img{--c:var(--ok);--cs:var(--ok-soft)}
+.fila{display:flex;flex-wrap:wrap;gap:8px}
+.pkt{font-family:var(--f-mono);font-size:13px;font-weight:600;width:76px;padding:7px 0 6px;border-radius:4px;border:1.5px solid var(--c);background:var(--cs);color:var(--ink);text-align:center;line-height:1.3}
+.pkt .n{display:block}
+.pkt small{display:block;font-weight:400;font-size:10.5px;color:var(--ink-2)}
+button.pkt{cursor:pointer}
+button.pkt:hover{box-shadow:0 0 0 3px var(--cs)}
+.pkt.lost{border-style:dashed;background:transparent;color:var(--ink-3)}
+.pkt.lost .n{text-decoration:line-through}
+.pkt.wait{border-style:dashed;background:transparent;color:var(--ink-2)}
+.pkt.lost small,.pkt.wait small{color:var(--ink-3)}
+.panel>.fila{margin-top:14px}
+.panel>.sub{margin-top:12px}
+/* --- simulazione --- */
+.sim{display:flex;flex-direction:column;gap:18px}
+.legenda{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--ink-2)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--cs);border:1.5px solid var(--c)}
+.arrivo{background:var(--surface-2);border:1px solid var(--rule);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.arrivo .eyebrow{color:var(--ink-2)}
+.verdetto{font-size:14.5px;color:var(--ink-2);line-height:1.5}
+.verdetto b{color:var(--ink)}
+/* --- frame HTTP/2 --- */
+.framewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface);padding:14px;box-shadow:var(--shadow)}
+.frame,.payload{min-width:600px;font-family:var(--f-mono);font-size:13px}
+.frame{display:flex}
+.frame>div{padding:9px 8px;border:1px solid var(--rule-strong);border-left-width:0;background:var(--navy-soft);min-width:0}
+.frame>div:first-child{border-left-width:1px}
+.frame b,.payload b{display:block;font-weight:600;color:var(--ink)}
+.frame small,.payload small{font-size:11.5px;color:var(--ink-2)}
+.payload{padding:9px 8px;border:1px solid var(--rule-strong);border-top-width:0;background:var(--surface-2)}
+/* --- tabelle --- */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+caption{text-align:left;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);padding:12px 14px 10px}
+th,td{padding:8px 14px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{font-family:var(--f-mono);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--surface-2);border-bottom:1px solid var(--rule-strong);white-space:nowrap}
+tbody th{font-weight:600;color:var(--ink)}
+tbody tr:last-child td,tbody tr:last-child th{border-bottom:none}
+td.mono{font-family:var(--f-mono);white-space:nowrap}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+table.largo{min-width:520px}
+table.confronto{min-width:680px}
+/* --- handshake: un blocco = un round trip --- */
+.g-tcp{--c:var(--navy);--cs:var(--navy-soft)}
+.g-tls{--c:var(--accent);--cs:var(--accent-soft)}
+.g-quic{--c:var(--ok);--cs:var(--ok-soft)}
+.rtt{display:flex;flex-direction:column;gap:12px}
+.rtt .riga{display:grid;grid-template-columns:150px 1fr auto;gap:12px;align-items:center;font-size:15px}
+.rtt .giri{display:flex;gap:4px}
+.rtt .giri span{font-family:var(--f-mono);font-size:12px;font-weight:600;width:88px;padding:6px 0;text-align:center;border-radius:3px;border:1.5px solid var(--c);background:var(--cs)}
+.rtt .tot{font-family:var(--f-mono);font-size:13px;color:var(--ink-2);white-space:nowrap}
+@media (max-width:600px){
+  .rtt .riga{grid-template-columns:1fr auto;gap:6px 12px}
+  .rtt .giri{grid-column:1 / -1;grid-row:2}
+  .rtt .giri span{width:80px}
+}
+/* --- pile dei protocolli --- */
+.tre{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:800px){.tre{grid-template-columns:1fr}}
+.pila{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.strato{font-family:var(--f-mono);font-size:14px;font-weight:600;padding:9px 12px;border-radius:4px;border:1px solid var(--rule-strong);background:var(--surface-2);color:var(--ink)}
+.strato small{display:block;font-family:var(--f-body);font-weight:400;font-size:13px;color:var(--ink-2)}
+.strato.hl{border-color:var(--navy);background:var(--navy-soft)}
+.strato.nuovo{border-color:var(--accent);background:var(--accent-soft)}
+/* --- fonti --- */
+ul.fonti{margin:0;padding-left:1.2em;font-size:14px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+ul.fonti li::marker{color:var(--ink-3)}
+ul.fonti a{overflow-wrap:anywhere}
+footer{padding:44px 0 0;border-top:1px solid var(--rule);color:var(--ink-3);font-size:14px}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <span class="eyebrow">5 TPSI &middot; Reti e protocolli &middot; 04</span>
+  <h1>Da HTTP/1.1 a <em>HTTP/3</em></h1>
+  <p class="lede">La semantica di HTTP è la stessa in tutte le versioni: metodi, header, codici di stato e URL sono quelli di HTTP/1.1, che è del 1997. Quello che cambia a ogni versione è il modo in cui i messaggi viaggiano sulla rete. Ogni versione risolve un blocco della precedente e ne scopre uno più in basso.</p>
+</header>
+
+<nav class="toc" aria-label="Indice">
+  <a href="#s1"><span>01</span>HTTP/1.1</a>
+  <a href="#s2"><span>02</span>HTTP/2</a>
+  <a href="#s3"><span>03</span>Il problema che resta</a>
+  <a href="#s4"><span>04</span>QUIC</a>
+  <a href="#s5"><span>05</span>I livelli</a>
+  <a href="#s6"><span>06</span>Riepilogo</a>
+  <a href="#fonti"><span>&rarr;</span>Fonti</a>
+</nav>
+
+<section id="s1">
+  <div class="sec-head"><span class="num">01</span><h2>HTTP/1.1: testo ASCII, una richiesta alla volta</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>Il messaggio è testo leggibile. Sul filo viaggiano comunque byte, ma sono i codici ASCII dei caratteri: la parola <code>GET</code> occupa tre byte.</p>
+    </div>
+<pre><span class="k">GET</span> /orario.html HTTP/1.1<span class="c">\r\n</span>
+Host: www.scuola.example<span class="c">\r\n</span>
+Accept: text/html<span class="c">\r\n</span>
+<span class="c">\r\n</span>
+
+<span class="c">byte sul filo:</span>  <span class="b">47 45 54 20 2F 6F 72 61 72 69 6F ...</span>
+<span class="c">carattere:       G  E  T sp  /  o  r  a  r  i  o      (sp = spazio)</span></pre>
+    <div class="col">
+      <p>HTTP/1.0 apriva una connessione TCP per ogni file e la chiudeva subito dopo. HTTP/1.1 la tiene aperta (<b>connessione persistente</b>, o keep-alive) e la riusa per i file successivi: si risparmia l'handshake, ma i file passano comunque uno dopo l'altro.</p>
+      <p>Su una connessione TCP passa una sola richiesta per volta: la risposta successiva parte solo quando la precedente è finita. Se la prima risorsa è lenta, le altre aspettano in coda. È il <b>head-of-line blocking a livello applicativo</b>.</p>
+    </div>
+    <div class="panel">
+      <h3>Una connessione, tre risorse</h3>
+      <div class="fila">
+        <span class="pkt s-css"><span class="n">CSS</span><small>risposta 1</small></span>
+        <span class="pkt s-css"><span class="n">CSS</span><small>risposta 1</small></span>
+        <span class="pkt s-css"><span class="n">CSS</span><small>risposta 1</small></span>
+        <span class="pkt s-js"><span class="n">JS</span><small>risposta 2</small></span>
+        <span class="pkt s-js"><span class="n">JS</span><small>risposta 2</small></span>
+        <span class="pkt s-img"><span class="n">IMG</span><small>risposta 3</small></span>
+      </div>
+      <p class="sub">Le risposte sono in fila. L'immagine non può partire prima che CSS e JS siano completi.</p>
+    </div>
+    <div class="col">
+      <p>Il rimedio dei browser: aprire fino a 6 connessioni TCP parallele per ogni host. Funziona, ma ogni connessione costa un handshake TCP e uno TLS, e gli header testuali vengono rispediti identici a ogni richiesta.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s2">
+  <div class="sec-head"><span class="num">02</span><h2>HTTP/2: frame binari e stream multiplexati</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>HTTP/2 tiene una sola connessione TCP e la divide in <b>stream</b>: ogni coppia richiesta/risposta ha il suo ID. I messaggi sono spezzati in <b>frame</b> binari, e frame di stream diversi si alternano sulla stessa connessione: è il <b>multiplexing</b>. Più file viaggiano insieme, non più uno dopo l'altro, e il browser non ha più bisogno di aprire connessioni parallele.</p>
+    </div>
+    <div class="panel">
+      <h3>Una connessione, tre stream intrecciati</h3>
+      <div class="fila">
+        <span class="pkt s-css"><span class="n">CSS</span><small>stream 1</small></span>
+        <span class="pkt s-js"><span class="n">JS</span><small>stream 3</small></span>
+        <span class="pkt s-img"><span class="n">IMG</span><small>stream 5</small></span>
+        <span class="pkt s-css"><span class="n">CSS</span><small>stream 1</small></span>
+        <span class="pkt s-js"><span class="n">JS</span><small>stream 3</small></span>
+        <span class="pkt s-img"><span class="n">IMG</span><small>stream 5</small></span>
+      </div>
+    </div>
+
+    <div class="blocco">
+      <h3>Il frame: 9 byte di intestazione, poi il payload</h3>
+      <div class="framewrap">
+        <div class="frame">
+          <div style="flex:24 1 0"><b>Length</b><small>24 bit</small></div>
+          <div style="flex:8 1 0"><b>Type</b><small>8 bit</small></div>
+          <div style="flex:8 1 0"><b>Flags</b><small>8 bit</small></div>
+          <div style="flex:32 1 0"><b>R + Stream ID</b><small>1 + 31 bit</small></div>
+        </div>
+        <div class="payload"><b>Payload</b><small>header compressi (frame HEADERS) oppure byte del body (frame DATA)</small></div>
+      </div>
+      <p>Lo <b>Stream ID</b> dice a quale coppia richiesta/risposta appartiene il frame: chi riceve mette insieme i frame con lo stesso ID e ricompone ogni messaggio.</p>
+    </div>
+
+    <div class="blocco">
+      <h3>Gli header: HPACK</h3>
+      <p><code>GET</code> non diventa un numero che significa GET. È l'intera coppia <code>:method: GET</code> a essere sostituita da un indice in una tabella statica di 61 voci, nota a client e server.</p>
+      <div class="tablewrap">
+        <table class="largo">
+          <thead><tr><th>Indice</th><th>Header</th><th>Byte sul filo</th><th>In HTTP/1.1</th></tr></thead>
+          <tbody>
+            <tr><td class="num">2</td><td class="mono">:method: GET</td><td class="mono">82</td><td>3 byte (<span style="font-family:var(--f-mono)">GET</span>)</td></tr>
+            <tr><td class="num">3</td><td class="mono">:method: POST</td><td class="mono">83</td><td>4 byte</td></tr>
+            <tr><td class="num">4</td><td class="mono">:path: /</td><td class="mono">84</td><td>1 byte</td></tr>
+            <tr><td class="num">7</td><td class="mono">:scheme: https</td><td class="mono">87</td><td>implicito</td></tr>
+            <tr><td class="num">8</td><td class="mono">:status: 200</td><td class="mono">88</td><td>15 byte (<span style="font-family:var(--f-mono)">HTTP/1.1 200 OK</span>)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Il byte <code>82</code> in binario è <code>1000 0010</code>: il primo bit a 1 dice «header indicizzato», gli altri sette sono l'indice 2. Gli header che non sono in tabella, come <code>:path: /orario.html</code>, partono come stringa letterale ed entrano in una <b>tabella dinamica</b>: dalla richiesta successiva basta un indice anche per loro.</p>
+    </div>
+
+    <div class="blocco">
+      <h3>Il body: HTTP/2 non lo tocca</h3>
+      <p>La pagina web viaggia nei frame DATA come sequenza opaca di byte. La codifica dei caratteri dipende da <code>Content-Type: text/html; charset=utf-8</code>, non dalla versione di HTTP.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Carattere</th><th>Byte in UTF-8</th><th>Lunghezza</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">g</td><td class="mono">67</td><td>1 byte</td></tr>
+            <tr><td class="mono">è</td><td class="mono">C3 A8</td><td>2 byte</td></tr>
+            <tr><td class="mono">€</td><td class="mono">E2 82 AC</td><td>3 byte</td></tr>
+            <tr><td class="mono">😀</td><td class="mono">F0 9F 98 80</td><td>4 byte</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note warn">
+        <span class="eyebrow">Due avvertenze</span>
+        <p>Con <code>Content-Encoding: gzip</code> o <code>br</code> nei frame DATA viaggiano i byte compressi, quindi la <code>g</code> torna a essere <code>67</code> solo dopo la decompressione nel browser. E HTTP/2 in pratica gira sempre su TLS: in Wireshark si vede tutto cifrato.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="sec-head"><span class="num">03</span><h2>Il problema che resta: TCP non sa che esistono gli stream</h2></div>
+  <div class="stack">
+    <div class="col">
+      <p>TCP garantisce un unico flusso di byte in ordine e li numera con una sola sequenza per tutta la connessione: lo stream ID sta dentro i dati, dove TCP non guarda. Se un segmento si perde, TCP ritrasmette solo quello, ma nel frattempo <b>non consegna all'applicazione nulla di ciò che viene dopo</b>, anche se è già arrivato. Gli stream di HTTP/2 vivono sopra TCP, quindi la perdita di un pacchetto di uno stream li ferma tutti. È lo stesso head-of-line blocking di prima, sceso al livello di trasporto.</p>
+    </div>
+
+    <div class="panel sim">
+      <div>
+        <h3>Prova: scegli il pacchetto che si perde</h3>
+        <p class="sub" style="margin-top:6px">Nove pacchetti in viaggio, tre stream. Fai clic su un pacchetto per perderlo e confronta cosa riesce a consegnare subito ciascun trasporto.</p>
+      </div>
+      <div class="fila" id="wire" role="group" aria-label="Pacchetti in viaggio"></div>
+      <div class="legenda">
+        <span class="s-css"><span class="sw"></span>stream CSS</span>
+        <span class="s-js"><span class="sw"></span>stream JS</span>
+        <span class="s-img"><span class="sw"></span>stream IMG</span>
+        <span>pieno = consegnato al browser</span>
+        <span>tratteggiato = fermo in attesa</span>
+      </div>
+      <div class="due">
+        <div class="arrivo">
+          <span class="eyebrow">HTTP/2 su TCP</span>
+          <div class="fila" id="tcp"></div>
+          <p class="verdetto" id="tcpVerdict" aria-live="polite"></p>
+        </div>
+        <div class="arrivo">
+          <span class="eyebrow">HTTP/3 su QUIC</span>
+          <div class="fila" id="quic"></div>
+          <p class="verdetto" id="quicVerdict" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <p>Su una rete senza perdite il problema non si vede. Su reti con perdite, come quelle mobili, HTTP/2 può andare peggio di HTTP/1.1: con 6 connessioni separate una perdita ne ferma una sola, con una connessione unica le ferma tutte.</p>
+      <p>HTTP non può rimediare da solo. Il blocco avviene nel kernel, sotto HTTP: i frame già arrivati restano nel buffer di TCP e HTTP/2 non li vede finché TCP non li consegna. L'interfaccia socket non permette di chiedere a TCP i byte arrivati fuori ordine. Restando su TCP nessuna modifica a HTTP elimina il problema: bisogna cambiare il trasporto.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s4">
+  <div class="sec-head"><span class="num">04</span><h2>QUIC: gli stream entrano nel livello di trasporto</h2></div>
+  <div class="stack">
+    <ul class="clean">
+      <li><b>Una sola connessione.</b> UDP non ha connessioni, spedisce datagrammi. La connessione è di QUIC e contiene tutti gli stream: non se ne apre una per file.</li>
+      <li><b>Ordinamento per stream.</b> Ogni pacchetto QUIC porta frame <code>STREAM</code> con lo stream ID e la posizione dei byte in quello stream. Ogni stream ha la propria numerazione: non esiste un ordine globale della connessione.</li>
+      <li><b>Perdita isolata.</b> Un pacchetto perso ferma solo gli stream di cui trasportava i dati. Gli altri vengono consegnati subito.</li>
+      <li><b>Si ritrasmettono i dati, non il pacchetto.</b> I dati persi ripartono in un pacchetto nuovo, con un nuovo numero.</li>
+    </ul>
+
+    <div class="blocco">
+      <h3>Perché sopra UDP</h3>
+      <div class="due">
+        <div class="note navy">
+          <span class="eyebrow">TCP sta nel kernel</span>
+          <p>Per modificarlo bisognerebbe aggiornare i sistemi operativi di tutto il mondo. QUIC vive in user space, dentro browser e server, e si aggiorna con loro.</p>
+        </div>
+        <div class="note navy">
+          <span class="eyebrow">I middlebox</span>
+          <p>NAT, firewall e router lasciano passare in pratica solo TCP e UDP. Un protocollo di trasporto nuovo verrebbe scartato lungo il percorso.</p>
+        </div>
+      </div>
+      <p>UDP fa solo da involucro. Affidabilità, controllo di flusso e controllo di congestione, che UDP non offre, sono reimplementati da QUIC.</p>
+    </div>
+
+    <div class="blocco">
+      <h3>Handshake: quanti round trip prima della prima richiesta</h3>
+      <div class="panel rtt">
+        <div class="riga"><span>TCP + TLS 1.2</span><div class="giri"><span class="g-tcp">TCP</span><span class="g-tls">TLS</span><span class="g-tls">TLS</span></div><span class="tot">3 RTT</span></div>
+        <div class="riga"><span>TCP + TLS 1.3</span><div class="giri"><span class="g-tcp">TCP</span><span class="g-tls">TLS</span></div><span class="tot">2 RTT</span></div>
+        <div class="riga"><span>QUIC</span><div class="giri"><span class="g-quic">QUIC+TLS</span></div><span class="tot">1 RTT</span></div>
+        <p class="sub">Ogni blocco è 1 RTT. QUIC integra TLS 1.3 e negozia trasporto e cifratura insieme. Verso un server già visitato può inviare dati subito (0-RTT).</p>
+      </div>
+    </div>
+
+    <div class="blocco">
+      <h3>Migrazione della connessione</h3>
+      <p>Una connessione TCP è identificata da IP e porta di entrambi i lati: se il telefono passa da Wi-Fi a 4G cambia IP e la connessione cade. QUIC identifica la connessione con un <b>Connection ID</b>, che resta valido anche quando l'indirizzo cambia.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s5">
+  <div class="sec-head"><span class="num">05</span><h2>I livelli: perché QUIC è un protocollo separato da HTTP</h2></div>
+  <div class="stack">
+    <div class="tre">
+      <div class="panel">
+        <h3>HTTP/1.1</h3>
+        <div class="pila">
+          <div class="strato hl">HTTP/1.1<small>testo, una richiesta per volta</small></div>
+          <div class="strato">TLS</div>
+          <div class="strato">TCP<small>affidabilità, ordine</small></div>
+          <div class="strato">IP</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>HTTP/2</h3>
+        <div class="pila">
+          <div class="strato hl">HTTP/2<small>frame, stream, HPACK</small></div>
+          <div class="strato">TLS</div>
+          <div class="strato">TCP<small>affidabilità, ordine unico</small></div>
+          <div class="strato">IP</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>HTTP/3</h3>
+        <div class="pila">
+          <div class="strato hl">HTTP/3<small>semantica HTTP, QPACK</small></div>
+          <div class="strato nuovo">QUIC<small>stream, affidabilità, congestione, TLS 1.3</small></div>
+          <div class="strato">UDP<small>solo involucro</small></div>
+          <div class="strato">IP</div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <p>Il primo QUIC di Google (2012-2013) era un blocco unico con trasporto, cifratura e HTTP insieme. L'IETF lo ha diviso in due standard: <b>QUIC</b> (RFC 9000), trasporto generico, e <b>HTTP/3</b> (RFC 9114), la mappatura di HTTP sopra QUIC.</p>
+    </div>
+    <ul class="clean">
+      <li><b>Riuso.</b> Su QUIC oggi girano anche il DNS (DoQ) e SMB, la condivisione di file di Windows, senza passare da HTTP.</li>
+      <li><b>Evoluzione indipendente.</b> Si può cambiare il controllo di congestione di QUIC senza toccare HTTP, e viceversa.</li>
+      <li><b>Stessa semantica.</b> Metodi, header e codici di stato sono identici nelle tre versioni.</li>
+    </ul>
+    <div class="blocco">
+      <h3>Gli stream cambiano livello</h3>
+      <p>QUIC non legge gli stream di HTTP/2, e HTTP/2 sopra QUIC non gira. Gli stream sono stati spostati da HTTP al trasporto: in HTTP/3 ogni coppia richiesta/risposta usa uno stream di QUIC, e i frame di HTTP/3 non hanno più lo stream ID.</p>
+      <div class="tablewrap">
+        <table class="largo">
+          <thead><tr><th></th><th>Chi gestisce gli stream</th><th>Dove sta lo stream ID</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">HTTP/2 su TCP</th><td>HTTP/2 (applicazione)</td><td>Nell'intestazione del frame HTTP/2: TCP non lo vede</td></tr>
+            <tr><th scope="row">HTTP/3 su QUIC</th><td>QUIC (trasporto)</td><td>Nel frame <code>STREAM</code> di QUIC</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Per questo è servita una versione nuova di HTTP: sopra QUIC, la parte di HTTP/2 che gestisce gli stream sarebbe un doppione. Cambia anche la compressione degli header, da HPACK a QPACK: HPACK presupponeva che gli header arrivassero tutti in ordine, cosa che QUIC non garantisce più.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s6">
+  <div class="sec-head"><span class="num">06</span><h2>Le tre versioni a confronto</h2></div>
+  <div class="tablewrap">
+    <table class="confronto">
+      <thead><tr><th></th><th>HTTP/1.1</th><th>HTTP/2</th><th>HTTP/3</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Formato</th><td>Testo ASCII</td><td>Frame binari</td><td>Frame binari</td></tr>
+        <tr><th scope="row">Header</th><td>Testo, ripetuti</td><td>HPACK</td><td>QPACK</td></tr>
+        <tr><th scope="row">Multiplexing</th><td>No, 6 connessioni</td><td>Sì, stream su 1 connessione</td><td>Sì, stream nel trasporto</td></tr>
+        <tr><th scope="row">Stream gestiti da</th><td>Non ci sono</td><td>HTTP/2</td><td>QUIC</td></tr>
+        <tr><th scope="row">Trasporto</th><td>TCP</td><td>TCP</td><td>QUIC su UDP</td></tr>
+        <tr><th scope="row">Cifratura</th><td>TLS opzionale</td><td>TLS di fatto obbligatorio</td><td>TLS 1.3 integrato</td></tr>
+        <tr><th scope="row">Blocco per risposta lenta</th><td>Sì</td><td>No</td><td>No</td></tr>
+        <tr><th scope="row">Blocco per pacchetto perso</th><td>Solo 1 connessione su 6</td><td>Tutti gli stream</td><td>Solo lo stream colpito</td></tr>
+        <tr><th scope="row">Cambio di rete</th><td>Connessione persa</td><td>Connessione persa</td><td>Connessione mantenuta</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="fonti">
+  <div class="sec-head"><span class="num">&rarr;</span><h2>Fonti</h2></div>
+  <ul class="fonti">
+    <li><a href="https://www.rfc-editor.org/rfc/rfc9112.html">RFC 9112</a>, HTTP/1.1; <a href="https://www.rfc-editor.org/rfc/rfc9113.html">RFC 9113</a>, HTTP/2; <a href="https://www.rfc-editor.org/rfc/rfc7541.html">RFC 7541</a>, HPACK</li>
+    <li><a href="https://www.rfc-editor.org/rfc/rfc9000.html">RFC 9000</a>, QUIC; <a href="https://www.rfc-editor.org/rfc/rfc9114.html">RFC 9114</a>, HTTP/3; <a href="https://www.rfc-editor.org/rfc/rfc9204.html">RFC 9204</a>, QPACK</li>
+  </ul>
+</section>
+
+<footer>
+  <span class="eyebrow">Nota sulla realizzazione</span>
+  <p style="margin-top:8px">Questa pagina è stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilità didattica e scientifica è integralmente sua. L'indicazione è fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var STREAM = ['css','js','img'];
+  var NOME = {css:'CSS', js:'JS', img:'IMG'};
+  var pacchetti = [];
+  for (var k = 0; k < 9; k++) pacchetti.push({n:k+1, s:STREAM[k % 3]});
+  var perso = 2;
+
+  var wire = document.getElementById('wire'),
+      tcp = document.getElementById('tcp'),
+      quic = document.getElementById('quic'),
+      tcpV = document.getElementById('tcpVerdict'),
+      quicV = document.getElementById('quicVerdict');
+
+  function chip(p, stato, bottone){
+    var el = document.createElement(bottone ? 'button' : 'span');
+    el.className = 'pkt s-' + p.s + (stato ? ' ' + stato : '');
+    var n = document.createElement('span');
+    n.className = 'n';
+    n.textContent = NOME[p.s] + ' ' + p.n;
+    var l = document.createElement('small');
+    l.textContent = stato === 'lost' ? 'perso' : stato === 'wait' ? 'in attesa' : bottone ? 'pacchetto' : 'consegnato';
+    el.appendChild(n); el.appendChild(l);
+    if (bottone){
+      el.type = 'button';
+      el.setAttribute('aria-pressed', stato === 'lost' ? 'true' : 'false');
+      el.setAttribute('aria-label', 'Perdi il pacchetto ' + p.n + ' dello stream ' + NOME[p.s]);
+      el.addEventListener('click', function(){
+        perso = p.n; disegna();
+        wire.children[p.n - 1].focus();
+      });
+    }
+    return el;
+  }
+
+  function disegna(){
+    wire.innerHTML = ''; tcp.innerHTML = ''; quic.innerHTML = '';
+    var streamPerso = pacchetti[perso - 1].s;
+    var fermiTcp = 0, fermiQuic = 0, streamFermi = {};
+    pacchetti.forEach(function(p){
+      wire.appendChild(chip(p, p.n === perso ? 'lost' : '', true));
+      var t = '', q = '';
+      if (p.n === perso){ t = 'lost'; q = 'lost'; }
+      else if (p.n > perso){
+        t = 'wait'; fermiTcp++; streamFermi[p.s] = true;
+        if (p.s === streamPerso){ q = 'wait'; fermiQuic++; }
+      }
+      tcp.appendChild(chip(p, t, false));
+      quic.appendChild(chip(p, q, false));
+    });
+    var nStream = Object.keys(streamFermi).length;
+    tcpV.innerHTML = fermiTcp === 0
+      ? '<b>Nessun pacchetto arrivato resta fermo:</b> quello perso era l\'ultimo.'
+      : '<b>' + fermiTcp + (fermiTcp === 1 ? ' pacchetto arrivato ma fermo' : ' pacchetti arrivati ma fermi') + '</b>, '
+        + (nStream === 1 ? 'di 1 stream' : 'di ' + nStream + ' stream diversi') + '. '
+        + (fermiTcp === 1 ? 'Aspetta' : 'Aspettano') + ' la ritrasmissione del n. ' + perso + '.';
+    quicV.innerHTML = fermiQuic === 0
+      ? '<b>Nessun pacchetto arrivato resta fermo.</b> Solo lo stream ' + NOME[streamPerso] + ' attende il dato perso.'
+      : '<b>' + fermiQuic + (fermiQuic === 1 ? ' pacchetto fermo</b>, dello' : ' pacchetti fermi</b>, tutti dello') + ' stream ' + NOME[streamPerso] + '. Gli altri due stream proseguono.';
+  }
+  disegna();
+})();
+</script>
+</body>
+</html>
