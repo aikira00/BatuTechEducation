@@ -620,6 +620,7 @@ Accept: text/html<span class="c">\r\n</span>
 
     <div class="blocco">
       <h3>Handshake: quanti round trip prima della prima richiesta</h3>
+      <p>HTTP da solo non cifra nulla. In HTTPS la cifratura è compito di <b>TLS</b>, un livello a sé tra TCP e HTTP: con HTTP/1.1 e HTTP/2 si apre prima TCP, poi TLS, e solo dopo parte la prima richiesta.</p>
       <div class="panel rtt">
         <div class="riga"><span>TCP + TLS 1.2</span><div class="giri"><span class="k-tcp">TCP</span><span class="k-tls">TLS</span><span class="k-tls">TLS</span></div><span class="tot">3 RTT</span></div>
         <div class="riga"><span>TCP + TLS 1.3</span><div class="giri"><span class="k-tcp">TCP</span><span class="k-tls">TLS</span></div><span class="tot">2 RTT</span></div>
