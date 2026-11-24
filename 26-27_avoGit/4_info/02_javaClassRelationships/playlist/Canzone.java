@@ -52,6 +52,18 @@ public class Canzone {
     }
 
     @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;                 // stesso oggetto
+        }
+        if (!(other instanceof Canzone)) {
+            return false;                // null o di un'altra classe
+        }
+        Canzone o = (Canzone) other;
+        return titolo.equals(o.titolo) && cantante.equals(o.cantante);
+    }
+
+    @Override
     public String toString() {
         return titolo + " - " + cantante + " (" + minSec(durata) + "), ascolti: " + ascolti;
     }
