@@ -15,6 +15,8 @@ public class Playlist {
     public void aggiungi(Canzone c) {
         if (quante == canzoni.length) {
             System.out.println(nome + ": playlist piena, " + c.getTitolo() + " resta fuori");
+        } else if (contiene(c)) {
+            System.out.println(nome + ": " + c.getTitolo() + " c'è già");
         } else if (durataTotale() + c.getDurata() > 15 * 60) {
             System.out.println(nome + ": " + c.getTitolo() + " dura " + minSec(c.getDurata())
                     + ", restano solo " + minSec(15 * 60 - durataTotale()));
@@ -28,18 +30,29 @@ public class Playlist {
         }
     }
 
-    public void togli(Canzone c) {
+    public boolean togli(Canzone c) {
         int i = 0;
-        //perché non equals?
-        while (i < canzoni.length && canzoni[i] != c) {   // cerca proprio quella canzone
+        while (i < canzoni.length && !c.equals(canzoni[i])) {   // su un posto vuoto equals dà false
             i++;
         }
         if (i == canzoni.length) {
             System.out.println(nome + ": " + c.getTitolo() + " non c'è");
+            return false;
         } else {
             canzoni[i] = null;                    // il posto resta vuoto: le altre non si muovono
             quante--;
+            return true;
         }
+    }
+
+    // usa equals di Canzone: stessa canzone = stesso titolo e stesso cantante
+    private boolean contiene(Canzone c) {
+        for (int i = 0; i < canzoni.length; i++) {
+            if (canzoni[i] != null && canzoni[i].equals(c)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public int durataTotale() {
