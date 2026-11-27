@@ -43,10 +43,10 @@ public class ChristmasRace {
         String[] wishes = {"un trenino", "una bambola", "un pallone"};
         for (int i = 0; i < gifts; i++) {
             String wish = wishes[i % wishes.length];
-            snowflakes.prepare(new Letter(wish));
-            baubles.prepare(new Letter(wish));
-            stockings.prepare(new Letter(wish));
-            candyCanes.prepare(new Letter(wish));   // passo 4
+            snowflakes.receive(new Letter(wish));
+            baubles.receive(new Letter(wish));
+            stockings.receive(new Letter(wish));
+            candyCanes.receive(new Letter(wish));   // passo 4
         }
 
         // 4. la fabbrica e la gara
@@ -56,5 +56,18 @@ public class ChristmasRace {
         workshop.add(stockings);
         workshop.add(candyCanes);   // passo 4
         workshop.race(turns);
+
+        // 5. Babbo Natale ritira i regali pronti: ogni squadra gli dà i suoi
+        System.out.println("--- Babbo Natale ritira i regali ---");
+        Gift[] snowflakesSack = snowflakes.deliver();
+        System.out.println(snowflakes.getName() + ": " + snowflakesSack.length + " regali");
+        Gift[] baublesSack = baubles.deliver();
+        System.out.println(baubles.getName() + ": " + baublesSack.length + " regali");
+        Gift[] stockingsSack = stockings.deliver();
+        System.out.println(stockings.getName() + ": " + stockingsSack.length + " regali");
+        Gift[] candyCanesSack = candyCanes.deliver();   // passo 4
+        System.out.println(candyCanes.getName() + ": " + candyCanesSack.length + " regali");
+
+        keyboard.close();
     }
 }
