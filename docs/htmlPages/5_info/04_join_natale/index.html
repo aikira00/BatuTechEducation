@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Le JOIN di Natale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&family=Kalam:wght@400;700&display=swap">
+<link rel="stylesheet" href="stile.css">
+</head>
+<body>
+
+<main class="foglio">
+
+  <header class="testata">
+    <p class="occhiello">Basi di dati · SQL · MySQL 8</p>
+    <h1>Le JOIN di Natale</h1>
+    <p class="sotto">Un database piccolissimo, <code>natale</code>, con dati che non vogliono dire niente: quattro colori, tre regali e tre persone. Serve a vedere come lavora ogni JOIN, riga per riga.</p>
+    <nav class="indice" aria-label="Sezioni della pagina">
+      <a href="#database">Il database</a>
+      <a href="#cross">CROSS JOIN</a>
+      <a href="#comune">La colonna in comune</a>
+      <a href="#inner">INNER JOIN</a>
+      <a href="#left">LEFT JOIN</a>
+      <a href="#right">RIGHT JOIN</a>
+      <a href="#full">FULL JOIN</a>
+      <a href="#riepilogo">Riepilogo</a>
+      <a href="#prova">Prova tu</a>
+    </nav>
+  </header>
+
+  <section id="database">
+    <h2>Il database natale</h2>
+    <p>Tre tabelle. <code>COLORE</code> e <code>REGALO</code> hanno una colonna sola; <code>PERSONA</code> ne ha due: il nome e il regalo che vorrebbe. La chiave primaria è sottolineata.</p>
+
+    <div class="tabelle">
+      <table>
+        <caption>COLORE</caption>
+        <thead><tr><th class="pk">colore</th></tr></thead>
+        <tbody>
+          <tr><td>bianco</td></tr>
+          <tr><td>oro</td></tr>
+          <tr><td>rosso</td></tr>
+          <tr><td>verde</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>REGALO</caption>
+        <thead><tr><th class="pk">regalo</th></tr></thead>
+        <tbody>
+          <tr><td>calzini</td></tr>
+          <tr><td>felpa</td></tr>
+          <tr><td>sciarpa</td></tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>PERSONA</caption>
+        <thead><tr><th class="pk">nome</th><th>regalo</th></tr></thead>
+        <tbody>
+          <tr><td>Anna</td><td>calzini</td></tr>
+          <tr><td>Bruno</td><td>calzini</td></tr>
+          <tr><td>Carla</td><td>monopattino</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="nota">
+      <p class="mano">Niente chiavi esterne</p>
+      <p>Per questo Carla può volere un monopattino anche se in <code>REGALO</code> il monopattino non c'è. Con una <code>FOREIGN KEY</code> da <code>PERSONA(regalo)</code> verso <code>REGALO(regalo)</code> MySQL rifiuterebbe la riga di Carla.</p>
+    </div>
+
+    <div class="blocco">
+      <p class="etichetta">Script per crearlo</p>
+<pre><code><span class="k">CREATE DATABASE</span> natale <span class="k">CHARACTER SET</span> utf8mb4 <span class="k">COLLATE</span> utf8mb4_unicode_ci;
+<span class="k">USE</span> natale;
+
+<span class="k">CREATE TABLE</span> COLORE (
+  colore <span class="k">VARCHAR</span>(20) <span class="k">PRIMARY KEY</span>
+);
+
+<span class="k">CREATE TABLE</span> REGALO (
+  regalo <span class="k">VARCHAR</span>(20) <span class="k">PRIMARY KEY</span>
+);
+
+<span class="k">CREATE TABLE</span> PERSONA (
+  nome   <span class="k">VARCHAR</span>(20) <span class="k">PRIMARY KEY</span>,
+  regalo <span class="k">VARCHAR</span>(20)
+);
+
+<span class="k">INSERT INTO</span> COLORE (colore) <span class="k">VALUES</span> ('rosso'), ('verde'), ('bianco'), ('oro');
+<span class="k">INSERT INTO</span> REGALO (regalo) <span class="k">VALUES</span> ('calzini'), ('sciarpa'), ('felpa');
+
+<span class="k">INSERT INTO</span> PERSONA (nome, regalo) <span class="k">VALUES</span>
+  ('Anna',  'calzini'),
+  ('Bruno', 'calzini'),
+  ('Carla', 'monopattino');</code></pre>
+    </div>
+
+    <p class="piccolo">Senza <code>ORDER BY</code> MySQL può restituire le righe in un ordine diverso da quello di questa pagina: le righe sono comunque le stesse.</p>
+  </section>
+
+  <section id="cross">
+    <h2>CROSS JOIN: tutte le coppie</h2>
+    <p><code>COLORE</code> e <code>REGALO</code> non hanno nessuna colonna in comune: non c'è modo di dire quale colore va con quale regalo. Si può solo accoppiare ogni regalo con ogni colore. È il prodotto cartesiano: 3 regali × 4 colori = 12 righe.</p>
+
+    <figure class="schema" data-modo="cross">
+      <figcaption>Ogni regalo si collega a ogni colore: 12 legami, 12 righe.</figcaption>
+    </figure>
+
+    <div class="blocco">
+      <p class="etichetta">Query</p>
+<pre><code><span class="k">SELECT</span> *
+<span class="k">FROM</span> REGALO <span class="k">CROSS JOIN</span> COLORE;</code></pre>
+    </div>
+
+    <div class="risultato">
+      <p class="etichetta">Risultato <span class="conta">12 righe</span></p>
+      <div class="scorri">
+        <table>
+          <thead><tr><th>regalo<small>REGALO</small></th><th>colore<small>COLORE</small></th></tr></thead>
+          <tbody>
+            <tr><td>calzini</td><td>bianco</td></tr>
+            <tr><td>calzini</td><td>oro</td></tr>
+            <tr><td>calzini</td><td>rosso</td></tr>
+            <tr><td>calzini</td><td>verde</td></tr>
+            <tr><td>felpa</td><td>bianco</td></tr>
+            <tr><td>felpa</td><td>oro</td></tr>
+            <tr><td>felpa</td><td>rosso</td></tr>
+            <tr><td>felpa</td><td>verde</td></tr>
+            <tr><td>sciarpa</td><td>bianco</td></tr>
+            <tr><td>sciarpa</td><td>oro</td></tr>
+            <tr><td>sciarpa</td><td>rosso</td></tr>
+            <tr><td>sciarpa</td><td>verde</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p>Lo stesso risultato si ottiene scrivendo le due tabelle separate da una virgola: <code>FROM REGALO, COLORE</code>. Le righe sono sempre le righe della prima tabella × le righe della seconda: con due tabelle da 1000 righe se ne ottiene un milione.</p>
+  </section>
+
+  <section id="comune">
+    <h2>Quando c'è una colonna in comune</h2>
+    <p><code>PERSONA</code> e <code>REGALO</code> hanno una colonna in comune: <code>regalo</code>. Adesso si può dire quale riga di <code>REGALO</code> va con una persona: quella con lo stesso regalo.</p>
+
+    <figure class="schema" data-modo="base">
+      <figcaption>Anna e Bruno vogliono i calzini. Il monopattino di Carla in REGALO non c'è; felpa e sciarpa non le vuole nessuno.</figcaption>
+    </figure>
+
+    <p>Ogni JOIN parte dal prodotto cartesiano, qui 3 persone × 3 regali = 9 righe, e tiene solo le righe in cui vale la condizione di join:</p>
+
+<pre><code>PERSONA.regalo = REGALO.regalo</code></pre>
+
+    <div class="blocco">
+      <p class="etichetta">Query</p>
+<pre><code><span class="k">SELECT</span> *
+<span class="k">FROM</span> PERSONA <span class="k">CROSS JOIN</span> REGALO;</code></pre>
+    </div>
+
+    <div class="risultato">
+      <p class="etichetta">Risultato <span class="conta">9 righe, condizione vera in 2</span></p>
+      <div class="scorri">
+        <table>
+          <thead><tr><th>nome<small>PERSONA</small></th><th>regalo<small>PERSONA</small></th><th>regalo<small>REGALO</small></th><th>condizione<small>vale?</small></th></tr></thead>
+          <tbody>
+            <tr class="si"><td>Anna</td><td>calzini</td><td>calzini</td><td>vera</td></tr>
+            <tr class="no"><td>Anna</td><td>calzini</td><td>felpa</td><td>falsa</td></tr>
+            <tr class="no"><td>Anna</td><td>calzini</td><td>sciarpa</td><td>falsa</td></tr>
+            <tr class="si"><td>Bruno</td><td>calzini</td><td>calzini</td><td>vera</td></tr>
+            <tr class="no"><td>Bruno</td><td>calzini</td><td>felpa</td><td>falsa</td></tr>
+            <tr class="no"><td>Bruno</td><td>calzini</td><td>sciarpa</td><td>falsa</td></tr>
+            <tr class="no"><td>Carla</td><td>monopattino</td><td>calzini</td><td>falsa</td></tr>
+            <tr class="no"><td>Carla</td><td>monopattino</td><td>felpa</td><td>falsa</td></tr>
+            <tr class="no"><td>Carla</td><td>monopattino</td><td>sciarpa</td><td>falsa</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="piccolo">La colonna «condizione» non la calcola MySQL: è aggiunta qui per vedere quali righe passano.</p>
+    </div>
+
+    <div class="nota">
+      <p class="mano">Stesso nome, due tabelle</p>
+      <p>La colonna si chiama <code>regalo</code> in tutte e due le tabelle, quindi va scritta con il nome della tabella davanti: <code>PERSONA.regalo</code> e <code>REGALO.regalo</code>. Con <code>ON regalo = regalo</code> MySQL risponde con l'errore 1052: colonna ambigua.</p>
+    </div>
+  </section>
+
+  <section id="inner">
+    <h2>INNER JOIN: solo le coppie</h2>
+    <p>Tiene solo le righe che trovano una coppia nell'altra tabella.</p>
+
+    <figure class="schema" data-modo="inner">
+      <figcaption>In evidenza le righe che entrano nel risultato, tratteggiate quelle scartate. Restano solo i due legami.</figcaption>
+    </figure>
+
+    <div class="blocco">
+      <p class="etichetta">Query</p>
+<pre><code><span class="k">SELECT</span> *
+<span class="k">FROM</span> PERSONA <span class="k">INNER JOIN</span> REGALO
+  <span class="k">ON</span> PERSONA.regalo = REGALO.regalo;</code></pre>
+    </div>
+
+    <div class="risultato">
+      <p class="etichetta">Risultato <span class="conta">2 righe</span></p>
+      <div class="scorri">
+        <table>
+          <thead><tr><th>nome<small>PERSONA</small></th><th>regalo<small>PERSONA</small></th><th>regalo<small>REGALO</small></th></tr></thead>
+          <tbody>
+            <tr><td>Anna</td><td>calzini</td><td>calzini</td></tr>
+            <tr><td>Bruno</td><td>calzini</td><td>calzini</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p><code>calzini</code> compare due volte perché lo vogliono in due. Carla, felpa e sciarpa non hanno una coppia e spariscono.</p>
+    <p><code>INNER</code> si può omettere: <code>JOIN</code> da solo è una INNER JOIN. Lo stesso risultato si ottiene dal prodotto cartesiano con <code>WHERE PERSONA.regalo = REGALO.regalo</code>.</p>
+  </section>
+
+  <section id="outer" class="gruppo">
+    <div class="intro">
+      <h2>OUTER JOIN: anche le righe senza coppia</h2>
+      <p>Le OUTER JOIN tengono anche le righe che non trovano una coppia. Dove manca la riga dell'altra tabella mettono <code>NULL</code> in tutte le sue colonne. Si scrivono <code>LEFT</code>, <code>RIGHT</code> o <code>FULL</code>; la parola <code>OUTER</code> si può omettere: <code>LEFT OUTER JOIN</code> e <code>LEFT JOIN</code> sono la stessa cosa.</p>
+    </div>
+
+    <section id="left">
+      <h3>LEFT JOIN: tutta la tabella di sinistra</h3>
+      <p>La tabella di sinistra è quella scritta prima di <code>LEFT JOIN</code>, qui <code>PERSONA</code>. Restano tutte le persone; Carla non ha una coppia e riceve <code>NULL</code> nella colonna di <code>REGALO</code>.</p>
+
+      <figure class="schema" data-modo="left">
+        <figcaption>Carla resta, con NULL al posto del regalo che in REGALO non c'è. Felpa e sciarpa restano fuori.</figcaption>
+      </figure>
+
+      <div class="blocco">
+        <p class="etichetta">Query</p>
+<pre><code><span class="k">SELECT</span> *
+<span class="k">FROM</span> PERSONA <span class="k">LEFT JOIN</span> REGALO
+  <span class="k">ON</span> PERSONA.regalo = REGALO.regalo;</code></pre>
+      </div>
+
+      <div class="risultato">
+        <p class="etichetta">Risultato <span class="conta">3 righe</span></p>
+        <div class="scorri">
+          <table>
+            <thead><tr><th>nome<small>PERSONA</small></th><th>regalo<small>PERSONA</small></th><th>regalo<small>REGALO</small></th></tr></thead>
+            <tbody>
+              <tr><td>Anna</td><td>calzini</td><td>calzini</td></tr>
+              <tr><td>Bruno</td><td>calzini</td><td>calzini</td></tr>
+              <tr><td>Carla</td><td>monopattino</td><td class="null">NULL</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p>Sono le 2 righe della INNER JOIN più Carla.</p>
+    </section>
+
+    <section id="right">
+      <h3>RIGHT JOIN: tutta la tabella di destra</h3>
+      <p>Ora restano tutte le righe di <code>REGALO</code>, la tabella scritta dopo <code>RIGHT JOIN</code>. Felpa e sciarpa non le vuole nessuno: nelle colonne di <code>PERSONA</code> c'è <code>NULL</code>. Carla sparisce.</p>
+
+      <figure class="schema" data-modo="right">
+        <figcaption>Felpa e sciarpa restano, con NULL al posto di nome e regalo della persona. Carla resta fuori.</figcaption>
+      </figure>
+
+      <div class="blocco">
+        <p class="etichetta">Query</p>
+<pre><code><span class="k">SELECT</span> *
+<span class="k">FROM</span> PERSONA <span class="k">RIGHT JOIN</span> REGALO
+  <span class="k">ON</span> PERSONA.regalo = REGALO.regalo;</code></pre>
+      </div>
+
+      <div class="risultato">
+        <p class="etichetta">Risultato <span class="conta">4 righe</span></p>
+        <div class="scorri">
+          <table>
+            <thead><tr><th>nome<small>PERSONA</small></th><th>regalo<small>PERSONA</small></th><th>regalo<small>REGALO</small></th></tr></thead>
+            <tbody>
+              <tr><td>Anna</td><td>calzini</td><td>calzini</td></tr>
+              <tr><td>Bruno</td><td>calzini</td><td>calzini</td></tr>
+              <tr><td class="null">NULL</td><td class="null">NULL</td><td>felpa</td></tr>
+              <tr><td class="null">NULL</td><td class="null">NULL</td><td>sciarpa</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p><code>PERSONA RIGHT JOIN REGALO</code> dà le stesse righe di <code>REGALO LEFT JOIN PERSONA</code>: cambia solo l'ordine delle colonne.</p>
+    </section>
+
+    <section id="full">
+      <h3>FULL JOIN: tutte e due le tabelle</h3>
+      <p>Tiene tutte le righe delle due tabelle: le coppie, Carla con <code>NULL</code> a destra, felpa e sciarpa con <code>NULL</code> a sinistra. In MySQL <code>FULL OUTER JOIN</code> non esiste: si uniscono con <code>UNION</code> i risultati della LEFT JOIN e della RIGHT JOIN.</p>
+
+      <figure class="schema" data-modo="full">
+        <figcaption>Restano tutte le righe: le coppie e, con NULL, quelle senza coppia.</figcaption>
+      </figure>
+
+      <div class="blocco">
+        <p class="etichetta">Query</p>
+<pre><code><span class="k">SELECT</span> *
+<span class="k">FROM</span> PERSONA <span class="k">LEFT JOIN</span> REGALO
+  <span class="k">ON</span> PERSONA.regalo = REGALO.regalo
+<span class="k">UNION</span>
+<span class="k">SELECT</span> *
+<span class="k">FROM</span> PERSONA <span class="k">RIGHT JOIN</span> REGALO
+  <span class="k">ON</span> PERSONA.regalo = REGALO.regalo;</code></pre>
+      </div>
+
+      <div class="risultato">
+        <p class="etichetta">Risultato <span class="conta">5 righe</span></p>
+        <div class="scorri">
+          <table>
+            <thead><tr><th>nome<small>PERSONA</small></th><th>regalo<small>PERSONA</small></th><th>regalo<small>REGALO</small></th></tr></thead>
+            <tbody>
+              <tr><td>Anna</td><td>calzini</td><td>calzini</td></tr>
+              <tr><td>Bruno</td><td>calzini</td><td>calzini</td></tr>
+              <tr><td>Carla</td><td>monopattino</td><td class="null">NULL</td></tr>
+              <tr><td class="null">NULL</td><td class="null">NULL</td><td>felpa</td></tr>
+              <tr><td class="null">NULL</td><td class="null">NULL</td><td>sciarpa</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p><code>UNION</code> toglie le righe doppie: le righe di Anna e Bruno escono sia dalla LEFT sia dalla RIGHT, ma nel risultato compaiono una volta sola. Con <code>UNION ALL</code> le righe sarebbero 3 + 4 = 7.</p>
+    </section>
+  </section>
+
+  <section id="riepilogo">
+    <h2>Riepilogo</h2>
+    <div class="scorri">
+      <table class="riepilogo">
+        <thead><tr><th>JOIN</th><th>Tabelle</th><th>Che cosa tiene</th><th>Righe</th></tr></thead>
+        <tbody>
+          <tr><td>CROSS</td><td>REGALO, COLORE</td><td>tutte le coppie possibili</td><td class="num">3 × 4 = 12</td></tr>
+          <tr><td>CROSS</td><td>PERSONA, REGALO</td><td>tutte le coppie possibili</td><td class="num">3 × 3 = 9</td></tr>
+          <tr><td>INNER</td><td>PERSONA, REGALO</td><td>solo le righe con una coppia</td><td class="num">2</td></tr>
+          <tr><td>LEFT</td><td>PERSONA, REGALO</td><td>le coppie e le persone senza coppia</td><td class="num">3</td></tr>
+          <tr><td>RIGHT</td><td>PERSONA, REGALO</td><td>le coppie e i regali che nessuno vuole</td><td class="num">4</td></tr>
+          <tr><td>FULL</td><td>PERSONA, REGALO</td><td>le coppie e tutte le righe senza coppia</td><td class="num">5</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="prova">
+    <h2>Prova tu</h2>
+    <div class="domande">
+      <details>
+        <summary>Quante righe restituisce <code>SELECT * FROM PERSONA CROSS JOIN COLORE;</code>?</summary>
+        <div class="risposta">
+          <p>12: ogni persona con ogni colore, 3 × 4. La colonna in comune con <code>REGALO</code> qui non conta, perché la CROSS JOIN non ha condizione.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Scrivi una query che restituisca solo i regali che nessuno vuole.</summary>
+        <div class="risposta">
+          <p>Nella RIGHT JOIN i regali senza coppia hanno <code>NULL</code> nelle colonne di <code>PERSONA</code>: basta tenere quelle righe.</p>
+<pre><code><span class="k">SELECT</span> REGALO.regalo
+<span class="k">FROM</span> PERSONA <span class="k">RIGHT JOIN</span> REGALO
+  <span class="k">ON</span> PERSONA.regalo = REGALO.regalo
+<span class="k">WHERE</span> PERSONA.nome <span class="k">IS NULL</span>;</code></pre>
+          <p>Escono felpa e sciarpa.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Se in <code>PERSONA</code> si aggiunge la riga ('Dario', 'felpa'), quante righe danno INNER, LEFT, RIGHT e FULL JOIN?</summary>
+        <div class="risposta">
+          <p>INNER 3 (Anna, Bruno, Dario). LEFT 4 (le 3 coppie e Carla). RIGHT 4 (le 3 coppie e sciarpa). FULL 5 (le 3 coppie, Carla e sciarpa).</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <footer>
+    <p class="trasparenza">Questa pagina è stata scritta dalla docente con l'assistenza di un sistema di intelligenza artificiale (Claude, Anthropic), impiegato per la stesura dei testi, la realizzazione dei diagrammi e l'organizzazione dei contenuti. Tutti i contenuti sono stati verificati e validati dalla docente: la responsabilità didattica e scientifica è integralmente sua. L'indicazione è fornita in ottica di trasparenza, coerentemente con le linee guida ministeriali sull'uso dell'intelligenza artificiale a scuola.</p>
+  </footer>
+
+</main>
+
+<script src="schemi.js"></script>
+</body>
+</html>
