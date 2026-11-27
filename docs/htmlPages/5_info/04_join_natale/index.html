@@ -26,6 +26,7 @@
       <a href="#right">RIGHT JOIN</a>
       <a href="#full">FULL JOIN</a>
       <a href="#riepilogo">Riepilogo</a>
+      <a href="#laboratorio">Laboratorio</a>
       <a href="#prova">Prova tu</a>
     </nav>
   </header>
@@ -150,9 +151,8 @@
       <figcaption>Anna e Bruno vogliono i calzini. Il monopattino di Carla in REGALO non c'è; felpa e sciarpa non le vuole nessuno.</figcaption>
     </figure>
 
-    <p>Ogni JOIN parte dal prodotto cartesiano, qui 3 persone × 3 regali = 9 righe, e tiene solo le righe in cui vale la condizione di join:</p>
-
-<pre><code>PERSONA.regalo = REGALO.regalo</code></pre>
+    <p>Una JOIN si può pensare in due passi.</p>
+    <p><strong>Primo passo: il prodotto cartesiano.</strong> Ogni persona con ogni regalo, come fa la CROSS JOIN: 3 persone × 3 regali = 9 righe.</p>
 
     <div class="blocco">
       <p class="etichetta">Query</p>
@@ -161,25 +161,31 @@
     </div>
 
     <div class="risultato">
-      <p class="etichetta">Risultato <span class="conta">9 righe, condizione vera in 2</span></p>
+      <p class="etichetta">Risultato <span class="conta">9 righe</span></p>
       <div class="scorri">
         <table>
-          <thead><tr><th>nome<small>PERSONA</small></th><th>regalo<small>PERSONA</small></th><th>regalo<small>REGALO</small></th><th>condizione<small>vale?</small></th></tr></thead>
+          <thead><tr><th>nome<small>PERSONA</small></th><th>regalo<small>PERSONA</small></th><th>regalo<small>REGALO</small></th></tr></thead>
           <tbody>
-            <tr class="si"><td>Anna</td><td>calzini</td><td>calzini</td><td>vera</td></tr>
-            <tr class="no"><td>Anna</td><td>calzini</td><td>felpa</td><td>falsa</td></tr>
-            <tr class="no"><td>Anna</td><td>calzini</td><td>sciarpa</td><td>falsa</td></tr>
-            <tr class="si"><td>Bruno</td><td>calzini</td><td>calzini</td><td>vera</td></tr>
-            <tr class="no"><td>Bruno</td><td>calzini</td><td>felpa</td><td>falsa</td></tr>
-            <tr class="no"><td>Bruno</td><td>calzini</td><td>sciarpa</td><td>falsa</td></tr>
-            <tr class="no"><td>Carla</td><td>monopattino</td><td>calzini</td><td>falsa</td></tr>
-            <tr class="no"><td>Carla</td><td>monopattino</td><td>felpa</td><td>falsa</td></tr>
-            <tr class="no"><td>Carla</td><td>monopattino</td><td>sciarpa</td><td>falsa</td></tr>
+            <tr class="si"><td>Anna</td><td>calzini</td><td>calzini</td></tr>
+            <tr><td>Anna</td><td>calzini</td><td>felpa</td></tr>
+            <tr><td>Anna</td><td>calzini</td><td>sciarpa</td></tr>
+            <tr class="si"><td>Bruno</td><td>calzini</td><td>calzini</td></tr>
+            <tr><td>Bruno</td><td>calzini</td><td>felpa</td></tr>
+            <tr><td>Bruno</td><td>calzini</td><td>sciarpa</td></tr>
+            <tr><td>Carla</td><td>monopattino</td><td>calzini</td></tr>
+            <tr><td>Carla</td><td>monopattino</td><td>felpa</td></tr>
+            <tr><td>Carla</td><td>monopattino</td><td>sciarpa</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="piccolo">La colonna «condizione» non la calcola MySQL: è aggiunta qui per vedere quali righe passano.</p>
     </div>
+
+    <p><strong>Secondo passo: la condizione di join.</strong></p>
+
+<pre><code>PERSONA.regalo = REGALO.regalo</code></pre>
+
+    <p>È vera solo nelle 2 righe evidenziate: Anna e Bruno con i calzini. La INNER JOIN tiene solo quelle; LEFT, RIGHT e FULL aggiungono anche le righe rimaste senza coppia.</p>
+    <p class="salto"><a href="#laboratorio" data-tipo="inner">Guarda i due passi animati nel laboratorio</a></p>
 
     <div class="nota">
       <p class="mano">Stesso nome, due tabelle</p>
@@ -217,6 +223,7 @@
 
     <p><code>calzini</code> compare due volte perché lo vogliono in due. Carla, felpa e sciarpa non hanno una coppia e spariscono.</p>
     <p><code>INNER</code> si può omettere: <code>JOIN</code> da solo è una INNER JOIN. Lo stesso risultato si ottiene dal prodotto cartesiano con <code>WHERE PERSONA.regalo = REGALO.regalo</code>.</p>
+    <p class="salto"><a href="#laboratorio" data-tipo="inner">Guardala lavorare un passo alla volta nel laboratorio</a></p>
   </section>
 
   <section id="outer" class="gruppo">
@@ -255,6 +262,7 @@
       </div>
 
       <p>Sono le 2 righe della INNER JOIN più Carla.</p>
+      <p class="salto"><a href="#laboratorio" data-tipo="left">Guardala lavorare un passo alla volta nel laboratorio</a></p>
     </section>
 
     <section id="right">
@@ -288,6 +296,7 @@
       </div>
 
       <p><code>PERSONA RIGHT JOIN REGALO</code> dà le stesse righe di <code>REGALO LEFT JOIN PERSONA</code>: cambia solo l'ordine delle colonne.</p>
+      <p class="salto"><a href="#laboratorio" data-tipo="right">Guardala lavorare un passo alla volta nel laboratorio</a></p>
     </section>
 
     <section id="full">
@@ -326,6 +335,7 @@
       </div>
 
       <p><code>UNION</code> toglie le righe doppie: le righe di Anna e Bruno escono sia dalla LEFT sia dalla RIGHT, ma nel risultato compaiono una volta sola. Con <code>UNION ALL</code> le righe sarebbero 3 + 4 = 7.</p>
+      <p class="salto"><a href="#laboratorio" data-tipo="full">Guardala lavorare un passo alla volta nel laboratorio</a></p>
     </section>
   </section>
 
@@ -344,6 +354,99 @@
         </tbody>
       </table>
     </div>
+  </section>
+
+  <section id="laboratorio" class="lab">
+    <h2>Laboratorio</h2>
+    <p>Qui <code>PERSONA</code> e <code>REGALO</code> si possono cambiare: scrivi nelle caselle, togli righe o aggiungine. Scegli la JOIN e guarda come combina le due tabelle: prima prova tutte le coppie del prodotto cartesiano, poi aggiunge le righe rimaste senza coppia. «Pausa» la ferma, «Indietro» e «Avanti» vanno un passo alla volta.</p>
+
+    <fieldset class="scelta">
+      <legend class="etichetta">JOIN</legend>
+      <div class="opzioni">
+        <label><input type="radio" name="lab-tipo" value="cross"><span>CROSS</span></label>
+        <label><input type="radio" name="lab-tipo" value="inner" checked><span>INNER</span></label>
+        <label><input type="radio" name="lab-tipo" value="left"><span>LEFT</span></label>
+        <label><input type="radio" name="lab-tipo" value="right"><span>RIGHT</span></label>
+        <label><input type="radio" name="lab-tipo" value="full"><span>FULL</span></label>
+      </div>
+    </fieldset>
+
+    <div class="tabelle" id="lab-dati">
+      <table class="modifica" id="lab-persona">
+        <caption>PERSONA</caption>
+        <thead><tr><th class="pk">nome</th><th>regalo</th><th class="azione"><span class="nascosto">togli</span></th></tr></thead>
+        <tbody></tbody>
+        <tfoot><tr><td colspan="3" class="azione"><button type="button" id="lab-aggiungi-p">aggiungi una persona</button></td></tr></tfoot>
+      </table>
+
+      <table class="modifica" id="lab-regalo">
+        <caption>REGALO</caption>
+        <thead><tr><th class="pk">regalo</th><th class="azione"><span class="nascosto">togli</span></th></tr></thead>
+        <tbody></tbody>
+        <tfoot><tr><td colspan="2" class="azione"><button type="button" id="lab-aggiungi-r">aggiungi un regalo</button></td></tr></tfoot>
+      </table>
+    </div>
+
+    <p class="piccolo">Al massimo 8 righe per tabella. Una casella vuota vale <code>NULL</code>. Come in MySQL con la collation di <code>natale</code>, maiuscole, minuscole e accenti non contano: <code>'Calzini' = 'calzini'</code> è vera.</p>
+
+    <div class="prove">
+      <p class="etichetta">Da provare</p>
+      <div class="bottoni">
+        <button type="button" data-prova="dario">Dario vuole la felpa</button>
+        <button type="button" data-prova="monopattino">In REGALO arriva il monopattino</button>
+        <button type="button" data-prova="elena">Elena non ha ancora scelto</button>
+        <button type="button" data-prova="vuota">REGALO è vuota</button>
+        <button type="button" data-prova="iniziali">Dati iniziali</button>
+      </div>
+      <p class="piccolo">Ogni prova riparte dai dati iniziali.</p>
+    </div>
+
+    <div class="blocco">
+      <p class="etichetta">Query</p>
+<pre><code id="lab-query"></code></pre>
+    </div>
+
+    <div class="nota" id="lab-errore" hidden>
+      <p class="mano">MySQL rifiuterebbe questi dati</p>
+      <p id="lab-errore-testo"></p>
+    </div>
+
+    <div class="uscita" id="lab-uscita">
+      <figure class="schema" id="lab-schema">
+        <figcaption>Passa sopra una riga del risultato, o toccala, per vedere da quali righe viene.</figcaption>
+      </figure>
+
+      <div class="passi">
+        <div class="comandi">
+          <button type="button" id="lab-avvia" class="principale">Avvia</button>
+          <button type="button" id="lab-dacapo">Dall'inizio</button>
+          <button type="button" id="lab-indietro">Indietro</button>
+          <button type="button" id="lab-avanti">Avanti</button>
+          <button type="button" id="lab-tutto">Tutto</button>
+          <span class="contatore" id="lab-contatore"></span>
+        </div>
+        <p class="messaggio" id="lab-messaggio" aria-live="polite"></p>
+      </div>
+
+      <div class="risultato">
+        <p class="etichetta">Risultato <span class="conta" id="lab-conta"></span></p>
+        <div class="scorri">
+          <table id="lab-risultato">
+            <thead><tr><th>nome<small>PERSONA</small></th><th>regalo<small>PERSONA</small></th><th>regalo<small>REGALO</small></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="conto" id="lab-conto"></p>
+      </div>
+    </div>
+
+    <details>
+      <summary>Gli stessi dati in SQL, da provare in phpMyAdmin</summary>
+      <div class="risposta">
+        <p>Lo script cancella le righe di <code>PERSONA</code> e <code>REGALO</code> nel database <code>natale</code> e inserisce quelle del laboratorio. Per tornare ai dati di partenza: «Dati iniziali» e di nuovo lo script.</p>
+<pre><code id="lab-sql"></code></pre>
+      </div>
+    </details>
   </section>
 
   <section id="prova">
@@ -372,6 +475,7 @@
         <summary>Se in <code>PERSONA</code> si aggiunge la riga ('Dario', 'felpa'), quante righe danno INNER, LEFT, RIGHT e FULL JOIN?</summary>
         <div class="risposta">
           <p>INNER 3 (Anna, Bruno, Dario). LEFT 4 (le 3 coppie e Carla). RIGHT 4 (le 3 coppie e sciarpa). FULL 5 (le 3 coppie, Carla e sciarpa).</p>
+          <p><button type="button" data-prova="dario">Controlla nel laboratorio</button></p>
         </div>
       </details>
     </div>
@@ -384,5 +488,6 @@
 </main>
 
 <script src="schemi.js"></script>
+<script src="laboratorio.js"></script>
 </body>
 </html>
